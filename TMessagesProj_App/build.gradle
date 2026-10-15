@@ -1,0 +1,144 @@
+import com.android.build.api.variant.FilterConfiguration
+
+plugins {
+    id 'com.android.application'
+    id 'androidx.baselineprofile'
+    id 'org.telegram.build-app-plugin'
+    id 'com.google.gms.google-services'
+    id 'io.sentry.android.gradle'
+}
+
+dependencies {
+    implementation project(':TMessagesProj')
+    implementation 'androidx.profileinstaller:profileinstaller:1.4.1'
+    baselineProfile project(':baselineprofile')
+}
+
+sentry {
+    uploadNativeSymbols = true
+    includeSourceContext = true
+    additionalSourceDirsForSourceContext = [ '../TMessagesProj/src/main/java' ]
+    autoInstallation {
+        enabled = false
+    }
+    ignoredBuildTypes = ["debug"]
+}
+
+android {
+    defaultConfig.applicationId = APP_PACKAGE
+
+    packagingOptions {
+        resources {
+            excludes += '**'
+        }
+    }
+
+    Properties localProperties = new Properties()
+    if (project.rootProject.file('local.properties').exists()) {
+        localProperties.load(project.rootProject.file('local.properties').newDataInputStream())
+    }
+
+    androidResources {
+        noCompress += "pack"
+    }
+
+    // Only treat signing as configured when storeFile actually points at a real, non-empty
+    // keystore - a storeFile property that is merely present (but pointing at a missing or
+    // 0-byte file, e.g. from a blank KEYSTORE_JKS secret in CI) must NOT be treated as a
+    // valid signing config, or the build can silently produce an apk that was never really
+    // signed with the intended key.
+    def keystoreFile = localProperties.getProperty("storeFile") != null ? file(localProperties.getProperty("storeFile")) : null
+    def hasRealKeystore = keystoreFile != null && keystoreFile.exists() && keystoreFile.length() > 0
+
+    signingConfigs {
+        if (hasRealKeystore) {
+            sign {
+                storeFile keystoreFile
+                storePassword localProperties.getProperty("storePassword")
+                keyAlias localProperties.getProperty("keyAlias")
+                keyPassword localProperties.getProperty("keyPassword")
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            if (hasRealKeystore) {
+                signingConfig signingConfigs.sign
+            }
+            applicationIdSuffix ".beta"
+        }
+
+        release {
+            minifyEnabled true
+            shrinkResources true
+            vcsInfo.include false
+            if (hasRealKeystore) {
+                signingConfig signingConfigs.sign
+            } else {
+                signingConfig signingConfigs.debug
+            }
+            proguardFiles '../TMessagesProj/proguard-rules.pro'
+            ndk.debugSymbolLevel 'FULL'
+        }
+    }
+
+    defaultConfig.versionCode = Integer.parseInt(APP_VERSION_CODE)
+
+    defaultConfig {
+        versionName APP_VERSION_NAME
+
+        multiDexEnabled true
+
+        manifestPlaceholders = [MAPS_API_KEY: localProperties.get("mapsApiKey")]
+    }
+
+    bundle {
+        language {
+            enableSplit = false
+        }
+    }
+
+    // -PbuildAbi=<arm64-v8a|armeabi-v7a|all> restricts which ABI split(s) actually get
+    // compiled/packaged, so a dev CI run (kurogram.yml) only has to build the one target
+    // being tested instead of all four every time. Left unset (bundle release builds,
+    // other workflows), behavior is unchanged - all four ABIs plus the universal apk.
+    def requestedAbi = project.findProperty("buildAbi")
+
+    splits.abi {
+        var buildingBundle = gradle.startParameter.taskNames.any { it.startsWith("bundle") }
+        enable !buildingBundle
+        // The universal apk bundles every requested ABI into one file - only worth
+        // building when no specific ABI was requested (i.e. not a buildAbi-driven run).
+        universalApk requestedAbi == null
+
+        reset()
+        if (requestedAbi == "arm64-v8a") {
+            include "arm64-v8a"
+        } else if (requestedAbi == "armeabi-v7a") {
+            include "armeabi-v7a"
+        } else if (requestedAbi == "all") {
+            include "armeabi-v7a", "arm64-v8a"
+        } else {
+            include "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+        }
+    }
+    namespace 'org.telegram.messenger.regular'
+
+    dependenciesInfo {
+        includeInApk false
+        includeInBundle false
+    }
+}
+
+androidComponents {
+    onVariants(selector().all()) { variant ->
+        variant.outputs.each { output ->
+            def abi = output.filters.find { it.filterType == FilterConfiguration.FilterType.ABI }?.identifier
+            def abiName = abi ?: "universal"
+            def baseVersionCode = output.versionCode.get()
+            output.outputFileName.set("Kurogram-${output.versionName.get()}-${baseVersionCode}-${abiName}.apk")
+            output.versionCode.set(baseVersionCode * 10)
+        }
+    }
+}

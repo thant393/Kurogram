@@ -1,0 +1,96 @@
+name: Kurogram Debug Build
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Which ABI(s) to build"
+        type: choice
+        default: arm64-v8a
+        options:
+          - arm64-v8a
+          - armeabi-v7a
+          - all
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+      - uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: temurin
+      - uses: gradle/actions/setup-gradle@v6
+      - uses: android-actions/setup-android@v4
+        with:
+          packages: "build-tools;37.0.0 ndk;27.3.13750724 platforms;android-37.0 cmake;3.22.1"
+      - name: Configure
+        run: |
+          mkdir -p ~/.gradle
+          echo 'org.gradle.jvmargs=-Xmx6g -Dfile.encoding=UTF-8' >> ~/.gradle/gradle.properties
+          echo "apiId=${{ secrets.API_ID }}" >> local.properties
+          echo "apiHash=${{ secrets.API_HASH }}" >> local.properties
+          echo "mapsApiKey=dummy" >> local.properties
+          echo "sentryDsn=" >> local.properties
+          echo "helperBotId=0" >> local.properties
+          echo "helperBotUsername=none" >> local.properties
+          echo "stickerApiBaseUrl=${{ secrets.STICKER_API_BASE_URL || 'https://backend-api-gn09.onrender.com' }}" >> local.properties
+          cat > TMessagesProj_App/google-services.json << 'JSON'
+          {"project_info":{"project_number":"123456789012","project_id":"kurogram-dummy"},
+          "client":[
+          {"client_info":{"mobilesdk_app_id":"1:123456789012:android:0000000000000000","android_client_info":{"package_name":"org.kurogram.messenger"}},"api_key":[{"current_key":"dummy"}]},
+          {"client_info":{"mobilesdk_app_id":"1:123456789012:android:1111111111111111","android_client_info":{"package_name":"org.kurogram.messenger.beta"}},"api_key":[{"current_key":"dummy"}]}],
+          "configuration_version":"1"}
+          JSON
+      - name: Configure Signing
+        # Only write storeFile/signing lines into local.properties when the keystore
+        # secret actually has content. Previously these lines were written unconditionally,
+        # so if KEYSTORE_JKS/KEYSTORE_PASSWORD/KEY_ALIAS/KEY_PASSWORD were ever unset or
+        # removed from repo secrets, this step would still produce a `storeFile=...` line
+        # pointing at an empty/invalid keystore.jks - the Gradle side only checks whether
+        # that property is present (non-null), not whether it points to something real, so
+        # the build could still believe it was signing properly.
+        run: |
+          if [ -n "${{ secrets.KEYSTORE_JKS }}" ]; then
+            echo "${{ secrets.KEYSTORE_JKS }}" | base64 --decode > keystore.jks
+            if [ -s keystore.jks ]; then
+              echo "storeFile=${{ github.workspace }}/keystore.jks" >> local.properties
+              echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> local.properties
+              echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> local.properties
+              echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> local.properties
+              echo "Keystore decoded, signing configured."
+            else
+              echo "::warning::KEYSTORE_JKS secret decoded to an empty file - skipping signing config, debug build will use Android's default debug key."
+              rm -f keystore.jks
+            fi
+          else
+            echo "::warning::KEYSTORE_JKS secret is not set - skipping signing config, debug build will use Android's default debug key."
+          fi
+      - name: Build
+        # buildAbi restricts TMessagesProj_App/build.gradle's splits.abi to compiling and
+        # packaging only the chosen target(s) (see the comment there) instead of all four
+        # ABIs plus the universal apk every run - this is what actually makes a
+        # dev/testing run fast, not just which outputs get uploaded afterward.
+        run: ./gradlew assembleDebug -PbuildAbi=${{ inputs.target }}
+      - name: Verify APKs are signed
+        run: |
+          for apk in TMessagesProj_App/build/outputs/apk/debug/*.apk; do
+            echo "== $apk =="
+            "$ANDROID_HOME"/build-tools/37.0.0/apksigner verify --verbose "$apk" || (echo "::error::$apk is not validly signed" && exit 1)
+          done
+      # Only upload whichever ABI(s) were actually built for this run. The universal APK
+      # is never built from this workflow at all now (see splits.abi) since it bundles
+      # every ABI into one file and balloons past 180MB.
+      - if: ${{ inputs.target == 'arm64-v8a' || inputs.target == 'all' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: Kurogram-arm64-v8a
+          path: TMessagesProj_App/build/outputs/apk/debug/*-arm64-v8a.apk
+          archive: false
+      - if: ${{ inputs.target == 'armeabi-v7a' || inputs.target == 'all' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: Kurogram-armeabi-v7a
+          path: TMessagesProj_App/build/outputs/apk/debug/*-armeabi-v7a.apk
+          archive: false
