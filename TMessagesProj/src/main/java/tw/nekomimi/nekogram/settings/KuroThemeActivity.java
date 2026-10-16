@@ -3,7 +3,6 @@ package tw.nekomimi.nekogram.settings;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.GradientDrawable;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewOutlineProvider;
@@ -19,6 +18,7 @@ import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Components.LayoutHelper;
 
+import tw.nekomimi.nekogram.stickerstore.KuroBarStyle;
 import tw.nekomimi.nekogram.stickerstore.ProfileTabView;
 import tw.nekomimi.nekogram.stickerstore.StickersTabView;
 
@@ -28,12 +28,9 @@ public class KuroThemeActivity extends BaseFragment {
     private static final int TAB_STICKERS = 1;
     private static final int TAB_PROFILE = 2;
 
-    // iOS-style floating tab bar: a rounded pill inset from the screen edges with a
-    // shadow, rather than an edge-to-edge bar with a hairline divider.
-    private static final int TAB_BAR_HEIGHT_DP = 60;
-    private static final int TAB_BAR_SIDE_MARGIN_DP = 16;
-    private static final int TAB_BAR_BOTTOM_MARGIN_DP = 16;
-    private static final int TAB_BAR_CORNER_RADIUS_DP = 26;
+    // iOS-style floating tab bar: a rounded, translucent pill inset from the screen edges.
+    // The look (fill, border, sizes) lives in KuroBarStyle so every Kuro floating bar
+    // matches, and every tab's content runs underneath it.
 
     private FrameLayout contentFrame;
     private View[] tabContents = new View[3];
@@ -83,27 +80,22 @@ public class KuroThemeActivity extends BaseFragment {
         fragmentView = rootLayout;
         rootLayout.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
 
-        int contentBottomInset = TAB_BAR_HEIGHT_DP + TAB_BAR_BOTTOM_MARGIN_DP + 8;
+        // Content fills the whole screen and runs UNDER the translucent bar - each tab
+        // leaves its own bottom inset (see createTabContent) so its last row can still be
+        // scrolled fully above the bar.
         contentFrame = new FrameLayout(context);
-        rootLayout.addView(contentFrame, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.TOP, 0, 0, 0, contentBottomInset));
+        rootLayout.addView(contentFrame, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
         LinearLayout tabBar = new LinearLayout(context);
         tabBar.setOrientation(LinearLayout.HORIZONTAL);
-
-        GradientDrawable tabBarBackground = new GradientDrawable();
-        tabBarBackground.setShape(GradientDrawable.RECTANGLE);
-        tabBarBackground.setCornerRadius(AndroidUtilities.dp(TAB_BAR_CORNER_RADIUS_DP));
-        tabBarBackground.setColor(Theme.getColor(Theme.key_windowBackgroundWhite));
-        tabBar.setBackground(tabBarBackground);
-
-        // Rounded-corner shadow: clip the view to its own (rounded) background outline and
-        // let elevation draw the shadow around that shape, rather than a square one.
-        tabBar.setElevation(AndroidUtilities.dp(6));
+        tabBar.setBackground(KuroBarStyle.background());
+        // Clip children (ripples/highlights) to the rounded outline; no elevation, since a
+        // drop shadow would show through the translucent fill.
         tabBar.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
         tabBar.setClipToOutline(true);
 
-        rootLayout.addView(tabBar, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, TAB_BAR_HEIGHT_DP, Gravity.BOTTOM,
-                TAB_BAR_SIDE_MARGIN_DP, 0, TAB_BAR_SIDE_MARGIN_DP, TAB_BAR_BOTTOM_MARGIN_DP));
+        rootLayout.addView(tabBar, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, KuroBarStyle.BAR_HEIGHT_DP, Gravity.BOTTOM,
+                KuroBarStyle.SIDE_MARGIN_DP, 0, KuroBarStyle.SIDE_MARGIN_DP, KuroBarStyle.BOTTOM_MARGIN_DP));
 
         addTabButton(context, tabBar, TAB_THEMES, R.drawable.msg_theme, "Themes");
         addTabButton(context, tabBar, TAB_STICKERS, R.drawable.msg_sticker, "Stickers");
@@ -149,10 +141,16 @@ public class KuroThemeActivity extends BaseFragment {
     private View createTabContent(int index) {
         Context context = contentFrame.getContext();
         switch (index) {
-            case TAB_STICKERS:
-                return new StickersTabView(context, this);
-            case TAB_PROFILE:
-                return new ProfileTabView(context, currentAccount);
+            case TAB_STICKERS: {
+                StickersTabView stickersTab = new StickersTabView(context, this);
+                stickersTab.setBottomInset(AndroidUtilities.dp(KuroBarStyle.CONTENT_INSET_DP));
+                return stickersTab;
+            }
+            case TAB_PROFILE: {
+                ProfileTabView profileTab = new ProfileTabView(context, currentAccount);
+                profileTab.setBottomInset(AndroidUtilities.dp(KuroBarStyle.CONTENT_INSET_DP));
+                return profileTab;
+            }
             case TAB_THEMES:
             default:
                 return createComingSoonView(context);

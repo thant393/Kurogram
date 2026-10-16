@@ -13,6 +13,9 @@ import org.telegram.tgnet.TLRPC;
  */
 public class StickerPackInfo {
 
+    /** The backend's own document id (Mongo _id) - used in /{pack_id}/... endpoints. May be
+     *  null if the list response doesn't include one, in which case shortName is used. */
+    public String id;
     public String shortName;
     public String category;
     public double ratingAvg;
@@ -28,6 +31,12 @@ public class StickerPackInfo {
 
     public static StickerPackInfo fromJson(JSONObject obj) {
         StickerPackInfo info = new StickerPackInfo();
+        JSONObject oidObj = obj.optJSONObject("_id");
+        if (oidObj != null && oidObj.has("$oid")) {
+            info.id = oidObj.optString("$oid", null);
+        } else {
+            info.id = firstString(obj, "id", "_id", "pack_id");
+        }
         info.shortName = firstString(obj, "short_name", "shortName", "name");
         info.category = firstString(obj, "category", "category_name");
         info.downloads = firstInt(obj, "download_count", "downloads", "downloads_count");
@@ -52,6 +61,47 @@ public class StickerPackInfo {
             info.totalLikes = info.ratingCount;
         }
         return info;
+    }
+
+    /** What to put in the {pack_id} slot of the backend's endpoints. */
+    public String getApiId() {
+        return id != null && !id.isEmpty() ? id : shortName;
+    }
+
+    /** Average = sum of stars / number of ratings. Applies one user's rating to the local
+     *  numbers the same way the server's upsert does: a first-time rating adds one rating to
+     *  the count; changing an earlier rating (previousStars > 0) keeps the count and only
+     *  swaps that user's old stars for the new ones. */
+    public void applyMyRating(int stars, int previousStars) {
+        double sum = ratingAvg * ratingCount;
+        if (previousStars > 0 && ratingCount > 0) {
+            sum = sum - previousStars + stars;
+        } else {
+            ratingCount += 1;
+            sum += stars;
+        }
+        ratingAvg = ratingCount > 0 ? sum / ratingCount : 0;
+    }
+
+    /** If the server's reply to a rating call carries the recalculated average/count, adopt
+     *  those (they are authoritative). Returns true if it did. */
+    public boolean mergeServerRating(JSONObject response) {
+        if (response == null) {
+            return false;
+        }
+        JSONObject src = response.optJSONObject("pack") != null ? response.optJSONObject("pack") : response;
+        JSONObject r = src.optJSONObject("rating");
+        if (r != null && r.has("avg")) {
+            ratingAvg = r.optDouble("avg", ratingAvg);
+            ratingCount = r.optInt("count", ratingCount);
+            return true;
+        }
+        if (src.has("avg") && src.has("count")) {
+            ratingAvg = src.optDouble("avg", ratingAvg);
+            ratingCount = src.optInt("count", ratingCount);
+            return true;
+        }
+        return false;
     }
 
     /** The real, human-readable pack name from Telegram - null until resolved, never the short_name. */

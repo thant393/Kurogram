@@ -9,6 +9,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,6 +21,7 @@ import org.telegram.ui.Components.RadialProgressView;
 import org.telegram.ui.Components.RecyclerListView;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class StickersTabView extends FrameLayout {
 
@@ -37,27 +39,27 @@ public class StickersTabView extends FrameLayout {
     private boolean loading;
     private int requestGeneration;
 
+    // Paging: the store holds ~1000+ packs but one request returns at most PAGE_SIZE, so
+    // more pages are fetched as the user scrolls near the end of what's loaded.
+    private static final int PAGE_SIZE = 50;
+    private static final int LOAD_MORE_THRESHOLD = 12; // items from the end
+    private static final int HEADER_HEIGHT_DP = 56;
+    private final HashSet<String> seenShortNames = new HashSet<>();
+    private int nextPage = 2;
+    private boolean hasMore;
+    private boolean loadingMore;
+
     public StickersTabView(Context context, BaseFragment fragment) {
         super(context);
         this.fragment = fragment;
         setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
 
-        LinearLayout sortRow = new LinearLayout(context);
-        sortRow.setOrientation(LinearLayout.HORIZONTAL);
-        addView(sortRow, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, 40, Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 8, 0, 0));
-
-        sortPopular = createSortChip(context, "Popular");
-        sortNewest = createSortChip(context, "Newest");
-        sortRow.addView(sortPopular, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT, 0, 0, 6, 0));
-        sortRow.addView(sortNewest, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT));
-
-        sortPopular.setOnClickListener(v -> setSort(StickerStoreApi.SORT_POPULAR));
-        sortNewest.setOnClickListener(v -> setSort(StickerStoreApi.SORT_NEWEST));
-
         layoutManager = new GridLayoutManager(context, 3);
         listView = new RecyclerListView(context);
         listView.setLayoutManager(layoutManager);
-        listView.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(56), AndroidUtilities.dp(8), AndroidUtilities.dp(16));
+        // Top padding = the header's height, so the first row starts right below the header
+        // instead of under it; clipToPadding(false) lets rows scroll up *beneath* it.
+        listView.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(HEADER_HEIGHT_DP), AndroidUtilities.dp(8), AndroidUtilities.dp(16));
         listView.setClipToPadding(false);
         adapter = new Adapter();
         listView.setAdapter(adapter);
@@ -68,6 +70,33 @@ public class StickersTabView extends FrameLayout {
                 openPack(packs.get(position));
             }
         });
+        listView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0 && layoutManager.findLastVisibleItemPosition() >= packs.size() - LOAD_MORE_THRESHOLD) {
+                    loadMore();
+                }
+            }
+        });
+
+        // Sticky header: added AFTER the list so it is drawn on top of it (the list used to
+        // be added after the chips and covered them), with a nearly-opaque background so
+        // the grid visibly scrolls underneath without making the chips hard to read.
+        FrameLayout header = new FrameLayout(context);
+        header.setBackgroundColor(ColorUtils.setAlphaComponent(Theme.getColor(Theme.key_windowBackgroundGray), 0xF2));
+        addView(header, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, HEADER_HEIGHT_DP, Gravity.TOP));
+
+        LinearLayout sortRow = new LinearLayout(context);
+        sortRow.setOrientation(LinearLayout.HORIZONTAL);
+        header.addView(sortRow, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, 40, Gravity.CENTER));
+
+        sortPopular = createSortChip(context, "Popular");
+        sortNewest = createSortChip(context, "Newest");
+        sortRow.addView(sortPopular, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT, 0, 0, 6, 0));
+        sortRow.addView(sortNewest, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT));
+
+        sortPopular.setOnClickListener(v -> setSort(StickerStoreApi.SORT_POPULAR));
+        sortNewest.setOnClickListener(v -> setSort(StickerStoreApi.SORT_NEWEST));
 
         progressView = new RadialProgressView(context);
         addView(progressView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER, 0, 28, 0, 0));
@@ -82,6 +111,12 @@ public class StickersTabView extends FrameLayout {
 
         updateSortChips();
         loadPacks();
+    }
+
+    /** Room to leave at the bottom of the grid so the last row can scroll fully above the
+     *  floating tab bar that sits over this view. */
+    public void setBottomInset(int px) {
+        listView.setPadding(listView.getPaddingLeft(), listView.getPaddingTop(), listView.getPaddingRight(), px);
     }
 
     private TextView createSortChip(Context context, String text) {
@@ -134,18 +169,27 @@ public class StickersTabView extends FrameLayout {
             return;
         }
         loading = true;
+        loadingMore = false;
+        hasMore = false;
         final int generation = ++requestGeneration;
         progressView.setVisibility(VISIBLE);
         infoView.setVisibility(GONE);
         listView.setVisibility(GONE);
-        StickerStoreApi.fetchPacks(null, currentSort, 1, 50, new StickerStoreApi.PacksCallback() {
+        StickerStoreApi.fetchPacks(null, currentSort, 1, PAGE_SIZE, new StickerStoreApi.PacksCallback() {
             @Override
             public void onSuccess(ArrayList<StickerPackInfo> result) {
                 if (generation != requestGeneration) return; // superseded by a newer sort tap
                 loading = false;
                 progressView.setVisibility(GONE);
                 packs.clear();
-                packs.addAll(result);
+                seenShortNames.clear();
+                int added = addNewPacks(result);
+                nextPage = 2;
+                // Keep paging while the server keeps handing us packs we haven't seen. (Not
+                // "page smaller than PAGE_SIZE", since a server may cap a page below what we
+                // asked for - and a server that ignores the page number just returns
+                // duplicates, which stops the loop instead of repeating forever.)
+                hasMore = added > 0;
                 adapter.notifyDataSetChanged();
                 if (packs.isEmpty()) {
                     infoView.setVisibility(VISIBLE);
@@ -164,6 +208,49 @@ public class StickersTabView extends FrameLayout {
                 listView.setVisibility(GONE);
                 infoView.setVisibility(VISIBLE);
                 infoView.setText(message);
+            }
+        });
+    }
+
+    /** Adds packs not already in the list (by short_name); returns how many were new. */
+    private int addNewPacks(ArrayList<StickerPackInfo> incoming) {
+        int added = 0;
+        for (StickerPackInfo info : incoming) {
+            String key = info.shortName != null ? info.shortName : "";
+            if (!key.isEmpty() && !seenShortNames.add(key)) {
+                continue;
+            }
+            packs.add(info);
+            added++;
+        }
+        return added;
+    }
+
+    private void loadMore() {
+        if (loading || loadingMore || !hasMore || !StickerStoreApi.isConfigured()) {
+            return;
+        }
+        loadingMore = true;
+        final int generation = requestGeneration;
+        StickerStoreApi.fetchPacks(null, currentSort, nextPage, PAGE_SIZE, new StickerStoreApi.PacksCallback() {
+            @Override
+            public void onSuccess(ArrayList<StickerPackInfo> result) {
+                if (generation != requestGeneration) return; // sort changed meanwhile
+                loadingMore = false;
+                int before = packs.size();
+                int added = addNewPacks(result);
+                nextPage++;
+                hasMore = added > 0;
+                if (added > 0) {
+                    adapter.notifyItemRangeInserted(before, added);
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                if (generation != requestGeneration) return;
+                // Leave hasMore as is: the next scroll event simply tries this page again.
+                loadingMore = false;
             }
         });
     }

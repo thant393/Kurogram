@@ -67,4 +67,9 @@ public class ProfileTabView extends FrameLayout {
             card.addView(phoneView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL));
         }
     }
+
+    /** Room to leave at the bottom so content never sits under the floating tab bar. */
+    public void setBottomInset(int px) {
+        setPadding(0, 0, 0, px);
+    }
 }

@@ -13,14 +13,22 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class StickerStoreApi {
 
     public interface PacksCallback {
         void onSuccess(ArrayList<StickerPackInfo> packs);
+        void onError(String message);
+    }
+
+    public interface ResultCallback {
+        /** response is the parsed JSON object the server replied with, or null if the reply had no JSON object body. */
+        void onSuccess(JSONObject response);
         void onError(String message);
     }
 
@@ -90,6 +98,98 @@ public class StickerStoreApi {
                     FileLog.e("StickerStoreApi: parse error", e);
                     postError(callback, "Couldn't read the sticker store response");
                 }
+            }
+        });
+    }
+
+    /** Upserts this user's rating for a pack: PUT /api/v1/stickers/{pack_id}/rating. The
+     *  server is expected to store one rating per (user, pack) and recalculate the pack's
+     *  average + count (see Tools/backend-snippets/rating_and_like_endpoints.py). The body
+     *  repeats the user id / star count under a few common field names - FastAPI ignores
+     *  unknown fields, so whichever name the backend's model uses is picked up. */
+    public static void submitRating(String packId, long userId, int stars, ResultCallback callback) {
+        try {
+            JSONObject body = new JSONObject();
+            body.put("user_telegram_id", userId);
+            body.put("telegram_id", userId);
+            body.put("user_id", userId);
+            body.put("rating", stars);
+            body.put("stars", stars);
+            send("PUT", "api/v1/stickers/" + URLEncoder.encode(packId, "UTF-8") + "/rating", body, callback);
+        } catch (Exception e) {
+            postResultError(callback, "Couldn't build the rating request");
+        }
+    }
+
+    /** Like / un-like: POST /api/v1/stickers/{pack_id}/like with {user_telegram_id, liked}. */
+    public static void setLike(String packId, long userId, boolean liked, ResultCallback callback) {
+        try {
+            JSONObject body = new JSONObject();
+            body.put("user_telegram_id", userId);
+            body.put("telegram_id", userId);
+            body.put("liked", liked);
+            send("POST", "api/v1/stickers/" + URLEncoder.encode(packId, "UTF-8") + "/like", body, callback);
+        } catch (Exception e) {
+            postResultError(callback, "Couldn't build the like request");
+        }
+    }
+
+    private static void send(String method, String path, JSONObject body, ResultCallback callback) {
+        if (!isConfigured()) {
+            postResultError(callback, "Sticker store is not configured");
+            return;
+        }
+        String base = getBaseUrl();
+        String url = base.endsWith("/") ? base + path : base + "/" + path;
+        RequestBody requestBody = RequestBody.create(body.toString(), MediaType.get("application/json"));
+        Request.Builder builder = new Request.Builder().url(url);
+        if ("PUT".equals(method)) {
+            builder.put(requestBody);
+        } else {
+            builder.post(requestBody);
+        }
+        getClient().newCall(builder.build()).enqueue(new okhttp3.Callback() {
+            @Override
+            public void onFailure(Call call, java.io.IOException e) {
+                FileLog.e("StickerStoreApi: " + method + " " + path + " network error", e);
+                postResultError(callback, "Couldn't reach the sticker store");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) {
+                try (Response r = response) {
+                    String text = r.body() != null ? r.body().string() : "";
+                    if (!r.isSuccessful()) {
+                        String snippet = text.length() > 160 ? text.substring(0, 160) : text;
+                        postResultError(callback, "Server said " + r.code() + (snippet.isEmpty() ? "" : ": " + snippet));
+                        return;
+                    }
+                    JSONObject parsed = null;
+                    try {
+                        Object root = new JSONTokener(text).nextValue();
+                        if (root instanceof JSONObject) {
+                            parsed = (JSONObject) root;
+                        }
+                    } catch (Exception ignored) {
+                    }
+                    final JSONObject result = parsed;
+                    org.telegram.messenger.AndroidUtilities.runOnUIThread(() -> {
+                        if (callback != null) {
+                            callback.onSuccess(result);
+                        }
+                    });
+                } catch (Exception e) {
+                    FileLog.e("StickerStoreApi: " + method + " " + path + " read error", e);
+                    postResultError(callback, "Couldn't read the server's reply");
+                }
+            }
+        });
+    }
+
+    private static void postResultError(ResultCallback callback, String message) {
+        org.telegram.messenger.AndroidUtilities.runOnUIThread(() -> {
+            if (callback != null) {
+                callback.onError(message);
             }
         });
     }
