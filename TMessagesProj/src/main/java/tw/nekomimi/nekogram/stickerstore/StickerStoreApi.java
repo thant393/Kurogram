@@ -66,9 +66,18 @@ public class StickerStoreApi {
         if (!url.toString().endsWith("/")) {
             url.append("/");
         }
-        url.append("api/v1/stickers?sort=").append(sort == null ? SORT_NEWEST : sort)
-                .append("&page=").append(Math.max(1, page))
-                .append("&limit=").append(limit <= 0 ? 20 : Math.min(limit, 50));
+        int pageSize = limit <= 0 ? 20 : Math.min(limit, 50);
+        int safePage = Math.max(1, page);
+        String sortValue = sort == null ? SORT_NEWEST : sort;
+        // The backend (GET /api/v1/stickers/) reads sort_by + skip + limit. The older
+        // sort/page names are sent too and are simply ignored by a server that doesn't use
+        // them - without sort_by/skip the sort chips did nothing and every "page" came back
+        // identical (always the first rows).
+        url.append("api/v1/stickers/?sort_by=").append(sortValue)
+                .append("&skip=").append((safePage - 1) * pageSize)
+                .append("&limit=").append(pageSize)
+                .append("&sort=").append(sortValue)
+                .append("&page=").append(safePage);
         if (category != null && !category.isEmpty()) {
             try {
                 url.append("&category=").append(URLEncoder.encode(category, "UTF-8"));
@@ -102,33 +111,40 @@ public class StickerStoreApi {
         });
     }
 
-    /** Upserts this user's rating for a pack: PUT /api/v1/stickers/{pack_id}/rating. The
-     *  server is expected to store one rating per (user, pack) and recalculate the pack's
-     *  average + count (see Tools/backend-snippets/rating_and_like_endpoints.py). The body
-     *  repeats the user id / star count under a few common field names - FastAPI ignores
-     *  unknown fields, so whichever name the backend's model uses is picked up. */
-    public static void submitRating(String packId, long userId, int stars, ResultCallback callback) {
+    /** Upserts this user's rating: PUT /api/v1/stickers/{pack_id}/rating?account_id=<id>
+     *  with {"rating": 1..5}. The server keeps one rating per (account, pack), recalculates
+     *  the pack's average + count and replies with {"rating": {"avg", "count"}, ...}. */
+    public static void submitRating(String packId, long accountId, int stars, ResultCallback callback) {
         try {
             JSONObject body = new JSONObject();
-            body.put("user_telegram_id", userId);
-            body.put("telegram_id", userId);
-            body.put("user_id", userId);
             body.put("rating", stars);
-            body.put("stars", stars);
-            send("PUT", "api/v1/stickers/" + URLEncoder.encode(packId, "UTF-8") + "/rating", body, callback);
+            send("PUT", "api/v1/stickers/" + URLEncoder.encode(packId, "UTF-8") + "/rating?account_id=" + accountId, body, callback);
         } catch (Exception e) {
             postResultError(callback, "Couldn't build the rating request");
         }
     }
 
-    /** Like / un-like: POST /api/v1/stickers/{pack_id}/like with {user_telegram_id, liked}. */
-    public static void setLike(String packId, long userId, boolean liked, ResultCallback callback) {
+    /** Like: POST /api/v1/stickers/{pack_id}/like?account_id=<id>; un-like: DELETE on the
+     *  same URL. "Already liked" / "have not liked" (HTTP 400) just mean the server is
+     *  already in the state we asked for, so they count as success. */
+    public static void setLike(String packId, long accountId, boolean liked, ResultCallback callback) {
         try {
-            JSONObject body = new JSONObject();
-            body.put("user_telegram_id", userId);
-            body.put("telegram_id", userId);
-            body.put("liked", liked);
-            send("POST", "api/v1/stickers/" + URLEncoder.encode(packId, "UTF-8") + "/like", body, callback);
+            String path = "api/v1/stickers/" + URLEncoder.encode(packId, "UTF-8") + "/like?account_id=" + accountId;
+            send(liked ? "POST" : "DELETE", path, null, new ResultCallback() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    if (callback != null) callback.onSuccess(response);
+                }
+
+                @Override
+                public void onError(String message) {
+                    if (message != null && (message.contains("Already liked") || message.contains("not liked"))) {
+                        if (callback != null) callback.onSuccess(null);
+                    } else if (callback != null) {
+                        callback.onError(message);
+                    }
+                }
+            });
         } catch (Exception e) {
             postResultError(callback, "Couldn't build the like request");
         }
@@ -141,10 +157,12 @@ public class StickerStoreApi {
         }
         String base = getBaseUrl();
         String url = base.endsWith("/") ? base + path : base + "/" + path;
-        RequestBody requestBody = RequestBody.create(body.toString(), MediaType.get("application/json"));
+        RequestBody requestBody = RequestBody.create(body != null ? body.toString() : "", MediaType.get("application/json"));
         Request.Builder builder = new Request.Builder().url(url);
         if ("PUT".equals(method)) {
             builder.put(requestBody);
+        } else if ("DELETE".equals(method)) {
+            builder.delete();
         } else {
             builder.post(requestBody);
         }

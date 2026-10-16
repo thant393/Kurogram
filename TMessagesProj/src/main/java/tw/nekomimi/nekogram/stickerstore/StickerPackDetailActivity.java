@@ -467,6 +467,11 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
             @Override
             public void onSuccess(JSONObject response) {
                 submittingLike = false;
+                // The server replies with the pack's real total_likes - prefer that.
+                if (response != null && response.has("total_likes") && fragmentView != null) {
+                    pack.totalLikes = response.optInt("total_likes", pack.totalLikes);
+                    applyPackHeader();
+                }
             }
 
             @Override
