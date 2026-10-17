@@ -277,20 +277,19 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
 
     private View buildBottomBar(Context context) {
         FrameLayout bar = new FrameLayout(context);
-        bar.setBackground(KuroBarStyle.background());
-        bar.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
-        bar.setClipToOutline(true);
+        // No shared background: in the normal state the star, the main button and the heart are
+        // three separate solid floating shapes, centred as a group with gaps between them.
 
-        // --- normal state: rating star (left), main button (center), like heart (right) ---
+        // --- normal state: rating circle (left), pill (center), like circle (right) ---
         normalBar = new LinearLayout(context);
         normalBar.setOrientation(LinearLayout.HORIZONTAL);
-        normalBar.setGravity(Gravity.CENTER_VERTICAL);
-        normalBar.setPadding(AndroidUtilities.dp(8), 0, AndroidUtilities.dp(8), 0);
+        normalBar.setGravity(Gravity.CENTER);
         bar.addView(normalBar, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
         starButton = createBarIcon(context, "☆", 26);
+        starButton.setBackground(circleBackground());
         starButton.setOnClickListener(v -> setRatingMode(true));
-        normalBar.addView(starButton, LayoutHelper.createLinear(48, 48));
+        normalBar.addView(starButton, LayoutHelper.createLinear(52, 52));
 
         actionButton = new TextView(context);
         actionButton.setGravity(Gravity.CENTER);
@@ -299,17 +298,22 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
         actionButton.setText("Loading…");
         actionButton.setEnabled(false);
         styleActionButton(false, false);
-        normalBar.addView(actionButton, LayoutHelper.createLinear(0, 44, 1f, 6, 0, 6, 0));
+        actionButton.setMinWidth(AndroidUtilities.dp(170));
+        actionButton.setPadding(AndroidUtilities.dp(24), 0, AndroidUtilities.dp(24), 0);
+        normalBar.addView(actionButton, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 52, 12, 0, 12, 0));
 
         likeButton = createBarIcon(context, "♡", 26);
+        likeButton.setBackground(circleBackground());
         likeButton.setOnClickListener(v -> toggleLike());
-        normalBar.addView(likeButton, LayoutHelper.createLinear(48, 48));
+        normalBar.addView(likeButton, LayoutHelper.createLinear(52, 52));
 
         // --- rating state: cancel (x), five tappable stars, confirm (check) ---
         ratingBar = new LinearLayout(context);
         ratingBar.setOrientation(LinearLayout.HORIZONTAL);
         ratingBar.setGravity(Gravity.CENTER_VERTICAL);
         ratingBar.setPadding(AndroidUtilities.dp(8), 0, AndroidUtilities.dp(8), 0);
+        // The star picker is its own single pill (the three-piece group is swapped out for it).
+        ratingBar.setBackground(KuroBarStyle.background());
         ratingBar.setVisibility(View.GONE);
         ratingBar.setAlpha(0f);
         bar.addView(ratingBar, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
@@ -340,6 +344,26 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
         ratingBar.addView(confirmRatingButton, LayoutHelper.createLinear(48, 48));
 
         return bar;
+    }
+
+    /** Solid circle for the standalone star / heart buttons. */
+    private android.graphics.drawable.Drawable circleBackground() {
+        android.graphics.drawable.GradientDrawable d = new android.graphics.drawable.GradientDrawable();
+        d.setShape(android.graphics.drawable.GradientDrawable.OVAL);
+        d.setColor(Theme.getColor(Theme.key_windowBackgroundWhite));
+        d.setStroke(Math.max(1, AndroidUtilities.dp(0.5f)), androidx.core.graphics.ColorUtils.setAlphaComponent(Theme.getColor(Theme.key_divider), 0x90));
+        return d;
+    }
+
+    /** Instagram-style pop: squeeze, overshoot, settle. */
+    private void bounceLikeButton() {
+        likeButton.animate().cancel();
+        likeButton.setScaleX(1f);
+        likeButton.setScaleY(1f);
+        likeButton.animate().scaleX(0.7f).scaleY(0.7f).setDuration(90).withEndAction(() ->
+                likeButton.animate().scaleX(1.3f).scaleY(1.3f).setDuration(140)
+                        .setInterpolator(new android.view.animation.OvershootInterpolator(2f)).withEndAction(() ->
+                                likeButton.animate().scaleX(1f).scaleY(1f).setDuration(110).start()).start()).start();
     }
 
     private TextView createBarIcon(Context context, String glyph, int sizeSp) {
@@ -463,6 +487,9 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
         pack.totalLikes = Math.max(0, pack.totalLikes + (liked ? 1 : -1));
         applyPackHeader();
         refreshLikeButton();
+        if (liked) {
+            bounceLikeButton();
+        }
 
         submittingLike = true;
         StickerStoreApi.setLike(pack.getApiId(), myTelegramId(), liked, new StickerStoreApi.ResultCallback() {
