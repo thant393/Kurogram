@@ -186,10 +186,9 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
         starsRow = new LinearLayout(context);
         starsRow.setOrientation(LinearLayout.HORIZONTAL);
         for (int i = 0; i < 5; i++) {
-            TextView star = new TextView(context);
-            star.setTextSize(18);
-            star.setText("★");
-            starsRow.addView(star, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, 0, 0, 2, 0));
+            ImageView star = new ImageView(context);
+            star.setImageResource(R.drawable.kuro_star_filled);
+            starsRow.addView(star, LayoutHelper.createLinear(20, 20, 0, 0, 2, 0));
         }
         ratingRow.addView(starsRow, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, 0, 0, 8, 0));
 
@@ -560,8 +559,9 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
     private void setStars(double avg) {
         int filled = (int) Math.round(avg);
         for (int i = 0; i < starsRow.getChildCount(); i++) {
-            TextView star = (TextView) starsRow.getChildAt(i);
-            star.setTextColor(i < filled
+            ImageView star = (ImageView) starsRow.getChildAt(i);
+            star.setImageResource(i < filled ? R.drawable.kuro_star_filled : R.drawable.kuro_star_outline);
+            star.setColorFilter(i < filled
                     ? Theme.getColor(Theme.key_featuredStickers_addButton)
                     : Theme.getColor(Theme.key_windowBackgroundWhiteGrayText3));
         }
