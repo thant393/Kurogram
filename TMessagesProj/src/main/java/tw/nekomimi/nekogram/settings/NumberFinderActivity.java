@@ -183,7 +183,7 @@ public class NumberFinderActivity extends BaseFragment {
         phoneRow.addView(codeInput, LayoutHelper.createLinear(44, LayoutHelper.WRAP_CONTENT));
 
         View divider = new View(context);
-        divider.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhiteGrayLine));
+        divider.setBackgroundColor(Theme.getColor(Theme.key_divider));
         phoneRow.addView(divider, LayoutHelper.createLinear(1, 24, Gravity.CENTER_VERTICAL, 4, 0, 8, 0));
 
         // Local number only - the code lives in the box on its left.
