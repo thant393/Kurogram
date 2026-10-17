@@ -13,11 +13,10 @@ backend database, on a schedule, with no manual work after the one-time setup be
 - Telegram's API has **no category field** for sticker packs, so every pack this
   scanner adds gets `category: "Custom"` - same as you described (fill in a category if
   one exists, otherwise default to Custom; there's simply never one available here).
-- `owner_telegram_id` holds the pack creator's real numeric Telegram id (as a digit
-  string). Telegram has no "owner" field on a sticker set, but a set's id is built from
-  the creator's user id in its high 32 bits, which is what the scanner reads. Records
-  still carrying the old `"telegram_official"` text are corrected automatically on the
-  next run (needs `MONGODB_URI`).
+- `owner_telegram_id` is `429000`, the real Telegram id of the official **@Stickers** bot
+  (the account Telegram publishes its public packs through). Records still carrying the
+  old `"telegram_official"` text are corrected automatically on the next run (needs
+  `MONGODB_URI`).
 
 ## One-time setup
 

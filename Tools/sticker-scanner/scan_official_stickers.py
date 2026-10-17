@@ -22,9 +22,10 @@ What it does each run:
      category "Custom" (Telegram's API has no per-pack category/genre field at all,
      so there is nothing real to auto-detect here - every auto-added pack lands in
      "Custom" until/unless a smarter categorizer is built later) and
-     owner_telegram_id set to the pack's REAL Telegram id (see owner_id_from_set_id).
+     owner_telegram_id set to 429000, the id of Telegram's own @Stickers bot (the account
+     Telegram publishes its public packs through).
   5. Migration: any existing record whose owner_telegram_id is still the old placeholder
-     "telegram_official" is resolved through Telegram and corrected (MONGODB_URI mode).
+     "telegram_official" is updated to 429000 (MONGODB_URI mode).
 
 Environment variables (see .github/workflows/sticker-scan.yml for how these are
 supplied in CI, or export them yourself to run this locally):
@@ -51,6 +52,9 @@ from telethon.tl.functions.messages import (
 from telethon.tl.types import InputStickerSetShortName
 
 LEGACY_OWNER_MARKER = "telegram_official"  # old placeholder; the migration replaces it
+# Telegram's own sticker bot, @Stickers (ID 429000) - the account Telegram publishes its
+# public/featured packs through, so it is the owner of every pack this scanner adds.
+OFFICIAL_OWNER_ID = os.environ.get("OFFICIAL_OWNER_ID", "429000").strip() or "429000"
 DEFAULT_CATEGORY = "Custom"
 OLD_FEATURED_PAGE_SIZE = 50
 OLD_FEATURED_MAX_PAGES = 200  # safety cap - stop even if Telegram keeps paginating
@@ -101,26 +105,10 @@ def is_wanted_set(stickerset):
     return True
 
 
-def owner_id_from_set_id(set_id):
-    """Telegram gives a sticker set no 'owner' field, but the set's 64-bit id is built as
-    (creator user id << 32 | random), so the high 32 bits are the creator's numeric
-    Telegram id. Returns it as a digit string (the backend's owner_telegram_id is a
-    string field), or None if it can't be read (zero / missing)."""
-    try:
-        owner = (int(set_id) >> 32) & 0xFFFFFFFF
-    except (TypeError, ValueError):
-        return None
-    return str(owner) if owner > 0 else None
-
-
-# short_name -> sticker set id, filled while listing featured sets (no extra requests).
-set_ids = {}
-
-
 def fetch_featured_short_names(client):
     """Returns a dict of {short_name: title} for every sticker set Telegram publicly
     features in its app, from both the live featured list and the older featured
-    backlog (paginated). Also records each set's id in `set_ids`."""
+    backlog (paginated)."""
     found = {}
 
     current = client(GetFeaturedStickersRequest(hash=0))
@@ -128,7 +116,6 @@ def fetch_featured_short_names(client):
         stickerset = covered.set
         if is_wanted_set(stickerset):
             found[stickerset.short_name] = stickerset.title
-            set_ids[stickerset.short_name] = stickerset.id
 
     offset = 0
     for _ in range(OLD_FEATURED_MAX_PAGES):
@@ -141,8 +128,7 @@ def fetch_featured_short_names(client):
             stickerset = covered.set
             if is_wanted_set(stickerset):
                 found[stickerset.short_name] = stickerset.title
-                set_ids[stickerset.short_name] = stickerset.id
-        offset += len(sets)
+            offset += len(sets)
         if len(sets) < OLD_FEATURED_PAGE_SIZE:
             break  # reached the end of the backlog
 
@@ -216,7 +202,7 @@ def fetch_existing_short_names(base_url, api_key):
     return existing
 
 
-def add_pack(base_url, api_key, short_name, created_at, owner_id):
+def add_pack(base_url, api_key, short_name, created_at):
     headers = {"Authorization": f"Bearer {api_key}"} if api_key else {}
     # Full document shape, matching the existing stickers_packs documents (the backend's
     # create endpoint didn't fill these defaults in by itself - a pack created with only
@@ -224,7 +210,7 @@ def add_pack(base_url, api_key, short_name, created_at, owner_id):
     payload = {
         "short_name": short_name,
         "category": DEFAULT_CATEGORY,
-        "owner_telegram_id": owner_id or "0",
+        "owner_telegram_id": OFFICIAL_OWNER_ID,
         "download_count": 0,
         "total_likes": 0,
         "rating": {"avg": 0, "count": 0},
@@ -237,7 +223,7 @@ def add_pack(base_url, api_key, short_name, created_at, owner_id):
     return resp
 
 
-def build_pack_document(short_name, created_at, owner_id):
+def build_pack_document(short_name, created_at):
     """The exact stickers_packs document shape. published_at is a real datetime (stored as
     an ISODate), which the HTTP API can't do - it stores whatever string it's sent."""
     return {
@@ -246,7 +232,7 @@ def build_pack_document(short_name, created_at, owner_id):
         "download_count": 0,
         "total_likes": 0,
         "rating": {"avg": 0.0, "count": 0},
-        "owner_telegram_id": owner_id or "0",
+        "owner_telegram_id": OFFICIAL_OWNER_ID,
         "status": "published",
         "is_active": True,
         "report_count": 0,
@@ -254,35 +240,15 @@ def build_pack_document(short_name, created_at, owner_id):
     }
 
 
-def migrate_legacy_owners(client, collection):
-    """Finds records whose owner_telegram_id is the old placeholder (or any non-numeric
-    text), resolves each pack through Telegram to get its real set id, and writes the real
-    owner id back. Packs Telegram can't resolve are left untouched and reported."""
+def migrate_legacy_owners(collection):
+    """Existing records whose owner_telegram_id is still the old placeholder
+    "telegram_official" (or any other non-numeric text) are set to @Stickers' real id."""
     query = {"$or": [
         {"owner_telegram_id": LEGACY_OWNER_MARKER},
         {"owner_telegram_id": {"$type": "string", "$not": {"$regex": "^[0-9]+$"}}},
     ]}
-    legacy = list(collection.find(query, {"short_name": 1}))
-    print(f"Migration: {len(legacy)} record(s) still have a non-numeric owner_telegram_id.")
-    fixed = unresolved = 0
-    for doc in legacy:
-        short_name = doc.get("short_name")
-        set_id = set_ids.get(short_name)
-        if set_id is None and short_name:
-            time.sleep(REQUEST_DELAY_SECONDS)
-            try:
-                result = client(GetStickerSetRequest(stickerset=InputStickerSetShortName(short_name), hash=0))
-                set_id = result.set.id
-            except Exception as e:
-                print(f"  could not resolve {short_name}: {type(e).__name__}")
-        owner = owner_id_from_set_id(set_id)
-        if owner is None:
-            unresolved += 1
-            continue
-        collection.update_one({"_id": doc["_id"]}, {"$set": {"owner_telegram_id": owner}})
-        fixed += 1
-        print(f"  fixed: {short_name} -> {owner}")
-    print(f"Migration done. Fixed {fixed}, unresolved {unresolved}.")
+    result = collection.update_many(query, {"$set": {"owner_telegram_id": OFFICIAL_OWNER_ID}})
+    print(f"Migration: set owner_telegram_id={OFFICIAL_OWNER_ID} on {result.modified_count} record(s).")
 
 
 def open_mongo_collection(uri, db_name):
@@ -338,7 +304,7 @@ def main():
         print(f"{len(new_short_names)} new pack(s) to add.")
 
         if collection is not None:
-            migrate_legacy_owners(client, collection)
+            migrate_legacy_owners(collection)
 
         # Only look up creation dates for packs we're actually adding (one request each).
         for short_name in new_short_names:
@@ -351,14 +317,14 @@ def main():
     for short_name in new_short_names:
         if collection is not None:
             try:
-                collection.insert_one(build_pack_document(short_name, created_dates.get(short_name), owner_id_from_set_id(set_ids.get(short_name))))
+                collection.insert_one(build_pack_document(short_name, created_dates.get(short_name)))
                 added += 1
                 print(f"  added: {short_name}")
             except Exception as e:
                 failed += 1
                 print(f"  FAILED: {short_name} - {type(e).__name__}: {str(e)[:200]}")
             continue
-        resp = add_pack(base_url, api_key, short_name, created_dates.get(short_name), owner_id_from_set_id(set_ids.get(short_name)))
+        resp = add_pack(base_url, api_key, short_name, created_dates.get(short_name))
         if resp.ok:
             added += 1
             print(f"  added: {short_name}")
