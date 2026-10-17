@@ -2,6 +2,7 @@ package tw.nekomimi.nekogram.settings;
 
 import android.content.Context;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.text.TextUtils;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -50,6 +52,7 @@ public class NumberFinderActivity extends BaseFragment {
 
     private OutlineTextContainerView phoneOutlineView;
     private EditText phoneInput;
+    private EditText codeInput;
     private OutlineTextContainerView countryOutlineView;
     private TextView countryTextView;
     private final ArrayList<CountrySelectActivity.Country> countriesArray = new ArrayList<>();
@@ -112,19 +115,17 @@ public class NumberFinderActivity extends BaseFragment {
         countryTextView.setSingleLine(true);
         countryTextView.setEllipsize(TextUtils.TruncateAt.END);
         countryTextView.setText("Choose a country");
-        countryRow.addView(countryTextView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_VERTICAL | Gravity.LEFT, 0, 0, 28, 0));
-        TextView arrow = new TextView(context);
-        arrow.setText("\u25BE");
-        arrow.setTextSize(18);
-        arrow.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGrayText3));
-        countryRow.addView(arrow, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_VERTICAL | Gravity.RIGHT));
+        countryRow.addView(countryTextView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_VERTICAL | Gravity.LEFT, 0, 0, 32, 0));
+        ImageView arrow = new ImageView(context);
+        arrow.setImageResource(R.drawable.msg_inputarrow);
+        arrow.setColorFilter(Theme.getColor(Theme.key_windowBackgroundWhiteHintText));
+        countryRow.addView(arrow, LayoutHelper.createFrame(24, 24, Gravity.CENTER_VERTICAL | Gravity.RIGHT));
         countryOutlineView.addView(countryRow, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_VERTICAL, 16, 8, 16, 8));
         countryOutlineView.setOnClickListener(v -> {
             CountrySelectActivity fragment = new CountrySelectActivity(true, countriesArray);
             fragment.setCountrySelectActivityDelegate(country -> {
                 selectCountry(country);
                 phoneInput.requestFocus();
-                phoneInput.setSelection(phoneInput.length());
                 AndroidUtilities.showKeyboard(phoneInput);
             });
             presentFragment(fragment);
@@ -146,25 +147,17 @@ public class NumberFinderActivity extends BaseFragment {
         plus.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
         phoneRow.addView(plus, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT));
 
-        phoneInput = new EditText(context);
-        phoneInput.setInputType(InputType.TYPE_CLASS_PHONE);
-        phoneInput.setHint("Code and number");
-        phoneInput.setHintTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGrayText3));
-        phoneInput.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
-        phoneInput.setTextSize(16);
-        phoneInput.setSingleLine(true);
-        phoneInput.setBackground(null);
-        phoneInput.setPadding(AndroidUtilities.dp(4), 0, 0, 0);
-        phoneInput.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
-        phoneInput.setOnFocusChangeListener((v, hasFocus) -> phoneOutlineView.animateSelection(hasFocus));
-        phoneInput.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                doSearch();
-                return true;
-            }
-            return false;
-        });
-        phoneInput.addTextChangedListener(new TextWatcher() {
+        // Country code (typing here re-detects the country above, like Telegram's login).
+        codeInput = new EditText(context);
+        codeInput.setInputType(InputType.TYPE_CLASS_PHONE);
+        codeInput.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
+        codeInput.setTextSize(16);
+        codeInput.setSingleLine(true);
+        codeInput.setBackground(null);
+        codeInput.setPadding(AndroidUtilities.dp(2), 0, AndroidUtilities.dp(2), 0);
+        codeInput.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
+        codeInput.setOnFocusChangeListener((v, hasFocus) -> phoneOutlineView.animateSelection(hasFocus));
+        codeInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
@@ -178,15 +171,39 @@ public class NumberFinderActivity extends BaseFragment {
                 if (ignoreChange) {
                     return;
                 }
-                String raw = s.toString();
-                String digits = raw.replaceAll("[^0-9]", "");
-                if (!digits.equals(raw)) {
+                String digits = s.toString().replaceAll("[^0-9]", "");
+                if (!digits.equals(s.toString())) {
                     ignoreChange = true;
                     s.replace(0, s.length(), digits);
                     ignoreChange = false;
                 }
                 detectCountry(digits);
             }
+        });
+        phoneRow.addView(codeInput, LayoutHelper.createLinear(44, LayoutHelper.WRAP_CONTENT));
+
+        View divider = new View(context);
+        divider.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhiteGrayLine));
+        phoneRow.addView(divider, LayoutHelper.createLinear(1, 24, Gravity.CENTER_VERTICAL, 4, 0, 8, 0));
+
+        // Local number only - the code lives in the box on its left.
+        phoneInput = new EditText(context);
+        phoneInput.setInputType(InputType.TYPE_CLASS_PHONE);
+        phoneInput.setHint("Phone number");
+        phoneInput.setHintTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGrayText3));
+        phoneInput.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
+        phoneInput.setTextSize(16);
+        phoneInput.setSingleLine(true);
+        phoneInput.setBackground(null);
+        phoneInput.setPadding(0, 0, 0, 0);
+        phoneInput.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
+        phoneInput.setOnFocusChangeListener((v, hasFocus) -> phoneOutlineView.animateSelection(hasFocus));
+        phoneInput.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                doSearch();
+                return true;
+            }
+            return false;
         });
         phoneOutlineView.attachEditText(phoneInput);
         phoneRow.addView(phoneInput, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 1f));
@@ -300,41 +317,36 @@ public class NumberFinderActivity extends BaseFragment {
 
     private void setCountryLabel(CountrySelectActivity.Country c) {
         currentCountry = c;
-        countryTextView.setText(c != null ? c.name : "Choose a country");
+        if (c == null) {
+            countryTextView.setText("Choose a country");
+            return;
+        }
+        String flag = LocaleController.getLanguageFlag(c.shortname);
+        countryTextView.setText(TextUtils.isEmpty(flag) ? c.name : flag + "  " + c.name);
     }
 
-    /** Typing a code (+95, +1, +44 ...) picks the matching country; the longest code wins. */
-    private void detectCountry(String digits) {
+    /** Typing a code (95, 1, 44 ...) picks the matching country. */
+    private void detectCountry(String code) {
+        List<CountrySelectActivity.Country> list = code.isEmpty() ? null : codesMap.get(code);
         CountrySelectActivity.Country match = null;
-        for (int len = Math.min(4, digits.length()); len >= 1 && match == null; len--) {
-            List<CountrySelectActivity.Country> list = codesMap.get(digits.substring(0, len));
-            if (list != null && !list.isEmpty()) {
-                // keep the current country when it shares this code (e.g. +1 US/Canada)
-                match = list.contains(currentCountry) ? currentCountry : list.get(0);
-            }
+        if (list != null && !list.isEmpty()) {
+            // keep the current country when it shares this code (e.g. +1 US/Canada)
+            match = list.contains(currentCountry) ? currentCountry : list.get(0);
         }
         setCountryLabel(match);
     }
 
-    /** Picking a country swaps the code at the start of the number for the country's own. */
     private void selectCountry(CountrySelectActivity.Country country) {
-        String digits = phoneInput.getText().toString().replaceAll("[^0-9]", "");
-        String rest = digits;
-        if (currentCountry != null && digits.startsWith(currentCountry.code)) {
-            rest = digits.substring(currentCountry.code.length());
-        } else if (currentCountry != null) {
-            rest = digits;
-        }
         ignoreChange = true;
-        phoneInput.setText(country.code + rest);
+        codeInput.setText(country.code);
         ignoreChange = false;
-        phoneInput.setSelection(phoneInput.length());
         setCountryLabel(country);
     }
 
     private void doSearch() {
         // "+" + country code + number, digits only.
-        String normalized = phoneInput.getText().toString().replaceAll("[^0-9]", "");
+        String local = phoneInput.getText().toString().replaceAll("[^0-9]", "");
+        String normalized = TextUtils.isEmpty(local) ? "" : codeInput.getText().toString().replaceAll("[^0-9]", "") + local;
         AndroidUtilities.hideKeyboard(phoneInput);
 
         resultContainer.setVisibility(View.GONE);
