@@ -106,7 +106,7 @@ public class StickerPackGridCell extends FrameLayout {
         categoryView.setText(pack.category != null ? pack.category : "");
         categoryView.setVisibility(pack.category != null && !pack.category.isEmpty() ? View.VISIBLE : View.GONE);
 
-        likesView.setText(pack.totalLikes > 0 ? formatCount(pack.totalLikes) + " ♥" : "");
+        likesView.setText(pack.totalLikes > 0 ? CountFormat.format(pack.totalLikes) + " ♥" : "");
         ratingView.setText(pack.ratingAvg > 0
                 ? String.format(LocaleController.getInstance().getCurrentLocale(), "★ %.1f", pack.ratingAvg)
                 : "");
@@ -153,12 +153,5 @@ public class StickerPackGridCell extends FrameLayout {
         } else {
             iconView.setImageDrawable(null);
         }
-    }
-
-    private static String formatCount(int count) {
-        if (count >= 1000) {
-            return String.format(LocaleController.getInstance().getCurrentLocale(), "%.1fK", count / 1000f);
-        }
-        return String.valueOf(count);
     }
 }

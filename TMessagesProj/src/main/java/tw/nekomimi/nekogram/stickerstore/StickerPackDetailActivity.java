@@ -30,6 +30,9 @@ import org.telegram.messenger.R;
 import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.UserObject;
 import org.telegram.tgnet.ConnectionsManager;
+import org.telegram.tgnet.Vector;
+import org.telegram.ui.Components.AvatarDrawable;
+import java.util.ArrayList;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.BaseFragment;
@@ -64,6 +67,8 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
     private LinearLayout starsRow;
     private TextView ratingNumberView;
     private TextView ownerView;
+    private BackupImageView ownerAvatar;
+    private boolean ownerRequested;
     private TextView ratingsCountView;
     private TextView likesCountView;
     private TextView downloadsCountView;
@@ -199,6 +204,13 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
         ratingRow.addView(ratingNumberView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT));
 
         ownerView = createStatRow(context, statsCard, "Owner");
+        // Small round avatar just left of the owner's name, in the same row.
+        ownerAvatar = new BackupImageView(context);
+        ownerAvatar.setRoundRadius(AndroidUtilities.dp(11));
+        ownerAvatar.setVisibility(View.GONE);
+        LinearLayout ownerRow = (LinearLayout) ownerView.getParent();
+        ownerRow.setGravity(Gravity.CENTER_VERTICAL);
+        ownerRow.addView(ownerAvatar, ownerRow.indexOfChild(ownerView), LayoutHelper.createLinear(22, 22, Gravity.CENTER_VERTICAL, 0, 0, 8, 0));
         ratingsCountView = createStatRow(context, statsCard, "Ratings");
         likesCountView = createStatRow(context, statsCard, "Likes");
         downloadsCountView = createStatRow(context, statsCard, "Downloads");
@@ -550,10 +562,10 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
                 ? String.format(LocaleController.getInstance().getCurrentLocale(), "%.1f", pack.ratingAvg)
                 : "—");
 
-        ownerView.setText(resolveOwnerLabel());
-        ratingsCountView.setText(String.valueOf(pack.ratingCount));
-        likesCountView.setText(String.valueOf(pack.totalLikes));
-        downloadsCountView.setText(String.valueOf(pack.downloads));
+        bindOwner();
+        ratingsCountView.setText(CountFormat.format(pack.ratingCount));
+        likesCountView.setText(CountFormat.format(pack.totalLikes));
+        downloadsCountView.setText(CountFormat.format(pack.downloads));
     }
 
     private void setStars(double avg) {
@@ -567,24 +579,60 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
         }
     }
 
-    /** Only resolves from locally cached users - the backend only gives us a numeric
-     *  Telegram id (owner_telegram_id), and fetching an arbitrary user by id needs an
-     *  access_hash we don't have unless Telegram has already told us about that user. */
-    private String resolveOwnerLabel() {
-        if (pack.ownerTelegramId == 0) {
-            return "Unknown";
+    /** Shows the owner (a user account or a bot) as avatar + display name. The user is taken
+     *  from the local cache when known; otherwise it is fetched by id from Telegram once, and
+     *  until that arrives the row shows a neutral label (never a bare "Unknown" for a real id). */
+    private void bindOwner() {
+        long id = pack.ownerTelegramId;
+        if (id == 0) {
+            ownerAvatar.setVisibility(View.GONE);
+            ownerView.setText("Unknown");
+            return;
         }
-        TLRPC.User owner = MessagesController.getInstance(currentAccount).getUser(pack.ownerTelegramId);
-        if (owner != null) {
-            if (owner.username != null && !owner.username.isEmpty()) {
-                return "@" + owner.username;
-            }
-            String name = UserObject.getUserName(owner);
-            if (name != null && !name.isEmpty()) {
-                return name;
-            }
+        TLRPC.User owner = MessagesController.getInstance(currentAccount).getUser(id);
+        if (owner == null) {
+            ownerAvatar.setVisibility(View.GONE);
+            ownerView.setText("ID " + id);
+            requestOwner(id);
+            return;
         }
-        return "Unknown";
+        String name = UserObject.getUserName(owner);
+        if (name == null || name.isEmpty()) {
+            name = owner.username != null && !owner.username.isEmpty() ? "@" + owner.username : "ID " + id;
+        }
+        ownerView.setText(name);
+        AvatarDrawable avatarDrawable = new AvatarDrawable(owner);
+        ownerAvatar.setForUserOrChat(owner, avatarDrawable);
+        ownerAvatar.setVisibility(View.VISIBLE);
+    }
+
+    private void requestOwner(long id) {
+        if (ownerRequested) {
+            return;
+        }
+        ownerRequested = true;
+        TLRPC.TL_users_getUsers req = new TLRPC.TL_users_getUsers();
+        TLRPC.TL_inputUser inputUser = new TLRPC.TL_inputUser();
+        inputUser.user_id = id;
+        req.id.add(inputUser);
+        ConnectionsManager.getInstance(currentAccount).sendRequest(req, (res, err) -> {
+            if (res instanceof Vector) {
+                ArrayList<TLRPC.User> users = new ArrayList<>();
+                for (Object o : ((Vector) res).objects) {
+                    if (o instanceof TLRPC.User) {
+                        users.add((TLRPC.User) o);
+                    }
+                }
+                if (!users.isEmpty()) {
+                    MessagesController.getInstance(currentAccount).putUsers(users, false);
+                    AndroidUtilities.runOnUIThread(() -> {
+                        if (fragmentView != null) {
+                            bindOwner();
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private void loadStickerSet() {
