@@ -64,6 +64,9 @@ public class StickersTabView extends FrameLayout {
         // instead of under it; clipToPadding(false) lets rows scroll up *beneath* it.
         listView.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(HEADER_HEIGHT_DP), AndroidUtilities.dp(8), AndroidUtilities.dp(16));
         listView.setClipToPadding(false);
+        // No list-level press selector: it is a square highlight over the whole cell slot that
+        // bleeds past the rounded card; each card draws its own ripple instead.
+        listView.setSelectorDrawableColor(0);
         adapter = new Adapter();
         listView.setAdapter(adapter);
         addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));

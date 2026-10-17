@@ -1,6 +1,8 @@
 package tw.nekomimi.nekogram.stickerstore;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.drawable.RippleDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.view.Gravity;
 import android.view.View;
@@ -32,7 +34,17 @@ public class StickerPackGridCell extends FrameLayout {
 
     public StickerPackGridCell(Context context) {
         super(context);
-        setBackground(GroupCardHelper.cardBackground(context, GroupCardHelper.POS_SINGLE));
+        // Clean press feedback: a native ripple masked to the card's own rounded shape (the
+        // list's square full-cell selector is turned off in StickersTabView), so nothing tints
+        // or flashes outside the card.
+        GradientDrawable mask = new GradientDrawable();
+        mask.setShape(GradientDrawable.RECTANGLE);
+        mask.setCornerRadius(AndroidUtilities.dp(16));
+        mask.setColor(0xFFFFFFFF);
+        setBackground(new RippleDrawable(
+                ColorStateList.valueOf(Theme.getColor(Theme.key_listSelector)),
+                GroupCardHelper.cardBackground(context, GroupCardHelper.POS_SINGLE),
+                mask));
         setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(8), AndroidUtilities.dp(8), AndroidUtilities.dp(8));
 
         LinearLayout column = new LinearLayout(context);
