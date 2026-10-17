@@ -3541,6 +3541,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 statusDrawable.center = true;
                 actionBar.setTitle(TypefaceHelper.getTitleText(), statusDrawable);
                 updateStatus(UserConfig.getInstance(currentAccount).getCurrentUser(), false);
+                updateMainTitleAlignment(false);
             }
             if (folderId == 0) {
                 actionBar.setSupportsHolidayImage(true);
@@ -12821,6 +12822,15 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         return true;
     }
 
+    /** The main chat list's own app title: left, next to the stories avatars, while the
+     *  stories avatars are showing; centered across the whole bar when there are none. */
+    private void updateMainTitleAlignment(boolean animated) {
+        if (actionBar == null || onlySelect || folderId != 0 || communityId != 0) {
+            return;
+        }
+        actionBar.setTitleCentered(!dialogStoriesCellVisible, animated);
+    }
+
     public void updateStoriesVisibility(boolean animated) {
         if (dialogStoriesCell == null || storiesVisibilityAnimator != null || rightSlidingDialogContainer != null && rightSlidingDialogContainer.hasFragment() || searchIsShowed || actionBar == null || actionBar.isActionModeShowed() || onlySelect) {
             return;
@@ -12843,6 +12853,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
 
         boolean oldStoriesCellVisibility = dialogStoriesCellVisible;
         dialogStoriesCellVisible = onlySelfStories || newVisibility;
+        updateMainTitleAlignment(animated);
 
         if (newVisibility || dialogStoriesCellVisible) {
             dialogStoriesCell.updateItems(animated, dialogStoriesCellVisible != oldStoriesCellVisibility);

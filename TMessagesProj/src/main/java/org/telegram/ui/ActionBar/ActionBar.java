@@ -543,6 +543,36 @@ public class ActionBar extends FrameLayout implements FactorAnimator.Target, The
         }
     }
 
+    // 0 = title sits at its normal (left) position, 1 = centered across the whole bar.
+    private float titleCenterProgress;
+    private android.animation.ValueAnimator titleCenterAnimator;
+
+    /** Slides the title between its normal left position and the horizontal middle of the
+     *  bar (never under the menu items on the right). Screens that don't call this are
+     *  unaffected. */
+    public void setTitleCentered(boolean centered, boolean animated) {
+        final float target = centered ? 1f : 0f;
+        if (titleCenterAnimator != null) {
+            titleCenterAnimator.cancel();
+            titleCenterAnimator = null;
+        }
+        if (!animated || target == titleCenterProgress) {
+            if (target != titleCenterProgress) {
+                titleCenterProgress = target;
+                requestLayout();
+            }
+            return;
+        }
+        titleCenterAnimator = android.animation.ValueAnimator.ofFloat(titleCenterProgress, target);
+        titleCenterAnimator.addUpdateListener(animation -> {
+            titleCenterProgress = (float) animation.getAnimatedValue();
+            requestLayout();
+        });
+        titleCenterAnimator.setDuration(220);
+        titleCenterAnimator.setInterpolator(org.telegram.ui.Components.CubicBezierInterpolator.DEFAULT);
+        titleCenterAnimator.start();
+    }
+
     private boolean isCenterTitle;
 
     public void centerTitle() {
@@ -1544,7 +1574,18 @@ public class ActionBar extends FrameLayout implements FactorAnimator.Target, The
                         textTop = (getCurrentActionBarHeight() - titleTextView[i].getTextHeight()) / 2;
                     }
                 }
-                titleTextView[i].layout(textLeft, additionalTop + textTop - titleTextView[i].getPaddingTop(), textLeft + titleTextView[i].getMeasuredWidth(), additionalTop + textTop + titleTextView[i].getTextHeight() - titleTextView[i].getPaddingTop() + titleTextView[i].getPaddingBottom());
+                int titleLeft = textLeft;
+                if (titleCenterProgress > 0f) {
+                    int titleWidth = titleTextView[i].getMeasuredWidth();
+                    int centeredLeft = (getMeasuredWidth() - titleWidth) / 2;
+                    if (menu != null && menu.getVisibility() != GONE) {
+                        // keep the centered title clear of the menu icons on the right
+                        centeredLeft = Math.min(centeredLeft, getMeasuredWidth() - menu.getMeasuredWidth() - titleWidth - dp(8));
+                    }
+                    centeredLeft = Math.max(centeredLeft, textLeft);
+                    titleLeft = textLeft + Math.round((centeredLeft - textLeft) * titleCenterProgress);
+                }
+                titleTextView[i].layout(titleLeft, additionalTop + textTop - titleTextView[i].getPaddingTop(), titleLeft + titleTextView[i].getMeasuredWidth(), additionalTop + textTop + titleTextView[i].getTextHeight() - titleTextView[i].getPaddingTop() + titleTextView[i].getPaddingBottom());
             }
         }
         if (additionalSubTitleOverlayContainer != null) {
