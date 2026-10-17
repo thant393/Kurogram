@@ -9,7 +9,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,6 +43,7 @@ public class StickersTabView extends FrameLayout {
     private static final int PAGE_SIZE = 50;
     private static final int LOAD_MORE_THRESHOLD = 12; // items from the end
     private static final int HEADER_HEIGHT_DP = 56;
+    private static final int HEADER_FADE_DP = 16; // extra height below the chips that the background fades out over
     private final HashSet<String> seenShortNames = new HashSet<>();
     private int nextPage = 2;
     private boolean hasMore;
@@ -79,16 +79,17 @@ public class StickersTabView extends FrameLayout {
             }
         });
 
-        // Sticky header: added AFTER the list so it is drawn on top of it (the list used to
-        // be added after the chips and covered them), with a nearly-opaque background so
-        // the grid visibly scrolls underneath without making the chips hard to read.
+        // Sticky header: added AFTER the list so it is drawn on top of it. Its background is a
+        // translucent fade (strongest behind the chips, gone at the bottom edge) rather than
+        // a flat strip, so it blends into the page and the grid scrolls "into" it softly.
+        // The chips themselves stay solid.
         FrameLayout header = new FrameLayout(context);
-        header.setBackgroundColor(ColorUtils.setAlphaComponent(Theme.getColor(Theme.key_windowBackgroundGray), 0xF2));
-        addView(header, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, HEADER_HEIGHT_DP, Gravity.TOP));
+        header.setBackground(KuroBarStyle.headerFade());
+        addView(header, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, HEADER_HEIGHT_DP + HEADER_FADE_DP, Gravity.TOP));
 
         LinearLayout sortRow = new LinearLayout(context);
         sortRow.setOrientation(LinearLayout.HORIZONTAL);
-        header.addView(sortRow, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, 40, Gravity.CENTER));
+        header.addView(sortRow, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, 40, Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 8, 0, 0));
 
         sortPopular = createSortChip(context, "Popular");
         sortNewest = createSortChip(context, "Newest");

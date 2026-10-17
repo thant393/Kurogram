@@ -86,6 +86,11 @@ public class KuroThemeActivity extends BaseFragment {
         contentFrame = new FrameLayout(context);
         rootLayout.addView(contentFrame, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
+        // Full-width translucent layer behind the bar (fades out at its top); the bar itself
+        // is a solid pill drawn above it.
+        rootLayout.addView(KuroBarStyle.createBottomScrim(context),
+                LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, KuroBarStyle.SCRIM_HEIGHT_DP, Gravity.BOTTOM));
+
         LinearLayout tabBar = new LinearLayout(context);
         tabBar.setOrientation(LinearLayout.HORIZONTAL);
         tabBar.setBackground(KuroBarStyle.background());
