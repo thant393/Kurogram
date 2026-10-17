@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -76,11 +77,11 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
     // for a 5-star picker bar ([x] stars [check]) while the user is rating.
     private LinearLayout normalBar;
     private LinearLayout ratingBar;
-    private TextView starButton;
-    private TextView likeButton;
-    private TextView cancelRatingButton;
-    private TextView confirmRatingButton;
-    private final TextView[] pickStars = new TextView[5];
+    private ImageView starButton;
+    private ImageView likeButton;
+    private ImageView cancelRatingButton;
+    private ImageView confirmRatingButton;
+    private final ImageView[] pickStars = new ImageView[5];
     private boolean ratingMode;
     private int pendingStars;
     private boolean submittingRating;
@@ -286,7 +287,7 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
         normalBar.setGravity(Gravity.CENTER);
         bar.addView(normalBar, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
-        starButton = createBarIcon(context, "☆", 26);
+        starButton = createBarIcon(context, R.drawable.kuro_star_outline, 24);
         starButton.setBackground(circleBackground());
         starButton.setOnClickListener(v -> setRatingMode(true));
         normalBar.addView(starButton, LayoutHelper.createLinear(52, 52));
@@ -302,7 +303,7 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
         actionButton.setPadding(AndroidUtilities.dp(24), 0, AndroidUtilities.dp(24), 0);
         normalBar.addView(actionButton, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 52, 12, 0, 12, 0));
 
-        likeButton = createBarIcon(context, "♡", 26);
+        likeButton = createBarIcon(context, R.drawable.kuro_heart_outline, 24);
         likeButton.setBackground(circleBackground());
         likeButton.setOnClickListener(v -> toggleLike());
         normalBar.addView(likeButton, LayoutHelper.createLinear(52, 52));
@@ -318,8 +319,8 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
         ratingBar.setAlpha(0f);
         bar.addView(ratingBar, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
-        cancelRatingButton = createBarIcon(context, "✕", 22);
-        cancelRatingButton.setTextColor(Theme.getColor(Theme.key_text_RedBold));
+        cancelRatingButton = createBarIcon(context, R.drawable.kuro_close, 22);
+        cancelRatingButton.setColorFilter(Theme.getColor(Theme.key_text_RedBold));
         cancelRatingButton.setOnClickListener(v -> setRatingMode(false));
         ratingBar.addView(cancelRatingButton, LayoutHelper.createLinear(48, 48));
 
@@ -329,7 +330,7 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
         ratingBar.addView(starsHolder, LayoutHelper.createLinear(0, LayoutHelper.MATCH_PARENT, 1f));
         for (int i = 0; i < 5; i++) {
             final int value = i + 1;
-            TextView star = createBarIcon(context, "☆", 30);
+            ImageView star = createBarIcon(context, R.drawable.kuro_star_outline, 28);
             star.setOnClickListener(v -> {
                 pendingStars = value;
                 refreshPickStars();
@@ -338,8 +339,8 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
             starsHolder.addView(star, LayoutHelper.createLinear(44, 48));
         }
 
-        confirmRatingButton = createBarIcon(context, "✓", 26);
-        confirmRatingButton.setTextColor(Theme.getColor(Theme.key_featuredStickers_addButton));
+        confirmRatingButton = createBarIcon(context, R.drawable.kuro_check, 24);
+        confirmRatingButton.setColorFilter(Theme.getColor(Theme.key_featuredStickers_addButton));
         confirmRatingButton.setOnClickListener(v -> confirmRating());
         ratingBar.addView(confirmRatingButton, LayoutHelper.createLinear(48, 48));
 
@@ -366,12 +367,14 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
                                 likeButton.animate().scaleX(1f).scaleY(1f).setDuration(110).start()).start()).start();
     }
 
-    private TextView createBarIcon(Context context, String glyph, int sizeSp) {
-        TextView icon = new TextView(context);
-        icon.setText(glyph);
-        icon.setTextSize(sizeSp);
-        icon.setGravity(Gravity.CENTER);
-        icon.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGrayText));
+    private ImageView createBarIcon(Context context, int drawableRes, int sizeDp) {
+        ImageView icon = new ImageView(context);
+        icon.setImageResource(drawableRes);
+        icon.setScaleType(ImageView.ScaleType.CENTER);
+        int pad = Math.max(0, (48 - sizeDp) / 2);
+        icon.setPadding(AndroidUtilities.dp(pad), AndroidUtilities.dp(pad), AndroidUtilities.dp(pad), AndroidUtilities.dp(pad));
+        icon.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        icon.setColorFilter(Theme.getColor(Theme.key_windowBackgroundWhiteGrayText));
         icon.setBackground(Theme.createSelectorDrawable(Theme.getColor(Theme.key_listSelector), Theme.RIPPLE_MASK_CIRCLE_20DP));
         return icon;
     }
@@ -406,8 +409,8 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
     private void refreshPickStars() {
         for (int i = 0; i < pickStars.length; i++) {
             boolean on = i < pendingStars;
-            pickStars[i].setText(on ? "★" : "☆");
-            pickStars[i].setTextColor(on
+            pickStars[i].setImageResource(on ? R.drawable.kuro_star_filled : R.drawable.kuro_star_outline);
+            pickStars[i].setColorFilter(on
                     ? Theme.getColor(Theme.key_featuredStickers_addButton)
                     : Theme.getColor(Theme.key_windowBackgroundWhiteGrayText));
         }
@@ -416,16 +419,16 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
 
     private void refreshStarButton() {
         boolean rated = StickerUserState.getMyRating(pack.shortName) > 0;
-        starButton.setText(rated ? "★" : "☆");
-        starButton.setTextColor(rated
+        starButton.setImageResource(rated ? R.drawable.kuro_star_filled : R.drawable.kuro_star_outline);
+        starButton.setColorFilter(rated
                 ? Theme.getColor(Theme.key_featuredStickers_addButton)
                 : Theme.getColor(Theme.key_windowBackgroundWhiteGrayText));
     }
 
     private void refreshLikeButton() {
         boolean liked = StickerUserState.isLiked(pack.shortName);
-        likeButton.setText(liked ? "♥" : "♡");
-        likeButton.setTextColor(liked
+        likeButton.setImageResource(liked ? R.drawable.kuro_heart_filled : R.drawable.kuro_heart_outline);
+        likeButton.setColorFilter(liked
                 ? Theme.getColor(Theme.key_text_RedBold)
                 : Theme.getColor(Theme.key_windowBackgroundWhiteGrayText));
     }
