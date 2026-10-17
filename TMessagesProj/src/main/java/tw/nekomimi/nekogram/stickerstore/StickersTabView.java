@@ -34,6 +34,9 @@ public class StickersTabView extends FrameLayout {
     private final TextView sortNewest;
 
     private final ArrayList<StickerPackInfo> packs = new ArrayList<>();
+    /** What the grid actually shows: packs filtered by the header search query. */
+    private final ArrayList<StickerPackInfo> shown = new ArrayList<>();
+    private String searchQuery = "";
     private String currentSort = StickerStoreApi.SORT_NEWEST;
     private boolean loading;
     private int requestGeneration;
@@ -66,14 +69,14 @@ public class StickersTabView extends FrameLayout {
         addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
         listView.setOnItemClickListener((view, position) -> {
-            if (position >= 0 && position < packs.size()) {
-                openPack(packs.get(position));
+            if (position >= 0 && position < shown.size()) {
+                openPack(shown.get(position));
             }
         });
         listView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0 && layoutManager.findLastVisibleItemPosition() >= packs.size() - LOAD_MORE_THRESHOLD) {
+                if (dy > 0 && layoutManager.findLastVisibleItemPosition() >= shown.size() - LOAD_MORE_THRESHOLD) {
                     loadMore();
                 }
             }
@@ -191,14 +194,8 @@ public class StickersTabView extends FrameLayout {
                 // asked for - and a server that ignores the page number just returns
                 // duplicates, which stops the loop instead of repeating forever.)
                 hasMore = added > 0;
-                adapter.notifyDataSetChanged();
-                if (packs.isEmpty()) {
-                    infoView.setVisibility(VISIBLE);
-                    infoView.setText("No sticker packs yet.");
-                    listView.setVisibility(GONE);
-                } else {
-                    listView.setVisibility(VISIBLE);
-                }
+                applyFilter();
+                continueLoadingForSearch();
             }
 
             @Override
@@ -238,13 +235,13 @@ public class StickersTabView extends FrameLayout {
             public void onSuccess(ArrayList<StickerPackInfo> result) {
                 if (generation != requestGeneration) return; // sort changed meanwhile
                 loadingMore = false;
-                int before = packs.size();
                 int added = addNewPacks(result);
                 nextPage++;
                 hasMore = added > 0;
                 if (added > 0) {
-                    adapter.notifyItemRangeInserted(before, added);
+                    applyFilter();
                 }
+                continueLoadingForSearch();
             }
 
             @Override
@@ -254,6 +251,63 @@ public class StickersTabView extends FrameLayout {
                 loadingMore = false;
             }
         });
+    }
+
+    /** Called from the header search field on every keystroke. Matches the pack's display name
+     *  (once Telegram has resolved it) and its short name, case-insensitively. */
+    public void setSearchQuery(String query) {
+        String q = query == null ? "" : query.trim().toLowerCase();
+        if (q.equals(searchQuery)) {
+            return;
+        }
+        searchQuery = q;
+        applyFilter();
+        continueLoadingForSearch();
+    }
+
+    private boolean matches(StickerPackInfo pack) {
+        if (searchQuery.isEmpty()) {
+            return true;
+        }
+        if (pack.shortName != null && pack.shortName.toLowerCase().contains(searchQuery)) {
+            return true;
+        }
+        String title = pack.getDisplayTitle();
+        if (title == null) {
+            org.telegram.tgnet.TLRPC.TL_messages_stickerSet cached = StickerSetResolver.getCached(pack.shortName);
+            if (cached != null && cached.set != null) {
+                title = cached.set.title;
+            }
+        }
+        return title != null && title.toLowerCase().contains(searchQuery);
+    }
+
+    private void applyFilter() {
+        shown.clear();
+        for (StickerPackInfo pack : packs) {
+            if (matches(pack)) {
+                shown.add(pack);
+            }
+        }
+        adapter.notifyDataSetChanged();
+        if (loading) {
+            return;
+        }
+        if (shown.isEmpty()) {
+            listView.setVisibility(GONE);
+            infoView.setVisibility(VISIBLE);
+            infoView.setText(searchQuery.isEmpty() ? "No sticker packs yet." : "No sticker packs match your search.");
+        } else {
+            infoView.setVisibility(GONE);
+            listView.setVisibility(VISIBLE);
+        }
+    }
+
+    /** While searching, keep pulling pages so matches beyond the first page can show up. */
+    private void continueLoadingForSearch() {
+        if (!searchQuery.isEmpty() && hasMore && !loading && !loadingMore) {
+            loadMore();
+        }
     }
 
     private void openPack(StickerPackInfo pack) {
@@ -268,7 +322,7 @@ public class StickersTabView extends FrameLayout {
     private class Adapter extends RecyclerListView.SelectionAdapter {
         @Override
         public int getItemCount() {
-            return packs.size();
+            return shown.size();
         }
 
         @Override
@@ -287,7 +341,7 @@ public class StickersTabView extends FrameLayout {
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            ((StickerPackGridCell) holder.itemView).setPack(packs.get(position), fragment.getCurrentAccount());
+            ((StickerPackGridCell) holder.itemView).setPack(shown.get(position), fragment.getCurrentAccount());
             ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
             lp.leftMargin = AndroidUtilities.dp(4);
             lp.rightMargin = AndroidUtilities.dp(4);

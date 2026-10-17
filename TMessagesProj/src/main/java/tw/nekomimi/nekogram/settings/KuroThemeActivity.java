@@ -14,6 +14,9 @@ import android.widget.TextView;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.R;
 import org.telegram.ui.ActionBar.ActionBar;
+import org.telegram.ui.ActionBar.ActionBarMenu;
+import org.telegram.ui.ActionBar.ActionBarMenuItem;
+import android.widget.EditText;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Components.LayoutHelper;
@@ -36,6 +39,9 @@ public class KuroThemeActivity extends BaseFragment {
     private View[] tabContents = new View[3];
     private TabButton[] tabButtons = new TabButton[3];
     private int selectedTab = TAB_THEMES;
+    private ActionBarMenuItem searchItem;
+    // One query per searchable tab, so each list keeps its own filter.
+    private final String[] tabQueries = {"", "", ""};
 
     private static class TabButton extends LinearLayout {
         ImageView icon;
@@ -75,6 +81,22 @@ public class KuroThemeActivity extends BaseFragment {
                 }
             }
         });
+
+        ActionBarMenu menu = actionBar.createMenu();
+        searchItem = menu.addItem(0, R.drawable.outline_header_search).setIsSearchField(true).setActionBarMenuItemSearchListener(new ActionBarMenuItem.ActionBarMenuItemSearchListener() {
+            @Override
+            public void onSearchCollapse() {
+                tabQueries[selectedTab] = "";
+                applySearch(selectedTab);
+            }
+
+            @Override
+            public void onTextChanged(EditText editText) {
+                tabQueries[selectedTab] = editText.getText().toString();
+                applySearch(selectedTab);
+            }
+        });
+        searchItem.setSearchFieldHint("Search");
 
         FrameLayout rootLayout = new FrameLayout(context);
         fragmentView = rootLayout;
@@ -120,7 +142,23 @@ public class KuroThemeActivity extends BaseFragment {
         tabButtons[index] = button;
     }
 
+    /** Pushes the tab's query into its list. The Themes tab has no list yet, so there is
+     *  nothing to filter there. */
+    private void applySearch(int tab) {
+        if (tab == TAB_STICKERS && tabContents[TAB_STICKERS] instanceof StickersTabView) {
+            ((StickersTabView) tabContents[TAB_STICKERS]).setSearchQuery(tabQueries[TAB_STICKERS]);
+        }
+    }
+
     private void selectTab(int index) {
+        // Leaving a tab closes the search field and clears that tab's filter.
+        if (searchItem != null && selectedTab != index && searchItem.isSearchFieldVisible()) {
+            actionBar.closeSearchField();
+        }
+        if (searchItem != null) {
+            // The Profile tab has nothing to search, so the search action is hidden there.
+            searchItem.setVisibility(index == TAB_PROFILE ? View.GONE : View.VISIBLE);
+        }
         if (selectedTab != index || tabContents[index] == null) {
             selectedTab = index;
             showTabContent(index);
