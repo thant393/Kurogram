@@ -33,4 +33,13 @@ public class StickerUserState {
     public static void setLiked(String shortName, boolean liked) {
         prefs().edit().putBoolean("liked_" + shortName, liked).apply();
     }
+
+    /** Fingerprint of the profile last reported to the backend (see OwnerProfileSync). */
+    public static String getSyncedProfile(long userId) {
+        return prefs().getString("synced_profile_" + userId, "");
+    }
+
+    public static void setSyncedProfile(long userId, String fingerprint) {
+        prefs().edit().putString("synced_profile_" + userId, fingerprint).apply();
+    }
 }

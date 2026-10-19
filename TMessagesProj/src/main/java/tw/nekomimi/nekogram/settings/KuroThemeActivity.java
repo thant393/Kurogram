@@ -130,6 +130,9 @@ public class KuroThemeActivity extends BaseFragment {
 
         selectTab(TAB_THEMES);
 
+        // Keep the backend's copy of this user's profile current (only sends on change).
+        tw.nekomimi.nekogram.stickerstore.OwnerProfileSync.sync(currentAccount);
+
         return fragmentView;
     }
 

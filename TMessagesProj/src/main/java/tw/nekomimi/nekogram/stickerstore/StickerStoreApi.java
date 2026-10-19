@@ -150,6 +150,22 @@ public class StickerStoreApi {
         }
     }
 
+    /** Tells the backend this user's own Telegram profile, so the packs they own show their real
+     *  name / username / avatar even when Telegram's API can't look the account up by id.
+     *  PUT /api/v1/stickers/owners/{telegram_id}. Null fields clear the stored value. */
+    public static void syncOwnerProfile(long telegramId, String displayName, String username, String avatarUrl, String avatarFileId, ResultCallback callback) {
+        try {
+            JSONObject body = new JSONObject();
+            body.put("display_name", displayName == null ? JSONObject.NULL : displayName);
+            body.put("username", username == null ? JSONObject.NULL : username);
+            body.put("avatar_url", avatarUrl == null ? JSONObject.NULL : avatarUrl);
+            body.put("avatar_file_id", avatarFileId == null ? JSONObject.NULL : avatarFileId);
+            send("PUT", "api/v1/stickers/owners/" + telegramId, body, callback);
+        } catch (Exception e) {
+            postResultError(callback, "Couldn't build the profile request");
+        }
+    }
+
     private static void send(String method, String path, JSONObject body, ResultCallback callback) {
         if (!isConfigured()) {
             postResultError(callback, "Sticker store is not configured");
