@@ -34,6 +34,7 @@ public class MyStickersView extends FrameLayout {
     private final TextView infoView;
     private final ArrayList<StickerPackInfo> packs = new ArrayList<>();      // uploaded to the store
     private final ArrayList<StickerPackInfo> display = new ArrayList<>();    // custom (not uploaded yet) + packs
+    private HashSet<String> mySets;
     private final HashSet<StickerPackInfo> custom = new HashSet<>();
     private final HashSet<String> seen = new HashSet<>();
     private final RecyclerListView.SelectionAdapter adapter;
@@ -136,6 +137,34 @@ public class MyStickersView extends FrameLayout {
         progressView.setVisibility(VISIBLE);
         infoView.setVisibility(GONE);
         loadNextPage();
+        loadMine();
+    }
+
+    /** Asks Telegram which sets this account created, so ones not yet in the store can be offered. */
+    private void loadMine() {
+        final int account = fragment.getCurrentAccount();
+        if (!String.valueOf(org.telegram.messenger.UserConfig.getInstance(account).getClientUserId()).equals(ownerId)) {
+            return;
+        }
+        final int gen = generation;
+        OwnerCheck.fetchMine(account, new OwnerCheck.Callback() {
+            @Override
+            public void onResult(HashSet<String> shortNames, HashSet<Long> setIds) {
+                if (gen != generation) return;
+                mySets = shortNames;
+                rebuildDisplay();
+                adapter.notifyDataSetChanged();
+                if (!display.isEmpty()) {
+                    progressView.setVisibility(GONE);
+                    infoView.setVisibility(GONE);
+                    listView.setVisibility(VISIBLE);
+                }
+            }
+
+            @Override
+            public void onError() {
+            }
+        });
     }
 
     private void loadNextPage() {
@@ -189,9 +218,8 @@ public class MyStickersView extends FrameLayout {
         });
     }
 
-    /** Sticker packs this user created on Telegram (Telegram builds a set's id from its creator's
-     *  user id, which is how ownership is told apart from sets they merely installed) that are
-     *  not in the store yet, followed by the packs already uploaded. */
+    /** Packs Telegram lists as created by this user that are not in the store yet, followed by
+     *  the packs already uploaded. */
     private void rebuildDisplay() {
         display.clear();
         custom.clear();
@@ -202,21 +230,28 @@ public class MyStickersView extends FrameLayout {
             display.addAll(packs);
             return;
         }
-        org.telegram.messenger.MediaDataController mdc = org.telegram.messenger.MediaDataController.getInstance(account);
-        for (org.telegram.tgnet.TLRPC.TL_messages_stickerSet installed : mdc.getStickerSets(org.telegram.messenger.MediaDataController.TYPE_IMAGE)) {
-            if (installed == null || installed.set == null || installed.set.short_name == null) {
-                continue;
+        // mySets: short names Telegram says this account created (null until it has answered).
+        if (mySets != null) {
+            for (String name : mySets) {
+                if (seen.contains(name) || seenLower(name)) {
+                    continue;
+                }
+                StickerPackInfo info = new StickerPackInfo();
+                info.shortName = name;
+                custom.add(info);
+                display.add(info);
             }
-            if (!Boolean.TRUE.equals(OwnerCheck.isCreatedBy(installed.set, me)) || seen.contains(installed.set.short_name)) {
-                continue;
-            }
-            StickerPackInfo info = new StickerPackInfo();
-            info.shortName = installed.set.short_name;
-            info.resolvedSet = installed;
-            custom.add(info);
-            display.add(info);
         }
         display.addAll(packs);
+    }
+
+    private boolean seenLower(String lower) {
+        for (String s : seen) {
+            if (s.equalsIgnoreCase(lower)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void showInfo(String text) {

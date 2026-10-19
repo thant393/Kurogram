@@ -208,29 +208,26 @@ public class UploadHubActivity extends BaseFragment {
             @Override
             public void onResolved(TLRPC.TL_messages_stickerSet stickerSet) {
                 if (fragmentView == null) return;
-                // Only packs this account created: Telegram builds a set's id from its
-                // creator's user id, so another account's pack is turned down here.
-                if (Boolean.FALSE.equals(OwnerCheck.isCreatedBy(stickerSet.set, me.id))) {
-                    setBusy(false);
-                    setStatus("This pack was created by another account. You can only upload packs you created.", true);
-                    return;
-                }
-                setStatus("Uploading…", false);
-                StickerStoreApi.submitPack(shortName, me.id, me.name, me.username, me.avatarUrl, me.avatarFileId, new StickerStoreApi.ResultCallback() {
+                setStatus("Verifying you created this pack…", false);
+                // Telegram itself lists the sets this account created (works for every 64-bit
+                // user id); if it can't be confirmed the upload is refused.
+                OwnerCheck.fetchMine(currentAccount, new OwnerCheck.Callback() {
                     @Override
-                    public void onSuccess(JSONObject response) {
+                    public void onResult(java.util.HashSet<String> names, java.util.HashSet<Long> ids) {
                         if (fragmentView == null) return;
-                        setBusy(false);
-                        ProfileTabView.notifyPackUploaded();
-                        Toast.makeText(getParentActivity(), "Uploaded to the store", Toast.LENGTH_SHORT).show();
-                        finishFragment();
+                        if (!OwnerCheck.contains(stickerSet.set, names, ids)) {
+                            setBusy(false);
+                            setStatus("This pack wasn't created by your account. You can only upload packs you created.", true);
+                            return;
+                        }
+                        startSubmit(shortName, me);
                     }
 
                     @Override
-                    public void onError(String message) {
+                    public void onError() {
                         if (fragmentView == null) return;
                         setBusy(false);
-                        setStatus(message != null && message.contains("409") ? "This pack is already in the store." : message, true);
+                        setStatus("Couldn't verify pack ownership with Telegram. Try again.", true);
                     }
                 });
             }
@@ -240,6 +237,27 @@ public class UploadHubActivity extends BaseFragment {
                 if (fragmentView == null) return;
                 setBusy(false);
                 setStatus("Telegram couldn't find that sticker pack.", true);
+            }
+        });
+    }
+
+    private void startSubmit(final String shortName, final OwnerProfileSync.Profile me) {
+        setStatus("Uploading…", false);
+        StickerStoreApi.submitPack(shortName, me.id, me.name, me.username, me.avatarUrl, me.avatarFileId, new StickerStoreApi.ResultCallback() {
+            @Override
+            public void onSuccess(JSONObject response) {
+                if (fragmentView == null) return;
+                setBusy(false);
+                ProfileTabView.notifyPackUploaded();
+                Toast.makeText(getParentActivity(), "Uploaded to the store", Toast.LENGTH_SHORT).show();
+                finishFragment();
+            }
+
+            @Override
+            public void onError(String message) {
+                if (fragmentView == null) return;
+                setBusy(false);
+                setStatus(message != null && message.contains("409") ? "This pack is already in the store." : message, true);
             }
         });
     }

@@ -612,11 +612,14 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
         }
         TLRPC.User owner = MessagesController.getInstance(currentAccount).getUser(id);
         if (owner == null) {
-            ownerAvatar.setVisibility(View.GONE);
-            // The backend's own owner info shows right away; Telegram's replaces it with the
-            // live user (and avatar) once fetched.
+            // The backend's owner info (when the record has any) shows right away with an
+            // initials avatar; the live Telegram user replaces it once resolved from the id.
             String fallback = pack.ownerDisplayName != null && !pack.ownerDisplayName.isEmpty() ? pack.ownerDisplayName
                     : pack.ownerUsername != null && !pack.ownerUsername.isEmpty() ? "@" + pack.ownerUsername : "ID " + id;
+            AvatarDrawable placeholder = new AvatarDrawable();
+            placeholder.setInfo(id, fallback, null);
+            ownerAvatar.setImageDrawable(placeholder);
+            ownerAvatar.setVisibility(View.VISIBLE);
             ownerView.setText(fallback);
             requestOwner(id);
             return;
@@ -636,26 +639,52 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
             return;
         }
         ownerRequested = true;
+        final java.util.ArrayList<TLRPC.User> found = new java.util.ArrayList<>();
+        // 1) By id (long). Telegram only answers this when it already knows the user.
         TLRPC.TL_users_getUsers req = new TLRPC.TL_users_getUsers();
         TLRPC.TL_inputUser inputUser = new TLRPC.TL_inputUser();
         inputUser.user_id = id;
         req.id.add(inputUser);
         ConnectionsManager.getInstance(currentAccount).sendRequest(req, (res, err) -> {
             if (res instanceof Vector) {
-                ArrayList<TLRPC.User> users = new ArrayList<>();
                 for (Object o : ((Vector) res).objects) {
-                    if (o instanceof TLRPC.User) {
-                        users.add((TLRPC.User) o);
+                    if (o instanceof TLRPC.User && ((TLRPC.User) o).id == id && !(o instanceof TLRPC.TL_userEmpty)) {
+                        found.add((TLRPC.User) o);
+                    }
+                }
+            }
+            if (!found.isEmpty()) {
+                applyResolvedOwner(found);
+            } else if (pack.ownerUsername != null && !pack.ownerUsername.isEmpty()) {
+                resolveOwnerByUsername(id);
+            }
+        });
+    }
+
+    /** 2) By public username, which Telegram resolves for any account; the id must match. */
+    private void resolveOwnerByUsername(long id) {
+        TLRPC.TL_contacts_resolveUsername req = new TLRPC.TL_contacts_resolveUsername();
+        req.username = pack.ownerUsername;
+        ConnectionsManager.getInstance(currentAccount).sendRequest(req, (res, err) -> {
+            if (res instanceof TLRPC.TL_contacts_resolvedPeer) {
+                java.util.ArrayList<TLRPC.User> users = new java.util.ArrayList<>();
+                for (TLRPC.User u : ((TLRPC.TL_contacts_resolvedPeer) res).users) {
+                    if (u != null && u.id == id) {
+                        users.add(u);
                     }
                 }
                 if (!users.isEmpty()) {
-                    MessagesController.getInstance(currentAccount).putUsers(users, false);
-                    AndroidUtilities.runOnUIThread(() -> {
-                        if (fragmentView != null) {
-                            bindOwner();
-                        }
-                    });
+                    applyResolvedOwner(users);
                 }
+            }
+        });
+    }
+
+    private void applyResolvedOwner(java.util.ArrayList<TLRPC.User> users) {
+        MessagesController.getInstance(currentAccount).putUsers(users, false);
+        AndroidUtilities.runOnUIThread(() -> {
+            if (fragmentView != null) {
+                bindOwner();
             }
         });
     }
