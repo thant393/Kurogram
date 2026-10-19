@@ -15,9 +15,10 @@ backend database, on a schedule, with no manual work after the one-time setup be
   one exists, otherwise default to Custom; there's simply never one available here).
 - Each pack has a nested `owner` object (`telegram_id`, `display_name`, `username`,
   `avatar_url`, `avatar_file_id`, `updated_at`). Scanner-added packs are owned by the
-  official **@Stickers** bot (id `429000`). Older documents with the flat
-  `owner_telegram_id` are converted by `migrate_owner_object.py` - run the **Owner Migration**
-  workflow once (Actions tab; leave "Dry run" ticked first to preview, then untick it).
+  official **@Stickers** bot (id `429000`). Every run also re-checks the owner of packs that
+  are already stored and updates their name / username / avatar (so renames, new photos and
+  deleted accounts show up), and removes the old flat `owner_telegram_id` once `owner.telegram_id`
+  is set. This needs `MONGODB_URI`.
 
 ## One-time setup
 

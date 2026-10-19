@@ -23,8 +23,12 @@ What it does each run:
      so there is nothing real to auto-detect here - every auto-added pack lands in
      "Custom" until/unless a smarter categorizer is built later) and
      a nested `owner` object for Telegram's own @Stickers bot (id 429000, the account
-     Telegram publishes its public packs through). Documents that still have the old flat
-     owner_telegram_id are converted by migrate_owner_object.py.
+     Telegram publishes its public packs through). The legacy flat `owner_telegram_id`
+     field is no longer written.
+  5. Packs already in the database are NOT just skipped: every run re-resolves each distinct
+     owner (user or bot) on Telegram and updates `owner.display_name / username /
+     avatar_url / avatar_file_id` on all of that owner's packs, so renamed accounts, new
+     profile photos, changed usernames and deleted accounts are picked up (MONGODB_URI mode).
 
 Environment variables (see .github/workflows/sticker-scan.yml for how these are
 supplied in CI, or export them yourself to run this locally):
@@ -48,7 +52,8 @@ from telethon.tl.functions.messages import (
     GetOldFeaturedStickersRequest,
     GetStickerSetRequest,
 )
-from telethon.tl.types import InputStickerSetShortName
+from telethon import errors
+from telethon.tl.types import InputStickerSetShortName, PeerUser, User
 
 LEGACY_OWNER_MARKER = "telegram_official"  # old placeholder; the migration replaces it
 # Telegram's own sticker bot, @Stickers (ID 429000) - the account Telegram publishes its
@@ -59,14 +64,13 @@ OFFICIAL_OWNER_USERNAME = os.environ.get("OFFICIAL_OWNER_USERNAME", "Stickers").
 
 def official_owner_object():
     """The nested `owner` object stored on every pack this scanner adds (the @Stickers bot).
-    Existing documents are converted by migrate_owner_object.py."""
+    (refresh_owners later keeps the profile fields current.)"""
     return {
         "telegram_id": OFFICIAL_OWNER_ID,
         "display_name": "Stickers",
         "username": OFFICIAL_OWNER_USERNAME,
         "avatar_url": f"https://t.me/i/userpic/320/{OFFICIAL_OWNER_USERNAME}.jpg",
         "avatar_file_id": None,
-        "updated_at": datetime.now(timezone.utc),
     }
 DEFAULT_CATEGORY = "Custom"
 OLD_FEATURED_PAGE_SIZE = 50
@@ -223,7 +227,7 @@ def add_pack(base_url, api_key, short_name, created_at):
     payload = {
         "short_name": short_name,
         "category": DEFAULT_CATEGORY,
-        "owner_telegram_id": OFFICIAL_OWNER_ID,
+        "owner": official_owner_object(),
         "download_count": 0,
         "total_likes": 0,
         "rating": {"avg": 0, "count": 0},
@@ -257,6 +261,123 @@ def open_mongo_collection(uri, db_name):
     from pymongo import MongoClient
     client = MongoClient(uri, serverSelectionTimeoutMS=30000)
     return client[db_name]["stickers_packs"]
+
+
+OWNER_REFRESH_DELAY_SECONDS = 1.5
+MAX_FLOOD_WAIT_SECONDS = 600
+
+
+def with_flood_wait(fn):
+    """Runs a Telegram call; on FloodWait sleeps the requested time and retries (up to 3x)."""
+    for attempt in range(1, 4):
+        try:
+            return fn()
+        except errors.FloodWaitError as e:
+            wait = min(int(e.seconds) + 1, MAX_FLOOD_WAIT_SECONDS)
+            print(f"  Telegram asked us to wait {e.seconds}s (attempt {attempt}/3); sleeping {wait}s...")
+            time.sleep(wait)
+    return fn()
+
+
+def owner_fields_from_user(user):
+    """The four profile fields of an owner object, from a Telegram user/bot. A deleted account
+    is recorded as such (no username, no photo) instead of keeping stale details."""
+    if getattr(user, "deleted", False):
+        return {"display_name": "Deleted Account", "username": None, "avatar_url": None, "avatar_file_id": None}
+    name = " ".join(p for p in (getattr(user, "first_name", None), getattr(user, "last_name", None)) if p).strip()
+    username = getattr(user, "username", None)
+    if not username:
+        for u in (getattr(user, "usernames", None) or []):
+            if getattr(u, "active", True) and getattr(u, "username", None):
+                username = u.username
+                break
+    photo = getattr(user, "photo", None)
+    photo_id = getattr(photo, "photo_id", None)
+    return {
+        "display_name": name or None,
+        "username": username or None,
+        # t.me serves public profile pictures at this URL for accounts with a public username.
+        "avatar_url": f"https://t.me/i/userpic/320/{username}.jpg" if username and photo else None,
+        "avatar_file_id": str(photo_id) if photo_id else None,
+    }
+
+
+def resolve_owner_user(client, telegram_id, known_username):
+    """Looks one owner up on Telegram. Tries the numeric id, then the username we stored last
+    time (and @Stickers for the official id). A username result is only accepted if it really
+    is that same account (usernames can be re-assigned). Returns a User or None."""
+    attempts = [("id", lambda: client.get_entity(PeerUser(int(telegram_id))))]
+    if known_username:
+        attempts.append(("username", lambda: client.get_entity(known_username)))
+    if str(telegram_id) == OFFICIAL_OWNER_ID:
+        attempts.append(("official username", lambda: client.get_entity(OFFICIAL_OWNER_USERNAME)))
+    for label, getter in attempts:
+        try:
+            entity = with_flood_wait(getter)
+            if isinstance(entity, User) and str(entity.id) == str(telegram_id):
+                return entity
+        except (ValueError, errors.RPCError) as e:
+            print(f"    lookup by {label} failed for {telegram_id}: {type(e).__name__}")
+        time.sleep(OWNER_REFRESH_DELAY_SECONDS)
+    return None
+
+
+def refresh_owners(client, collection):
+    """Re-scans the owner of EVERY pack already in the database (not only new ones).
+
+    Each distinct numeric owner id is looked up once and the result written to all packs that
+    share it, so 1000 packs owned by @Stickers cost one lookup. Also:
+      - a pack with a missing/"PENDING" owner id but a numeric legacy owner_telegram_id gets
+        its owner id filled from that;
+      - the legacy owner_telegram_id field is removed once the owner object holds the id;
+      - an owner Telegram can't be looked up this run is left as it was (never overwritten
+        with empty values)."""
+    docs = list(collection.find({}, {"owner": 1, "owner_telegram_id": 1}))
+    by_owner = {}      # telegram_id -> known username
+    fill_ids = []      # (doc_id, telegram_id) for docs whose owner id must be filled/created
+    for d in docs:
+        owner = d.get("owner") or {}
+        tid = str(owner.get("telegram_id") or "")
+        legacy = str(d.get("owner_telegram_id") or "")
+        if not tid.isdigit():
+            if legacy.isdigit():
+                tid = legacy
+                fill_ids.append((d["_id"], tid))
+            else:
+                continue  # nothing numeric to resolve (e.g. PENDING with no legacy id)
+        by_owner.setdefault(tid, owner.get("username"))
+
+    if fill_ids:
+        for doc_id, tid in fill_ids:
+            collection.update_one({"_id": doc_id}, {"$set": {"owner.telegram_id": tid}})
+        print(f"Filled owner.telegram_id from the legacy field on {len(fill_ids)} pack(s).")
+
+    print(f"Refreshing {len(by_owner)} distinct owner(s) across {len(docs)} pack(s)...")
+    changed = unresolved = 0
+    for i, (tid, known_username) in enumerate(sorted(by_owner.items()), 1):
+        user = resolve_owner_user(client, tid, known_username)
+        if user is None:
+            unresolved += 1
+            print(f"  [{i}/{len(by_owner)}] {tid}: could not be looked up right now - left unchanged")
+            time.sleep(OWNER_REFRESH_DELAY_SECONDS)
+            continue
+        fields = owner_fields_from_user(user)
+        result = collection.update_many(
+            {"owner.telegram_id": tid},
+            {"$set": {f"owner.{k}": v for k, v in fields.items()}},
+        )
+        if result.modified_count:
+            changed += result.modified_count
+        print(f"  [{i}/{len(by_owner)}] {tid} -> {fields['display_name']!r} @{fields['username']}"
+              f" ({result.modified_count} pack(s) updated)")
+        time.sleep(OWNER_REFRESH_DELAY_SECONDS)
+
+    cleaned = collection.update_many(
+        {"owner_telegram_id": {"$exists": True}, "owner.telegram_id": {"$regex": "^[0-9]+$"}},
+        {"$unset": {"owner_telegram_id": ""}},
+    )
+    print(f"Owner refresh done: {changed} pack(s) changed, {unresolved} owner(s) unresolved, "
+          f"{cleaned.modified_count} legacy owner_telegram_id field(s) removed.")
 
 
 def main():
@@ -304,6 +425,12 @@ def main():
 
         new_short_names = [name for name in official if name not in existing]
         print(f"{len(new_short_names)} new pack(s) to add.")
+
+        # Existing packs are not just skipped: refresh their owners' profile data too.
+        if collection is not None:
+            refresh_owners(client, collection)
+        else:
+            print("MONGODB_URI is not set - skipping the owner refresh of existing packs.")
 
         # Only look up creation dates for packs we're actually adding (one request each).
         for short_name in new_short_names:
