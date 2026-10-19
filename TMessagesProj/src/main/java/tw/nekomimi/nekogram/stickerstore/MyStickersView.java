@@ -32,7 +32,9 @@ public class MyStickersView extends FrameLayout {
     private final GridLayoutManager layoutManager;
     private final RadialProgressView progressView;
     private final TextView infoView;
-    private final ArrayList<StickerPackInfo> packs = new ArrayList<>();
+    private final ArrayList<StickerPackInfo> packs = new ArrayList<>();      // uploaded to the store
+    private final ArrayList<StickerPackInfo> display = new ArrayList<>();    // custom (not uploaded yet) + packs
+    private final HashSet<StickerPackInfo> custom = new HashSet<>();
     private final HashSet<String> seen = new HashSet<>();
     private final RecyclerListView.SelectionAdapter adapter;
     private int nextPage = 1;
@@ -54,7 +56,7 @@ public class MyStickersView extends FrameLayout {
         adapter = new RecyclerListView.SelectionAdapter() {
             @Override
             public int getItemCount() {
-                return packs.size();
+                return display.size();
             }
 
             @Override
@@ -71,7 +73,7 @@ public class MyStickersView extends FrameLayout {
 
             @Override
             public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-                ((StickerPackGridCell) holder.itemView).setPack(packs.get(position), fragment.getCurrentAccount());
+                ((StickerPackGridCell) holder.itemView).setPack(display.get(position), fragment.getCurrentAccount());
                 ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
                 int m = AndroidUtilities.dp(4);
                 lp.setMargins(m, m, m, m);
@@ -82,14 +84,20 @@ public class MyStickersView extends FrameLayout {
         addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
         listView.setOnItemClickListener((view, position) -> {
-            if (position >= 0 && position < packs.size() && fragment.getParentActivity() != null) {
-                fragment.presentFragment(new StickerPackDetailActivity(packs.get(position)));
+            if (position >= 0 && position < display.size() && fragment.getParentActivity() != null) {
+                StickerPackInfo info = display.get(position);
+                if (custom.contains(info)) {
+                    // Made by this user on Telegram but not in the store yet: one tap to upload it.
+                    fragment.presentFragment(new UploadHubActivity(info.shortName));
+                } else {
+                    fragment.presentFragment(new StickerPackDetailActivity(info));
+                }
             }
         });
         listView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0 && layoutManager.findLastVisibleItemPosition() >= packs.size() - LOAD_MORE_THRESHOLD) {
+                if (dy > 0 && layoutManager.findLastVisibleItemPosition() >= display.size() - LOAD_MORE_THRESHOLD) {
                     loadNextPage();
                 }
             }
@@ -118,6 +126,8 @@ public class MyStickersView extends FrameLayout {
     public void reload() {
         generation++;
         packs.clear();
+        display.clear();
+        custom.clear();
         seen.clear();
         nextPage = 1;
         hasMore = true;
@@ -153,8 +163,9 @@ public class MyStickersView extends FrameLayout {
                 nextPage++;
                 hasMore = added > 0 && result.size() >= PAGE_SIZE;
                 progressView.setVisibility(GONE);
+                rebuildDisplay();
                 adapter.notifyDataSetChanged();
-                if (packs.isEmpty()) {
+                if (display.isEmpty()) {
                     showInfo("You haven't uploaded any sticker packs yet.\nTap + to add one.");
                 } else {
                     infoView.setVisibility(GONE);
@@ -167,11 +178,40 @@ public class MyStickersView extends FrameLayout {
                 if (gen != generation) return;
                 loading = false;
                 progressView.setVisibility(GONE);
-                if (packs.isEmpty()) {
+                rebuildDisplay();
+                adapter.notifyDataSetChanged();
+                if (display.isEmpty()) {
                     showInfo(message);
+                } else {
+                    progressView.setVisibility(GONE);
                 }
             }
         });
+    }
+
+    /** Sticker packs this user created on Telegram (Telegram builds a set's id from its creator's
+     *  user id, which is how ownership is told apart from sets they merely installed) that are
+     *  not in the store yet, followed by the packs already uploaded. */
+    private void rebuildDisplay() {
+        display.clear();
+        custom.clear();
+        final int account = fragment.getCurrentAccount();
+        final long me = org.telegram.messenger.UserConfig.getInstance(account).getClientUserId();
+        org.telegram.messenger.MediaDataController mdc = org.telegram.messenger.MediaDataController.getInstance(account);
+        for (org.telegram.tgnet.TLRPC.TL_messages_stickerSet installed : mdc.getStickerSets(org.telegram.messenger.MediaDataController.TYPE_IMAGE)) {
+            if (installed == null || installed.set == null || installed.set.short_name == null) {
+                continue;
+            }
+            if (!Boolean.TRUE.equals(OwnerCheck.isCreatedBy(installed.set, me)) || seen.contains(installed.set.short_name)) {
+                continue;
+            }
+            StickerPackInfo info = new StickerPackInfo();
+            info.shortName = installed.set.short_name;
+            info.resolvedSet = installed;
+            custom.add(info);
+            display.add(info);
+        }
+        display.addAll(packs);
     }
 
     private void showInfo(String text) {

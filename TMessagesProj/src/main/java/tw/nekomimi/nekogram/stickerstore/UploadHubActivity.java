@@ -28,7 +28,7 @@ import tw.nekomimi.nekogram.settings.GroupCardHelper;
 /**
  * Everything the user can upload to the Kuro store, in one place - opened by the + button on
  * the Profile tab. Today that is sticker packs (by link or short name; the pack must exist on
- * Telegram) and, once themes exist, themes (shown as "coming soon").
+ * Telegram and have been created by the signed-in account) and, once themes exist, themes (shown as "coming soon").
  */
 public class UploadHubActivity extends BaseFragment {
 
@@ -37,6 +37,16 @@ public class UploadHubActivity extends BaseFragment {
     private TextView uploadButton;
     private TextView statusView;
     private boolean busy;
+    private final String prefillShortName;
+
+    public UploadHubActivity() {
+        this(null);
+    }
+
+    /** Opens with a pack already filled in (used from "your own packs" on the Profile tab). */
+    public UploadHubActivity(String prefillShortName) {
+        this.prefillShortName = prefillShortName;
+    }
 
     @Override
     public View createView(Context context) {
@@ -68,7 +78,7 @@ public class UploadHubActivity extends BaseFragment {
         column.addView(stickerCard, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 16, 16, 16, 8));
 
         stickerCard.addView(title(context, "Sticker pack"));
-        stickerCard.addView(subtitle(context, "Add one of your Telegram sticker packs to the store. Paste its link (t.me/addstickers/...) or its short name."),
+        stickerCard.addView(subtitle(context, "Add a sticker pack you created on Telegram to the store. Paste its link (t.me/addstickers/...) or its short name."),
                 LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 4, 0, 14));
 
         packOutline = new OutlineTextContainerView(context);
@@ -89,6 +99,9 @@ public class UploadHubActivity extends BaseFragment {
             }
             return false;
         });
+        if (!TextUtils.isEmpty(prefillShortName)) {
+            packInput.setText(prefillShortName);
+        }
         packOutline.attachEditText(packInput);
         packOutline.addView(packInput, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_VERTICAL, 16, 4, 16, 4));
         stickerCard.addView(packOutline, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 58));
@@ -195,6 +208,13 @@ public class UploadHubActivity extends BaseFragment {
             @Override
             public void onResolved(TLRPC.TL_messages_stickerSet stickerSet) {
                 if (fragmentView == null) return;
+                // Only packs this account created: Telegram builds a set's id from its
+                // creator's user id, so another account's pack is turned down here.
+                if (Boolean.FALSE.equals(OwnerCheck.isCreatedBy(stickerSet.set, me.id))) {
+                    setBusy(false);
+                    setStatus("This pack was created by another account. You can only upload packs you created.", true);
+                    return;
+                }
                 setStatus("Uploading…", false);
                 StickerStoreApi.submitPack(shortName, me.id, me.name, me.username, me.avatarUrl, me.avatarFileId, new StickerStoreApi.ResultCallback() {
                     @Override
