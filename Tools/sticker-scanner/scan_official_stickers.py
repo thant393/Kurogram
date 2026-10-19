@@ -22,10 +22,9 @@ What it does each run:
      category "Custom" (Telegram's API has no per-pack category/genre field at all,
      so there is nothing real to auto-detect here - every auto-added pack lands in
      "Custom" until/unless a smarter categorizer is built later) and
-     owner_telegram_id set to 429000, the id of Telegram's own @Stickers bot (the account
-     Telegram publishes its public packs through).
-  5. Migration: any existing record whose owner_telegram_id is still the old placeholder
-     "telegram_official" is updated to 429000 (MONGODB_URI mode).
+     a nested `owner` object for Telegram's own @Stickers bot (id 429000, the account
+     Telegram publishes its public packs through). Documents that still have the old flat
+     owner_telegram_id are converted by migrate_owner_object.py.
 
 Environment variables (see .github/workflows/sticker-scan.yml for how these are
 supplied in CI, or export them yourself to run this locally):
@@ -55,6 +54,20 @@ LEGACY_OWNER_MARKER = "telegram_official"  # old placeholder; the migration repl
 # Telegram's own sticker bot, @Stickers (ID 429000) - the account Telegram publishes its
 # public/featured packs through, so it is the owner of every pack this scanner adds.
 OFFICIAL_OWNER_ID = os.environ.get("OFFICIAL_OWNER_ID", "429000").strip() or "429000"
+OFFICIAL_OWNER_USERNAME = os.environ.get("OFFICIAL_OWNER_USERNAME", "Stickers").strip() or "Stickers"
+
+
+def official_owner_object():
+    """The nested `owner` object stored on every pack this scanner adds (the @Stickers bot).
+    Existing documents are converted by migrate_owner_object.py."""
+    return {
+        "telegram_id": OFFICIAL_OWNER_ID,
+        "display_name": "Stickers",
+        "username": OFFICIAL_OWNER_USERNAME,
+        "avatar_url": f"https://t.me/i/userpic/320/{OFFICIAL_OWNER_USERNAME}.jpg",
+        "avatar_file_id": None,
+        "updated_at": datetime.now(timezone.utc),
+    }
 DEFAULT_CATEGORY = "Custom"
 OLD_FEATURED_PAGE_SIZE = 50
 OLD_FEATURED_MAX_PAGES = 200  # safety cap - stop even if Telegram keeps paginating
@@ -232,23 +245,12 @@ def build_pack_document(short_name, created_at):
         "download_count": 0,
         "total_likes": 0,
         "rating": {"avg": 0.0, "count": 0},
-        "owner_telegram_id": OFFICIAL_OWNER_ID,
+        "owner": official_owner_object(),
         "status": "published",
         "is_active": True,
         "report_count": 0,
         "published_at": (created_at or datetime.now(timezone.utc)).astimezone(timezone.utc),
     }
-
-
-def migrate_legacy_owners(collection):
-    """Existing records whose owner_telegram_id is still the old placeholder
-    "telegram_official" (or any other non-numeric text) are set to @Stickers' real id."""
-    query = {"$or": [
-        {"owner_telegram_id": LEGACY_OWNER_MARKER},
-        {"owner_telegram_id": {"$type": "string", "$not": {"$regex": "^[0-9]+$"}}},
-    ]}
-    result = collection.update_many(query, {"$set": {"owner_telegram_id": OFFICIAL_OWNER_ID}})
-    print(f"Migration: set owner_telegram_id={OFFICIAL_OWNER_ID} on {result.modified_count} record(s).")
 
 
 def open_mongo_collection(uri, db_name):
@@ -302,9 +304,6 @@ def main():
 
         new_short_names = [name for name in official if name not in existing]
         print(f"{len(new_short_names)} new pack(s) to add.")
-
-        if collection is not None:
-            migrate_legacy_owners(collection)
 
         # Only look up creation dates for packs we're actually adding (one request each).
         for short_name in new_short_names:

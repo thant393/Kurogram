@@ -592,7 +592,11 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
         TLRPC.User owner = MessagesController.getInstance(currentAccount).getUser(id);
         if (owner == null) {
             ownerAvatar.setVisibility(View.GONE);
-            ownerView.setText("ID " + id);
+            // The backend's own owner info shows right away; Telegram's replaces it with the
+            // live user (and avatar) once fetched.
+            String fallback = pack.ownerDisplayName != null && !pack.ownerDisplayName.isEmpty() ? pack.ownerDisplayName
+                    : pack.ownerUsername != null && !pack.ownerUsername.isEmpty() ? "@" + pack.ownerUsername : "ID " + id;
+            ownerView.setText(fallback);
             requestOwner(id);
             return;
         }

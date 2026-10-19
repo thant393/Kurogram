@@ -13,10 +13,11 @@ backend database, on a schedule, with no manual work after the one-time setup be
 - Telegram's API has **no category field** for sticker packs, so every pack this
   scanner adds gets `category: "Custom"` - same as you described (fill in a category if
   one exists, otherwise default to Custom; there's simply never one available here).
-- `owner_telegram_id` is `429000`, the real Telegram id of the official **@Stickers** bot
-  (the account Telegram publishes its public packs through). Records still carrying the
-  old `"telegram_official"` text are corrected automatically on the next run (needs
-  `MONGODB_URI`).
+- Each pack has a nested `owner` object (`telegram_id`, `display_name`, `username`,
+  `avatar_url`, `avatar_file_id`, `updated_at`). Scanner-added packs are owned by the
+  official **@Stickers** bot (id `429000`). Older documents with the flat
+  `owner_telegram_id` are converted by `migrate_owner_object.py` - run the **Owner Migration**
+  workflow once (Actions tab; leave "Dry run" ticked first to preview, then untick it).
 
 ## One-time setup
 
