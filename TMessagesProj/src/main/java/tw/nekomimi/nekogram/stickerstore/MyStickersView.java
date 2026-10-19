@@ -197,6 +197,11 @@ public class MyStickersView extends FrameLayout {
         custom.clear();
         final int account = fragment.getCurrentAccount();
         final long me = org.telegram.messenger.UserConfig.getInstance(account).getClientUserId();
+        // Un-uploaded packs are only listed on the user's own profile.
+        if (!String.valueOf(me).equals(ownerId)) {
+            display.addAll(packs);
+            return;
+        }
         org.telegram.messenger.MediaDataController mdc = org.telegram.messenger.MediaDataController.getInstance(account);
         for (org.telegram.tgnet.TLRPC.TL_messages_stickerSet installed : mdc.getStickerSets(org.telegram.messenger.MediaDataController.TYPE_IMAGE)) {
             if (installed == null || installed.set == null || installed.set.short_name == null) {

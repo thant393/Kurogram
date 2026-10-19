@@ -210,6 +210,7 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
         ownerAvatar.setVisibility(View.GONE);
         LinearLayout ownerRow = (LinearLayout) ownerView.getParent();
         ownerRow.setGravity(Gravity.CENTER_VERTICAL);
+        ownerRow.setOnClickListener(v -> openOwnerProfile());
         ownerRow.addView(ownerAvatar, ownerRow.indexOfChild(ownerView), LayoutHelper.createLinear(22, 22, Gravity.CENTER_VERTICAL, 0, 0, 8, 0));
         ratingsCountView = createStatRow(context, statsCard, "Ratings");
         likesCountView = createStatRow(context, statsCard, "Likes");
@@ -582,6 +583,26 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
     /** Shows the owner (a user account or a bot) as avatar + display name. The user is taken
      *  from the local cache when known; otherwise it is fetched by id from Telegram once, and
      *  until that arrives the row shows a neutral label (never a bare "Unknown" for a real id). */
+    /** Tapping the owner's avatar or name opens their profile: the full own-profile view when
+     *  the pack is the signed-in user's, otherwise that owner's profile. */
+    private void openOwnerProfile() {
+        long id = pack.ownerTelegramId;
+        if (id == 0 || getParentActivity() == null) {
+            return;
+        }
+        long me = UserConfig.getInstance(currentAccount).getClientUserId();
+        String name = pack.ownerDisplayName;
+        String username = pack.ownerUsername;
+        if (id != me) {
+            TLRPC.User cached = MessagesController.getInstance(currentAccount).getUser(id);
+            if (cached != null) {
+                name = UserObject.getUserName(cached);
+                username = cached.username;
+            }
+        }
+        presentFragment(new OwnerProfileActivity(id, name, username));
+    }
+
     private void bindOwner() {
         long id = pack.ownerTelegramId;
         if (id == 0) {

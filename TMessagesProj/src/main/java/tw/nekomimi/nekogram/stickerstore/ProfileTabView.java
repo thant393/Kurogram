@@ -48,18 +48,34 @@ public class ProfileTabView extends FrameLayout {
     private int selectedTab = TAB_STICKERS;
     private int seenUploadVersion;
     private int bottomInset;
+    private final long ownerId;
 
+    /** The signed-in user's own profile (with the upload + button). */
     public ProfileTabView(Context context, BaseFragment fragment, int currentAccount) {
+        this(context, fragment, currentAccount, UserConfig.getInstance(currentAccount).getClientUserId(), null, null);
+    }
+
+    /**
+     * Profile of any sticker-pack owner. When ownerId is the signed-in user this is the full
+     * own-profile view (phone number, + button, own un-uploaded packs); for anyone else it is
+     * read-only: their uploaded content only. fallbackName/fallbackUsername are the backend's
+     * owner info, used while the user isn't known to Telegram locally.
+     */
+    public ProfileTabView(Context context, BaseFragment fragment, int currentAccount, long ownerId, String fallbackName, String fallbackUsername) {
         super(context);
         this.fragment = fragment;
         this.currentAccount = currentAccount;
+        this.ownerId = ownerId;
+        final boolean self = ownerId == UserConfig.getInstance(currentAccount).getClientUserId();
         setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
 
         LinearLayout column = new LinearLayout(context);
         column.setOrientation(LinearLayout.VERTICAL);
         addView(column, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
-        TLRPC.User user = UserConfig.getInstance(currentAccount).getCurrentUser();
+        TLRPC.User user = self
+                ? UserConfig.getInstance(currentAccount).getCurrentUser()
+                : org.telegram.messenger.MessagesController.getInstance(currentAccount).getUser(ownerId);
 
         LinearLayout card = new LinearLayout(context);
         card.setOrientation(LinearLayout.VERTICAL);
@@ -74,6 +90,9 @@ public class ProfileTabView extends FrameLayout {
         if (user != null) {
             avatarDrawable.setInfo(currentAccount, user);
             avatarView.setForUserOrChat(user, avatarDrawable);
+        } else {
+            avatarDrawable.setInfo(ownerId, fallbackName, null);
+            avatarView.setImageDrawable(avatarDrawable);
         }
         card.addView(avatarView, LayoutHelper.createLinear(80, 80, Gravity.CENTER_HORIZONTAL, 0, 0, 0, 12));
 
@@ -82,19 +101,23 @@ public class ProfileTabView extends FrameLayout {
         nameView.setTypeface(AndroidUtilities.bold());
         nameView.setGravity(Gravity.CENTER);
         nameView.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
-        nameView.setText(user != null ? UserObject.getUserName(user) : "Not signed in");
+        nameView.setText(user != null ? UserObject.getUserName(user)
+                : fallbackName != null && !fallbackName.isEmpty() ? fallbackName
+                : fallbackUsername != null && !fallbackUsername.isEmpty() ? "@" + fallbackUsername
+                : self ? "Not signed in" : "ID " + ownerId);
         card.addView(nameView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL, 0, 0, 0, 4));
 
-        if (user != null && user.username != null) {
+        String username = user != null ? user.username : fallbackUsername;
+        if (username != null && !username.isEmpty()) {
             TextView usernameView = new TextView(context);
             usernameView.setTextSize(14);
             usernameView.setGravity(Gravity.CENTER);
             usernameView.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGrayText));
-            usernameView.setText("@" + user.username);
+            usernameView.setText("@" + username);
             card.addView(usernameView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL, 0, 0, 0, 4));
         }
 
-        if (user != null && user.phone != null && !user.phone.isEmpty()) {
+        if (self && user != null && user.phone != null && !user.phone.isEmpty()) {
             TextView phoneView = new TextView(context);
             phoneView.setTextSize(14);
             phoneView.setGravity(Gravity.CENTER);
@@ -146,6 +169,7 @@ public class ProfileTabView extends FrameLayout {
             }
         });
         addView(fab, LayoutHelper.createFrame(56, 56, Gravity.BOTTOM | Gravity.RIGHT, 0, 0, 20, 20));
+        fab.setVisibility(self ? VISIBLE : GONE);
 
         seenUploadVersion = uploadVersion;
         showTab(TAB_STICKERS);
@@ -191,8 +215,7 @@ public class ProfileTabView extends FrameLayout {
             contentFrame.addView(themesEmpty, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         } else {
             if (stickersView == null) {
-                TLRPC.User user = UserConfig.getInstance(currentAccount).getCurrentUser();
-                stickersView = new MyStickersView(getContext(), fragment, user != null ? user.id : 0);
+                stickersView = new MyStickersView(getContext(), fragment, ownerId);
                 stickersView.setBottomInset(AndroidUtilities.dp(92) + bottomInset);
             }
             contentFrame.addView(stickersView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
