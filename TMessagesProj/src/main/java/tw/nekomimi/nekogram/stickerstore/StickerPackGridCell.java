@@ -39,11 +39,11 @@ public class StickerPackGridCell extends FrameLayout {
         // or flashes outside the card.
         GradientDrawable mask = new GradientDrawable();
         mask.setShape(GradientDrawable.RECTANGLE);
-        mask.setCornerRadius(AndroidUtilities.dp(16));
+        mask.setCornerRadius(AndroidUtilities.dp(20));
         mask.setColor(0xFFFFFFFF);
         setBackground(new RippleDrawable(
                 ColorStateList.valueOf(Theme.getColor(Theme.key_listSelector)),
-                GroupCardHelper.cardBackground(context, GroupCardHelper.POS_SINGLE),
+                cardBackground(),
                 mask));
         setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(8), AndroidUtilities.dp(8), AndroidUtilities.dp(8));
 
@@ -52,13 +52,13 @@ public class StickerPackGridCell extends FrameLayout {
         addView(column, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
 
         iconView = new BackupImageView(context);
-        iconView.setRoundRadius(AndroidUtilities.dp(12));
+        iconView.setRoundRadius(AndroidUtilities.dp(16));
         GradientDrawable iconBg = new GradientDrawable();
         iconBg.setShape(GradientDrawable.RECTANGLE);
-        iconBg.setCornerRadius(AndroidUtilities.dp(12));
+        iconBg.setCornerRadius(AndroidUtilities.dp(16));
         iconBg.setColor(Theme.getColor(Theme.key_windowBackgroundGray));
         iconView.setBackground(iconBg);
-        column.addView(iconView, LayoutHelper.createLinear(58, 58, Gravity.CENTER_HORIZONTAL, 0, 0, 0, 6));
+        column.addView(iconView, LayoutHelper.createLinear(64, 64, Gravity.CENTER_HORIZONTAL, 0, 2, 0, 8));
 
         // Display Name only - the technical short_name is never shown anywhere in this cell.
         titleView = new TextView(context);
@@ -97,6 +97,16 @@ public class StickerPackGridCell extends FrameLayout {
         statsRow.addView(ratingView, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 1f, Gravity.RIGHT | Gravity.CENTER_VERTICAL));
 
         setWillNotDraw(false);
+    }
+
+    /** iOS-style card: large radius, white fill and a hairline border. */
+    private static GradientDrawable cardBackground() {
+        GradientDrawable d = new GradientDrawable();
+        d.setShape(GradientDrawable.RECTANGLE);
+        d.setCornerRadius(AndroidUtilities.dp(20));
+        d.setColor(Theme.getColor(Theme.key_windowBackgroundWhite));
+        d.setStroke(Math.max(1, AndroidUtilities.dp(0.5f)), 0x1A000000);
+        return d;
     }
 
     public void setPack(StickerPackInfo pack, int currentAccount) {

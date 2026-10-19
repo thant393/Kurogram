@@ -38,14 +38,13 @@ public class ProfileTabView extends FrameLayout {
 
     private final int currentAccount;
     private final BaseFragment fragment;
-    private final LinearLayout[] tabButtons = new LinearLayout[2];
-    private final TextView[] tabLabels = new TextView[2];
-    private final View[] tabIndicators = new View[2];
+    private final SegmentedControl segmented;
     private final FrameLayout contentFrame;
     private final View themesEmpty;
     private MyStickersView stickersView;
     private final ImageView fab;
     private int selectedTab = TAB_STICKERS;
+    private boolean segmentedReady;
     private int seenUploadVersion;
     private int bottomInset;
     private final long ownerId;
@@ -80,12 +79,23 @@ public class ProfileTabView extends FrameLayout {
         LinearLayout card = new LinearLayout(context);
         card.setOrientation(LinearLayout.VERTICAL);
         card.setGravity(Gravity.CENTER_HORIZONTAL);
-        card.setBackground(GroupCardHelper.cardBackground(context, GroupCardHelper.POS_SINGLE));
-        card.setPadding(AndroidUtilities.dp(24), AndroidUtilities.dp(24), AndroidUtilities.dp(24), AndroidUtilities.dp(24));
-        column.addView(card, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 16, 16, 16, 8));
+        GradientDrawable cardBg = new GradientDrawable();
+        cardBg.setShape(GradientDrawable.RECTANGLE);
+        cardBg.setCornerRadius(AndroidUtilities.dp(22));
+        cardBg.setColor(Theme.getColor(Theme.key_windowBackgroundWhite));
+        card.setBackground(cardBg);
+        card.setElevation(AndroidUtilities.dp(2));
+        card.setOutlineProvider(new ViewOutlineProvider() {
+            @Override
+            public void getOutline(View view, Outline outline) {
+                outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), AndroidUtilities.dp(22));
+            }
+        });
+        card.setPadding(AndroidUtilities.dp(24), AndroidUtilities.dp(28), AndroidUtilities.dp(24), AndroidUtilities.dp(24));
+        column.addView(card, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 16, 12, 16, 14));
 
         BackupImageView avatarView = new BackupImageView(context);
-        avatarView.setRoundRadius(AndroidUtilities.dp(40));
+        avatarView.setRoundRadius(AndroidUtilities.dp(44));
         AvatarDrawable avatarDrawable = new AvatarDrawable();
         if (user != null) {
             avatarDrawable.setInfo(currentAccount, user);
@@ -94,10 +104,10 @@ public class ProfileTabView extends FrameLayout {
             avatarDrawable.setInfo(ownerId, fallbackName, null);
             avatarView.setImageDrawable(avatarDrawable);
         }
-        card.addView(avatarView, LayoutHelper.createLinear(80, 80, Gravity.CENTER_HORIZONTAL, 0, 0, 0, 12));
+        card.addView(avatarView, LayoutHelper.createLinear(88, 88, Gravity.CENTER_HORIZONTAL, 0, 0, 0, 14));
 
         TextView nameView = new TextView(context);
-        nameView.setTextSize(18);
+        nameView.setTextSize(22);
         nameView.setTypeface(AndroidUtilities.bold());
         nameView.setGravity(Gravity.CENTER);
         nameView.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
@@ -105,33 +115,30 @@ public class ProfileTabView extends FrameLayout {
                 : fallbackName != null && !fallbackName.isEmpty() ? fallbackName
                 : fallbackUsername != null && !fallbackUsername.isEmpty() ? "@" + fallbackUsername
                 : self ? "Not signed in" : "ID " + ownerId);
-        card.addView(nameView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL, 0, 0, 0, 4));
+        card.addView(nameView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL, 0, 0, 0, 3));
 
         String username = user != null ? user.username : fallbackUsername;
         if (username != null && !username.isEmpty()) {
             TextView usernameView = new TextView(context);
-            usernameView.setTextSize(14);
+            usernameView.setTextSize(15);
             usernameView.setGravity(Gravity.CENTER);
-            usernameView.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGrayText));
+            usernameView.setTextColor(Theme.getColor(Theme.key_featuredStickers_addButton));
             usernameView.setText("@" + username);
             card.addView(usernameView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL, 0, 0, 0, 4));
         }
 
         if (self && user != null && user.phone != null && !user.phone.isEmpty()) {
             TextView phoneView = new TextView(context);
-            phoneView.setTextSize(14);
+            phoneView.setTextSize(13);
             phoneView.setGravity(Gravity.CENTER);
             phoneView.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGrayText));
             phoneView.setText(PhoneFormat.getInstance().format("+" + user.phone));
             card.addView(phoneView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL));
         }
 
-        // --- tabs: Themes | Stickers (tap to switch) ---
-        LinearLayout tabStrip = new LinearLayout(context);
-        tabStrip.setOrientation(LinearLayout.HORIZONTAL);
-        column.addView(tabStrip, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 44, 16, 0, 16, 0));
-        addTab(context, tabStrip, TAB_THEMES, "Themes");
-        addTab(context, tabStrip, TAB_STICKERS, "Stickers");
+        // --- iOS-style segmented control: a capsule track with a white capsule that slides ---
+        segmented = new SegmentedControl(context, new String[]{"Themes", "Stickers"}, this::showTab);
+        column.addView(segmented, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 36, 16, 0, 16, 10));
 
         contentFrame = new FrameLayout(context);
         column.addView(contentFrame, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 0, 1f));
@@ -155,7 +162,7 @@ public class ProfileTabView extends FrameLayout {
         fabBg.setShape(GradientDrawable.OVAL);
         fabBg.setColor(Theme.getColor(Theme.key_featuredStickers_addButton));
         fab.setBackground(fabBg);
-        fab.setElevation(AndroidUtilities.dp(6));
+        fab.setElevation(AndroidUtilities.dp(8));
         fab.setOutlineProvider(new ViewOutlineProvider() {
             @Override
             public void getOutline(View view, Outline outline) {
@@ -175,41 +182,10 @@ public class ProfileTabView extends FrameLayout {
         showTab(TAB_STICKERS);
     }
 
-    private void addTab(Context context, LinearLayout strip, int index, String title) {
-        LinearLayout tab = new LinearLayout(context);
-        tab.setOrientation(LinearLayout.VERTICAL);
-        tab.setGravity(Gravity.CENTER_HORIZONTAL);
-
-        TextView label = new TextView(context);
-        label.setText(title);
-        label.setTextSize(15);
-        label.setTypeface(AndroidUtilities.bold());
-        label.setGravity(Gravity.CENTER);
-        tab.addView(label, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 0, 1f, Gravity.CENTER_HORIZONTAL));
-
-        View indicator = new View(context);
-        GradientDrawable bg = new GradientDrawable();
-        bg.setCornerRadius(AndroidUtilities.dp(2));
-        bg.setColor(Theme.getColor(Theme.key_featuredStickers_addButton));
-        indicator.setBackground(bg);
-        tab.addView(indicator, LayoutHelper.createLinear(40, 3, Gravity.CENTER_HORIZONTAL));
-
-        tab.setOnClickListener(v -> showTab(index));
-        strip.addView(tab, LayoutHelper.createLinear(0, LayoutHelper.MATCH_PARENT, 1f));
-        tabButtons[index] = tab;
-        tabLabels[index] = label;
-        tabIndicators[index] = indicator;
-    }
-
     private void showTab(int index) {
         selectedTab = index;
-        for (int i = 0; i < tabButtons.length; i++) {
-            boolean on = i == index;
-            tabLabels[i].setTextColor(on
-                    ? Theme.getColor(Theme.key_featuredStickers_addButton)
-                    : Theme.getColor(Theme.key_windowBackgroundWhiteGrayText));
-            tabIndicators[i].animate().alpha(on ? 1f : 0f).setDuration(150).start();
-        }
+        segmented.select(index, segmentedReady);
+        segmentedReady = true;
         contentFrame.removeAllViews();
         if (index == TAB_THEMES) {
             contentFrame.addView(themesEmpty, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
@@ -244,6 +220,87 @@ public class ProfileTabView extends FrameLayout {
         fab.setLayoutParams(lp);
         if (stickersView != null) {
             stickersView.setBottomInset(AndroidUtilities.dp(92) + px);
+        }
+    }
+
+    /** iOS-style segmented control: rounded track, white capsule thumb sliding between labels. */
+    private static class SegmentedControl extends FrameLayout {
+
+        interface OnSelect {
+            void onSelect(int index);
+        }
+
+        private final View thumb;
+        private final TextView[] labels;
+        private int selected = -1;
+
+        SegmentedControl(Context context, String[] titles, OnSelect listener) {
+            super(context);
+            labels = new TextView[titles.length];
+            GradientDrawable track = new GradientDrawable();
+            track.setCornerRadius(AndroidUtilities.dp(18));
+            track.setColor(0x1F767680);
+            setBackground(track);
+            int pad = AndroidUtilities.dp(2);
+            setPadding(pad, pad, pad, pad);
+
+            thumb = new View(context);
+            GradientDrawable thumbBg = new GradientDrawable();
+            thumbBg.setCornerRadius(AndroidUtilities.dp(16));
+            thumbBg.setColor(Theme.getColor(Theme.key_windowBackgroundWhite));
+            thumb.setBackground(thumbBg);
+            thumb.setElevation(AndroidUtilities.dp(1.5f));
+            thumb.setOutlineProvider(new ViewOutlineProvider() {
+                @Override
+                public void getOutline(View view, Outline outline) {
+                    outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), AndroidUtilities.dp(16));
+                }
+            });
+            addView(thumb, LayoutHelper.createFrame(0, LayoutHelper.MATCH_PARENT));
+
+            LinearLayout row = new LinearLayout(context);
+            row.setOrientation(LinearLayout.HORIZONTAL);
+            addView(row, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+            for (int i = 0; i < titles.length; i++) {
+                final int index = i;
+                TextView label = new TextView(context);
+                label.setText(titles[i]);
+                label.setTextSize(14);
+                label.setTypeface(AndroidUtilities.bold());
+                label.setGravity(Gravity.CENTER);
+                label.setOnClickListener(v -> listener.onSelect(index));
+                row.addView(label, LayoutHelper.createLinear(0, LayoutHelper.MATCH_PARENT, 1f));
+                labels[i] = label;
+            }
+        }
+
+        @Override
+        protected void onLayout(boolean changed, int l, int t, int r, int b) {
+            super.onLayout(changed, l, t, r, b);
+            int w = (getWidth() - getPaddingLeft() - getPaddingRight()) / labels.length;
+            if (thumb.getLayoutParams().width != w) {
+                thumb.getLayoutParams().width = w;
+                thumb.requestLayout();
+            }
+            if (selected >= 0) {
+                thumb.setTranslationX(selected * w);
+            }
+        }
+
+        void select(int index, boolean animate) {
+            selected = index;
+            int w = (getWidth() - getPaddingLeft() - getPaddingRight()) / labels.length;
+            if (animate && w > 0) {
+                thumb.animate().translationX(index * w).setDuration(220)
+                        .setInterpolator(new android.view.animation.DecelerateInterpolator()).start();
+            } else {
+                thumb.setTranslationX(index * w);
+            }
+            for (int i = 0; i < labels.length; i++) {
+                labels[i].setTextColor(Theme.getColor(i == index
+                        ? Theme.key_windowBackgroundWhiteBlackText
+                        : Theme.key_windowBackgroundWhiteGrayText));
+            }
         }
     }
 }
