@@ -58,6 +58,11 @@ public class StickerStoreApi {
     }
 
     public static void fetchPacks(String category, String sort, int page, int limit, PacksCallback callback) {
+        fetchPacks(category, sort, page, limit, null, callback);
+    }
+
+    /** Same list, restricted to the packs one Telegram account owns (ownerId == null: all). */
+    public static void fetchPacks(String category, String sort, int page, int limit, String ownerId, PacksCallback callback) {
         if (!isConfigured()) {
             Utilities.stageQueue.postRunnable(() -> postError(callback, "Sticker store is not configured"));
             return;
@@ -83,6 +88,10 @@ public class StickerStoreApi {
                 url.append("&category=").append(URLEncoder.encode(category, "UTF-8"));
             } catch (UnsupportedEncodingException ignored) {
             }
+        }
+
+        if (ownerId != null && !ownerId.isEmpty()) {
+            url.append("&owner_id=").append(ownerId);
         }
 
         Request request = new Request.Builder().url(url.toString()).get().build();
@@ -163,6 +172,26 @@ public class StickerStoreApi {
             send("PUT", "api/v1/stickers/owners/" + telegramId, body, callback);
         } catch (Exception e) {
             postResultError(callback, "Couldn't build the profile request");
+        }
+    }
+
+    /** Adds a Telegram sticker pack to the store as owned by this account:
+     *  POST /api/v1/stickers/?account_id=<id> with the pack's short_name and the owner's
+     *  profile (so their name/avatar show right away). 409 means it is already in the store. */
+    public static void submitPack(String shortName, long accountId, String displayName, String username, String avatarUrl, String avatarFileId, ResultCallback callback) {
+        try {
+            JSONObject owner = new JSONObject();
+            owner.put("display_name", displayName == null ? JSONObject.NULL : displayName);
+            owner.put("username", username == null ? JSONObject.NULL : username);
+            owner.put("avatar_url", avatarUrl == null ? JSONObject.NULL : avatarUrl);
+            owner.put("avatar_file_id", avatarFileId == null ? JSONObject.NULL : avatarFileId);
+            JSONObject body = new JSONObject();
+            body.put("short_name", shortName);
+            body.put("category", "Custom");
+            body.put("owner", owner);
+            send("POST", "api/v1/stickers/?account_id=" + accountId, body, callback);
+        } catch (Exception e) {
+            postResultError(callback, "Couldn't build the upload request");
         }
     }
 

@@ -1,0 +1,183 @@
+package tw.nekomimi.nekogram.stickerstore;
+
+import android.content.Context;
+import android.view.Gravity;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.TextView;
+
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import org.telegram.messenger.AndroidUtilities;
+import org.telegram.ui.ActionBar.BaseFragment;
+import org.telegram.ui.ActionBar.Theme;
+import org.telegram.ui.Components.LayoutHelper;
+import org.telegram.ui.Components.RadialProgressView;
+import org.telegram.ui.Components.RecyclerListView;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+
+/** The sticker packs this user has uploaded to the store, as a grid of the same cards the
+ *  store uses. Loaded from the backend filtered by owner id, paged as the user scrolls. */
+public class MyStickersView extends FrameLayout {
+
+    private static final int PAGE_SIZE = 50;
+    private static final int LOAD_MORE_THRESHOLD = 9;
+
+    private final BaseFragment fragment;
+    private final String ownerId;
+    private final RecyclerListView listView;
+    private final GridLayoutManager layoutManager;
+    private final RadialProgressView progressView;
+    private final TextView infoView;
+    private final ArrayList<StickerPackInfo> packs = new ArrayList<>();
+    private final HashSet<String> seen = new HashSet<>();
+    private final RecyclerListView.SelectionAdapter adapter;
+    private int nextPage = 1;
+    private boolean loading;
+    private boolean hasMore = true;
+    private int generation;
+
+    public MyStickersView(Context context, BaseFragment fragment, long ownerTelegramId) {
+        super(context);
+        this.fragment = fragment;
+        this.ownerId = String.valueOf(ownerTelegramId);
+
+        layoutManager = new GridLayoutManager(context, 3);
+        listView = new RecyclerListView(context);
+        listView.setLayoutManager(layoutManager);
+        listView.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(4), AndroidUtilities.dp(8), AndroidUtilities.dp(16));
+        listView.setClipToPadding(false);
+        listView.setSelectorDrawableColor(0); // each card draws its own rounded ripple
+        adapter = new RecyclerListView.SelectionAdapter() {
+            @Override
+            public int getItemCount() {
+                return packs.size();
+            }
+
+            @Override
+            public boolean isEnabled(RecyclerView.ViewHolder holder) {
+                return true;
+            }
+
+            @Override
+            public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                StickerPackGridCell cell = new StickerPackGridCell(parent.getContext());
+                cell.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, AndroidUtilities.dp(132)));
+                return new RecyclerListView.Holder(cell);
+            }
+
+            @Override
+            public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+                ((StickerPackGridCell) holder.itemView).setPack(packs.get(position), fragment.getCurrentAccount());
+                ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
+                int m = AndroidUtilities.dp(4);
+                lp.setMargins(m, m, m, m);
+                holder.itemView.setLayoutParams(lp);
+            }
+        };
+        listView.setAdapter(adapter);
+        addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+
+        listView.setOnItemClickListener((view, position) -> {
+            if (position >= 0 && position < packs.size() && fragment.getParentActivity() != null) {
+                fragment.presentFragment(new StickerPackDetailActivity(packs.get(position)));
+            }
+        });
+        listView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0 && layoutManager.findLastVisibleItemPosition() >= packs.size() - LOAD_MORE_THRESHOLD) {
+                    loadNextPage();
+                }
+            }
+        });
+
+        progressView = new RadialProgressView(context);
+        addView(progressView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER));
+
+        infoView = new TextView(context);
+        infoView.setTextSize(14);
+        infoView.setGravity(Gravity.CENTER);
+        infoView.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGrayText));
+        infoView.setPadding(AndroidUtilities.dp(32), 0, AndroidUtilities.dp(32), 0);
+        infoView.setVisibility(GONE);
+        addView(infoView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER));
+
+        reload();
+    }
+
+    /** Space for the floating tab bar / button at the bottom of the grid. */
+    public void setBottomInset(int px) {
+        listView.setPadding(listView.getPaddingLeft(), listView.getPaddingTop(), listView.getPaddingRight(), px);
+    }
+
+    /** Starts over from page 1 (also used after the user uploads a new pack). */
+    public void reload() {
+        generation++;
+        packs.clear();
+        seen.clear();
+        nextPage = 1;
+        hasMore = true;
+        loading = false;
+        adapter.notifyDataSetChanged();
+        progressView.setVisibility(VISIBLE);
+        infoView.setVisibility(GONE);
+        loadNextPage();
+    }
+
+    private void loadNextPage() {
+        if (loading || !hasMore) {
+            return;
+        }
+        if (!StickerStoreApi.isConfigured()) {
+            showInfo("Sticker store isn't configured for this build.");
+            return;
+        }
+        loading = true;
+        final int gen = generation;
+        StickerStoreApi.fetchPacks(null, StickerStoreApi.SORT_NEWEST, nextPage, PAGE_SIZE, ownerId, new StickerStoreApi.PacksCallback() {
+            @Override
+            public void onSuccess(ArrayList<StickerPackInfo> result) {
+                if (gen != generation) return;
+                loading = false;
+                int added = 0;
+                for (StickerPackInfo info : result) {
+                    if (info.shortName != null && seen.add(info.shortName)) {
+                        packs.add(info);
+                        added++;
+                    }
+                }
+                nextPage++;
+                hasMore = added > 0 && result.size() >= PAGE_SIZE;
+                progressView.setVisibility(GONE);
+                adapter.notifyDataSetChanged();
+                if (packs.isEmpty()) {
+                    showInfo("You haven't uploaded any sticker packs yet.\nTap + to add one.");
+                } else {
+                    infoView.setVisibility(GONE);
+                    listView.setVisibility(VISIBLE);
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                if (gen != generation) return;
+                loading = false;
+                progressView.setVisibility(GONE);
+                if (packs.isEmpty()) {
+                    showInfo(message);
+                }
+            }
+        });
+    }
+
+    private void showInfo(String text) {
+        progressView.setVisibility(GONE);
+        listView.setVisibility(GONE);
+        infoView.setVisibility(VISIBLE);
+        infoView.setText(text);
+    }
+}

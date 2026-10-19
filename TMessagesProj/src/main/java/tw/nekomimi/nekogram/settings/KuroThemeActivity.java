@@ -193,7 +193,7 @@ public class KuroThemeActivity extends BaseFragment {
                 return stickersTab;
             }
             case TAB_PROFILE: {
-                ProfileTabView profileTab = new ProfileTabView(context, currentAccount);
+                ProfileTabView profileTab = new ProfileTabView(context, this, currentAccount);
                 profileTab.setBottomInset(AndroidUtilities.dp(KuroBarStyle.CONTENT_INSET_DP));
                 return profileTab;
             }

@@ -18,6 +18,28 @@ public final class OwnerProfileSync {
     private OwnerProfileSync() {
     }
 
+    /** The signed-in user's profile as the backend stores it. */
+    public static final class Profile {
+        public long id;
+        public String name, username, avatarUrl, avatarFileId;
+    }
+
+    public static Profile currentProfile(int account) {
+        TLRPC.User me = UserConfig.getInstance(account).getCurrentUser();
+        if (me == null || me.id == 0) {
+            return null;
+        }
+        Profile p = new Profile();
+        p.id = me.id;
+        p.name = UserObject.getUserName(me);
+        p.username = UserObject.getPublicUsername(me);
+        p.avatarFileId = me.photo != null && me.photo.photo_id != 0 ? String.valueOf(me.photo.photo_id) : null;
+        p.avatarUrl = !TextUtils.isEmpty(p.username) && p.avatarFileId != null ? "https://t.me/i/userpic/320/" + p.username + ".jpg" : null;
+        if (TextUtils.isEmpty(p.name)) p.name = null;
+        if (TextUtils.isEmpty(p.username)) p.username = null;
+        return p;
+    }
+
     public static void sync(int account) {
         if (!StickerStoreApi.isConfigured()) {
             return;
