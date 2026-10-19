@@ -25,9 +25,6 @@ public class StickerPackInfo {
     public int totalLikes;
     public int downloads;
     public long ownerTelegramId;
-    /** From the backend's nested owner object, when present (used until Telegram resolves the real user). */
-    public String ownerDisplayName;
-    public String ownerUsername;
 
     /** Filled in asynchronously by StickerSetResolver once the real Telegram sticker set is fetched. */
     public TLRPC.TL_messages_stickerSet resolvedSet;
@@ -43,17 +40,7 @@ public class StickerPackInfo {
         info.shortName = firstString(obj, "short_name", "shortName", "name");
         info.category = firstString(obj, "category", "category_name");
         info.downloads = firstInt(obj, "download_count", "downloads", "downloads_count");
-        // New shape: nested "owner" {telegram_id, display_name, username, avatar_url, ...};
-        // the flat owner_telegram_id is still read for documents not migrated yet.
-        JSONObject ownerObj = obj.optJSONObject("owner");
-        if (ownerObj != null) {
-            info.ownerTelegramId = firstLong(ownerObj, "telegram_id", "id");
-            info.ownerDisplayName = firstString(ownerObj, "display_name", "name");
-            info.ownerUsername = firstString(ownerObj, "username");
-        }
-        if (info.ownerTelegramId == 0) {
-            info.ownerTelegramId = firstLong(obj, "owner_telegram_id", "ownerTelegramId", "owner_id");
-        }
+        info.ownerTelegramId = firstLong(obj, "owner_telegram_id", "ownerTelegramId", "owner_id");
 
         JSONObject ratingObj = obj.optJSONObject("rating");
         if (ratingObj != null) {
