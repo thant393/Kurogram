@@ -796,14 +796,35 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
         return false;
     }
 
+    private android.graphics.drawable.Drawable pillBackground(int radius, int fill, int stroke, int ripple) {
+        android.graphics.drawable.GradientDrawable d = new android.graphics.drawable.GradientDrawable();
+        d.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+        d.setCornerRadius(radius);
+        d.setColor(fill);
+        d.setStroke(Math.max(1, AndroidUtilities.dp(1)), stroke);
+        if (ripple == 0) {
+            return d;
+        }
+        android.graphics.drawable.GradientDrawable mask = new android.graphics.drawable.GradientDrawable();
+        mask.setCornerRadius(radius);
+        mask.setColor(0xFFFFFFFF);
+        return new android.graphics.drawable.RippleDrawable(android.content.res.ColorStateList.valueOf(ripple), d, mask);
+    }
+
     private void styleActionButton(boolean installed, boolean ready) {
         int radius = AndroidUtilities.dp(22);
         if (!ready) {
             actionButton.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGrayText));
-            actionButton.setBackground(Theme.createSimpleSelectorRoundRectDrawable(radius, Theme.getColor(Theme.key_windowBackgroundGray), Theme.getColor(Theme.key_windowBackgroundGray)));
+            actionButton.setBackground(pillBackground(radius, Theme.getColor(Theme.key_windowBackgroundWhite),
+                    androidx.core.graphics.ColorUtils.setAlphaComponent(Theme.getColor(Theme.key_divider), 0x90), 0));
         } else if (installed) {
-            actionButton.setTextColor(Theme.getColor(Theme.key_text_RedBold));
-            actionButton.setBackground(Theme.createSimpleSelectorRoundRectDrawable(radius, Theme.getColor(Theme.key_windowBackgroundGray), Theme.getColor(Theme.key_listSelector)));
+            // Remove: the same solid, bordered container as the star / heart circles, with a
+            // red label, so it stays clearly bounded on any theme.
+            int red = Theme.getColor(Theme.key_text_RedBold);
+            actionButton.setTextColor(red);
+            actionButton.setBackground(pillBackground(radius, Theme.getColor(Theme.key_windowBackgroundWhite),
+                    androidx.core.graphics.ColorUtils.setAlphaComponent(red, 0x66),
+                    androidx.core.graphics.ColorUtils.setAlphaComponent(red, 0x22)));
         } else {
             actionButton.setTextColor(Theme.getColor(Theme.key_featuredStickers_buttonText));
             actionButton.setBackground(Theme.createSimpleSelectorRoundRectDrawable(radius, Theme.getColor(Theme.key_featuredStickers_addButton), Theme.getColor(Theme.key_featuredStickers_addButtonPressed)));
