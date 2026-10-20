@@ -112,7 +112,7 @@ public class UploadHubActivity extends BaseFragment {
         uploadButton.setTextSize(15);
         uploadButton.setTypeface(AndroidUtilities.bold());
         uploadButton.setGravity(Gravity.CENTER);
-        uploadButton.setBackground(Theme.createSimpleSelectorRoundRectDrawable(AndroidUtilities.dp(8), Theme.getColor(Theme.key_featuredStickers_addButton), Theme.getColor(Theme.key_featuredStickers_addButtonPressed)));
+        uploadButton.setBackground(Theme.createSimpleSelectorRoundRectDrawable(AndroidUtilities.dp(8), tw.nekomimi.nekogram.skin.KuroSkinManager.get().accent(), Theme.getColor(Theme.key_featuredStickers_addButtonPressed)));
         uploadButton.setOnClickListener(v -> upload());
         stickerCard.addView(uploadButton, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 48, 0, 14, 0, 0));
 

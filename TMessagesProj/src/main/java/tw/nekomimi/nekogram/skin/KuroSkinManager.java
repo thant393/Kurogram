@@ -54,6 +54,12 @@ public final class KuroSkinManager {
         return active;
     }
 
+    /** The skin's accent colour, or the theme's own accent when the skin doesn't set one. */
+    public int accent() {
+        int override = spec().accentColor;
+        return override != 0 ? override : org.telegram.ui.ActionBar.Theme.getColor(org.telegram.ui.ActionBar.Theme.key_featuredStickers_addButton);
+    }
+
     /** Validates, persists and applies a skin given as JSON; throws IllegalArgumentException if invalid. */
     public void apply(String json) {
         SkinSpec parsed = SkinSpec.parse(json);

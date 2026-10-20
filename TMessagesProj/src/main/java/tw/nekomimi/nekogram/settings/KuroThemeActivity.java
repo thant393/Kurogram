@@ -76,7 +76,7 @@ public class KuroThemeActivity extends BaseFragment {
         }
 
         void applySelected(boolean selected) {
-            int accent = Theme.getColor(Theme.key_featuredStickers_addButton);
+            int accent = tw.nekomimi.nekogram.skin.KuroSkinManager.get().accent();
             int tint = selected ? accent : Theme.getColor(Theme.key_windowBackgroundWhiteGrayText);
             icon.setColorFilter(new PorterDuffColorFilter(tint, PorterDuff.Mode.SRC_IN));
             label.setTextColor(tint);

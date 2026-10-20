@@ -352,7 +352,7 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
         }
 
         confirmRatingButton = createBarIcon(context, R.drawable.kuro_check, 24);
-        confirmRatingButton.setColorFilter(Theme.getColor(Theme.key_featuredStickers_addButton));
+        confirmRatingButton.setColorFilter(tw.nekomimi.nekogram.skin.KuroSkinManager.get().accent());
         confirmRatingButton.setOnClickListener(v -> confirmRating());
         ratingBar.addView(confirmRatingButton, LayoutHelper.createLinear(48, 48));
 
@@ -423,7 +423,7 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
             boolean on = i < pendingStars;
             pickStars[i].setImageResource(on ? R.drawable.kuro_star_filled : R.drawable.kuro_star_outline);
             pickStars[i].setColorFilter(on
-                    ? Theme.getColor(Theme.key_featuredStickers_addButton)
+                    ? tw.nekomimi.nekogram.skin.KuroSkinManager.get().accent()
                     : Theme.getColor(Theme.key_windowBackgroundWhiteGrayText));
         }
         confirmRatingButton.setAlpha(pendingStars > 0 ? 1f : 0.35f);
@@ -433,7 +433,7 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
         boolean rated = StickerUserState.getMyRating(pack.shortName) > 0;
         starButton.setImageResource(rated ? R.drawable.kuro_star_filled : R.drawable.kuro_star_outline);
         starButton.setColorFilter(rated
-                ? Theme.getColor(Theme.key_featuredStickers_addButton)
+                ? tw.nekomimi.nekogram.skin.KuroSkinManager.get().accent()
                 : Theme.getColor(Theme.key_windowBackgroundWhiteGrayText));
     }
 
@@ -575,7 +575,7 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
             ImageView star = (ImageView) starsRow.getChildAt(i);
             star.setImageResource(i < filled ? R.drawable.kuro_star_filled : R.drawable.kuro_star_outline);
             star.setColorFilter(i < filled
-                    ? Theme.getColor(Theme.key_featuredStickers_addButton)
+                    ? tw.nekomimi.nekogram.skin.KuroSkinManager.get().accent()
                     : Theme.getColor(Theme.key_windowBackgroundWhiteGrayText3));
         }
     }
@@ -829,7 +829,7 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
                     androidx.core.graphics.ColorUtils.setAlphaComponent(red, 0x22)));
         } else {
             actionButton.setTextColor(Theme.getColor(Theme.key_featuredStickers_buttonText));
-            actionButton.setBackground(Theme.createSimpleSelectorRoundRectDrawable(radius, Theme.getColor(Theme.key_featuredStickers_addButton), Theme.getColor(Theme.key_featuredStickers_addButtonPressed)));
+            actionButton.setBackground(Theme.createSimpleSelectorRoundRectDrawable(radius, tw.nekomimi.nekogram.skin.KuroSkinManager.get().accent(), Theme.getColor(Theme.key_featuredStickers_addButtonPressed)));
         }
     }
 

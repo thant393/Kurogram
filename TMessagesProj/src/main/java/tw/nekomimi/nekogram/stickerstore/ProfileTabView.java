@@ -51,6 +51,9 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
     private GradientDrawable cardBg;
     private GradientDrawable contentBg;
     private View headerCard;
+    private GradientDrawable avatarRingDrawable;
+    private GradientDrawable fabBgDrawable;
+    private TextView usernameViewRef;
     private View contentCard;
 
     /** The signed-in user's own profile (with the upload + button). */
@@ -115,7 +118,8 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
         GradientDrawable ring = new GradientDrawable();
         ring.setShape(GradientDrawable.OVAL);
         ring.setColor(Theme.getColor(Theme.key_windowBackgroundWhite));
-        ring.setStroke(AndroidUtilities.dp(2.5f), Theme.getColor(Theme.key_featuredStickers_addButton));
+        avatarRingDrawable = ring;
+        ring.setStroke(AndroidUtilities.dp(2.5f), tw.nekomimi.nekogram.skin.KuroSkinManager.get().accent());
         avatarRing.setBackground(ring);
         avatarRing.addView(avatarView, LayoutHelper.createFrame(88, 88, Gravity.CENTER));
         card.addView(avatarRing, LayoutHelper.createLinear(100, 100, Gravity.CENTER_HORIZONTAL, 0, 0, 0, 14));
@@ -137,7 +141,8 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
             usernameView.setTextSize(15);
             usernameView.setTypeface(AndroidUtilities.bold());
             usernameView.setGravity(Gravity.CENTER);
-            usernameView.setTextColor(Theme.getColor(Theme.key_featuredStickers_addButton));
+            usernameViewRef = usernameView;
+            usernameView.setTextColor(tw.nekomimi.nekogram.skin.KuroSkinManager.get().accent());
             usernameView.setText("@" + username);
             card.addView(usernameView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL, 0, 0, 0, 8));
         }
@@ -196,7 +201,8 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
         fab.setColorFilter(0xFFFFFFFF);
         GradientDrawable fabBg = new GradientDrawable();
         fabBg.setShape(GradientDrawable.OVAL);
-        fabBg.setColor(Theme.getColor(Theme.key_featuredStickers_addButton));
+        fabBgDrawable = fabBg;
+        fabBg.setColor(tw.nekomimi.nekogram.skin.KuroSkinManager.get().accent());
         fab.setBackground(fabBg);
         fab.setElevation(AndroidUtilities.dp(8));
         fab.setOutlineProvider(new ViewOutlineProvider() {
@@ -245,6 +251,11 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
         int r = AndroidUtilities.dp(skinRadius());
         cardBg.setCornerRadius(r);
         contentBg.setCornerRadius(r);
+        int accent = tw.nekomimi.nekogram.skin.KuroSkinManager.get().accent();
+        if (avatarRingDrawable != null) avatarRingDrawable.setStroke(AndroidUtilities.dp(2.5f), accent);
+        if (fabBgDrawable != null) fabBgDrawable.setColor(accent);
+        if (usernameViewRef != null) usernameViewRef.setTextColor(accent);
+        segmented.select(selectedTab, false);
         headerCard.invalidateOutline();
         contentCard.invalidateOutline();
         if (stickersView != null) {

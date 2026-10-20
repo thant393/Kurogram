@@ -95,7 +95,7 @@ public class StickerPackGridCell extends FrameLayout {
         ratingView = new TextView(context);
         ratingView.setTextSize(12);
         ratingView.setTypeface(AndroidUtilities.bold());
-        ratingView.setTextColor(Theme.getColor(Theme.key_featuredStickers_addButton));
+        ratingView.setTextColor(tw.nekomimi.nekogram.skin.KuroSkinManager.get().accent());
         ratingView.setGravity(Gravity.RIGHT);
         statsRow.addView(ratingView, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 1f, Gravity.RIGHT | Gravity.CENTER_VERTICAL));
 

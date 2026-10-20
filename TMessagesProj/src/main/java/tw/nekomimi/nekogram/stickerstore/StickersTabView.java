@@ -141,7 +141,7 @@ public class StickersTabView extends FrameLayout {
         bg.setShape(GradientDrawable.RECTANGLE);
         bg.setCornerRadius(AndroidUtilities.dp(18));
         if (selected) {
-            bg.setColor(Theme.getColor(Theme.key_featuredStickers_addButton));
+            bg.setColor(tw.nekomimi.nekogram.skin.KuroSkinManager.get().accent());
             chip.setTextColor(Theme.getColor(Theme.key_featuredStickers_buttonText));
         } else {
             bg.setColor(Theme.getColor(Theme.key_windowBackgroundWhite));
