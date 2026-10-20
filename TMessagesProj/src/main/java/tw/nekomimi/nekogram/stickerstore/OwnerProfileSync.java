@@ -24,6 +24,14 @@ public final class OwnerProfileSync {
         public String name, username, avatarUrl, avatarFileId;
     }
 
+    /** The account's own global profile name (first + last as set in Telegram) - not a
+     *  contact-list nickname, which only exists for accounts that saved someone as a contact. */
+    private static String globalName(TLRPC.User user) {
+        String first = user.first_name != null ? user.first_name.trim() : "";
+        String last = user.last_name != null ? user.last_name.trim() : "";
+        return (first + " " + last).trim();
+    }
+
     public static Profile currentProfile(int account) {
         TLRPC.User me = UserConfig.getInstance(account).getCurrentUser();
         if (me == null || me.id == 0) {
@@ -31,7 +39,7 @@ public final class OwnerProfileSync {
         }
         Profile p = new Profile();
         p.id = me.id;
-        p.name = UserObject.getUserName(me);
+        p.name = globalName(me);
         p.username = UserObject.getPublicUsername(me);
         p.avatarFileId = me.photo != null && me.photo.photo_id != 0 ? String.valueOf(me.photo.photo_id) : null;
         p.avatarUrl = !TextUtils.isEmpty(p.username) && p.avatarFileId != null ? "https://t.me/i/userpic/320/" + p.username + ".jpg" : null;
@@ -48,7 +56,7 @@ public final class OwnerProfileSync {
         if (me == null || me.id == 0) {
             return;
         }
-        String name = UserObject.getUserName(me);
+        String name = globalName(me);
         String username = UserObject.getPublicUsername(me);
         String photoId = me.photo != null && me.photo.photo_id != 0 ? String.valueOf(me.photo.photo_id) : null;
         // t.me serves public profile pictures at this URL for accounts with a public username.

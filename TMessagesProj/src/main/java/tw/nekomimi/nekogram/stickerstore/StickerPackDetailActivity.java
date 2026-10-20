@@ -603,8 +603,12 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
         if (id != me) {
             TLRPC.User cached = MessagesController.getInstance(currentAccount).getUser(id);
             if (cached != null) {
-                name = UserObject.getUserName(cached);
-                username = cached.username;
+                if (name == null || name.isEmpty()) {
+                    name = UserObject.getUserName(cached);
+                }
+                if (username == null || username.isEmpty()) {
+                    username = cached.username;
+                }
             }
         }
         presentFragment(new OwnerProfileActivity(id, name, username));
@@ -631,7 +635,12 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
             requestOwner(id);
             return;
         }
-        String name = UserObject.getUserName(owner);
+        // The stored global profile name wins: Telegram's user object may carry the viewer's
+        // own contact nickname for this person, which must never be shown as their name.
+        String name = pack.ownerDisplayName;
+        if (name == null || name.isEmpty()) {
+            name = UserObject.getUserName(owner);
+        }
         if (name == null || name.isEmpty()) {
             name = owner.username != null && !owner.username.isEmpty() ? "@" + owner.username : "ID " + id;
         }

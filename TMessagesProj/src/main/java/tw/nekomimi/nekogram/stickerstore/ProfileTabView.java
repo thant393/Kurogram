@@ -129,7 +129,10 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
         nameView.setTypeface(AndroidUtilities.bold());
         nameView.setGravity(Gravity.CENTER);
         nameView.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
-        nameView.setText(user != null ? UserObject.getUserName(user)
+        // Someone else's profile: the stored global name first (a cached user may carry the
+        // viewer's own contact nickname for them).
+        nameView.setText(!self && fallbackName != null && !fallbackName.isEmpty() ? fallbackName
+                : user != null ? UserObject.getUserName(user)
                 : fallbackName != null && !fallbackName.isEmpty() ? fallbackName
                 : fallbackUsername != null && !fallbackUsername.isEmpty() ? "@" + fallbackUsername
                 : self ? "Not signed in" : "ID " + ownerId);
