@@ -592,8 +592,10 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
         }
         long me = UserConfig.getInstance(currentAccount).getClientUserId();
         if (id == me) {
-            // Own pack: the app's main Profile tab (Themes / Stickers / upload +).
-            presentFragment(tw.nekomimi.nekogram.settings.KuroThemeActivity.openOnProfile());
+            // Own pack: no navigation, just a note (your own profile can't be viewed as another user).
+            android.widget.Toast.makeText(getParentActivity(),
+                    "This is your sticker pack. You can't view your own profile as another user.",
+                    android.widget.Toast.LENGTH_SHORT).show();
             return;
         }
         String name = pack.ownerDisplayName;
