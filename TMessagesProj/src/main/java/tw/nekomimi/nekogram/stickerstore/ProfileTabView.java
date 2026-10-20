@@ -66,7 +66,8 @@ public class ProfileTabView extends FrameLayout {
         this.currentAccount = currentAccount;
         this.ownerId = ownerId;
         final boolean self = ownerId == UserConfig.getInstance(currentAccount).getClientUserId();
-        setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
+        // A touch darker than the theme's grey so the white surfaces read clearly against it.
+        setBackgroundColor(androidx.core.graphics.ColorUtils.blendARGB(Theme.getColor(Theme.key_windowBackgroundGray), 0xFF000000, 0.04f));
 
         LinearLayout column = new LinearLayout(context);
         column.setOrientation(LinearLayout.VERTICAL);
@@ -145,12 +146,31 @@ public class ProfileTabView extends FrameLayout {
             card.addView(phoneView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL));
         }
 
+        // Lower half: one rounded white surface (same shape as the header card) holding the
+        // segmented control and the content, so the screen reads as two matching cards.
+        LinearLayout contentCard = new LinearLayout(context);
+        contentCard.setOrientation(LinearLayout.VERTICAL);
+        GradientDrawable contentBg = new GradientDrawable();
+        contentBg.setShape(GradientDrawable.RECTANGLE);
+        contentBg.setCornerRadius(AndroidUtilities.dp(22));
+        contentBg.setColor(Theme.getColor(Theme.key_windowBackgroundWhite));
+        contentCard.setBackground(contentBg);
+        contentCard.setElevation(AndroidUtilities.dp(2));
+        contentCard.setOutlineProvider(new ViewOutlineProvider() {
+            @Override
+            public void getOutline(View view, Outline outline) {
+                outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), AndroidUtilities.dp(22));
+            }
+        });
+        contentCard.setClipToOutline(true);
+        column.addView(contentCard, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 0, 1f, 16, 0, 16, 16));
+
         // --- iOS-style segmented control: a capsule track with a white capsule that slides ---
         segmented = new SegmentedControl(context, new String[]{"Themes", "Stickers"}, this::showTab);
-        column.addView(segmented, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 36, 16, 0, 16, 12));
+        contentCard.addView(segmented, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 36, 14, 14, 14, 10));
 
         contentFrame = new FrameLayout(context);
-        column.addView(contentFrame, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 0, 1f));
+        contentCard.addView(contentFrame, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 0, 1f));
 
         // Themes: not implemented yet - an empty state.
         FrameLayout themes = new FrameLayout(context);
