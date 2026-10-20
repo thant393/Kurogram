@@ -362,10 +362,20 @@ def refresh_owners(client, collection):
             time.sleep(OWNER_REFRESH_DELAY_SECONDS)
             continue
         fields = owner_fields_from_user(user)
+        # display_name is write-once: it stays the owner's global name from publishing time.
+        # The name this session sees can be a contact-list nickname of the scanning account, so
+        # it is only used to FILL a missing name, never to replace an existing one.
         result = collection.update_many(
             {"owner.telegram_id": tid},
-            {"$set": {f"owner.{k}": v for k, v in fields.items()}},
+            {"$set": {f"owner.{k}": v for k, v in fields.items() if k != "display_name"}},
         )
+        if fields.get("display_name"):
+            collection.update_many(
+                {"owner.telegram_id": tid,
+                 "$or": [{"owner.display_name": None}, {"owner.display_name": ""},
+                         {"owner.display_name": {"$exists": False}}]},
+                {"$set": {"owner.display_name": fields["display_name"]}},
+            )
         if result.modified_count:
             changed += result.modified_count
         print(f"  [{i}/{len(by_owner)}] {tid} -> {fields['display_name']!r} @{fields['username']}"
