@@ -39,7 +39,7 @@ public class StickerPackGridCell extends FrameLayout {
         // or flashes outside the card.
         GradientDrawable mask = new GradientDrawable();
         mask.setShape(GradientDrawable.RECTANGLE);
-        mask.setCornerRadius(AndroidUtilities.dp(20));
+        mask.setCornerRadius(AndroidUtilities.dp(cellRadiusDp()));
         mask.setColor(0xFFFFFFFF);
         setBackground(new RippleDrawable(
                 ColorStateList.valueOf(Theme.getColor(Theme.key_listSelector)),
@@ -103,12 +103,19 @@ public class StickerPackGridCell extends FrameLayout {
     }
 
     /** iOS-style card: large radius, white fill and a hairline border. */
+    private static int cellRadiusDp() {
+        return Math.max(0, tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec().cardRadiusDp - 2);
+    }
+
     private static GradientDrawable cardBackground() {
+        tw.nekomimi.nekogram.skin.SkinSpec skin = tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec();
         GradientDrawable d = new GradientDrawable();
         d.setShape(GradientDrawable.RECTANGLE);
-        d.setCornerRadius(AndroidUtilities.dp(20));
+        d.setCornerRadius(AndroidUtilities.dp(cellRadiusDp()));
         d.setColor(Theme.getColor(Theme.key_windowBackgroundWhite));
-        d.setStroke(Math.max(1, AndroidUtilities.dp(0.5f)), 0x1A000000);
+        if (tw.nekomimi.nekogram.skin.SkinSpec.LIST_CARD.equals(skin.listStyle)) {
+            d.setStroke(Math.max(1, AndroidUtilities.dp(0.5f)), 0x1A000000);
+        }
         return d;
     }
 

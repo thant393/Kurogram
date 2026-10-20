@@ -24,7 +24,7 @@ import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.messenger.R;
 import tw.nekomimi.nekogram.settings.GroupCardHelper;
 
-public class ProfileTabView extends FrameLayout {
+public class ProfileTabView extends FrameLayout implements org.telegram.messenger.NotificationCenter.NotificationCenterDelegate {
 
     private static final int TAB_THEMES = 0;
     private static final int TAB_STICKERS = 1;
@@ -48,6 +48,10 @@ public class ProfileTabView extends FrameLayout {
     private int seenUploadVersion;
     private int bottomInset;
     private final long ownerId;
+    private GradientDrawable cardBg;
+    private GradientDrawable contentBg;
+    private View headerCard;
+    private View contentCard;
 
     /** The signed-in user's own profile (with the upload + button). */
     public ProfileTabView(Context context, BaseFragment fragment, int currentAccount) {
@@ -80,18 +84,20 @@ public class ProfileTabView extends FrameLayout {
         LinearLayout card = new LinearLayout(context);
         card.setOrientation(LinearLayout.VERTICAL);
         card.setGravity(Gravity.CENTER_HORIZONTAL);
-        GradientDrawable cardBg = new GradientDrawable();
+        cardBg = new GradientDrawable();
         cardBg.setShape(GradientDrawable.RECTANGLE);
-        cardBg.setCornerRadius(AndroidUtilities.dp(22));
+        cardBg.setCornerRadius(AndroidUtilities.dp(skinRadius()));
         cardBg.setColor(Theme.getColor(Theme.key_windowBackgroundWhite));
         card.setBackground(cardBg);
         card.setElevation(AndroidUtilities.dp(2));
         card.setOutlineProvider(new ViewOutlineProvider() {
             @Override
             public void getOutline(View view, Outline outline) {
-                outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), AndroidUtilities.dp(22));
+                outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), AndroidUtilities.dp(skinRadius()));
             }
         });
+        headerCard = card;
+        card.setOnLongClickListener(v -> applySkinFromClipboard());
         card.setPadding(AndroidUtilities.dp(24), AndroidUtilities.dp(28), AndroidUtilities.dp(24), AndroidUtilities.dp(24));
         column.addView(card, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 16, 12, 16, 14));
 
@@ -150,19 +156,20 @@ public class ProfileTabView extends FrameLayout {
         // segmented control and the content, so the screen reads as two matching cards.
         LinearLayout contentCard = new LinearLayout(context);
         contentCard.setOrientation(LinearLayout.VERTICAL);
-        GradientDrawable contentBg = new GradientDrawable();
+        contentBg = new GradientDrawable();
         contentBg.setShape(GradientDrawable.RECTANGLE);
-        contentBg.setCornerRadius(AndroidUtilities.dp(22));
+        contentBg.setCornerRadius(AndroidUtilities.dp(skinRadius()));
         contentBg.setColor(Theme.getColor(Theme.key_windowBackgroundWhite));
         contentCard.setBackground(contentBg);
         contentCard.setElevation(AndroidUtilities.dp(2));
         contentCard.setOutlineProvider(new ViewOutlineProvider() {
             @Override
             public void getOutline(View view, Outline outline) {
-                outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), AndroidUtilities.dp(22));
+                outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), AndroidUtilities.dp(skinRadius()));
             }
         });
         contentCard.setClipToOutline(true);
+        this.contentCard = contentCard;
         column.addView(contentCard, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 0, 1f, 16, 0, 16, 16));
 
         // --- iOS-style segmented control: a capsule track with a white capsule that slides ---
@@ -229,9 +236,60 @@ public class ProfileTabView extends FrameLayout {
         contentFrame.animate().alpha(1f).setDuration(150).start();
     }
 
+    private static int skinRadius() {
+        return tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec().cardRadiusDp;
+    }
+
+    /** Re-applies the active skin to this screen's surfaces without rebuilding it. */
+    private void applySkin() {
+        int r = AndroidUtilities.dp(skinRadius());
+        cardBg.setCornerRadius(r);
+        contentBg.setCornerRadius(r);
+        headerCard.invalidateOutline();
+        contentCard.invalidateOutline();
+        if (stickersView != null) {
+            stickersView.applySkin();
+        }
+    }
+
+    /** Developer shortcut: long-press the header card to apply a skin JSON from the clipboard
+     *  (an empty/"reset" clipboard restores the default skin). */
+    private boolean applySkinFromClipboard() {
+        try {
+            android.content.ClipboardManager cm = (android.content.ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+            CharSequence text = cm != null && cm.hasPrimaryClip() && cm.getPrimaryClip().getItemCount() > 0
+                    ? cm.getPrimaryClip().getItemAt(0).coerceToText(getContext()) : null;
+            if (text != null && text.toString().trim().equalsIgnoreCase("reset")) {
+                tw.nekomimi.nekogram.skin.KuroSkinManager.get().reset();
+                android.widget.Toast.makeText(getContext(), "Skin reset to default", android.widget.Toast.LENGTH_SHORT).show();
+                return true;
+            }
+            tw.nekomimi.nekogram.skin.KuroSkinManager.get().apply(text == null ? null : text.toString());
+            android.widget.Toast.makeText(getContext(), "Skin applied", android.widget.Toast.LENGTH_SHORT).show();
+        } catch (IllegalArgumentException e) {
+            android.widget.Toast.makeText(getContext(), "Skin rejected: " + e.getMessage(), android.widget.Toast.LENGTH_LONG).show();
+        }
+        return true;
+    }
+
+    @Override
+    public void didReceivedNotification(int id, int account, Object... args) {
+        if (id == org.telegram.messenger.NotificationCenter.kuroSkinChanged) {
+            applySkin();
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        org.telegram.messenger.NotificationCenter.getGlobalInstance().removeObserver(this, org.telegram.messenger.NotificationCenter.kuroSkinChanged);
+    }
+
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        org.telegram.messenger.NotificationCenter.getGlobalInstance().addObserver(this, org.telegram.messenger.NotificationCenter.kuroSkinChanged);
+        applySkin();
         // Coming back from the upload screen after adding a pack: show it.
         if (seenUploadVersion != uploadVersion) {
             seenUploadVersion = uploadVersion;

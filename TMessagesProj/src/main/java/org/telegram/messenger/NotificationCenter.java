@@ -36,6 +36,7 @@ public class NotificationCenter {
     private static int totalEvents = 1;
 
     public static final int onUpdateLoginToken = totalEvents++;
+    public static final int kuroSkinChanged = totalEvents++;
 
     public static final int didReceiveNewMessages = totalEvents++;
     public static final int updateInterfaces = totalEvents++;

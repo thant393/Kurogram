@@ -35,6 +35,7 @@ public class MyStickersView extends FrameLayout {
     private final ArrayList<StickerPackInfo> packs = new ArrayList<>();      // uploaded to the store
     private final ArrayList<StickerPackInfo> display = new ArrayList<>();    // custom (not uploaded yet) + packs
     private HashSet<String> mySets;
+    private tw.nekomimi.nekogram.skin.SkinSpec appliedSkin = tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec();
     private final HashSet<StickerPackInfo> custom = new HashSet<>();
     private final HashSet<String> seen = new HashSet<>();
     private final RecyclerListView.SelectionAdapter adapter;
@@ -48,7 +49,7 @@ public class MyStickersView extends FrameLayout {
         this.fragment = fragment;
         this.ownerId = String.valueOf(ownerTelegramId);
 
-        layoutManager = new GridLayoutManager(context, 2);
+        layoutManager = new GridLayoutManager(context, tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec().gridColumns);
         listView = new RecyclerListView(context);
         listView.setLayoutManager(layoutManager);
         listView.setPadding(AndroidUtilities.dp(10), AndroidUtilities.dp(6), AndroidUtilities.dp(10), AndroidUtilities.dp(16));
@@ -123,6 +124,17 @@ public class MyStickersView extends FrameLayout {
     /** Space for the floating tab bar / button at the bottom of the grid. */
     public void setBottomInset(int px) {
         listView.setPadding(listView.getPaddingLeft(), listView.getPaddingTop(), listView.getPaddingRight(), px);
+    }
+
+    /** Applies the active skin (column count, card style) and rebuilds the cells. */
+    public void applySkin() {
+        tw.nekomimi.nekogram.skin.SkinSpec skin = tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec();
+        if (skin == appliedSkin) {
+            return; // nothing changed since the cells were last built
+        }
+        appliedSkin = skin;
+        layoutManager.setSpanCount(skin.gridColumns);
+        listView.setAdapter(adapter); // new cells pick up the radius / style
     }
 
     /** Starts over from page 1 (also used after the user uploads a new pack). */
