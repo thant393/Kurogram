@@ -591,6 +591,11 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
             return;
         }
         long me = UserConfig.getInstance(currentAccount).getClientUserId();
+        if (id == me) {
+            // Own pack: the app's main Profile tab (Themes / Stickers / upload +).
+            presentFragment(tw.nekomimi.nekogram.settings.KuroThemeActivity.openOnProfile());
+            return;
+        }
         String name = pack.ownerDisplayName;
         String username = pack.ownerUsername;
         if (id != me) {

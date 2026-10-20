@@ -39,6 +39,20 @@ public class KuroThemeActivity extends BaseFragment {
     private View[] tabContents = new View[3];
     private TabButton[] tabButtons = new TabButton[3];
     private int selectedTab = TAB_THEMES;
+    private final int initialTab;
+
+    public KuroThemeActivity() {
+        this(TAB_THEMES);
+    }
+
+    /** Opens on a given tab (TAB_PROFILE = the signed-in user's own profile). */
+    public KuroThemeActivity(int initialTab) {
+        this.initialTab = initialTab;
+    }
+
+    public static KuroThemeActivity openOnProfile() {
+        return new KuroThemeActivity(TAB_PROFILE);
+    }
     private ActionBarMenuItem searchItem;
     // One query per searchable tab, so each list keeps its own filter.
     private final String[] tabQueries = {"", "", ""};
@@ -128,7 +142,7 @@ public class KuroThemeActivity extends BaseFragment {
         addTabButton(context, tabBar, TAB_STICKERS, R.drawable.msg_sticker, "Stickers");
         addTabButton(context, tabBar, TAB_PROFILE, R.drawable.msg_contacts, "Profile");
 
-        selectTab(TAB_THEMES);
+        selectTab(initialTab);
 
         // Keep the backend's copy of this user's profile current (only sends on change).
         tw.nekomimi.nekogram.stickerstore.OwnerProfileSync.sync(currentAccount);
