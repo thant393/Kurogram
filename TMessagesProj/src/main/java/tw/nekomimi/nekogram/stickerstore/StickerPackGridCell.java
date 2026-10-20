@@ -112,6 +112,18 @@ public class StickerPackGridCell extends FrameLayout {
         return d;
     }
 
+    /** Roomier variant for 2-column grids: a bigger thumbnail and more padding. */
+    public StickerPackGridCell setLarge(boolean large) {
+        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) iconView.getLayoutParams();
+        lp.width = lp.height = AndroidUtilities.dp(large ? 96 : 64);
+        lp.topMargin = AndroidUtilities.dp(large ? 10 : 4);
+        iconView.setLayoutParams(lp);
+        int pad = AndroidUtilities.dp(large ? 12 : 8);
+        setPadding(pad, pad, pad, pad);
+        titleView.setTextSize(large ? 15 : 14);
+        return this;
+    }
+
     public void setPack(StickerPackInfo pack, int currentAccount) {
         this.currentPack = pack;
         this.currentAccount = currentAccount;

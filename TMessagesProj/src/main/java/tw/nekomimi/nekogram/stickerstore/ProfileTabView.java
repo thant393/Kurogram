@@ -104,10 +104,17 @@ public class ProfileTabView extends FrameLayout {
             avatarDrawable.setInfo(ownerId, fallbackName, null);
             avatarView.setImageDrawable(avatarDrawable);
         }
-        card.addView(avatarView, LayoutHelper.createLinear(88, 88, Gravity.CENTER_HORIZONTAL, 0, 0, 0, 14));
+        FrameLayout avatarRing = new FrameLayout(context);
+        GradientDrawable ring = new GradientDrawable();
+        ring.setShape(GradientDrawable.OVAL);
+        ring.setColor(Theme.getColor(Theme.key_windowBackgroundWhite));
+        ring.setStroke(AndroidUtilities.dp(2.5f), Theme.getColor(Theme.key_featuredStickers_addButton));
+        avatarRing.setBackground(ring);
+        avatarRing.addView(avatarView, LayoutHelper.createFrame(88, 88, Gravity.CENTER));
+        card.addView(avatarRing, LayoutHelper.createLinear(100, 100, Gravity.CENTER_HORIZONTAL, 0, 0, 0, 14));
 
         TextView nameView = new TextView(context);
-        nameView.setTextSize(22);
+        nameView.setTextSize(23);
         nameView.setTypeface(AndroidUtilities.bold());
         nameView.setGravity(Gravity.CENTER);
         nameView.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
@@ -121,10 +128,11 @@ public class ProfileTabView extends FrameLayout {
         if (username != null && !username.isEmpty()) {
             TextView usernameView = new TextView(context);
             usernameView.setTextSize(15);
+            usernameView.setTypeface(AndroidUtilities.bold());
             usernameView.setGravity(Gravity.CENTER);
             usernameView.setTextColor(Theme.getColor(Theme.key_featuredStickers_addButton));
             usernameView.setText("@" + username);
-            card.addView(usernameView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL, 0, 0, 0, 4));
+            card.addView(usernameView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL, 0, 0, 0, 8));
         }
 
         if (self && user != null && user.phone != null && !user.phone.isEmpty()) {
@@ -132,6 +140,7 @@ public class ProfileTabView extends FrameLayout {
             phoneView.setTextSize(13);
             phoneView.setGravity(Gravity.CENTER);
             phoneView.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGrayText));
+            phoneView.setAlpha(0.85f);
             phoneView.setText(PhoneFormat.getInstance().format("+" + user.phone));
             card.addView(phoneView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL));
         }
@@ -175,7 +184,7 @@ public class ProfileTabView extends FrameLayout {
                 fragment.presentFragment(new UploadHubActivity());
             }
         });
-        addView(fab, LayoutHelper.createFrame(56, 56, Gravity.BOTTOM | Gravity.RIGHT, 0, 0, 20, 20));
+        addView(fab, LayoutHelper.createFrame(56, 56, Gravity.BOTTOM | Gravity.RIGHT, 0, 0, 20, 28));
         fab.setVisibility(self ? VISIBLE : GONE);
 
         seenUploadVersion = uploadVersion;
@@ -216,7 +225,7 @@ public class ProfileTabView extends FrameLayout {
     public void setBottomInset(int px) {
         bottomInset = px;
         MarginLayoutParams lp = (MarginLayoutParams) fab.getLayoutParams();
-        lp.bottomMargin = px + AndroidUtilities.dp(16);
+        lp.bottomMargin = px + AndroidUtilities.dp(24);
         fab.setLayoutParams(lp);
         if (stickersView != null) {
             stickersView.setBottomInset(AndroidUtilities.dp(92) + px);

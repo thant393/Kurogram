@@ -48,10 +48,10 @@ public class MyStickersView extends FrameLayout {
         this.fragment = fragment;
         this.ownerId = String.valueOf(ownerTelegramId);
 
-        layoutManager = new GridLayoutManager(context, 3);
+        layoutManager = new GridLayoutManager(context, 2);
         listView = new RecyclerListView(context);
         listView.setLayoutManager(layoutManager);
-        listView.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(4), AndroidUtilities.dp(8), AndroidUtilities.dp(16));
+        listView.setPadding(AndroidUtilities.dp(10), AndroidUtilities.dp(6), AndroidUtilities.dp(10), AndroidUtilities.dp(16));
         listView.setClipToPadding(false);
         listView.setSelectorDrawableColor(0); // each card draws its own rounded ripple
         adapter = new RecyclerListView.SelectionAdapter() {
@@ -67,8 +67,10 @@ public class MyStickersView extends FrameLayout {
 
             @Override
             public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                StickerPackGridCell cell = new StickerPackGridCell(parent.getContext());
-                cell.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, AndroidUtilities.dp(132)));
+                StickerPackGridCell cell = new StickerPackGridCell(parent.getContext()).setLarge(true);
+                RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT);
+                lp.setMargins(AndroidUtilities.dp(6), AndroidUtilities.dp(6), AndroidUtilities.dp(6), AndroidUtilities.dp(6));
+                cell.setLayoutParams(lp);
                 return new RecyclerListView.Holder(cell);
             }
 
