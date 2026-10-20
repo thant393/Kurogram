@@ -67,6 +67,7 @@ public class StickerPackGridCell extends FrameLayout {
         titleView.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
         titleView.setGravity(Gravity.CENTER);
         titleView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        titleView.setSingleLine(true);
         titleView.setMaxLines(1);
         titleView.setEllipsize(android.text.TextUtils.TruncateAt.END);
         column.addView(titleView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL));
