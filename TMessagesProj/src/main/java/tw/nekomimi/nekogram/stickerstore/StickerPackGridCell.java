@@ -58,25 +58,27 @@ public class StickerPackGridCell extends FrameLayout {
         iconBg.setCornerRadius(AndroidUtilities.dp(16));
         iconBg.setColor(Theme.getColor(Theme.key_windowBackgroundGray));
         iconView.setBackground(iconBg);
-        column.addView(iconView, LayoutHelper.createLinear(64, 64, Gravity.CENTER_HORIZONTAL, 0, 2, 0, 8));
+        column.addView(iconView, LayoutHelper.createLinear(64, 64, Gravity.CENTER_HORIZONTAL, 0, 4, 0, 12));
 
         // Display Name only - the technical short_name is never shown anywhere in this cell.
         titleView = new TextView(context);
         titleView.setTextSize(14);
         titleView.setTypeface(AndroidUtilities.bold());
         titleView.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
-        titleView.setGravity(Gravity.CENTER_HORIZONTAL);
+        titleView.setGravity(Gravity.CENTER);
+        titleView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         titleView.setMaxLines(1);
         titleView.setEllipsize(android.text.TextUtils.TruncateAt.END);
         column.addView(titleView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL));
 
         categoryView = new TextView(context);
-        categoryView.setTextSize(11);
+        categoryView.setTextSize(12);
         categoryView.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGrayText));
-        categoryView.setGravity(Gravity.CENTER_HORIZONTAL);
+        categoryView.setGravity(Gravity.CENTER);
+        categoryView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         categoryView.setMaxLines(1);
         categoryView.setEllipsize(android.text.TextUtils.TruncateAt.END);
-        column.addView(categoryView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL, 0, 2, 0, 6));
+        column.addView(categoryView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL, 0, 3, 0, 10));
 
         // Bottom stats row: total likes on the bottom-left, average rating on the bottom-right.
         LinearLayout statsRow = new LinearLayout(context);

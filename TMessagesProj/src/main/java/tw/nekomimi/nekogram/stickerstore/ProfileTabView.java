@@ -138,7 +138,7 @@ public class ProfileTabView extends FrameLayout {
 
         // --- iOS-style segmented control: a capsule track with a white capsule that slides ---
         segmented = new SegmentedControl(context, new String[]{"Themes", "Stickers"}, this::showTab);
-        column.addView(segmented, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 36, 16, 0, 16, 10));
+        column.addView(segmented, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 36, 16, 0, 16, 12));
 
         contentFrame = new FrameLayout(context);
         column.addView(contentFrame, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 0, 1f));
@@ -239,7 +239,7 @@ public class ProfileTabView extends FrameLayout {
             labels = new TextView[titles.length];
             GradientDrawable track = new GradientDrawable();
             track.setCornerRadius(AndroidUtilities.dp(18));
-            track.setColor(0x1F767680);
+            track.setColor(0x33767680);
             setBackground(track);
             int pad = AndroidUtilities.dp(2);
             setPadding(pad, pad, pad, pad);
@@ -249,13 +249,7 @@ public class ProfileTabView extends FrameLayout {
             thumbBg.setCornerRadius(AndroidUtilities.dp(16));
             thumbBg.setColor(Theme.getColor(Theme.key_windowBackgroundWhite));
             thumb.setBackground(thumbBg);
-            thumb.setElevation(AndroidUtilities.dp(1.5f));
-            thumb.setOutlineProvider(new ViewOutlineProvider() {
-                @Override
-                public void getOutline(View view, Outline outline) {
-                    outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), AndroidUtilities.dp(16));
-                }
-            });
+            thumbBg.setStroke(Math.max(1, AndroidUtilities.dp(0.5f)), 0x1F000000);
             addView(thumb, LayoutHelper.createFrame(0, LayoutHelper.MATCH_PARENT));
 
             LinearLayout row = new LinearLayout(context);
@@ -275,16 +269,13 @@ public class ProfileTabView extends FrameLayout {
         }
 
         @Override
-        protected void onLayout(boolean changed, int l, int t, int r, int b) {
-            super.onLayout(changed, l, t, r, b);
-            int w = (getWidth() - getPaddingLeft() - getPaddingRight()) / labels.length;
-            if (thumb.getLayoutParams().width != w) {
-                thumb.getLayoutParams().width = w;
-                thumb.requestLayout();
-            }
-            if (selected >= 0) {
-                thumb.setTranslationX(selected * w);
-            }
+        protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+            super.onSizeChanged(w, h, oldw, oldh);
+            int each = (w - getPaddingLeft() - getPaddingRight()) / labels.length;
+            FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) thumb.getLayoutParams();
+            lp.width = each;
+            thumb.setLayoutParams(lp);
+            thumb.setTranslationX(Math.max(selected, 0) * each);
         }
 
         void select(int index, boolean animate) {
