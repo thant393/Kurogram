@@ -128,8 +128,18 @@ public final class KuroSkinManager {
         return spec().accentColor;
     }
 
+    /** Colour for a Theme key if the active skin overrides it, else 0. */
+    public int colorOverride(int themeKey) {
+        return spec().keyOverrides().get(themeKey, 0);
+    }
+
     private void notifyChanged() {
         AndroidUtilities.runOnUIThread(() -> {
+            try {
+                SkinNative.apply(spec());
+            } catch (Throwable t) {
+                org.telegram.messenger.FileLog.e(t);
+            }
             NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.kuroSkinChanged);
             // Rebuild every open Telegram screen so the new colours / radii show everywhere now.
             NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.reloadInterface);

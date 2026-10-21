@@ -9072,36 +9072,15 @@ public class Theme {
         return getColor(key, isDefault, false);
     }
 
-    // Kuro skin: the accent-coloured keys (links, buttons, switches, the main FAB...) take the
-    // active skin's accent when it sets one, across every screen and dialog.
-    private static android.util.SparseBooleanArray kuroAccentKeys;
-
-    private static boolean isKuroAccentKey(int key) {
-        if (kuroAccentKeys == null) {
-            android.util.SparseBooleanArray a = new android.util.SparseBooleanArray();
-            int[] keys = {
-                    key_windowBackgroundWhiteBlueText, key_windowBackgroundWhiteBlueText2, key_windowBackgroundWhiteBlueText3,
-                    key_windowBackgroundWhiteBlueText4, key_windowBackgroundWhiteBlueText5, key_windowBackgroundWhiteBlueText6,
-                    key_windowBackgroundWhiteBlueText7, key_windowBackgroundWhiteBlueIcon, key_windowBackgroundWhiteBlueHeader,
-                    key_windowBackgroundWhiteLinkText, key_dialogTextBlue, key_dialogTextBlue2, key_dialogButton,
-                    key_switchTrackChecked, key_radioBackgroundChecked, key_checkbox, key_chats_unreadCounter,
-                    key_chats_actionBackground, key_featuredStickers_addButton
-            };
-            for (int k : keys) {
-                a.put(k, true);
-            }
-            kuroAccentKeys = a;
-        }
-        return kuroAccentKeys.get(key);
-    }
-
+    // Kuro skin: colours the active skin overrides (accent, surfaces, text, bars, bubbles...)
+    // apply on every screen and dialog; a key the skin doesn't set keeps the theme's own colour.
     public static int getColor(int key, boolean[] isDefault, boolean ignoreAnimation) {
-        int accent = tw.nekomimi.nekogram.skin.KuroSkinManager.get().accentOverride();
-        if (accent != 0 && isKuroAccentKey(key)) {
+        int override = tw.nekomimi.nekogram.skin.KuroSkinManager.get().colorOverride(key);
+        if (override != 0) {
             if (isDefault != null) {
                 isDefault[0] = false;
             }
-            return accent;
+            return override;
         }
         return getColorInternal(key, isDefault, ignoreAnimation);
     }
