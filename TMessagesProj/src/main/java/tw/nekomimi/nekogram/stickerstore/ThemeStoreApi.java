@@ -106,10 +106,17 @@ public final class ThemeStoreApi {
         try {
             int accent = 0, background = 0;
             if ("skin".equals(type)) {
-                JSONObject colors = new JSONObject(content).optJSONObject("colors");
+                JSONObject root = new JSONObject(content);
+                // v2 keeps colours under tokens.colors, v1 under colors
+                JSONObject tokens = root.optJSONObject("tokens");
+                JSONObject colors = tokens != null ? tokens.optJSONObject("colors") : root.optJSONObject("colors");
                 String a = colors != null ? colors.optString("accent", "") : "";
                 if (a.matches("#[0-9A-Fa-f]{6}")) {
                     accent = 0xFF000000 | (int) Long.parseLong(a.substring(1), 16);
+                }
+                String b = colors != null ? colors.optString("background", "") : "";
+                if (b.matches("#[0-9A-Fa-f]{6}")) {
+                    background = 0xFF000000 | (int) Long.parseLong(b.substring(1), 16);
                 }
             } else {
                 for (String raw : content.split("\n")) {
@@ -219,10 +226,18 @@ public final class ThemeStoreApi {
     }
 
     public static void setApplied(String id) {
-        prefs().edit().putString("applied_id", id).apply();
+        setApplied(id, 1);
+    }
+
+    public static void setApplied(String id, int version) {
+        prefs().edit().putString("applied_id", id).putInt("applied_version", version).apply();
+    }
+
+    public static int appliedVersion() {
+        return prefs().getInt("applied_version", 1);
     }
 
     public static void clearApplied() {
-        prefs().edit().remove("applied_id").apply();
+        prefs().edit().remove("applied_id").remove("applied_version").apply();
     }
 }

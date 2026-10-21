@@ -25,6 +25,7 @@ import java.io.FileOutputStream;
 import java.security.MessageDigest;
 
 import tw.nekomimi.nekogram.skin.KuroSkinManager;
+import tw.nekomimi.nekogram.skin.SkinSpec;
 
 /** A store theme: preview, details, and download + apply (a skin applies live, no restart). */
 public class ThemeDetailActivity extends BaseFragment {
@@ -256,14 +257,16 @@ public class ThemeDetailActivity extends BaseFragment {
     }
 
     private boolean isApplied() {
-        return info.id != null && info.id.equals(ThemeStoreApi.appliedId());
+        return info.id != null && info.id.equals(ThemeStoreApi.appliedId()) && ThemeStoreApi.appliedVersion() >= info.version;
     }
 
     private void refreshButtons() {
         int accent = KuroSkinManager.get().accent();
         boolean applied = isApplied();
         applyButton.setBackground(ThemeCardView.rounded(applied ? 0xFF8E8E93 : accent, 26, false));
-        applyButton.setText(busy ? "Working…" : applied ? "Applied" : "Download & Apply");
+        boolean needsNewerApp = info.minAppVersion > SkinSpec.ENGINE_LEVEL || info.schemaVersion > SkinSpec.SCHEMA_VERSION;
+        boolean updatable = !applied && info.id != null && info.id.equals(ThemeStoreApi.appliedId());
+        applyButton.setText(busy ? "Working…" : needsNewerApp ? "Needs a newer Kurogram" : applied ? "Applied" : updatable ? "Update" : "Download & Apply");
         applyButton.setAlpha(busy ? 0.6f : 1f);
         resetButton.setBackground(ThemeCardView.rounded(Theme.getColor(Theme.key_windowBackgroundWhite), 24, true));
         resetButton.setTextColor(Theme.getColor(Theme.key_text_RedBold));
@@ -291,6 +294,10 @@ public class ThemeDetailActivity extends BaseFragment {
         if (busy || isApplied()) {
             return;
         }
+        if (info.minAppVersion > SkinSpec.ENGINE_LEVEL || info.schemaVersion > SkinSpec.SCHEMA_VERSION) {
+            setStatus("This theme needs a newer version of Kurogram", true);
+            return;
+        }
         busy = true;
         setStatus("Downloading…", false);
         refreshButtons();
@@ -309,7 +316,7 @@ public class ThemeDetailActivity extends BaseFragment {
                     } else {
                         applyColors(response.optString("slug", "theme"), content);
                     }
-                    ThemeStoreApi.setApplied(info.id);
+                    ThemeStoreApi.setApplied(info.id, response.optInt("version", info.version));
                     setStatus("Applied", false);
                 } catch (IllegalArgumentException e) {
                     setStatus("This theme was rejected: " + e.getMessage(), true);

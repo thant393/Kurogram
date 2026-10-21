@@ -15,6 +15,9 @@ public class ThemeInfo {
     public int accent;      // 0 = unknown
     public int background;  // 0 = unknown
     public boolean dark;
+    public int version = 1;
+    public int schemaVersion = 1;
+    public int minAppVersion = 1;
     public int downloads;
     public int likes;
     public double ratingAvg;
@@ -37,6 +40,9 @@ public class ThemeInfo {
             t.background = parseColor(palette.optString("background", null));
             t.dark = palette.optBoolean("is_dark", false);
         }
+        t.version = o.optInt("version", 1);
+        t.schemaVersion = o.optInt("schema_version", 1);
+        t.minAppVersion = o.optInt("min_app_version", 1);
         t.downloads = o.optInt("download_count", 0);
         t.likes = o.optInt("total_likes", 0);
         JSONObject rating = o.optJSONObject("rating");

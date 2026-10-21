@@ -67,6 +67,11 @@ public final class KuroSkinManager {
         return active;
     }
 
+    /** Like radiusPx, but scaled by the skin's dialog radius (dialogs and sheets). */
+    public int dialogRadiusPx(float baseDp) {
+        return AndroidUtilities.dp(baseDp * spec().dialogRadiusDp / (float) SkinSpec.defaults().dialogRadiusDp);
+    }
+
     /** The skin's accent colour, or the theme's own accent when the skin doesn't set one. */
     public int accent() {
         int override = spec().accentColor;
