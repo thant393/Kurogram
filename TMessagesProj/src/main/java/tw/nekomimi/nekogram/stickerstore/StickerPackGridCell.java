@@ -103,11 +103,11 @@ public class StickerPackGridCell extends FrameLayout {
     }
 
     /** iOS-style card: large radius, white fill and a hairline border. */
-    private static int cellRadiusDp() {
+    static int cellRadiusDp() {
         return Math.max(0, tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec().cardRadiusDp - 2);
     }
 
-    private static GradientDrawable cardBackground() {
+    static GradientDrawable cardBackground() {
         tw.nekomimi.nekogram.skin.SkinSpec skin = tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec();
         GradientDrawable d = new GradientDrawable();
         d.setShape(GradientDrawable.RECTANGLE);

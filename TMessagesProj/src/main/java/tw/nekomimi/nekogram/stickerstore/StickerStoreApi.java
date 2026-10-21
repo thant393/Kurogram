@@ -195,7 +195,7 @@ public class StickerStoreApi {
         }
     }
 
-    private static void send(String method, String path, JSONObject body, ResultCallback callback) {
+    static void send(String method, String path, JSONObject body, ResultCallback callback) {
         if (!isConfigured()) {
             postResultError(callback, "Sticker store is not configured");
             return;
@@ -244,6 +244,46 @@ public class StickerStoreApi {
                 } catch (Exception e) {
                     FileLog.e("StickerStoreApi: " + method + " " + path + " read error", e);
                     postResultError(callback, "Couldn't read the server's reply");
+                }
+            }
+        });
+    }
+
+    interface JsonCallback {
+        /** root is a JSONObject or JSONArray. */
+        void onSuccess(Object root);
+
+        void onError(String message);
+    }
+
+    /** GET path (relative to the API base) and hands back the parsed JSON on the UI thread. */
+    static void getJson(String path, JsonCallback callback) {
+        if (!isConfigured()) {
+            org.telegram.messenger.AndroidUtilities.runOnUIThread(() -> callback.onError("Store is not configured"));
+            return;
+        }
+        String base = getBaseUrl();
+        String url = base.endsWith("/") ? base + path : base + "/" + path;
+        getClient().newCall(new Request.Builder().url(url).get().build()).enqueue(new okhttp3.Callback() {
+            @Override
+            public void onFailure(Call call, java.io.IOException e) {
+                org.telegram.messenger.AndroidUtilities.runOnUIThread(() -> callback.onError("Couldn't reach the store"));
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) {
+                try (Response r = response) {
+                    String text = r.body() != null ? r.body().string() : "";
+                    if (!r.isSuccessful()) {
+                        String snippet = text.length() > 160 ? text.substring(0, 160) : text;
+                        org.telegram.messenger.AndroidUtilities.runOnUIThread(() -> callback.onError("Server said " + r.code() + (snippet.isEmpty() ? "" : ": " + snippet)));
+                        return;
+                    }
+                    final Object root = new JSONTokener(text).nextValue();
+                    org.telegram.messenger.AndroidUtilities.runOnUIThread(() -> callback.onSuccess(root));
+                } catch (Exception e) {
+                    FileLog.e("StickerStoreApi: getJson read error", e);
+                    org.telegram.messenger.AndroidUtilities.runOnUIThread(() -> callback.onError("Couldn't read the server's reply"));
                 }
             }
         });

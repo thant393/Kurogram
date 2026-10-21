@@ -37,6 +37,11 @@ public class UploadHubActivity extends BaseFragment {
     private TextView uploadButton;
     private TextView statusView;
     private boolean busy;
+    private EditText themeTitleInput, themeDescInput, themeContentInput;
+    private TextView themeCategoryView, themeUploadButton, themeStatusView;
+    private static final String[] THEME_CATEGORIES = {"Custom", "Dark", "Light", "Minimal", "Colorful"};
+    private int themeCategoryIndex;
+    private boolean themeBusy;
     private final String prefillShortName;
 
     public UploadHubActivity() {
@@ -126,9 +131,47 @@ public class UploadHubActivity extends BaseFragment {
         LinearLayout themeCard = card(context);
         column.addView(themeCard, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 16, 8, 16, 16));
         themeCard.addView(title(context, "Theme"));
-        TextView soon = subtitle(context, "Uploading themes isn't available yet - coming soon.");
-        themeCard.addView(soon, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 4, 0, 0));
-        themeCard.setAlpha(0.6f);
+        themeCard.addView(subtitle(context, "Share a layout skin (JSON) or a colors theme (.attheme text). Paste it below."),
+                LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 4, 0, 14));
+        themeTitleInput = outlined(context, themeCard, "Theme name", false, 58);
+        themeDescInput = outlined(context, themeCard, "Description (optional)", false, 58);
+        themeContentInput = outlined(context, themeCard, "Skin JSON or colors text", true, 150);
+
+        themeCategoryView = new TextView(context);
+        themeCategoryView.setTextSize(15);
+        themeCategoryView.setGravity(Gravity.CENTER_VERTICAL);
+        themeCategoryView.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
+        themeCategoryView.setOnClickListener(v -> {
+            themeCategoryIndex = (themeCategoryIndex + 1) % THEME_CATEGORIES.length;
+            updateCategoryLabel();
+        });
+        updateCategoryLabel();
+        themeCard.addView(themeCategoryView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 44, 4, 4, 4, 0));
+
+        TextView pasteButton = new TextView(context);
+        pasteButton.setText("Paste from clipboard");
+        pasteButton.setTextSize(15);
+        pasteButton.setTypeface(AndroidUtilities.bold());
+        pasteButton.setGravity(Gravity.CENTER);
+        pasteButton.setTextColor(tw.nekomimi.nekogram.skin.KuroSkinManager.get().accent());
+        pasteButton.setOnClickListener(v -> pasteContent(context));
+        themeCard.addView(pasteButton, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 44, 0, 4, 0, 0));
+
+        themeUploadButton = new TextView(context);
+        themeUploadButton.setText("Upload theme");
+        themeUploadButton.setTextColor(0xFFFFFFFF);
+        themeUploadButton.setTextSize(15);
+        themeUploadButton.setTypeface(AndroidUtilities.bold());
+        themeUploadButton.setGravity(Gravity.CENTER);
+        themeUploadButton.setBackground(Theme.createSimpleSelectorRoundRectDrawable(AndroidUtilities.dp(8), tw.nekomimi.nekogram.skin.KuroSkinManager.get().accent(), Theme.getColor(Theme.key_featuredStickers_addButtonPressed)));
+        themeUploadButton.setOnClickListener(v -> uploadTheme());
+        themeCard.addView(themeUploadButton, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 48, 0, 8, 0, 0));
+
+        themeStatusView = new TextView(context);
+        themeStatusView.setTextSize(13);
+        themeStatusView.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGrayText));
+        themeStatusView.setVisibility(View.GONE);
+        themeCard.addView(themeStatusView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 10, 0, 0));
 
         return fragmentView;
     }
@@ -258,6 +301,108 @@ public class UploadHubActivity extends BaseFragment {
                 if (fragmentView == null) return;
                 setBusy(false);
                 setStatus(message != null && message.contains("409") ? "This pack is already in the store." : message, true);
+            }
+        });
+    }
+
+    private EditText outlined(Context context, LinearLayout parent, String label, boolean multiline, int heightDp) {
+        OutlineTextContainerView outline = new OutlineTextContainerView(context);
+        outline.setText(label);
+        EditText input = new EditText(context);
+        input.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
+        input.setTextSize(multiline ? 13 : 16);
+        input.setBackground(null);
+        if (multiline) {
+            input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+            input.setGravity(Gravity.TOP | Gravity.START);
+            input.setMinLines(5);
+            input.setMaxLines(8);
+        } else {
+            input.setInputType(InputType.TYPE_CLASS_TEXT);
+            input.setSingleLine(true);
+        }
+        input.setOnFocusChangeListener((v, hasFocus) -> outline.animateSelection(hasFocus));
+        outline.attachEditText(input);
+        outline.addView(input, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, multiline ? LayoutHelper.MATCH_PARENT : LayoutHelper.WRAP_CONTENT,
+                multiline ? Gravity.TOP : Gravity.CENTER_VERTICAL, 16, multiline ? 14 : 4, 16, 4));
+        parent.addView(outline, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, heightDp, 0, 0, 0, 10));
+        return input;
+    }
+
+    private void updateCategoryLabel() {
+        themeCategoryView.setText("Category: " + THEME_CATEGORIES[themeCategoryIndex] + "  ›  (tap to change)");
+    }
+
+    private void pasteContent(Context context) {
+        android.content.ClipboardManager cm = (android.content.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        CharSequence text = cm != null && cm.hasPrimaryClip() && cm.getPrimaryClip().getItemCount() > 0
+                ? cm.getPrimaryClip().getItemAt(0).coerceToText(context) : null;
+        if (TextUtils.isEmpty(text)) {
+            setThemeStatus("The clipboard is empty.", true);
+            return;
+        }
+        themeContentInput.setText(text);
+        setThemeStatus(null, false);
+    }
+
+    private void setThemeStatus(String text, boolean error) {
+        themeStatusView.setText(text);
+        themeStatusView.setTextColor(error ? Theme.getColor(Theme.key_text_RedBold) : Theme.getColor(Theme.key_windowBackgroundWhiteGrayText));
+        themeStatusView.setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
+    }
+
+    private void uploadTheme() {
+        if (themeBusy) {
+            return;
+        }
+        final String title = themeTitleInput.getText().toString().trim();
+        final String description = themeDescInput.getText().toString().trim();
+        final String content = themeContentInput.getText().toString().trim();
+        if (title.isEmpty()) {
+            setThemeStatus("Give the theme a name.", true);
+            return;
+        }
+        if (content.isEmpty()) {
+            setThemeStatus("Paste the theme's JSON or colors text first.", true);
+            return;
+        }
+        // A skin is JSON; anything else is treated as colors text.
+        final String type = content.startsWith("{") ? "skin" : "colors";
+        if ("skin".equals(type)) {
+            try {
+                tw.nekomimi.nekogram.skin.SkinSpec.parse(content);
+            } catch (IllegalArgumentException e) {
+                setThemeStatus("Invalid skin: " + e.getMessage(), true);
+                return;
+            }
+        }
+        final OwnerProfileSync.Profile me = OwnerProfileSync.currentProfile(currentAccount);
+        if (me == null) {
+            setThemeStatus("You need to be signed in to upload.", true);
+            return;
+        }
+        AndroidUtilities.hideKeyboard(themeContentInput);
+        themeBusy = true;
+        themeUploadButton.setAlpha(0.6f);
+        themeUploadButton.setText("Uploading…");
+        setThemeStatus("Uploading…", false);
+        ThemeStoreApi.submitTheme(me.id, title, description, THEME_CATEGORIES[themeCategoryIndex], type, content, me, new StickerStoreApi.ResultCallback() {
+            @Override
+            public void onSuccess(JSONObject response) {
+                if (fragmentView == null) return;
+                themeBusy = false;
+                ProfileTabView.notifyPackUploaded();
+                Toast.makeText(getParentActivity(), "Theme uploaded", Toast.LENGTH_SHORT).show();
+                finishFragment();
+            }
+
+            @Override
+            public void onError(String message) {
+                if (fragmentView == null) return;
+                themeBusy = false;
+                themeUploadButton.setAlpha(1f);
+                themeUploadButton.setText("Upload theme");
+                setThemeStatus(message, true);
             }
         });
     }

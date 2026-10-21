@@ -24,6 +24,7 @@ import org.telegram.ui.Components.LayoutHelper;
 import tw.nekomimi.nekogram.stickerstore.KuroBarStyle;
 import tw.nekomimi.nekogram.stickerstore.ProfileTabView;
 import tw.nekomimi.nekogram.stickerstore.StickersTabView;
+import tw.nekomimi.nekogram.stickerstore.ThemesTabView;
 
 public class KuroThemeActivity extends BaseFragment {
 
@@ -162,6 +163,9 @@ public class KuroThemeActivity extends BaseFragment {
     /** Pushes the tab's query into its list. The Themes tab has no list yet, so there is
      *  nothing to filter there. */
     private void applySearch(int tab) {
+        if (tab == TAB_THEMES && tabContents[TAB_THEMES] instanceof ThemesTabView) {
+            ((ThemesTabView) tabContents[TAB_THEMES]).setSearchQuery(tabQueries[TAB_THEMES]);
+        }
         if (tab == TAB_STICKERS && tabContents[TAB_STICKERS] instanceof StickersTabView) {
             ((StickersTabView) tabContents[TAB_STICKERS]).setSearchQuery(tabQueries[TAB_STICKERS]);
         }
@@ -212,8 +216,11 @@ public class KuroThemeActivity extends BaseFragment {
                 return profileTab;
             }
             case TAB_THEMES:
-            default:
-                return createComingSoonView(context);
+            default: {
+                ThemesTabView themesTab = new ThemesTabView(context, this, 0, "No themes in the store yet");
+                themesTab.setBottomInset(AndroidUtilities.dp(KuroBarStyle.CONTENT_INSET_DP));
+                return themesTab;
+            }
         }
     }
 

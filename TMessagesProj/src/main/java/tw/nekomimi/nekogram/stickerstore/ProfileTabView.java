@@ -40,7 +40,7 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
     private final BaseFragment fragment;
     private final SegmentedControl segmented;
     private final FrameLayout contentFrame;
-    private final View themesEmpty;
+    private ThemesTabView themesView;
     private MyStickersView stickersView;
     private final ImageView fab;
     private int selectedTab = TAB_STICKERS;
@@ -187,15 +187,7 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
         contentFrame = new FrameLayout(context);
         contentCard.addView(contentFrame, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 0, 1f));
 
-        // Themes: not implemented yet - an empty state.
-        FrameLayout themes = new FrameLayout(context);
-        TextView themesText = new TextView(context);
-        themesText.setText("No themes uploaded yet");
-        themesText.setTextSize(15);
-        themesText.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGrayText));
-        themes.addView(themesText, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER));
-        themesEmpty = themes;
-
+        // Themes: this owner's store themes (created lazily the first time the tab shows).
         // Stickers: the user's uploaded packs (created lazily the first time the tab shows).
         // Circular "+" button: opens the upload screen.
         fab = new ImageView(context);
@@ -233,7 +225,12 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
         segmentedReady = true;
         contentFrame.removeAllViews();
         if (index == TAB_THEMES) {
-            contentFrame.addView(themesEmpty, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+            if (themesView == null) {
+                themesView = new ThemesTabView(getContext(), fragment, ownerId, ownerId == UserConfig.getInstance(currentAccount).getClientUserId()
+                        ? "No themes uploaded yet.\nTap + to add one." : "No themes uploaded yet.");
+                themesView.setBottomInset(AndroidUtilities.dp(92) + bottomInset);
+            }
+            contentFrame.addView(themesView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         } else {
             if (stickersView == null) {
                 stickersView = new MyStickersView(getContext(), fragment, ownerId);
@@ -310,6 +307,9 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
             if (stickersView != null) {
                 stickersView.reload();
             }
+            if (themesView != null) {
+                themesView.reload();
+            }
         }
     }
 
@@ -321,6 +321,9 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
         fab.setLayoutParams(lp);
         if (stickersView != null) {
             stickersView.setBottomInset(AndroidUtilities.dp(92) + px);
+        }
+        if (themesView != null) {
+            themesView.setBottomInset(AndroidUtilities.dp(92) + px);
         }
     }
 
