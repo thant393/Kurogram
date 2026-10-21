@@ -179,7 +179,8 @@ public final class ThemeStoreApi {
         }
     }
 
-    public static void report(String themeId, long accountId, String reason, StickerStoreApi.ResultCallback callback) {
+    public static void report(String themeId, long accountId, String reasonKey, StickerStoreApi.ResultCallback callback) {
+        String reason = reasonKey;
         try {
             JSONObject body = new JSONObject();
             body.put("reason", reason);

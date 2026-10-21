@@ -227,23 +227,23 @@ public class ThemeDetailActivity extends BaseFragment {
 
     private void reportTheme() {
         if (getParentActivity() == null) return;
-        new android.app.AlertDialog.Builder(getParentActivity())
-                .setTitle("Report this theme?")
-                .setMessage("Tell us this theme is inappropriate or broken.")
-                .setPositiveButton("Report", (d, w) -> ThemeStoreApi.report(info.id,
-                        UserConfig.getInstance(currentAccount).getClientUserId(), "reported from the app", new StickerStoreApi.ResultCallback() {
-                            @Override
-                            public void onSuccess(JSONObject response) {
-                                if (getParentActivity() != null) Toast.makeText(getParentActivity(), "Thanks, we'll take a look", Toast.LENGTH_SHORT).show();
-                            }
+        if (ReportDialog.isReported("theme", info.id)) {
+            Toast.makeText(getParentActivity(), "You already reported this theme", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        ReportDialog.show(getParentActivity(), "Report this theme", reason ->
+                ThemeStoreApi.report(info.id, UserConfig.getInstance(currentAccount).getClientUserId(), reason, new StickerStoreApi.ResultCallback() {
+                    @Override
+                    public void onSuccess(JSONObject response) {
+                        ReportDialog.markReported("theme", info.id);
+                        if (getParentActivity() != null) Toast.makeText(getParentActivity(), "Thanks, we'll take a look", Toast.LENGTH_SHORT).show();
+                    }
 
-                            @Override
-                            public void onError(String message) {
-                                if (fragmentView != null) setStatus(message, true);
-                            }
-                        }))
-                .setNegativeButton("Cancel", null)
-                .show();
+                    @Override
+                    public void onError(String message) {
+                        if (fragmentView != null) setStatus(message, true);
+                    }
+                }));
     }
 
     private TextView text(Context context, String s, int size, boolean bold, int colorKey) {

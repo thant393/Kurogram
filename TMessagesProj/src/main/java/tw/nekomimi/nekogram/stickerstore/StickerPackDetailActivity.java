@@ -72,6 +72,9 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
     private TextView ratingsCountView;
     private TextView likesCountView;
     private TextView downloadsCountView;
+    private static final int MENU_MORE = 10;
+    private static final int MENU_SHARE = 11;
+    private static final int MENU_REPORT = 12;
     private FrameLayout gridFrame;
     private RecyclerListView gridView;
     private RadialProgressView progressView;
@@ -111,9 +114,19 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
             public void onItemClick(int id) {
                 if (id == -1) {
                     finishFragment();
+                } else if (id == MENU_SHARE) {
+                    shareChooser();
+                } else if (id == MENU_REPORT) {
+                    reportPack();
                 }
             }
         });
+        // Three dots at the right of the title: Share / Report (no Report on your own pack).
+        org.telegram.ui.ActionBar.ActionBarMenuItem moreItem = actionBar.createMenu().addItem(MENU_MORE, R.drawable.ic_ab_other);
+        moreItem.addSubItem(MENU_SHARE, R.drawable.msg_share, "Share");
+        if (pack.ownerTelegramId != UserConfig.getInstance(currentAccount).getClientUserId()) {
+            moreItem.addSubItem(MENU_REPORT, R.drawable.msg_report, "Report");
+        }
 
         FrameLayout rootFrame = new FrameLayout(context);
         fragmentView = rootFrame;
@@ -227,6 +240,7 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
         gridFrameParams.setMargins(AndroidUtilities.dp(16), AndroidUtilities.dp(8), AndroidUtilities.dp(16), AndroidUtilities.dp(8));
         root.addView(gridFrame, gridFrameParams);
         gridFrame.setBackground(GroupCardHelper.cardBackground(context, GroupCardHelper.POS_SINGLE));
+
 
         gridView = new RecyclerListView(context);
         GridLayoutManager layoutManager = new GridLayoutManager(context, GRID_COLUMNS);
@@ -583,6 +597,50 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
     /** Shows the owner (a user account or a bot) as avatar + display name. The user is taken
      *  from the local cache when known; otherwise it is fetched by id from Telegram once, and
      *  until that arrives the row shows a neutral label (never a bare "Unknown" for a real id). */
+    /** Share: copy the pack's Telegram link, or send it to someone in Telegram. */
+    private void shareChooser() {
+        if (getParentActivity() == null || pack.shortName == null) return;
+        final String link = "https://t.me/addstickers/" + pack.shortName;
+        new android.app.AlertDialog.Builder(getParentActivity())
+                .setTitle("Share sticker pack")
+                .setItems(new CharSequence[]{"Copy link", "Send to…"}, (d, which) -> {
+                    if (which == 0) {
+                        AndroidUtilities.addToClipboard(link);
+                        android.widget.Toast.makeText(getParentActivity(), "Link copied", android.widget.Toast.LENGTH_SHORT).show();
+                    } else {
+                        showDialog(org.telegram.ui.Components.ShareAlert.createShareAlert(getParentActivity(), null, link, false, link, false));
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void reportPack() {
+        if (getParentActivity() == null) return;
+        final String id = pack.id != null ? pack.id : pack.shortName;
+        if (ReportDialog.isReported("sticker", id)) {
+            android.widget.Toast.makeText(getParentActivity(), "You already reported this pack", android.widget.Toast.LENGTH_SHORT).show();
+            return;
+        }
+        ReportDialog.show(getParentActivity(), "Report this sticker pack", reason ->
+                StickerStoreApi.reportPack(id, UserConfig.getInstance(currentAccount).getClientUserId(), reason, new StickerStoreApi.ResultCallback() {
+                    @Override
+                    public void onSuccess(JSONObject response) {
+                        ReportDialog.markReported("sticker", id);
+                        if (getParentActivity() != null) {
+                            android.widget.Toast.makeText(getParentActivity(), "Thanks, we'll take a look", android.widget.Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        if (getParentActivity() != null) {
+                            android.widget.Toast.makeText(getParentActivity(), message, android.widget.Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }));
+    }
+
     /** Tapping the owner's avatar or name opens their profile: the full own-profile view when
      *  the pack is the signed-in user's, otherwise that owner's profile. */
     private void openOwnerProfile() {

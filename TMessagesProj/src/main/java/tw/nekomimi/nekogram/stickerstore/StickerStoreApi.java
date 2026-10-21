@@ -159,6 +159,18 @@ public class StickerStoreApi {
         }
     }
 
+    /** Reports a pack: POST /api/v1/stickers/{id}/report?account_id=<id> {"reason": spam|inappropriate|copyright|broken|other}.
+     *  One report per account per pack; reporting again just answers "Already reported". */
+    public static void reportPack(String packId, long accountId, String reason, ResultCallback callback) {
+        try {
+            JSONObject body = new JSONObject();
+            body.put("reason", reason);
+            send("POST", "api/v1/stickers/" + URLEncoder.encode(packId, "UTF-8") + "/report?account_id=" + accountId, body, callback);
+        } catch (Exception e) {
+            postResultError(callback, "Couldn't build the report");
+        }
+    }
+
     /** Tells the backend this user's own Telegram profile, so the packs they own show their real
      *  name / username / avatar even when Telegram's API can't look the account up by id.
      *  PUT /api/v1/stickers/owners/{telegram_id}. Null fields clear the stored value. */
