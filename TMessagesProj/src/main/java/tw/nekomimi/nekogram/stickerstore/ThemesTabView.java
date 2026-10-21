@@ -125,9 +125,6 @@ public class ThemesTabView extends FrameLayout {
         generation++;
         themes.clear();
         seen.clear();
-        if (ownerId <= 0 && query.isEmpty()) {
-            themes.addAll(BuiltInThemes.all());
-        }
         nextPage = 1;
         hasMore = true;
         loading = false;

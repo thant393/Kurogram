@@ -22,8 +22,6 @@ public class ThemeInfo {
     public long ownerTelegramId;
     public String ownerName;
     public String ownerUsername;
-    /** Set only for themes bundled in the app (BuiltInThemes); they apply without the network. */
-    public String builtinContent;
 
     public static ThemeInfo fromJson(JSONObject o) {
         ThemeInfo t = new ThemeInfo();

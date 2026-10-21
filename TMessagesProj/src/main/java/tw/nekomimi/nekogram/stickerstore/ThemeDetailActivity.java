@@ -112,8 +112,7 @@ public class ThemeDetailActivity extends BaseFragment {
         stats.setGravity(Gravity.CENTER);
         card.addView(stats, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 6, 0, 0));
 
-        // Rate (1-5 stars), like and report (store themes only).
-        final boolean builtIn = info.builtinContent != null;
+        // Rate (1-5 stars), like and report.
         LinearLayout actions = new LinearLayout(context);
         actions.setOrientation(LinearLayout.HORIZONTAL);
         actions.setGravity(Gravity.CENTER);
@@ -136,11 +135,6 @@ public class ThemeDetailActivity extends BaseFragment {
         report.setOnClickListener(v -> reportTheme());
         column.addView(report, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 36, 16, 0, 16, 8));
         refreshReactions();
-        if (builtIn) {
-            actions.setVisibility(View.GONE);
-            report.setVisibility(View.GONE);
-            stats.setVisibility(View.GONE);
-        }
 
         applyButton = new TextView(context);
         applyButton.setGravity(Gravity.CENTER);
@@ -269,7 +263,7 @@ public class ThemeDetailActivity extends BaseFragment {
         int accent = KuroSkinManager.get().accent();
         boolean applied = isApplied();
         applyButton.setBackground(ThemeCardView.rounded(applied ? 0xFF8E8E93 : accent, 26, false));
-        applyButton.setText(busy ? "Working…" : applied ? "Applied" : (info.builtinContent != null ? "Apply" : "Download & Apply"));
+        applyButton.setText(busy ? "Working…" : applied ? "Applied" : "Download & Apply");
         applyButton.setAlpha(busy ? 0.6f : 1f);
         resetButton.setBackground(ThemeCardView.rounded(Theme.getColor(Theme.key_windowBackgroundWhite), 24, true));
         resetButton.setTextColor(Theme.getColor(Theme.key_text_RedBold));
@@ -295,17 +289,6 @@ public class ThemeDetailActivity extends BaseFragment {
 
     private void applyTheme() {
         if (busy || isApplied()) {
-            return;
-        }
-        if (info.builtinContent != null) {
-            try {
-                KuroSkinManager.get().apply(info.builtinContent);
-                ThemeStoreApi.setApplied(info.id);
-                setStatus("Applied", false);
-            } catch (Exception e) {
-                setStatus("Couldn't apply the theme: " + e.getMessage(), true);
-            }
-            refreshButtons();
             return;
         }
         busy = true;
