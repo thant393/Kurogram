@@ -45,7 +45,7 @@ public class GroupCardHelper {
     }
 
     public static Drawable cardBackground(Context context, int pos) {
-        float r = AndroidUtilities.dp(RADIUS_DP);
+        float r = tw.nekomimi.nekogram.skin.KuroSkinManager.get().radiusPx(RADIUS_DP);
         float[] radii;
         switch (pos) {
             case POS_TOP:

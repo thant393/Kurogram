@@ -100,7 +100,6 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
             }
         });
         headerCard = card;
-        card.setOnLongClickListener(v -> applySkinFromClipboard());
         card.setPadding(AndroidUtilities.dp(24), AndroidUtilities.dp(28), AndroidUtilities.dp(24), AndroidUtilities.dp(24));
         column.addView(card, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 16, 12, 16, 14));
 
@@ -261,26 +260,6 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
         if (stickersView != null) {
             stickersView.applySkin();
         }
-    }
-
-    /** Developer shortcut: long-press the header card to apply a skin JSON from the clipboard
-     *  (an empty/"reset" clipboard restores the default skin). */
-    private boolean applySkinFromClipboard() {
-        try {
-            android.content.ClipboardManager cm = (android.content.ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-            CharSequence text = cm != null && cm.hasPrimaryClip() && cm.getPrimaryClip().getItemCount() > 0
-                    ? cm.getPrimaryClip().getItemAt(0).coerceToText(getContext()) : null;
-            if (text != null && text.toString().trim().equalsIgnoreCase("reset")) {
-                tw.nekomimi.nekogram.skin.KuroSkinManager.get().reset();
-                android.widget.Toast.makeText(getContext(), "Skin reset to default", android.widget.Toast.LENGTH_SHORT).show();
-                return true;
-            }
-            tw.nekomimi.nekogram.skin.KuroSkinManager.get().apply(text == null ? null : text.toString());
-            android.widget.Toast.makeText(getContext(), "Skin applied", android.widget.Toast.LENGTH_SHORT).show();
-        } catch (IllegalArgumentException e) {
-            android.widget.Toast.makeText(getContext(), "Skin rejected: " + e.getMessage(), android.widget.Toast.LENGTH_LONG).show();
-        }
-        return true;
     }
 
     @Override

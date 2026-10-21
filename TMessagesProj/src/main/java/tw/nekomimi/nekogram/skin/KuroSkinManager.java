@@ -25,8 +25,8 @@ public final class KuroSkinManager {
     private static final String KEY_JSON = "active_json";
     private static final KuroSkinManager INSTANCE = new KuroSkinManager();
 
-    private SkinSpec active = SkinSpec.defaults();
-    private boolean loaded;
+    private volatile SkinSpec active = SkinSpec.defaults();
+    private volatile boolean loaded;
 
     private KuroSkinManager() {
     }
@@ -39,9 +39,18 @@ public final class KuroSkinManager {
         return ApplicationLoader.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
     }
 
-    public synchronized SkinSpec spec() {
+    public SkinSpec spec() {
+        if (loaded) {
+            return active; // hot path (Theme.getColor): no locking once loaded
+        }
+        return load();
+    }
+
+    private synchronized SkinSpec load() {
         if (!loaded) {
-            loaded = true;
+            if (ApplicationLoader.applicationContext == null) {
+                return active; // too early to read preferences: defaults for now, try again later
+            }
             try {
                 String json = prefs().getString(KEY_JSON, null);
                 if (json != null) {
@@ -50,6 +59,7 @@ public final class KuroSkinManager {
             } catch (Exception ignore) {
                 active = SkinSpec.defaults();
             }
+            loaded = true;
         }
         return active;
     }
@@ -108,8 +118,21 @@ public final class KuroSkinManager {
         return out.toString("UTF-8");
     }
 
+    /** A corner radius designed as baseDp for the default skin, scaled to the active skin, in px. */
+    public int radiusPx(float baseDp) {
+        return AndroidUtilities.dp(baseDp * spec().cardRadiusDp / (float) SkinSpec.defaults().cardRadiusDp);
+    }
+
+    /** The skin's accent when it sets one, otherwise 0 (keep the theme's own colour). */
+    public int accentOverride() {
+        return spec().accentColor;
+    }
+
     private void notifyChanged() {
-        AndroidUtilities.runOnUIThread(() ->
-                NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.kuroSkinChanged));
+        AndroidUtilities.runOnUIThread(() -> {
+            NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.kuroSkinChanged);
+            // Rebuild every open Telegram screen so the new colours / radii show everywhere now.
+            NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.reloadInterface);
+        });
     }
 }
