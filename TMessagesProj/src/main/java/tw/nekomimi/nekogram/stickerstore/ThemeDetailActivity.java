@@ -352,7 +352,13 @@ public class ThemeDetailActivity extends BaseFragment {
 
     private void resetTheme() {
         if ("skin".equals(info.type)) {
-            KuroSkinManager.get().reset();
+            try {
+                KuroSkinManager.get().reset();
+            } catch (Exception e) {
+                setStatus(e.getMessage(), true);
+                refreshButtons();
+                return;
+            }
         } else {
             org.telegram.ui.ActionBar.Theme.ThemeInfo fallback = Theme.getTheme("Blue");
             if (fallback != null) {

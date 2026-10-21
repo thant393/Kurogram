@@ -2,10 +2,13 @@ package tw.nekomimi.nekogram.skin;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Looper;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
+import org.telegram.messenger.FileLog;
 import org.telegram.messenger.NotificationCenter;
+import org.telegram.ui.ActionBar.Theme;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -70,24 +73,79 @@ public final class KuroSkinManager {
         return override != 0 ? override : org.telegram.ui.ActionBar.Theme.getColor(org.telegram.ui.ActionBar.Theme.key_featuredStickers_addButton);
     }
 
-    /** Validates, persists and applies a skin given as JSON; throws IllegalArgumentException if invalid. */
+    /**
+     * Validates, persists and applies a skin given as JSON as one transaction. Throws
+     * IllegalArgumentException when the skin is invalid (nothing changes), or IllegalStateException
+     * when applying failed and the previous look was restored (or, if even that failed, reset).
+     */
     public void apply(String json) {
-        SkinSpec parsed = SkinSpec.parse(json);
-        synchronized (this) {
-            loaded = true;
-            active = parsed;
-            prefs().edit().putString(KEY_JSON, json).apply();
+        final SkinSpec parsed = SkinSpec.parse(json);
+        runOnMain(() -> transact(parsed, json));
+    }
+
+    public void reset() {
+        runOnMain(() -> transact(SkinSpec.defaults(), null));
+    }
+
+    /** Callers are on the UI thread, so the transaction finishes before apply() returns. */
+    private void runOnMain(Runnable r) {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            r.run();
+        } else {
+            AndroidUtilities.runOnUIThread(() -> {
+                try {
+                    r.run();
+                } catch (Throwable t) {
+                    FileLog.e(t);
+                }
+            });
+        }
+    }
+
+    private void transact(SkinSpec next, String json) {
+        final SkinSpec prevSpec = spec();
+        final String prevJson = prefs().getString(KEY_JSON, null);
+        final SkinNative.Snapshot snapshot = SkinNative.snapshot();
+        try {
+            synchronized (this) {
+                loaded = true;
+                active = next;
+                write(json);
+            }
+            SkinNative.apply(next);
+            Theme.refreshThemeColors(false, true);
+        } catch (Throwable t) {
+            FileLog.e(t);
+            try {
+                synchronized (this) {
+                    active = prevSpec;
+                    write(prevJson);
+                }
+                SkinNative.restore(snapshot);
+                Theme.refreshThemeColors(false, true);
+            } catch (Throwable undoFailed) {
+                FileLog.e(undoFailed);
+                synchronized (this) {
+                    active = SkinSpec.defaults();
+                    write(null);
+                }
+                notifyChanged();
+                throw new IllegalStateException("Couldn't apply the theme and couldn't fully undo it. Tap \"Reset to default\".");
+            }
+            notifyChanged();
+            throw new IllegalStateException("Couldn't apply the theme; your previous look was kept.");
         }
         notifyChanged();
     }
 
-    public void reset() {
-        synchronized (this) {
-            loaded = true;
-            active = SkinSpec.defaults();
-            prefs().edit().remove(KEY_JSON).apply();
+    private void write(String json) {
+        SharedPreferences.Editor e = prefs().edit();
+        if (json == null) {
+            e.remove(KEY_JSON);
+        } else {
+            e.putString(KEY_JSON, json);
         }
-        notifyChanged();
+        e.commit();
     }
 
     /** Reads manifest.json out of a skin zip (nothing is extracted to disk) and applies it. */
@@ -133,13 +191,16 @@ public final class KuroSkinManager {
         return spec().keyOverrides().get(themeKey, 0);
     }
 
+    private boolean notifyPending;
+
+    /** One notification + one interface rebuild, however many changes arrive in the same tick. */
     private void notifyChanged() {
+        if (notifyPending) {
+            return;
+        }
+        notifyPending = true;
         AndroidUtilities.runOnUIThread(() -> {
-            try {
-                SkinNative.apply(spec());
-            } catch (Throwable t) {
-                org.telegram.messenger.FileLog.e(t);
-            }
+            notifyPending = false;
             NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.kuroSkinChanged);
             // Rebuild every open Telegram screen so the new colours / radii show everywhere now.
             NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.reloadInterface);
