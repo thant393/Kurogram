@@ -149,6 +149,64 @@ public final class ThemeStoreApi {
         }
     }
 
+    public static void setLike(String themeId, long accountId, boolean liked, StickerStoreApi.ResultCallback callback) {
+        String path = "api/v1/themes/" + themeId + "/like?account_id=" + accountId;
+        StickerStoreApi.send(liked ? "POST" : "DELETE", path, null, new StickerStoreApi.ResultCallback() {
+            @Override
+            public void onSuccess(JSONObject response) {
+                callback.onSuccess(response);
+            }
+
+            @Override
+            public void onError(String message) {
+                // "already liked" / "have not liked" mean the server is already in the wanted state.
+                if (message != null && (message.contains("Already liked") || message.contains("not liked"))) {
+                    callback.onSuccess(null);
+                } else {
+                    callback.onError(message);
+                }
+            }
+        });
+    }
+
+    public static void rate(String themeId, long accountId, int stars, StickerStoreApi.ResultCallback callback) {
+        try {
+            JSONObject body = new JSONObject();
+            body.put("rating", stars);
+            StickerStoreApi.send("PUT", "api/v1/themes/" + themeId + "/rating?account_id=" + accountId, body, callback);
+        } catch (Exception e) {
+            callback.onError("Couldn't build the rating request");
+        }
+    }
+
+    public static void report(String themeId, long accountId, String reason, StickerStoreApi.ResultCallback callback) {
+        try {
+            JSONObject body = new JSONObject();
+            body.put("reason", reason);
+            StickerStoreApi.send("POST", "api/v1/themes/" + themeId + "/report?account_id=" + accountId, body, callback);
+        } catch (Exception e) {
+            callback.onError("Couldn't build the report");
+        }
+    }
+
+    // ---- what this user already did to a theme (remembered locally; the server enforces one each) ----
+
+    public static boolean isLiked(String id) {
+        return prefs().getBoolean("liked_" + id, false);
+    }
+
+    public static void setLikedLocal(String id, boolean liked) {
+        prefs().edit().putBoolean("liked_" + id, liked).apply();
+    }
+
+    public static int myRating(String id) {
+        return prefs().getInt("rating_" + id, 0);
+    }
+
+    public static void setMyRating(String id, int stars) {
+        prefs().edit().putInt("rating_" + id, stars).apply();
+    }
+
     // ---- which store theme is currently applied (for the Apply / Reset button) ----
 
     private static SharedPreferences prefs() {

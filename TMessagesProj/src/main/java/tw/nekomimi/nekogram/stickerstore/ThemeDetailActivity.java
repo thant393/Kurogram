@@ -34,6 +34,10 @@ public class ThemeDetailActivity extends BaseFragment {
     private TextView resetButton;
     private TextView statusView;
     private boolean busy;
+    private android.widget.ImageView[] starViews;
+    private android.widget.ImageView likeView;
+    private TextView statsView;
+    private int likes;
 
     public ThemeDetailActivity(ThemeInfo info) {
         this.info = info;
@@ -101,9 +105,36 @@ public class ThemeDetailActivity extends BaseFragment {
         ownerView.setGravity(Gravity.CENTER);
         ownerView.setOnClickListener(v -> openOwner());
         card.addView(ownerView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 14, 0, 0));
-        TextView stats = text(context, "↓ " + CountFormat.format(info.downloads) + "   ♥ " + CountFormat.format(info.likes), 13, false, Theme.key_windowBackgroundWhiteGrayText);
+        likes = info.likes;
+        TextView stats = text(context, "", 13, false, Theme.key_windowBackgroundWhiteGrayText);
+        statsView = stats;
+        updateStats();
         stats.setGravity(Gravity.CENTER);
         card.addView(stats, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 6, 0, 0));
+
+        // Rate (1-5 stars), like and report.
+        LinearLayout actions = new LinearLayout(context);
+        actions.setOrientation(LinearLayout.HORIZONTAL);
+        actions.setGravity(Gravity.CENTER);
+        starViews = new android.widget.ImageView[5];
+        for (int i = 0; i < 5; i++) {
+            final int stars = i + 1;
+            android.widget.ImageView star = new android.widget.ImageView(context);
+            star.setScaleType(android.widget.ImageView.ScaleType.CENTER);
+            star.setOnClickListener(v -> rateTheme(stars));
+            actions.addView(star, LayoutHelper.createLinear(36, 36));
+            starViews[i] = star;
+        }
+        likeView = new android.widget.ImageView(context);
+        likeView.setScaleType(android.widget.ImageView.ScaleType.CENTER);
+        likeView.setOnClickListener(v -> toggleLike());
+        actions.addView(likeView, LayoutHelper.createLinear(44, 44, 16, 0, 0, 0));
+        column.addView(actions, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 16, 4, 16, 8));
+        TextView report = text(context, "Report", 13, false, Theme.key_windowBackgroundWhiteGrayText);
+        report.setGravity(Gravity.CENTER);
+        report.setOnClickListener(v -> reportTheme());
+        column.addView(report, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 36, 16, 0, 16, 8));
+        refreshReactions();
 
         applyButton = new TextView(context);
         applyButton.setGravity(Gravity.CENTER);
@@ -128,6 +159,91 @@ public class ThemeDetailActivity extends BaseFragment {
 
         refreshButtons();
         return root;
+    }
+
+    private void updateStats() {
+        statsView.setText("↓ " + CountFormat.format(info.downloads) + "   ♥ " + CountFormat.format(likes));
+    }
+
+    private void refreshReactions() {
+        int mine = ThemeStoreApi.myRating(info.id);
+        int on = KuroSkinManager.get().accent();
+        int off = Theme.getColor(Theme.key_windowBackgroundWhiteGrayText3);
+        for (int i = 0; i < 5; i++) {
+            boolean filled = i < mine;
+            starViews[i].setImageResource(filled ? R.drawable.kuro_star_filled : R.drawable.kuro_star_outline);
+            starViews[i].setColorFilter(filled ? on : off);
+        }
+        boolean liked = ThemeStoreApi.isLiked(info.id);
+        likeView.setImageResource(liked ? R.drawable.kuro_heart_filled : R.drawable.kuro_heart_outline);
+        likeView.setColorFilter(liked ? 0xFFFF3B30 : off);
+    }
+
+    private void rateTheme(int stars) {
+        final long me = UserConfig.getInstance(currentAccount).getClientUserId();
+        ThemeStoreApi.rate(info.id, me, stars, new StickerStoreApi.ResultCallback() {
+            @Override
+            public void onSuccess(JSONObject response) {
+                if (fragmentView == null) return;
+                ThemeStoreApi.setMyRating(info.id, stars);
+                refreshReactions();
+            }
+
+            @Override
+            public void onError(String message) {
+                if (fragmentView == null) return;
+                setStatus(message, true);
+            }
+        });
+    }
+
+    private void toggleLike() {
+        final boolean want = !ThemeStoreApi.isLiked(info.id);
+        final long me = UserConfig.getInstance(currentAccount).getClientUserId();
+        // Optimistic: flip now, undo if the server refuses.
+        ThemeStoreApi.setLikedLocal(info.id, want);
+        likes = Math.max(0, likes + (want ? 1 : -1));
+        updateStats();
+        refreshReactions();
+        ThemeStoreApi.setLike(info.id, me, want, new StickerStoreApi.ResultCallback() {
+            @Override
+            public void onSuccess(JSONObject response) {
+                if (fragmentView == null || response == null || !response.has("total_likes")) return;
+                likes = response.optInt("total_likes", likes);
+                updateStats();
+            }
+
+            @Override
+            public void onError(String message) {
+                if (fragmentView == null) return;
+                ThemeStoreApi.setLikedLocal(info.id, !want);
+                likes = Math.max(0, likes + (want ? -1 : 1));
+                updateStats();
+                refreshReactions();
+                setStatus(message, true);
+            }
+        });
+    }
+
+    private void reportTheme() {
+        if (getParentActivity() == null) return;
+        new android.app.AlertDialog.Builder(getParentActivity())
+                .setTitle("Report this theme?")
+                .setMessage("Tell us this theme is inappropriate or broken.")
+                .setPositiveButton("Report", (d, w) -> ThemeStoreApi.report(info.id,
+                        UserConfig.getInstance(currentAccount).getClientUserId(), "reported from the app", new StickerStoreApi.ResultCallback() {
+                            @Override
+                            public void onSuccess(JSONObject response) {
+                                if (getParentActivity() != null) Toast.makeText(getParentActivity(), "Thanks, we'll take a look", Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onError(String message) {
+                                if (fragmentView != null) setStatus(message, true);
+                            }
+                        }))
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
     private TextView text(Context context, String s, int size, boolean bold, int colorKey) {
