@@ -261,6 +261,55 @@ public final class KuroSkinManager {
         return spec().keyOverrides().get(themeKey, 0);
     }
 
+    private final java.util.ArrayList<java.lang.ref.WeakReference<SkinAware>> listeners = new java.util.ArrayList<>();
+
+    /** UI thread only. Safe to call twice for the same object. */
+    public void register(SkinAware a) {
+        for (int i = listeners.size() - 1; i >= 0; i--) {
+            SkinAware x = listeners.get(i).get();
+            if (x == null) {
+                listeners.remove(i);
+            } else if (x == a) {
+                return;
+            }
+        }
+        listeners.add(new java.lang.ref.WeakReference<>(a));
+    }
+
+    public void unregister(SkinAware a) {
+        for (int i = listeners.size() - 1; i >= 0; i--) {
+            SkinAware x = listeners.get(i).get();
+            if (x == null || x == a) {
+                listeners.remove(i);
+            }
+        }
+    }
+
+    private void dispatchToListeners() {
+        SkinTokens t = tokens();
+        // copy: a listener may (un)register while being notified
+        java.util.ArrayList<SkinAware> copy = new java.util.ArrayList<>();
+        for (int i = listeners.size() - 1; i >= 0; i--) {
+            SkinAware x = listeners.get(i).get();
+            if (x == null) {
+                listeners.remove(i);
+            } else {
+                copy.add(x);
+            }
+        }
+        for (SkinAware x : copy) {
+            try {
+                x.onSkinChanged(t);
+            } catch (Throwable e) {
+                FileLog.e(e);
+            }
+        }
+    }
+
+    private static boolean restylesInPlace(Object fragment) {
+        return fragment instanceof SkinAware && ((SkinAware) fragment).restylesInPlace();
+    }
+
     private boolean notifyPending;
 
     /** One notification + one interface rebuild, however many changes arrive in the same tick. */
@@ -272,11 +321,12 @@ public final class KuroSkinManager {
         AndroidUtilities.runOnUIThread(() -> {
             notifyPending = false;
             NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.kuroSkinChanged);
+            dispatchToListeners();
             // Rebuild every open Telegram screen so the new colours / radii show everywhere now.
             // Telegram's reloadInterface leaves the top screen alone; when that screen is one of ours
             // (store, theme detail, profile) it would keep the old look until reopened, so rebuild it too.
             org.telegram.ui.ActionBar.BaseFragment top = org.telegram.ui.LaunchActivity.getLastFragment();
-            if (top != null && top.getClass().getName().startsWith("tw.nekomimi.nekogram.") && org.telegram.ui.LaunchActivity.instance != null) {
+            if (top != null && top.getClass().getName().startsWith("tw.nekomimi.nekogram.") && !restylesInPlace(top) && org.telegram.ui.LaunchActivity.instance != null) {
                 org.telegram.ui.LaunchActivity.instance.rebuildAllFragments(true);
             } else {
                 NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.reloadInterface);
