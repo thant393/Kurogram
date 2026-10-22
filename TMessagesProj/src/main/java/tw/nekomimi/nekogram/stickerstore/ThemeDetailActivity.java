@@ -1,6 +1,7 @@
 package tw.nekomimi.nekogram.stickerstore;
 
 import android.content.Context;
+import android.graphics.drawable.GradientDrawable;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -36,8 +37,15 @@ public class ThemeDetailActivity extends BaseFragment {
     private TextView previewButton;
     private TextView statusView;
     private boolean busy;
-    private android.widget.ImageView[] starViews;
+    private android.widget.ImageView starButton;
     private android.widget.ImageView likeView;
+    private final android.widget.ImageView[] pickStars = new android.widget.ImageView[5];
+    private android.widget.ImageView cancelRatingButton;
+    private android.widget.ImageView confirmRatingButton;
+    private LinearLayout normalBar;
+    private LinearLayout ratingBar;
+    private boolean ratingMode;
+    private int pendingStars;
     private TextView statsView;
     private int likes;
 
@@ -54,9 +62,16 @@ public class ThemeDetailActivity extends BaseFragment {
             public void onItemClick(int id) {
                 if (id == -1) {
                     finishFragment();
+                } else if (id == 2) {
+                    reportTheme();
                 }
             }
         });
+        // Three dots, same as the sticker pack screen (no Report on your own theme).
+        if (info.ownerTelegramId != UserConfig.getInstance(currentAccount).getClientUserId()) {
+            org.telegram.ui.ActionBar.ActionBarMenuItem more = actionBar.createMenu().addItem(1, R.drawable.ic_ab_other);
+            more.addSubItem(2, R.drawable.msg_report, "Report");
+        }
 
         FrameLayout root = new FrameLayout(context);
         root.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
@@ -65,7 +80,8 @@ public class ThemeDetailActivity extends BaseFragment {
         root.addView(scroll, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         LinearLayout column = new LinearLayout(context);
         column.setOrientation(LinearLayout.VERTICAL);
-        column.setPadding(0, 0, 0, AndroidUtilities.dp(24));
+        scroll.setClipToPadding(false);
+        column.setPadding(0, 0, 0, AndroidUtilities.dp(KuroBarStyle.CONTENT_INSET_DP));
         scroll.addView(column, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
 
         LinearLayout card = new LinearLayout(context);
@@ -114,37 +130,7 @@ public class ThemeDetailActivity extends BaseFragment {
         stats.setGravity(Gravity.CENTER);
         card.addView(stats, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 6, 0, 0));
 
-        // Rate (1-5 stars), like and report.
-        LinearLayout actions = new LinearLayout(context);
-        actions.setOrientation(LinearLayout.HORIZONTAL);
-        actions.setGravity(Gravity.CENTER);
-        starViews = new android.widget.ImageView[5];
-        for (int i = 0; i < 5; i++) {
-            final int stars = i + 1;
-            android.widget.ImageView star = new android.widget.ImageView(context);
-            star.setScaleType(android.widget.ImageView.ScaleType.CENTER);
-            star.setOnClickListener(v -> rateTheme(stars));
-            actions.addView(star, LayoutHelper.createLinear(36, 36));
-            starViews[i] = star;
-        }
-        likeView = new android.widget.ImageView(context);
-        likeView.setScaleType(android.widget.ImageView.ScaleType.CENTER);
-        likeView.setOnClickListener(v -> toggleLike());
-        actions.addView(likeView, LayoutHelper.createLinear(44, 44, 16, 0, 0, 0));
-        column.addView(actions, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 16, 4, 16, 8));
-        TextView report = text(context, "Report", 13, false, Theme.key_windowBackgroundWhiteGrayText);
-        report.setGravity(Gravity.CENTER);
-        report.setOnClickListener(v -> reportTheme());
-        column.addView(report, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 36, 16, 0, 16, 8));
         refreshReactions();
-
-        applyButton = new TextView(context);
-        applyButton.setGravity(Gravity.CENTER);
-        applyButton.setTextSize(16);
-        applyButton.setTypeface(AndroidUtilities.bold());
-        applyButton.setTextColor(0xFFFFFFFF);
-        applyButton.setOnClickListener(v -> applyTheme());
-        column.addView(applyButton, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 52, 16, 4, 16, 0));
 
         previewButton = new TextView(context);
         previewButton.setGravity(Gravity.CENTER);
@@ -167,26 +153,147 @@ public class ThemeDetailActivity extends BaseFragment {
         statusView.setVisibility(View.GONE);
         column.addView(statusView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 24, 12, 24, 0));
 
+        root.addView(KuroBarStyle.createBottomScrim(context),
+                LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, KuroBarStyle.SCRIM_HEIGHT_DP, Gravity.BOTTOM));
+        root.addView(buildBottomBar(context), LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, KuroBarStyle.BAR_HEIGHT_DP, Gravity.BOTTOM,
+                KuroBarStyle.SIDE_MARGIN_DP, 0, KuroBarStyle.SIDE_MARGIN_DP, KuroBarStyle.BOTTOM_MARGIN_DP));
+        refreshReactions();
         refreshButtons();
         return root;
     }
 
     private void updateStats() {
-        statsView.setText("↓ " + CountFormat.format(info.downloads) + "   ♥ " + CountFormat.format(likes));
+        statsView.setText((info.ratingCount > 0 ? String.format(java.util.Locale.US, "★ %.1f (%d)   ", info.ratingAvg, info.ratingCount) : "")
+                + "↓ " + CountFormat.format(info.downloads) + "   ♥ " + CountFormat.format(likes));
     }
 
     private void refreshReactions() {
-        int mine = ThemeStoreApi.myRating(info.id);
+        if (starButton == null || likeView == null) return;
         int on = KuroSkinManager.get().accent();
-        int off = Theme.getColor(Theme.key_windowBackgroundWhiteGrayText3);
-        for (int i = 0; i < 5; i++) {
-            boolean filled = i < mine;
-            starViews[i].setImageResource(filled ? R.drawable.kuro_star_filled : R.drawable.kuro_star_outline);
-            starViews[i].setColorFilter(filled ? on : off);
-        }
+        int off = Theme.getColor(Theme.key_windowBackgroundWhiteGrayText);
+        boolean rated = ThemeStoreApi.myRating(info.id) > 0;
+        starButton.setImageResource(rated ? R.drawable.kuro_star_filled : R.drawable.kuro_star_outline);
+        starButton.setColorFilter(rated ? on : off);
         boolean liked = ThemeStoreApi.isLiked(info.id);
         likeView.setImageResource(liked ? R.drawable.kuro_heart_filled : R.drawable.kuro_heart_outline);
-        likeView.setColorFilter(liked ? 0xFFFF3B30 : off);
+        likeView.setColorFilter(liked ? Theme.getColor(Theme.key_text_RedBold) : off);
+    }
+
+    private View buildBottomBar(Context context) {
+        FrameLayout bar = new FrameLayout(context);
+        normalBar = new LinearLayout(context);
+        normalBar.setOrientation(LinearLayout.HORIZONTAL);
+        normalBar.setGravity(Gravity.CENTER);
+        bar.addView(normalBar, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+
+        starButton = barIcon(context, R.drawable.kuro_star_outline, 24);
+        starButton.setBackground(circleBackground());
+        starButton.setOnClickListener(v -> setRatingMode(true));
+        normalBar.addView(starButton, LayoutHelper.createLinear(52, 52));
+
+        applyButton = new TextView(context);
+        applyButton.setGravity(Gravity.CENTER);
+        applyButton.setTextSize(15);
+        applyButton.setTypeface(AndroidUtilities.bold());
+        applyButton.setTextColor(0xFFFFFFFF);
+        applyButton.setMinWidth(AndroidUtilities.dp(170));
+        applyButton.setPadding(AndroidUtilities.dp(24), 0, AndroidUtilities.dp(24), 0);
+        applyButton.setOnClickListener(v -> applyTheme());
+        normalBar.addView(applyButton, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 52, 12, 0, 12, 0));
+
+        likeView = barIcon(context, R.drawable.kuro_heart_outline, 24);
+        likeView.setBackground(circleBackground());
+        likeView.setOnClickListener(v -> toggleLike());
+        normalBar.addView(likeView, LayoutHelper.createLinear(52, 52));
+
+        ratingBar = new LinearLayout(context);
+        ratingBar.setOrientation(LinearLayout.HORIZONTAL);
+        ratingBar.setGravity(Gravity.CENTER_VERTICAL);
+        ratingBar.setPadding(AndroidUtilities.dp(8), 0, AndroidUtilities.dp(8), 0);
+        ratingBar.setBackground(KuroBarStyle.background());
+        ratingBar.setVisibility(View.GONE);
+        ratingBar.setAlpha(0f);
+        bar.addView(ratingBar, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+
+        cancelRatingButton = barIcon(context, R.drawable.kuro_close, 22);
+        cancelRatingButton.setColorFilter(Theme.getColor(Theme.key_text_RedBold));
+        cancelRatingButton.setOnClickListener(v -> setRatingMode(false));
+        ratingBar.addView(cancelRatingButton, LayoutHelper.createLinear(48, 48));
+
+        LinearLayout holder = new LinearLayout(context);
+        holder.setOrientation(LinearLayout.HORIZONTAL);
+        holder.setGravity(Gravity.CENTER);
+        ratingBar.addView(holder, LayoutHelper.createLinear(0, LayoutHelper.MATCH_PARENT, 1f));
+        for (int i = 0; i < 5; i++) {
+            final int value = i + 1;
+            android.widget.ImageView star = barIcon(context, R.drawable.kuro_star_outline, 28);
+            star.setOnClickListener(v -> {
+                pendingStars = value;
+                refreshPickStars();
+            });
+            pickStars[i] = star;
+            holder.addView(star, LayoutHelper.createLinear(44, 48));
+        }
+
+        confirmRatingButton = barIcon(context, R.drawable.kuro_check, 24);
+        confirmRatingButton.setColorFilter(KuroSkinManager.get().accent());
+        confirmRatingButton.setOnClickListener(v -> {
+            if (pendingStars > 0) {
+                rateTheme(pendingStars);
+                setRatingMode(false);
+            }
+        });
+        ratingBar.addView(confirmRatingButton, LayoutHelper.createLinear(48, 48));
+        return bar;
+    }
+
+    private android.graphics.drawable.Drawable circleBackground() {
+        GradientDrawable d = new GradientDrawable();
+        d.setShape(GradientDrawable.OVAL);
+        d.setColor(Theme.getColor(Theme.key_windowBackgroundWhite));
+        d.setStroke(Math.max(1, AndroidUtilities.dp(0.5f)), androidx.core.graphics.ColorUtils.setAlphaComponent(Theme.getColor(Theme.key_divider), 0x90));
+        return d;
+    }
+
+    private android.widget.ImageView barIcon(Context context, int res, int sizeDp) {
+        android.widget.ImageView icon = new android.widget.ImageView(context);
+        icon.setImageResource(res);
+        int pad = Math.max(0, (48 - sizeDp) / 2);
+        icon.setPadding(AndroidUtilities.dp(pad), AndroidUtilities.dp(pad), AndroidUtilities.dp(pad), AndroidUtilities.dp(pad));
+        icon.setScaleType(android.widget.ImageView.ScaleType.FIT_CENTER);
+        icon.setColorFilter(Theme.getColor(Theme.key_windowBackgroundWhiteGrayText));
+        icon.setBackground(Theme.createSelectorDrawable(Theme.getColor(Theme.key_listSelector), Theme.RIPPLE_MASK_CIRCLE_20DP));
+        return icon;
+    }
+
+    private void setRatingMode(boolean show) {
+        if (ratingMode == show || normalBar == null) return;
+        ratingMode = show;
+        if (show) {
+            pendingStars = ThemeStoreApi.myRating(info.id);
+            refreshPickStars();
+        }
+        final View in = show ? ratingBar : normalBar;
+        final View out = show ? normalBar : ratingBar;
+        in.setVisibility(View.VISIBLE);
+        in.animate().cancel();
+        in.setScaleX(0.96f);
+        in.animate().alpha(1f).scaleX(1f).setDuration(180).start();
+        out.animate().cancel();
+        out.animate().alpha(0f).setDuration(120).withEndAction(() -> {
+            if ((out == normalBar) == ratingMode) out.setVisibility(View.GONE);
+        }).start();
+    }
+
+    private void refreshPickStars() {
+        int on = KuroSkinManager.get().accent();
+        int off = Theme.getColor(Theme.key_windowBackgroundWhiteGrayText);
+        for (int i = 0; i < 5; i++) {
+            boolean f = i < pendingStars;
+            pickStars[i].setImageResource(f ? R.drawable.kuro_star_filled : R.drawable.kuro_star_outline);
+            pickStars[i].setColorFilter(f ? on : off);
+        }
+        confirmRatingButton.setAlpha(pendingStars > 0 ? 1f : 0.35f);
     }
 
     private void rateTheme(int stars) {
@@ -215,6 +322,14 @@ public class ThemeDetailActivity extends BaseFragment {
         likes = Math.max(0, likes + (want ? 1 : -1));
         updateStats();
         refreshReactions();
+        if (want) {
+            likeView.animate().cancel();
+            likeView.setScaleX(1f);
+            likeView.setScaleY(1f);
+            likeView.animate().scaleX(1.3f).scaleY(1.3f).setDuration(120)
+                    .setInterpolator(new android.view.animation.OvershootInterpolator(2f))
+                    .withEndAction(() -> likeView.animate().scaleX(1f).scaleY(1f).setDuration(110).start()).start();
+        }
         ThemeStoreApi.setLike(info.id, me, want, new StickerStoreApi.ResultCallback() {
             @Override
             public void onSuccess(JSONObject response) {
@@ -276,7 +391,7 @@ public class ThemeDetailActivity extends BaseFragment {
         int buttonColor = skin.colorValue("components.button.background");
         int buttonText = skin.colorValue("components.button.foreground");
         int buttonRadius = skin.intValue("tokens.shapes.buttonRadiusDp", 26);
-        applyButton.setBackground(ThemeCardView.rounded(applied ? 0xFF8E8E93 : (buttonColor != 0 ? buttonColor : accent), buttonRadius, false));
+        applyButton.setBackground(ThemeCardView.rounded(applied ? 0xFF8E8E93 : (buttonColor != 0 ? buttonColor : accent), KuroBarStyle.CORNER_RADIUS_DP, false));
         applyButton.setTextColor(buttonText != 0 && !applied ? buttonText : 0xFFFFFFFF);
         boolean needsNewerApp = info.minAppVersion > SkinSpec.ENGINE_LEVEL || info.schemaVersion > SkinSpec.SCHEMA_VERSION;
         boolean updatable = !applied && info.id != null && info.id.equals(ThemeStoreApi.appliedId());
