@@ -1,11 +1,24 @@
-# 🐾 Nekogram
-[![Crowdin](https://badges.crowdin.net/e/a094217ac83905ae1625526d59bba8dc/localized.svg)](https://neko.crowdin.com/nekogram)  
-Nekogram is a third-party Telegram client with not many but useful modifications.
+# 🐾 Kurogram
 
-- Website: https://nekogram.app
-- Telegram channel: https://t.me/nekoupdates
-- Downloads: https://nekogram.app/download
-- Feedback: https://github.com/Nekogram/Nekogram/issues
+Kurogram is a third-party Telegram client for Android, forked from [Nekogram](https://github.com/Nekogram/Nekogram) (which is itself based on the official Telegram for Android).
+
+## What's different
+
+- **Theme Store & skin engine:** themes live in a database, not in the app. Download, preview, apply and roll back live, with colours, shapes, chat bubbles, fonts and a few native settings (blur, glass tab bar) driven by a versioned JSON schema.
+- **Sticker Store:** browse, rate, like and install community sticker packs.
+- **Profiles & community:** owner profiles, ratings, likes and reporting for themes and sticker packs.
+- Everything from Nekogram.
+
+Store features talk to a private backend, so a plain build runs without them.
+
+## Compilation Guide
+
+1. Clone the source: `git clone --recursive --shallow-submodules https://github.com/thant393/Kurogram.git`
+1. Fill out storeFile, storePassword, keyAlias, keyPassword in `local.properties` to use your release keystore.
+1. Create a Firebase project with Android apps for your application IDs, enable Firebase Messaging and put `google-services.json` in the `TMessagesProj` folder.
+1. Open the project in Android Studio (open it, don't import it).
+1. Fill out the values in `TMessagesProj/src/main/java/tw/nekomimi/nekogram/Extra.java`; each variable has a link showing where to get it.
+1. Build.
 
 ## API, Protocol documentation
 
@@ -13,17 +26,6 @@ Telegram API manuals: https://core.telegram.org/api
 
 MTProto protocol manuals: https://core.telegram.org/mtproto
 
-## Compilation Guide
+## Credits & License
 
-1. Download the Nekogram source code ( `git clone --recursive --shallow-submodules https://github.com/Nekogram/Nekogram.git` )
-1. Fill out storeFile, storePassword, keyAlias, keyPassword in local.properties to access your release.keystore
-1. Go to https://console.firebase.google.com/, create two android apps with application IDs tw.nekomimi.nekogram and tw.nekomimi.nekogram.beta, turn on firebase messaging and download `google-services.json`, which should be copied into `TMessagesProj` folder.
-1. Open the project in the Studio (note that it should be opened, NOT imported).
-1. Fill out values in `TMessagesProj/src/main/java/tw/nekomimi/nekogram/Extra.java` – there’s a link for each of the variables showing where and which data to obtain.
-1. You are ready to compile Nekogram.
-
-## Localization
-
-Nekogram is forked from Telegram, thus most locales follows the translations of Telegram for Android, checkout https://translations.telegram.org/en/android/.
-
-As for the Nekogram specialized strings, we use Crowdin to translate Nekogram. Join project at https://neko.crowdin.com/nekogram. Help us bring Nekogram to the world!
+Kurogram builds on [Nekogram](https://github.com/Nekogram/Nekogram) and [Telegram for Android](https://github.com/DrKLO/Telegram). See `LICENSE` for the license terms.
