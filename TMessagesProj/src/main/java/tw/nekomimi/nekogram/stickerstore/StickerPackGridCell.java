@@ -116,36 +116,17 @@ public class StickerPackGridCell extends FrameLayout {
      * surface card ("inset") it has to be a different shade or it disappears into the card.
      */
     static GradientDrawable cardBackground(boolean inset) {
-        tw.nekomimi.nekogram.skin.SkinSpec skin = tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec();
-        GradientDrawable d = new GradientDrawable();
-        d.setShape(GradientDrawable.RECTANGLE);
-        d.setCornerRadius(AndroidUtilities.dp(cellRadiusDp()));
-        d.setColor(inset ? insetColor() : Theme.getColor(Theme.key_windowBackgroundWhite));
-        int borderDp = skin.intValue("components.card.borderWidthDp", -1);
-        int borderColor = skin.colorValue("components.card.borderColor");
-        boolean card = !tw.nekomimi.nekogram.skin.SkinSpec.LIST_FLAT.equals(skin.listStyle);
-        if (borderDp > 0) {
-            d.setStroke(AndroidUtilities.dp(borderDp), borderColor != 0 ? borderColor : strokeColor());
-        } else if (borderDp < 0 && (card || inset)) {
-            d.setStroke(Math.max(1, AndroidUtilities.dp(0.5f)), strokeColor());
-        }
-        return d;
+        return tw.nekomimi.nekogram.skin.KuroUi.card(inset, cellRadiusDp());
     }
 
     /** A shade of the surface that is visibly different from it (grey, or tinted toward the text). */
     static int insetColor() {
-        int surface = Theme.getColor(Theme.key_windowBackgroundWhite) | 0xFF000000;
-        int gray = Theme.getColor(Theme.key_windowBackgroundGray) | 0xFF000000;
-        if (androidx.core.graphics.ColorUtils.calculateContrast(gray, surface) >= 1.1) {
-            return gray;
-        }
-        int text = Theme.getColor(Theme.key_windowBackgroundWhiteBlackText) | 0xFF000000;
-        return androidx.core.graphics.ColorUtils.blendARGB(surface, text, 0.08f);
+        return tw.nekomimi.nekogram.skin.KuroUi.insetFill();
     }
 
     /** Hairline that follows the theme (the old fixed black one vanished on dark themes). */
     static int strokeColor() {
-        return androidx.core.graphics.ColorUtils.setAlphaComponent(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText), 0x26);
+        return tw.nekomimi.nekogram.skin.KuroUi.hairline();
     }
 
     private boolean inset;

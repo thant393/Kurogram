@@ -55,6 +55,23 @@ public final class KuroSkinManager {
         return load();
     }
 
+    private SkinTokens tokens;
+    private SkinSpec tokensSource;
+    private int tokensVersion;
+
+    /**
+     * The active skin as typed fields (cached; rebuilt only when a different skin becomes
+     * active, which also bumps SkinTokens.version).
+     */
+    public synchronized SkinTokens tokens() {
+        SkinSpec s = spec();
+        if (tokens == null || tokensSource != s) {
+            tokensSource = s;
+            tokens = new SkinTokens(s, ++tokensVersion);
+        }
+        return tokens;
+    }
+
     private synchronized SkinSpec load() {
         if (!loaded) {
             if (ApplicationLoader.applicationContext == null) {

@@ -245,17 +245,16 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
     }
 
     private static int skinRadius() {
-        tw.nekomimi.nekogram.skin.SkinSpec s = tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec();
-        return s.intValue("screens.profile.cardRadiusDp", s.cardRadiusDp);
+        return tw.nekomimi.nekogram.skin.KuroUi.t().profileCardRadiusDp;
     }
 
     private static int cardElevationDp() {
-        return tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec().intValue("tokens.elevation.cardDp", 2);
+        return tw.nekomimi.nekogram.skin.KuroUi.t().cardElevationDp;
     }
 
     /** Page colour behind the two cards: the skin's profile background, else a touch darker than the theme grey. */
     private static int screenBackground() {
-        int c = tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec().colorValue("screens.profile.background");
+        int c = tw.nekomimi.nekogram.skin.KuroUi.t().profileBackground;
         return c != 0 ? c : androidx.core.graphics.ColorUtils.blendARGB(Theme.getColor(Theme.key_windowBackgroundGray), 0xFF000000, 0.04f);
     }
 

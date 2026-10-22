@@ -87,7 +87,7 @@ public class ThemeCardView extends FrameLayout {
         int fallbackBg = t.dark ? 0xFF1C1C1E : 0xFFF2F2F7;
         int bg = t.background != 0 ? t.background : fallbackBg;
         int accent = t.accent != 0 ? t.accent : Theme.getColor(Theme.key_featuredStickers_addButton);
-        phone.set(bg, accent, t.dark, tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec().intValue("screens.themeStore.previewRadiusDp", 14));
+        phone.set(bg, accent, t.dark, tw.nekomimi.nekogram.skin.KuroUi.t().previewRadiusDp);
         titleView.setText(t.title);
         String owner = t.ownerName != null && !t.ownerName.isEmpty() ? t.ownerName
                 : t.ownerUsername != null && !t.ownerUsername.isEmpty() ? "@" + t.ownerUsername : "";

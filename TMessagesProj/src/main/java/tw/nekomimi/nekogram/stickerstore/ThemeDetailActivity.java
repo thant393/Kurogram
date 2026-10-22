@@ -385,14 +385,11 @@ public class ThemeDetailActivity extends BaseFragment {
     }
 
     private void refreshButtons() {
-        int accent = KuroSkinManager.get().accent();
+        int accent = tw.nekomimi.nekogram.skin.KuroUi.accent();
         boolean applied = isApplied();
-        SkinSpec skin = KuroSkinManager.get().spec();
-        int buttonColor = skin.colorValue("components.button.background");
-        int buttonText = skin.colorValue("components.button.foreground");
-        int buttonRadius = skin.intValue("tokens.shapes.buttonRadiusDp", 26);
-        applyButton.setBackground(ThemeCardView.rounded(applied ? 0xFF8E8E93 : (buttonColor != 0 ? buttonColor : accent), KuroBarStyle.CORNER_RADIUS_DP, false));
-        applyButton.setTextColor(buttonText != 0 && !applied ? buttonText : 0xFFFFFFFF);
+        int buttonRadius = tw.nekomimi.nekogram.skin.KuroUi.t().buttonRadiusDp;
+        applyButton.setBackground(tw.nekomimi.nekogram.skin.KuroUi.primaryButton(applied));
+        applyButton.setTextColor(tw.nekomimi.nekogram.skin.KuroUi.primaryButtonText(applied));
         boolean needsNewerApp = info.minAppVersion > SkinSpec.ENGINE_LEVEL || info.schemaVersion > SkinSpec.SCHEMA_VERSION;
         boolean updatable = !applied && info.id != null && info.id.equals(ThemeStoreApi.appliedId());
         applyButton.setText(busy ? "Working…" : needsNewerApp ? "Needs a newer Kurogram" : applied ? "Applied" : updatable ? "Update" : "Download & Apply");
