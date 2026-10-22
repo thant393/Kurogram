@@ -215,6 +215,71 @@ public final class ThemeStoreApi {
         prefs().edit().putInt("rating_" + id, stars).apply();
     }
 
+    // ---- offline copy of downloaded themes (so a theme can be re-applied without the network) ----
+
+    private static final int MAX_CACHED = 10;
+
+    /** Keeps the theme file (already hash-checked) for offline use; the 10 most recent are kept. */
+    public static void cacheContent(String id, int version, String type, String sha256, String content) {
+        try {
+            SharedPreferences p = cachePrefs();
+            JSONObject entry = new JSONObject();
+            entry.put("v", version);
+            entry.put("t", type);
+            entry.put("sha", sha256);
+            entry.put("c", content);
+            org.json.JSONArray order = new org.json.JSONArray(p.getString("order", "[]"));
+            org.json.JSONArray next = new org.json.JSONArray();
+            next.put(id);
+            for (int i = 0; i < order.length(); i++) {
+                if (!id.equals(order.optString(i)) && next.length() < MAX_CACHED) {
+                    next.put(order.optString(i));
+                }
+            }
+            SharedPreferences.Editor e = p.edit().putString("e_" + id, entry.toString()).putString("order", next.toString());
+            for (int i = 0; i < order.length(); i++) {
+                String old = order.optString(i);
+                boolean kept = false;
+                for (int j = 0; j < next.length(); j++) {
+                    kept |= old.equals(next.optString(j));
+                }
+                if (!kept) {
+                    e.remove("e_" + old);
+                }
+            }
+            e.apply();
+        } catch (Exception ignore) {
+        }
+    }
+
+    /** The saved copy as the same shape /download returns, or null when none (or older than minVersion). */
+    public static JSONObject cachedDownload(String id, int minVersion) {
+        try {
+            String raw = cachePrefs().getString("e_" + id, null);
+            if (raw == null) {
+                return null;
+            }
+            JSONObject entry = new JSONObject(raw);
+            if (entry.optInt("v", 0) < minVersion) {
+                return null;
+            }
+            JSONObject out = new JSONObject();
+            out.put("id", id);
+            out.put("slug", "cached");
+            out.put("type", entry.optString("t"));
+            out.put("version", entry.optInt("v", 1));
+            out.put("sha256", entry.optString("sha"));
+            out.put("content", entry.optString("c"));
+            return out;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private static SharedPreferences cachePrefs() {
+        return ApplicationLoader.applicationContext.getSharedPreferences("kuro_theme_cache", Context.MODE_PRIVATE);
+    }
+
     // ---- which store theme is currently applied (for the Apply / Reset button) ----
 
     private static SharedPreferences prefs() {

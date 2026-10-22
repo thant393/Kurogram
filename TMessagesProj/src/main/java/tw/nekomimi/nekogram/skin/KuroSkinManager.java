@@ -29,6 +29,8 @@ public final class KuroSkinManager {
     private static final KuroSkinManager INSTANCE = new KuroSkinManager();
 
     private volatile SkinSpec active = SkinSpec.defaults();
+    /** A theme shown temporarily (never saved, no Telegram settings touched); null when not previewing. */
+    private volatile SkinSpec preview;
     private volatile boolean loaded;
 
     private KuroSkinManager() {
@@ -43,6 +45,10 @@ public final class KuroSkinManager {
     }
 
     public SkinSpec spec() {
+        SkinSpec p = preview;
+        if (p != null) {
+            return p;
+        }
         if (loaded) {
             return active; // hot path (Theme.getColor): no locking once loaded
         }
@@ -88,6 +94,41 @@ public final class KuroSkinManager {
         runOnMain(() -> transact(parsed, json));
     }
 
+    public boolean isPreviewing() {
+        return preview != null;
+    }
+
+    /**
+     * Shows a skin on screen without saving it or touching any Telegram setting (so bubble size,
+     * text size and glass/blur flags are not previewed). Ends on endPreview(), apply(), reset() or
+     * the next app start. Throws IllegalArgumentException for an invalid skin; nothing changes then.
+     */
+    public void preview(String json) {
+        final SkinSpec parsed = SkinSpec.parse(json);
+        runOnMain(() -> {
+            preview = parsed;
+            refreshAfterPreviewChange();
+        });
+    }
+
+    public void endPreview() {
+        runOnMain(() -> {
+            if (preview != null) {
+                preview = null;
+                refreshAfterPreviewChange();
+            }
+        });
+    }
+
+    private void refreshAfterPreviewChange() {
+        try {
+            Theme.refreshThemeColors(false, true);
+        } catch (Throwable t) {
+            FileLog.e(t);
+        }
+        notifyChanged();
+    }
+
     public void reset() {
         runOnMain(() -> transact(SkinSpec.defaults(), null));
     }
@@ -108,7 +149,8 @@ public final class KuroSkinManager {
     }
 
     private void transact(SkinSpec next, String json) {
-        final SkinSpec prevSpec = spec();
+        preview = null; // applying or resetting always ends a preview
+        final SkinSpec prevSpec = loaded ? active : load();
         final String prevJson = prefs().getString(KEY_JSON, null);
         final SkinNative.Snapshot snapshot = SkinNative.snapshot();
         try {

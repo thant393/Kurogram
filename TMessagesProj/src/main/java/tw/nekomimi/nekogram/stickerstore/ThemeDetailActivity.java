@@ -33,6 +33,7 @@ public class ThemeDetailActivity extends BaseFragment {
     private final ThemeInfo info;
     private TextView applyButton;
     private TextView resetButton;
+    private TextView previewButton;
     private TextView statusView;
     private boolean busy;
     private android.widget.ImageView[] starViews;
@@ -144,6 +145,14 @@ public class ThemeDetailActivity extends BaseFragment {
         applyButton.setTextColor(0xFFFFFFFF);
         applyButton.setOnClickListener(v -> applyTheme());
         column.addView(applyButton, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 52, 16, 4, 16, 0));
+
+        previewButton = new TextView(context);
+        previewButton.setGravity(Gravity.CENTER);
+        previewButton.setTextSize(15);
+        previewButton.setTypeface(AndroidUtilities.bold());
+        previewButton.setOnClickListener(v -> togglePreview());
+        previewButton.setVisibility("skin".equals(info.type) ? View.VISIBLE : View.GONE);
+        column.addView(previewButton, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 48, 16, 10, 16, 0));
 
         resetButton = new TextView(context);
         resetButton.setGravity(Gravity.CENTER);
@@ -274,6 +283,10 @@ public class ThemeDetailActivity extends BaseFragment {
         applyButton.setText(busy ? "Working…" : needsNewerApp ? "Needs a newer Kurogram" : applied ? "Applied" : updatable ? "Update" : "Download & Apply");
         applyButton.setAlpha(busy ? 0.6f : 1f);
         resetButton.setBackground(ThemeCardView.rounded(Theme.getColor(Theme.key_windowBackgroundWhite), buttonRadius, true));
+        previewButton.setBackground(ThemeCardView.rounded(Theme.getColor(Theme.key_windowBackgroundWhite), buttonRadius, true));
+        previewButton.setTextColor(accent);
+        previewButton.setText(KuroSkinManager.get().isPreviewing() ? "Stop preview" : "Preview");
+        previewButton.setAlpha(busy ? 0.6f : 1f);
         resetButton.setTextColor(Theme.getColor(Theme.key_text_RedBold));
         resetButton.setVisibility(applied ? View.VISIBLE : View.GONE);
     }
@@ -299,6 +312,24 @@ public class ThemeDetailActivity extends BaseFragment {
         if (busy || isApplied()) {
             return;
         }
+        fetchAndRun(false);
+    }
+
+    /** Shows the theme temporarily (skins only); nothing is saved and Telegram's own settings are untouched. */
+    private void togglePreview() {
+        if (busy) {
+            return;
+        }
+        if (KuroSkinManager.get().isPreviewing()) {
+            KuroSkinManager.get().endPreview();
+            setStatus("Preview ended", false);
+            refreshButtons();
+            return;
+        }
+        fetchAndRun(true);
+    }
+
+    private void fetchAndRun(final boolean previewOnly) {
         if (info.minAppVersion > SkinSpec.ENGINE_LEVEL || info.schemaVersion > SkinSpec.SCHEMA_VERSION) {
             setStatus("This theme needs a newer version of Kurogram", true);
             return;
@@ -311,35 +342,63 @@ public class ThemeDetailActivity extends BaseFragment {
             @Override
             public void onSuccess(JSONObject response) {
                 if (fragmentView == null) return;
-                try {
-                    if (response == null) throw new IllegalStateException("Empty reply");
-                    String content = response.getString("content");
-                    String type = response.getString("type");
-                    verifyHash(content, response.optString("sha256", ""));
-                    if ("skin".equals(type)) {
-                        KuroSkinManager.get().apply(content);
-                    } else {
-                        applyColors(response.optString("slug", "theme"), content);
-                    }
-                    ThemeStoreApi.setApplied(info.id, response.optInt("version", info.version));
-                    setStatus("Applied", false);
-                } catch (IllegalArgumentException e) {
-                    setStatus("This theme was rejected: " + e.getMessage(), true);
-                } catch (Exception e) {
-                    setStatus("Couldn't apply the theme: " + e.getMessage(), true);
-                }
-                busy = false;
-                refreshButtons();
+                handle(response, previewOnly, false);
             }
 
             @Override
             public void onError(String message) {
                 if (fragmentView == null) return;
+                // Offline? Use the copy saved the last time this version was downloaded.
+                JSONObject cached = ThemeStoreApi.cachedDownload(info.id, info.version);
+                if (cached != null) {
+                    handle(cached, previewOnly, true);
+                    return;
+                }
                 busy = false;
                 setStatus(message, true);
                 refreshButtons();
             }
         });
+    }
+
+    private void handle(JSONObject response, boolean previewOnly, boolean fromCache) {
+        try {
+            if (response == null) throw new IllegalStateException("Empty reply");
+            String content = response.getString("content");
+            String type = response.getString("type");
+            verifyHash(content, response.optString("sha256", ""));
+            if (!fromCache) {
+                ThemeStoreApi.cacheContent(info.id, response.optInt("version", info.version), type, response.optString("sha256", ""), content);
+            }
+            if (previewOnly) {
+                if (!"skin".equals(type)) {
+                    throw new IllegalStateException("Only skin themes can be previewed");
+                }
+                KuroSkinManager.get().preview(content);
+                setStatus("Previewing. Nothing is saved until you tap Apply.", false);
+            } else {
+                if ("skin".equals(type)) {
+                    KuroSkinManager.get().apply(content);
+                } else {
+                    applyColors(response.optString("slug", "theme"), content);
+                }
+                ThemeStoreApi.setApplied(info.id, response.optInt("version", info.version));
+                setStatus(fromCache ? "Applied (offline copy)" : "Applied", false);
+            }
+        } catch (IllegalArgumentException e) {
+            setStatus("This theme was rejected: " + e.getMessage(), true);
+        } catch (Exception e) {
+            setStatus("Couldn't apply the theme: " + e.getMessage(), true);
+        }
+        busy = false;
+        refreshButtons();
+    }
+
+    @Override
+    public void onFragmentDestroy() {
+        super.onFragmentDestroy();
+        // A preview is only for looking: leaving this screen puts the real look back.
+        KuroSkinManager.get().endPreview();
     }
 
     /** The file must be exactly what the server hashed; anything else is not applied. */
