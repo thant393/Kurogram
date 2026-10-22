@@ -25,6 +25,20 @@ public class ThemeCardView extends FrameLayout {
     private final TextView ownerView;
     private final TextView statsView;
 
+    private boolean inset;
+
+    /** Use the inset fill when this card sits on the profile's surface card. */
+    public ThemeCardView setInset(boolean inset) {
+        this.inset = inset;
+        int radius = StickerPackGridCell.cellRadiusDp();
+        GradientDrawable mask = new GradientDrawable();
+        mask.setCornerRadius(AndroidUtilities.dp(radius));
+        mask.setColor(0xFFFFFFFF);
+        setBackground(new RippleDrawable(ColorStateList.valueOf(Theme.getColor(Theme.key_listSelector)),
+                StickerPackGridCell.cardBackground(inset), mask));
+        return this;
+    }
+
     public ThemeCardView(Context context) {
         super(context);
         int radius = StickerPackGridCell.cellRadiusDp();
@@ -81,7 +95,7 @@ public class ThemeCardView extends FrameLayout {
         int fallbackBg = t.dark ? 0xFF1C1C1E : 0xFFF2F2F7;
         int bg = t.background != 0 ? t.background : fallbackBg;
         int accent = t.accent != 0 ? t.accent : Theme.getColor(Theme.key_featuredStickers_addButton);
-        previewBox.setBackground(rounded(bg, 14, true));
+        previewBox.setBackground(rounded(bg, tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec().intValue("screens.themeStore.previewRadiusDp", 14), true));
         accentBar.setBackground(rounded(accent, 5, false));
         accentDot.setBackground(oval(accent));
         titleView.setText(t.title);
@@ -97,7 +111,7 @@ public class ThemeCardView extends FrameLayout {
         d.setCornerRadius(AndroidUtilities.dp(radiusDp));
         d.setColor(color);
         if (border) {
-            d.setStroke(Math.max(1, AndroidUtilities.dp(0.5f)), 0x26000000);
+            d.setStroke(Math.max(1, AndroidUtilities.dp(0.5f)), StickerPackGridCell.strokeColor());
         }
         return d;
     }

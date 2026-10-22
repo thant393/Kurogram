@@ -41,6 +41,61 @@ public class ThemesTabView extends FrameLayout {
     private boolean hasMore = true;
     private int generation;
     private final Runnable searchRunnable = this::reload;
+    private boolean inset;
+
+    /** What was last loaded, kept so a rebuilt screen (skin change) shows its grid at once instead of reloading. */
+    private static final class Cache {
+        final ArrayList<ThemeInfo> themes;
+        final int nextPage;
+        final boolean hasMore;
+        final long at = System.currentTimeMillis();
+
+        Cache(ArrayList<ThemeInfo> themes, int nextPage, boolean hasMore) {
+            this.themes = new ArrayList<>(themes);
+            this.nextPage = nextPage;
+            this.hasMore = hasMore;
+        }
+    }
+
+    private static final java.util.HashMap<Long, Cache> CACHE = new java.util.HashMap<>();
+    private static final long CACHE_TTL_MS = 5 * 60 * 1000L;
+
+    private void saveCache() {
+        if (query.isEmpty()) {
+            CACHE.put(ownerId, new Cache(themes, nextPage, hasMore));
+        }
+    }
+
+    private boolean restoreCache() {
+        Cache c = CACHE.get(ownerId);
+        if (c == null || System.currentTimeMillis() - c.at > CACHE_TTL_MS || c.themes.isEmpty()) {
+            return false;
+        }
+        themes.clear();
+        seen.clear();
+        themes.addAll(c.themes);
+        for (ThemeInfo t : themes) {
+            seen.add(t.id);
+        }
+        nextPage = c.nextPage;
+        hasMore = c.hasMore;
+        progressView.setVisibility(GONE);
+        infoView.setVisibility(GONE);
+        listView.setVisibility(VISIBLE);
+        adapter.notifyDataSetChanged();
+        return true;
+    }
+
+    /** Cards on the profile's surface card need a different fill from the card itself. */
+    public void setInset(boolean inset) {
+        this.inset = inset;
+        listView.setAdapter(adapter);
+    }
+
+    /** Rebuilds the cards with the active skin's colours and radii (data is kept). */
+    public void applySkin() {
+        listView.setAdapter(adapter);
+    }
 
     public ThemesTabView(Context context, BaseFragment fragment, long ownerId, String emptyText) {
         super(context);
@@ -67,7 +122,7 @@ public class ThemesTabView extends FrameLayout {
 
             @Override
             public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                ThemeCardView card = new ThemeCardView(parent.getContext());
+                ThemeCardView card = new ThemeCardView(parent.getContext()).setInset(inset);
                 RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT);
                 lp.setMargins(AndroidUtilities.dp(6), AndroidUtilities.dp(6), AndroidUtilities.dp(6), AndroidUtilities.dp(6));
                 card.setLayoutParams(lp);
@@ -104,7 +159,9 @@ public class ThemesTabView extends FrameLayout {
         infoView.setPadding(AndroidUtilities.dp(32), 0, AndroidUtilities.dp(32), 0);
         infoView.setVisibility(GONE);
         addView(infoView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER));
-        reload();
+        if (!restoreCache()) {
+            reload();
+        }
     }
 
     public void setBottomInset(int px) {
@@ -160,6 +217,7 @@ public class ThemesTabView extends FrameLayout {
                 }
                 nextPage++;
                 hasMore = added > 0 && result.size() >= PAGE_SIZE;
+                saveCache();
                 progressView.setVisibility(GONE);
                 adapter.notifyDataSetChanged();
                 if (themes.isEmpty()) {

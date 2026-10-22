@@ -263,12 +263,17 @@ public class ThemeDetailActivity extends BaseFragment {
     private void refreshButtons() {
         int accent = KuroSkinManager.get().accent();
         boolean applied = isApplied();
-        applyButton.setBackground(ThemeCardView.rounded(applied ? 0xFF8E8E93 : accent, 26, false));
+        SkinSpec skin = KuroSkinManager.get().spec();
+        int buttonColor = skin.colorValue("components.button.background");
+        int buttonText = skin.colorValue("components.button.foreground");
+        int buttonRadius = skin.intValue("tokens.shapes.buttonRadiusDp", 26);
+        applyButton.setBackground(ThemeCardView.rounded(applied ? 0xFF8E8E93 : (buttonColor != 0 ? buttonColor : accent), buttonRadius, false));
+        applyButton.setTextColor(buttonText != 0 && !applied ? buttonText : 0xFFFFFFFF);
         boolean needsNewerApp = info.minAppVersion > SkinSpec.ENGINE_LEVEL || info.schemaVersion > SkinSpec.SCHEMA_VERSION;
         boolean updatable = !applied && info.id != null && info.id.equals(ThemeStoreApi.appliedId());
         applyButton.setText(busy ? "Working…" : needsNewerApp ? "Needs a newer Kurogram" : applied ? "Applied" : updatable ? "Update" : "Download & Apply");
         applyButton.setAlpha(busy ? 0.6f : 1f);
-        resetButton.setBackground(ThemeCardView.rounded(Theme.getColor(Theme.key_windowBackgroundWhite), 24, true));
+        resetButton.setBackground(ThemeCardView.rounded(Theme.getColor(Theme.key_windowBackgroundWhite), buttonRadius, true));
         resetButton.setTextColor(Theme.getColor(Theme.key_text_RedBold));
         resetButton.setVisibility(applied ? View.VISIBLE : View.GONE);
     }

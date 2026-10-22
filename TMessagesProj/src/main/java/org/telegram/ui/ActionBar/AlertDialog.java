@@ -1291,7 +1291,8 @@ public class AlertDialog extends Dialog implements Drawable.Callback, Notificati
             params.width = WindowManager.LayoutParams.MATCH_PARENT;
         } else {
             if (dimEnabled && !dimCustom) {
-                params.dimAmount = dimAlpha;
+                int kuroScrim = tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec().colorValue("components.dialog.scrim");
+                params.dimAmount = kuroScrim != 0 ? ((kuroScrim >>> 24) / 255f) : dimAlpha;
                 params.flags |= WindowManager.LayoutParams.FLAG_DIM_BEHIND;
             } else {
                 params.dimAmount = 0f;

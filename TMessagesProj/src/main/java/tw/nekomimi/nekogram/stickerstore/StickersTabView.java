@@ -117,7 +117,41 @@ public class StickersTabView extends FrameLayout {
         infoView.setVisibility(GONE);
 
         updateSortChips();
-        loadPacks();
+        if (!restoreCache()) {
+            loadPacks();
+        }
+    }
+
+    /** Last loaded list, so a rebuilt screen (skin change) keeps its grid instead of reloading. */
+    private static ArrayList<StickerPackInfo> cachedPacks;
+    private static int cachedNextPage;
+    private static boolean cachedHasMore;
+    private static String cachedSort;
+    private static long cachedAt;
+
+    private void saveCache() {
+        cachedPacks = new ArrayList<>(packs);
+        cachedNextPage = nextPage;
+        cachedHasMore = hasMore;
+        cachedSort = currentSort;
+        cachedAt = System.currentTimeMillis();
+    }
+
+    private boolean restoreCache() {
+        if (cachedPacks == null || cachedPacks.isEmpty() || System.currentTimeMillis() - cachedAt > 5 * 60 * 1000L) {
+            return false;
+        }
+        currentSort = cachedSort;
+        packs.clear();
+        seenShortNames.clear();
+        addNewPacks(cachedPacks);
+        nextPage = cachedNextPage;
+        hasMore = cachedHasMore;
+        loading = false;
+        progressView.setVisibility(GONE);
+        updateSortChips();
+        applyFilter();
+        return true;
     }
 
     /** Room to leave at the bottom of the grid so the last row can scroll fully above the
@@ -197,6 +231,7 @@ public class StickersTabView extends FrameLayout {
                 // asked for - and a server that ignores the page number just returns
                 // duplicates, which stops the loop instead of repeating forever.)
                 hasMore = added > 0;
+                saveCache();
                 applyFilter();
                 continueLoadingForSearch();
             }
@@ -242,6 +277,7 @@ public class StickersTabView extends FrameLayout {
                 nextPage++;
                 hasMore = added > 0;
                 if (added > 0) {
+                    saveCache();
                     applyFilter();
                 }
                 continueLoadingForSearch();

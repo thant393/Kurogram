@@ -208,7 +208,14 @@ public final class KuroSkinManager {
             notifyPending = false;
             NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.kuroSkinChanged);
             // Rebuild every open Telegram screen so the new colours / radii show everywhere now.
-            NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.reloadInterface);
+            // Telegram's reloadInterface leaves the top screen alone; when that screen is one of ours
+            // (store, theme detail, profile) it would keep the old look until reopened, so rebuild it too.
+            org.telegram.ui.ActionBar.BaseFragment top = org.telegram.ui.LaunchActivity.getLastFragment();
+            if (top != null && top.getClass().getName().startsWith("tw.nekomimi.nekogram.") && org.telegram.ui.LaunchActivity.instance != null) {
+                org.telegram.ui.LaunchActivity.instance.rebuildAllFragments(true);
+            } else {
+                NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.reloadInterface);
+            }
         });
     }
 }

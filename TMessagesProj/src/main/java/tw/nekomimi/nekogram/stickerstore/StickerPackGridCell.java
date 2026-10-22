@@ -108,15 +108,56 @@ public class StickerPackGridCell extends FrameLayout {
     }
 
     static GradientDrawable cardBackground() {
+        return cardBackground(false);
+    }
+
+    /**
+     * Cell fill. On the grey store screen a cell is the surface colour; inside the profile's
+     * surface card ("inset") it has to be a different shade or it disappears into the card.
+     */
+    static GradientDrawable cardBackground(boolean inset) {
         tw.nekomimi.nekogram.skin.SkinSpec skin = tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec();
         GradientDrawable d = new GradientDrawable();
         d.setShape(GradientDrawable.RECTANGLE);
         d.setCornerRadius(AndroidUtilities.dp(cellRadiusDp()));
-        d.setColor(Theme.getColor(Theme.key_windowBackgroundWhite));
-        if (tw.nekomimi.nekogram.skin.SkinSpec.LIST_CARD.equals(skin.listStyle)) {
-            d.setStroke(Math.max(1, AndroidUtilities.dp(0.5f)), 0x1A000000);
+        d.setColor(inset ? insetColor() : Theme.getColor(Theme.key_windowBackgroundWhite));
+        int borderDp = skin.intValue("components.card.borderWidthDp", -1);
+        int borderColor = skin.colorValue("components.card.borderColor");
+        boolean card = tw.nekomimi.nekogram.skin.SkinSpec.LIST_CARD.equals(skin.listStyle);
+        if (borderDp > 0) {
+            d.setStroke(AndroidUtilities.dp(borderDp), borderColor != 0 ? borderColor : strokeColor());
+        } else if (borderDp < 0 && (card || inset)) {
+            d.setStroke(Math.max(1, AndroidUtilities.dp(0.5f)), strokeColor());
         }
         return d;
+    }
+
+    /** A shade of the surface that is visibly different from it (grey, or tinted toward the text). */
+    static int insetColor() {
+        int surface = Theme.getColor(Theme.key_windowBackgroundWhite) | 0xFF000000;
+        int gray = Theme.getColor(Theme.key_windowBackgroundGray) | 0xFF000000;
+        if (androidx.core.graphics.ColorUtils.calculateContrast(gray, surface) >= 1.1) {
+            return gray;
+        }
+        int text = Theme.getColor(Theme.key_windowBackgroundWhiteBlackText) | 0xFF000000;
+        return androidx.core.graphics.ColorUtils.blendARGB(surface, text, 0.08f);
+    }
+
+    /** Hairline that follows the theme (the old fixed black one vanished on dark themes). */
+    static int strokeColor() {
+        return androidx.core.graphics.ColorUtils.setAlphaComponent(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText), 0x26);
+    }
+
+    private boolean inset;
+
+    /** Re-applies the card fill for use inside a surface card. */
+    public StickerPackGridCell setInset(boolean inset) {
+        this.inset = inset;
+        GradientDrawable mask = new GradientDrawable();
+        mask.setCornerRadius(AndroidUtilities.dp(cellRadiusDp()));
+        mask.setColor(0xFFFFFFFF);
+        setBackground(new RippleDrawable(ColorStateList.valueOf(Theme.getColor(Theme.key_listSelector)), cardBackground(inset), mask));
+        return this;
     }
 
     /** Roomier variant for 2-column grids: a bigger thumbnail and more padding. */

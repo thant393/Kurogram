@@ -53,11 +53,13 @@ public final class SkinSpec {
     public final Boolean threeLines;
     public final Boolean liquidGlass;
     public final Boolean blur;
+    /** Every validated v2 field by its dotted path (Integer, Double, Boolean or String). */
+    private final Map<String, Object> values;
 
     private SparseIntArray keyOverrides;
 
     private SkinSpec(String id, String name, int schemaVersion, int cardRadiusDp, int dialogRadiusDp, int gridColumns, String listStyle,
-                     Map<String, Integer> colors, Integer bubbleRadius, Integer fontSize, Boolean threeLines, Boolean liquidGlass, Boolean blur) {
+                     Map<String, Integer> colors, Integer bubbleRadius, Integer fontSize, Boolean threeLines, Boolean liquidGlass, Boolean blur, Map<String, Object> values) {
         this.id = id;
         this.name = name;
         this.schemaVersion = schemaVersion;
@@ -73,10 +75,43 @@ public final class SkinSpec {
         this.threeLines = threeLines;
         this.liquidGlass = liquidGlass;
         this.blur = blur;
+        this.values = values;
     }
 
+    /** Integer field by path (e.g. "components.button.heightDp"), or the default when the skin leaves it out. */
+    public int intValue(String path, int def) {
+        Object v = values.get(path);
+        return v instanceof Integer ? (Integer) v : def;
+    }
+
+    public boolean boolValue(String path, boolean def) {
+        Object v = values.get(path);
+        return v instanceof Boolean ? (Boolean) v : def;
+    }
+
+    public String stringValue(String path, String def) {
+        Object v = values.get(path);
+        return v instanceof String ? (String) v : def;
+    }
+
+    /** Colour field as 0xAARRGGBB (#RRGGBB becomes opaque), or 0 when the skin leaves it out. */
+    public int colorValue(String path) {
+        Object v = values.get(path);
+        if (!(v instanceof String)) {
+            return 0;
+        }
+        String hex = ((String) v).substring(1);
+        long c = Long.parseLong(hex, 16);
+        return hex.length() == 6 ? (int) (0xFF000000L | c) : (int) c;
+    }
+
+    public boolean has(String path) {
+        return values.containsKey(path);
+    }
+
+
     public static SkinSpec defaults() {
-        return new SkinSpec("default", "Default", SCHEMA_VERSION, 22, 22, 2, LIST_CARD, new HashMap<>(), null, null, null, null, null);
+        return new SkinSpec("default", "Default", SCHEMA_VERSION, 22, 22, 2, LIST_CARD, new HashMap<>(), null, null, null, null, null, new HashMap<>());
     }
 
     // ---- semantic colour -> Telegram colour keys (later entries win over earlier ones) ----
@@ -257,8 +292,16 @@ public final class SkinSpec {
         if (bubble == null) bubble = intOrNull(root, "tokens.shapes.bubbleRadiusDp");
         Integer font = intOrNull(root, "chat.fontSizeSp");
         if (font == null) font = intOrNull(root, "tokens.typography.bodySizeSp");
+        Map<String, Object> values = new HashMap<>();
+        for (String rule : RULES_V2) {
+            String path = rule.substring(0, rule.indexOf('|'));
+            Object v = get(root, path);
+            if (v != null) {
+                values.put(path, v);
+            }
+        }
         return new SkinSpec(id, name, 2, card, dialog, columns, listStyle, colors, bubble, font,
-                boolOrNull(root, "screens.chats.threeLines"), boolOrNull(root, "effects.glass"), boolOrNull(root, "effects.blur"));
+                boolOrNull(root, "screens.chats.threeLines"), boolOrNull(root, "effects.glass"), boolOrNull(root, "effects.blur"), values);
     }
 
     // ---- v1 (flat, kept so existing themes keep working) ----
@@ -309,7 +352,7 @@ public final class SkinSpec {
         JSONObject surface = orEmpty(root.optJSONObject("surface"));
         Boolean liquidGlass = surface.has("liquidGlass") ? surface.optBoolean("liquidGlass") : null;
         Boolean blur = surface.has("blur") ? surface.optBoolean("blur") : null;
-        return new SkinSpec(id, name, 1, radius, radius, columns, listStyle, colors, bubbleRadius, fontSize, threeLines, liquidGlass, blur);
+        return new SkinSpec(id, name, 1, radius, radius, columns, listStyle, colors, bubbleRadius, fontSize, threeLines, liquidGlass, blur, new HashMap<>());
     }
 
     // ---- helpers ----

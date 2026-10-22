@@ -68,7 +68,7 @@ public class MyStickersView extends FrameLayout {
 
             @Override
             public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                StickerPackGridCell cell = new StickerPackGridCell(parent.getContext()).setLarge(true);
+                StickerPackGridCell cell = new StickerPackGridCell(parent.getContext()).setLarge(true).setInset(true);
                 RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT);
                 lp.setMargins(AndroidUtilities.dp(6), AndroidUtilities.dp(6), AndroidUtilities.dp(6), AndroidUtilities.dp(6));
                 cell.setLayoutParams(lp);

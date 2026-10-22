@@ -74,7 +74,7 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
         this.ownerId = ownerId;
         final boolean self = ownerId == UserConfig.getInstance(currentAccount).getClientUserId();
         // A touch darker than the theme's grey so the white surfaces read clearly against it.
-        setBackgroundColor(androidx.core.graphics.ColorUtils.blendARGB(Theme.getColor(Theme.key_windowBackgroundGray), 0xFF000000, 0.04f));
+        setBackgroundColor(screenBackground());
 
         LinearLayout column = new LinearLayout(context);
         column.setOrientation(LinearLayout.VERTICAL);
@@ -92,7 +92,7 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
         cardBg.setCornerRadius(AndroidUtilities.dp(skinRadius()));
         cardBg.setColor(Theme.getColor(Theme.key_windowBackgroundWhite));
         card.setBackground(cardBg);
-        card.setElevation(AndroidUtilities.dp(2));
+        card.setElevation(AndroidUtilities.dp(cardElevationDp()));
         card.setOutlineProvider(new ViewOutlineProvider() {
             @Override
             public void getOutline(View view, Outline outline) {
@@ -120,8 +120,10 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
         avatarRingDrawable = ring;
         ring.setStroke(AndroidUtilities.dp(2.5f), tw.nekomimi.nekogram.skin.KuroSkinManager.get().accent());
         avatarRing.setBackground(ring);
-        avatarRing.addView(avatarView, LayoutHelper.createFrame(88, 88, Gravity.CENTER));
-        card.addView(avatarRing, LayoutHelper.createLinear(100, 100, Gravity.CENTER_HORIZONTAL, 0, 0, 0, 14));
+        int ringDp = tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec().intValue("screens.profile.avatarSizeDp", 100);
+        avatarView.setRoundRadius(AndroidUtilities.dp((ringDp - 12) / 2f));
+        avatarRing.addView(avatarView, LayoutHelper.createFrame(ringDp - 12, ringDp - 12, Gravity.CENTER));
+        card.addView(avatarRing, LayoutHelper.createLinear(ringDp, ringDp, Gravity.CENTER_HORIZONTAL, 0, 0, 0, 14));
 
         TextView nameView = new TextView(context);
         nameView.setTextSize(23);
@@ -168,7 +170,7 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
         contentBg.setCornerRadius(AndroidUtilities.dp(skinRadius()));
         contentBg.setColor(Theme.getColor(Theme.key_windowBackgroundWhite));
         contentCard.setBackground(contentBg);
-        contentCard.setElevation(AndroidUtilities.dp(2));
+        contentCard.setElevation(AndroidUtilities.dp(cardElevationDp()));
         contentCard.setOutlineProvider(new ViewOutlineProvider() {
             @Override
             public void getOutline(View view, Outline outline) {
@@ -227,6 +229,7 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
             if (themesView == null) {
                 themesView = new ThemesTabView(getContext(), fragment, ownerId, ownerId == UserConfig.getInstance(currentAccount).getClientUserId()
                         ? "No themes uploaded yet.\nTap + to add one." : "No themes uploaded yet.");
+                themesView.setInset(true);
                 themesView.setBottomInset(AndroidUtilities.dp(92) + bottomInset);
             }
             contentFrame.addView(themesView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
@@ -242,14 +245,30 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
     }
 
     private static int skinRadius() {
-        return tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec().cardRadiusDp;
+        tw.nekomimi.nekogram.skin.SkinSpec s = tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec();
+        return s.intValue("screens.profile.cardRadiusDp", s.cardRadiusDp);
+    }
+
+    private static int cardElevationDp() {
+        return tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec().intValue("tokens.elevation.cardDp", 2);
+    }
+
+    /** Page colour behind the two cards: the skin's profile background, else a touch darker than the theme grey. */
+    private static int screenBackground() {
+        int c = tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec().colorValue("screens.profile.background");
+        return c != 0 ? c : androidx.core.graphics.ColorUtils.blendARGB(Theme.getColor(Theme.key_windowBackgroundGray), 0xFF000000, 0.04f);
     }
 
     /** Re-applies the active skin to this screen's surfaces without rebuilding it. */
     private void applySkin() {
         int r = AndroidUtilities.dp(skinRadius());
+        setBackgroundColor(screenBackground());
         cardBg.setCornerRadius(r);
         contentBg.setCornerRadius(r);
+        cardBg.setColor(Theme.getColor(Theme.key_windowBackgroundWhite));
+        contentBg.setColor(Theme.getColor(Theme.key_windowBackgroundWhite));
+        headerCard.setElevation(AndroidUtilities.dp(cardElevationDp()));
+        contentCard.setElevation(AndroidUtilities.dp(cardElevationDp()));
         int accent = tw.nekomimi.nekogram.skin.KuroSkinManager.get().accent();
         if (avatarRingDrawable != null) avatarRingDrawable.setStroke(AndroidUtilities.dp(2.5f), accent);
         if (fabBgDrawable != null) fabBgDrawable.setColor(accent);
@@ -259,6 +278,9 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
         contentCard.invalidateOutline();
         if (stickersView != null) {
             stickersView.applySkin();
+        }
+        if (themesView != null) {
+            themesView.applySkin();
         }
     }
 

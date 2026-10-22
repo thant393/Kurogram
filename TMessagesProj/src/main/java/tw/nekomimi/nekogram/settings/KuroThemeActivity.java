@@ -113,9 +113,12 @@ public class KuroThemeActivity extends BaseFragment {
         });
         searchItem.setSearchFieldHint("Search");
 
+        // A rebuild (the skin changed) must not reuse tab views built with the old colours.
+        tabContents = new View[3];
         FrameLayout rootLayout = new FrameLayout(context);
         fragmentView = rootLayout;
-        rootLayout.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
+        int storeBg = tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec().colorValue("screens.themeStore.background");
+        rootLayout.setBackgroundColor(storeBg != 0 ? storeBg : Theme.getColor(Theme.key_windowBackgroundGray));
 
         // Content fills the whole screen and runs UNDER the translucent bar - each tab
         // leaves its own bottom inset (see createTabContent) so its last row can still be
