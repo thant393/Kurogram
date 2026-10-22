@@ -56,7 +56,7 @@ public class ThemeCardView extends FrameLayout {
         column.addView(phone, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 0, 0, 10));
 
         titleView = new TextView(context);
-        titleView.setTextSize(15);
+        titleView.setTextSize(tw.nekomimi.nekogram.skin.KuroUi.title(15));
         titleView.setTypeface(AndroidUtilities.bold());
         titleView.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
         titleView.setGravity(Gravity.CENTER);

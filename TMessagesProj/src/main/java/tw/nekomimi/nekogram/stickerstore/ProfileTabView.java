@@ -241,7 +241,7 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
             contentFrame.addView(stickersView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         }
         contentFrame.setAlpha(0f);
-        contentFrame.animate().alpha(1f).setDuration(150).start();
+        contentFrame.animate().alpha(1f).setDuration(tw.nekomimi.nekogram.skin.KuroUi.anim(150)).start();
     }
 
     private static int skinRadius() {
@@ -386,7 +386,7 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
             selected = index;
             int w = (getWidth() - getPaddingLeft() - getPaddingRight()) / labels.length;
             if (animate && w > 0) {
-                thumb.animate().translationX(index * w).setDuration(220)
+                thumb.animate().translationX(index * w).setDuration(tw.nekomimi.nekogram.skin.KuroUi.anim(220))
                         .setInterpolator(new android.view.animation.DecelerateInterpolator()).start();
             } else {
                 thumb.setTranslationX(index * w);

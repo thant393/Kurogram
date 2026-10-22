@@ -84,6 +84,44 @@ public final class KuroUi {
         return ColorUtils.blendARGB(surface, textPrimary() | 0xFF000000, 0.08f);
     }
 
+    /** Colour of a Kuro page: the skin's themeStore background, else the skin background, else Telegram's grey. */
+    public static int pageBackground() {
+        return screenBackground(t().themeStoreBackground);
+    }
+
+    // ---------- type, motion, size ----------
+
+    /** Stock sizes the skin's typography values are compared against. */
+    private static final int STOCK_TITLE_SP = 20, STOCK_BODY_SP = 16, STOCK_CAPTION_SP = 12;
+
+    /** A heading designed as {@code sp} for the stock skin, scaled by the skin's titleSizeSp. */
+    public static float title(float sp) {
+        int v = t().titleSizeSp;
+        return v > 0 ? sp * v / STOCK_TITLE_SP : sp;
+    }
+
+    public static float body(float sp) {
+        int v = t().bodySizeSp;
+        return v > 0 ? sp * v / STOCK_BODY_SP : sp;
+    }
+
+    public static float caption(float sp) {
+        int v = t().captionSizeSp;
+        return v > 0 ? sp * v / STOCK_CAPTION_SP : sp;
+    }
+
+    /** An animation length in ms; 0 (instant) when the skin turns animations off or asks for reduced motion. */
+    public static int anim(int ms) {
+        SkinTokens t = t();
+        return (!t.animations || t.reducedMotion) ? 0 : ms;
+    }
+
+    /** Primary button height in dp: the skin's, kept within what the floating bar can hold. */
+    public static int buttonHeightDp(int def) {
+        int h = t().buttonHeightDp;
+        return h > 0 ? Math.min(h, 56) : def;
+    }
+
     // ---------- shapes ----------
 
     /** Fill + corner radius + border for a card. {@code inset} = a cell sitting inside another card. */
@@ -118,12 +156,20 @@ public final class KuroUi {
         return disabled ? 0xFFFFFFFF : (t.buttonForeground != 0 ? t.buttonForeground : onAccent());
     }
 
+    /** Fill of a floating-bar piece (round buttons next to the main pill). */
+    public static int barFill() {
+        int c = t().bottomBarBackground;
+        return c != 0 ? c : Theme.getColor(Theme.key_windowBackgroundWhite);
+    }
+
     /** A fully round or pill-shaped solid fill with a hairline border (floating bar pieces). */
     public static GradientDrawable pill(int radiusDp) {
+        SkinTokens t = t();
         GradientDrawable d = new GradientDrawable();
         d.setShape(GradientDrawable.RECTANGLE);
         d.setCornerRadius(AndroidUtilities.dp(radiusDp));
-        d.setColor(surface());
+        // floating bars follow the skin's bottom-bar colour, else its surface
+        d.setColor(t.bottomBarBackground != 0 ? t.bottomBarBackground : Theme.getColor(Theme.key_windowBackgroundWhite));
         d.setStroke(Math.max(1, AndroidUtilities.dp(0.5f)), hairline());
         return d;
     }

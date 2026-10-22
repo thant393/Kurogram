@@ -130,7 +130,7 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
 
         FrameLayout rootFrame = new FrameLayout(context);
         fragmentView = rootFrame;
-        rootFrame.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
+        rootFrame.setBackgroundColor(tw.nekomimi.nekogram.skin.KuroUi.pageBackground());
 
         // The content scrolls; the action bar below is a sibling, NOT part of the scrolled
         // content, so it stays fixed at the bottom whether the sticker list is short or long.
@@ -162,7 +162,7 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
         header.addView(iconView, LayoutHelper.createLinear(96, 96, Gravity.CENTER_HORIZONTAL, 0, 0, 0, 12));
 
         titleView = new TextView(context);
-        titleView.setTextSize(20);
+        titleView.setTextSize(tw.nekomimi.nekogram.skin.KuroUi.title(20));
         titleView.setTypeface(AndroidUtilities.bold());
         titleView.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
         titleView.setGravity(Gravity.CENTER);
@@ -327,7 +327,7 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
         styleActionButton(false, false);
         actionButton.setMinWidth(AndroidUtilities.dp(170));
         actionButton.setPadding(AndroidUtilities.dp(24), 0, AndroidUtilities.dp(24), 0);
-        normalBar.addView(actionButton, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 52, 12, 0, 12, 0));
+        normalBar.addView(actionButton, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, tw.nekomimi.nekogram.skin.KuroUi.buttonHeightDp(52), 12, 0, 12, 0));
 
         likeButton = createBarIcon(context, R.drawable.kuro_heart_outline, 24);
         likeButton.setBackground(circleBackground());
@@ -377,7 +377,7 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
     private android.graphics.drawable.Drawable circleBackground() {
         android.graphics.drawable.GradientDrawable d = new android.graphics.drawable.GradientDrawable();
         d.setShape(android.graphics.drawable.GradientDrawable.OVAL);
-        d.setColor(Theme.getColor(Theme.key_windowBackgroundWhite));
+        d.setColor(tw.nekomimi.nekogram.skin.KuroUi.barFill());
         d.setStroke(Math.max(1, AndroidUtilities.dp(0.5f)), androidx.core.graphics.ColorUtils.setAlphaComponent(Theme.getColor(Theme.key_divider), 0x90));
         return d;
     }
@@ -387,10 +387,10 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
         likeButton.animate().cancel();
         likeButton.setScaleX(1f);
         likeButton.setScaleY(1f);
-        likeButton.animate().scaleX(0.7f).scaleY(0.7f).setDuration(90).withEndAction(() ->
-                likeButton.animate().scaleX(1.3f).scaleY(1.3f).setDuration(140)
+        likeButton.animate().scaleX(0.7f).scaleY(0.7f).setDuration(tw.nekomimi.nekogram.skin.KuroUi.anim(90)).withEndAction(() ->
+                likeButton.animate().scaleX(1.3f).scaleY(1.3f).setDuration(tw.nekomimi.nekogram.skin.KuroUi.anim(140))
                         .setInterpolator(new android.view.animation.OvershootInterpolator(2f)).withEndAction(() ->
-                                likeButton.animate().scaleX(1f).scaleY(1f).setDuration(110).start()).start()).start();
+                                likeButton.animate().scaleX(1f).scaleY(1f).setDuration(tw.nekomimi.nekogram.skin.KuroUi.anim(110)).start()).start()).start();
     }
 
     private ImageView createBarIcon(Context context, int drawableRes, int sizeDp) {
@@ -421,9 +421,9 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
         in.setVisibility(View.VISIBLE);
         in.animate().cancel();
         in.setScaleX(0.96f);
-        in.animate().alpha(1f).scaleX(1f).setDuration(180).start();
+        in.animate().alpha(1f).scaleX(1f).setDuration(tw.nekomimi.nekogram.skin.KuroUi.anim(180)).start();
         out.animate().cancel();
-        out.animate().alpha(0f).setDuration(120).withEndAction(() -> {
+        out.animate().alpha(0f).setDuration(tw.nekomimi.nekogram.skin.KuroUi.anim(120)).withEndAction(() -> {
             // Only hide it if it hasn't been asked to come back in the meantime.
             boolean shouldBeHidden = (out == normalBar) == ratingMode;
             if (shouldBeHidden) {

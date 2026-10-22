@@ -39,19 +39,14 @@ public final class KuroBarStyle {
 
     /** The pill: 100% solid fill (no alpha), hairline border. */
     public static Drawable background() {
-        GradientDrawable d = new GradientDrawable();
-        d.setShape(GradientDrawable.RECTANGLE);
-        d.setCornerRadius(AndroidUtilities.dp(CORNER_RADIUS_DP));
-        d.setColor(Theme.getColor(Theme.key_windowBackgroundWhite));
-        d.setStroke(Math.max(1, AndroidUtilities.dp(0.5f)), ColorUtils.setAlphaComponent(Theme.getColor(Theme.key_divider), 0x90));
-        return d;
+        return tw.nekomimi.nekogram.skin.KuroUi.pill(CORNER_RADIUS_DP);
     }
 
     /** Full-width translucent layer for behind the bottom pill; fades to nothing at its top
      *  edge so no rectangular strip is visible. Add it BEFORE the pill so the pill is above. */
     public static View createBottomScrim(Context context) {
         View scrim = new View(context);
-        int base = Theme.getColor(Theme.key_windowBackgroundGray);
+        int base = tw.nekomimi.nekogram.skin.KuroUi.pageBackground();
         scrim.setBackground(new GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP, new int[]{
                 ColorUtils.setAlphaComponent(base, 0xE6),
                 ColorUtils.setAlphaComponent(base, 0x99),
@@ -62,7 +57,7 @@ public final class KuroBarStyle {
     /** Background for the header behind the Popular/Newest chips: translucent at the top,
      *  fading out downward, so it blends into the page instead of ending in a hard strip. */
     public static Drawable headerFade() {
-        int base = Theme.getColor(Theme.key_windowBackgroundGray);
+        int base = tw.nekomimi.nekogram.skin.KuroUi.pageBackground();
         return new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, new int[]{
                 ColorUtils.setAlphaComponent(base, 0xE6),
                 ColorUtils.setAlphaComponent(base, 0x99),

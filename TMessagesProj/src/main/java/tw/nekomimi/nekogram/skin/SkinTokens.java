@@ -21,6 +21,7 @@ public final class SkinTokens {
     // layer 1: shapes / elevation
     public final int cardRadiusDp, buttonRadiusDp, dialogRadiusDp, bubbleRadiusDp;
     public final int inputRadiusDp;      // -1 = not set
+    public final int titleSizeSp, bodySizeSp, captionSizeSp; // -1 = not set
     public final int cardElevationDp;
 
     // layer 2: components
@@ -31,6 +32,7 @@ public final class SkinTokens {
     public final int inputBackground, inputForeground, inputHint;
     public final int appBarBackground, appBarForeground;
     public final int dialogBackground, dialogScrim;
+    public final int bottomBarBackground;
 
     // layer 3: screens
     public final int chatsBackground, contactsBackground, profileBackground, settingsBackground, themeStoreBackground;
@@ -64,6 +66,9 @@ public final class SkinTokens {
         buttonRadiusDp = s.intValue("tokens.shapes.buttonRadiusDp", 26);
         bubbleRadiusDp = s.bubbleRadius != null ? s.bubbleRadius : -1;
         inputRadiusDp = s.intValue("tokens.shapes.inputRadiusDp", -1);
+        titleSizeSp = s.intValue("tokens.typography.titleSizeSp", -1);
+        bodySizeSp = s.intValue("tokens.typography.bodySizeSp", -1);
+        captionSizeSp = s.intValue("tokens.typography.captionSizeSp", -1);
         cardElevationDp = s.intValue("tokens.elevation.cardDp", 2);
 
         cardBackground = s.colorValue("components.card.background");
@@ -78,6 +83,7 @@ public final class SkinTokens {
         appBarBackground = s.colorValue("components.appBar.background");
         appBarForeground = s.colorValue("components.appBar.foreground");
         dialogBackground = s.colorValue("components.dialog.background");
+        bottomBarBackground = s.colorValue("components.bottomNavigation.background");
         dialogScrim = s.colorValue("components.dialog.scrim");
 
         chatsBackground = s.colorValue("screens.chats.background");

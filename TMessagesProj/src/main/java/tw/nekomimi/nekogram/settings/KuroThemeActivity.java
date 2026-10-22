@@ -229,7 +229,7 @@ public class KuroThemeActivity extends BaseFragment {
 
     private View createComingSoonView(Context context) {
         FrameLayout frameLayout = new FrameLayout(context);
-        frameLayout.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
+        frameLayout.setBackgroundColor(tw.nekomimi.nekogram.skin.KuroUi.pageBackground());
 
         TextView textView = new TextView(context);
         textView.setText("Coming soon");

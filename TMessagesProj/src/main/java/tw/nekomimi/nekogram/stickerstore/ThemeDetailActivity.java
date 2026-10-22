@@ -74,7 +74,7 @@ public class ThemeDetailActivity extends BaseFragment {
         }
 
         FrameLayout root = new FrameLayout(context);
-        root.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
+        root.setBackgroundColor(tw.nekomimi.nekogram.skin.KuroUi.pageBackground());
         fragmentView = root;
         ScrollView scroll = new ScrollView(context);
         root.addView(scroll, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
@@ -102,7 +102,7 @@ public class ThemeDetailActivity extends BaseFragment {
         preview.addView(dot, LayoutHelper.createFrame(34, 34, Gravity.RIGHT | Gravity.BOTTOM, 0, 0, 18, 18));
         card.addView(preview, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 150, 0, 0, 0, 16));
 
-        TextView title = text(context, info.title, 22, true, Theme.key_windowBackgroundWhiteBlackText);
+        TextView title = text(context, info.title, (int) tw.nekomimi.nekogram.skin.KuroUi.title(22), true, Theme.key_windowBackgroundWhiteBlackText);
         title.setGravity(Gravity.CENTER);
         card.addView(title, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
         TextView meta = text(context, info.category + " · " + ("skin".equals(info.type) ? "Layout skin" : "Colors"), 13, false, Theme.key_windowBackgroundWhiteGrayText);
@@ -199,7 +199,7 @@ public class ThemeDetailActivity extends BaseFragment {
         applyButton.setMinWidth(AndroidUtilities.dp(170));
         applyButton.setPadding(AndroidUtilities.dp(24), 0, AndroidUtilities.dp(24), 0);
         applyButton.setOnClickListener(v -> applyTheme());
-        normalBar.addView(applyButton, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 52, 12, 0, 12, 0));
+        normalBar.addView(applyButton, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, tw.nekomimi.nekogram.skin.KuroUi.buttonHeightDp(52), 12, 0, 12, 0));
 
         likeView = barIcon(context, R.drawable.kuro_heart_outline, 24);
         likeView.setBackground(circleBackground());
@@ -250,7 +250,7 @@ public class ThemeDetailActivity extends BaseFragment {
     private android.graphics.drawable.Drawable circleBackground() {
         GradientDrawable d = new GradientDrawable();
         d.setShape(GradientDrawable.OVAL);
-        d.setColor(Theme.getColor(Theme.key_windowBackgroundWhite));
+        d.setColor(tw.nekomimi.nekogram.skin.KuroUi.barFill());
         d.setStroke(Math.max(1, AndroidUtilities.dp(0.5f)), androidx.core.graphics.ColorUtils.setAlphaComponent(Theme.getColor(Theme.key_divider), 0x90));
         return d;
     }
@@ -278,9 +278,9 @@ public class ThemeDetailActivity extends BaseFragment {
         in.setVisibility(View.VISIBLE);
         in.animate().cancel();
         in.setScaleX(0.96f);
-        in.animate().alpha(1f).scaleX(1f).setDuration(180).start();
+        in.animate().alpha(1f).scaleX(1f).setDuration(tw.nekomimi.nekogram.skin.KuroUi.anim(180)).start();
         out.animate().cancel();
-        out.animate().alpha(0f).setDuration(120).withEndAction(() -> {
+        out.animate().alpha(0f).setDuration(tw.nekomimi.nekogram.skin.KuroUi.anim(120)).withEndAction(() -> {
             if ((out == normalBar) == ratingMode) out.setVisibility(View.GONE);
         }).start();
     }
@@ -326,9 +326,9 @@ public class ThemeDetailActivity extends BaseFragment {
             likeView.animate().cancel();
             likeView.setScaleX(1f);
             likeView.setScaleY(1f);
-            likeView.animate().scaleX(1.3f).scaleY(1.3f).setDuration(120)
+            likeView.animate().scaleX(1.3f).scaleY(1.3f).setDuration(tw.nekomimi.nekogram.skin.KuroUi.anim(120))
                     .setInterpolator(new android.view.animation.OvershootInterpolator(2f))
-                    .withEndAction(() -> likeView.animate().scaleX(1f).scaleY(1f).setDuration(110).start()).start();
+                    .withEndAction(() -> likeView.animate().scaleX(1f).scaleY(1f).setDuration(tw.nekomimi.nekogram.skin.KuroUi.anim(110)).start()).start();
         }
         ThemeStoreApi.setLike(info.id, me, want, new StickerStoreApi.ResultCallback() {
             @Override

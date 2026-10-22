@@ -55,7 +55,7 @@ public class StickersTabView extends FrameLayout {
     public StickersTabView(Context context, BaseFragment fragment) {
         super(context);
         this.fragment = fragment;
-        setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
+        setBackgroundColor(tw.nekomimi.nekogram.skin.KuroUi.pageBackground());
 
         layoutManager = new GridLayoutManager(context, 3);
         listView = new RecyclerListView(context);

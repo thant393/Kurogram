@@ -67,7 +67,7 @@ public class UploadHubActivity extends BaseFragment {
         });
 
         FrameLayout root = new FrameLayout(context);
-        root.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
+        root.setBackgroundColor(tw.nekomimi.nekogram.skin.KuroUi.pageBackground());
         fragmentView = root;
 
         ScrollView scroll = new ScrollView(context);
