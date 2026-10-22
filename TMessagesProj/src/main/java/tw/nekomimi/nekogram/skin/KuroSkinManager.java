@@ -191,6 +191,12 @@ public final class KuroSkinManager {
         return spec().accentColor;
     }
 
+    /** A skin colour field (e.g. "components.bottomNavigation.background") or the fallback when the skin has none. */
+    public int colorOr(String path, int fallback) {
+        int c = spec().colorValue(path);
+        return c != 0 ? c : fallback;
+    }
+
     /** Colour for a Theme key if the active skin overrides it, else 0. */
     public int colorOverride(int themeKey) {
         return spec().keyOverrides().get(themeKey, 0);

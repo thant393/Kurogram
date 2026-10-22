@@ -150,8 +150,13 @@ public final class SkinSpec {
             put(o, "appBarText", Theme.key_actionBarDefaultTitle, Theme.key_actionBarDefaultIcon, Theme.key_actionBarDefaultSubtitle);
             put(o, "button", Theme.key_featuredStickers_addButton);
             put(o, "buttonText", Theme.key_featuredStickers_buttonText);
-            put(o, "input", Theme.key_windowBackgroundWhiteInputField);
-            put(o, "inputHint", Theme.key_windowBackgroundWhiteHintText);
+            put(o, "input", Theme.key_windowBackgroundWhiteInputField, Theme.key_chat_messagePanelBackground);
+            put(o, "inputText", Theme.key_chat_messagePanelText);
+            put(o, "inputHint", Theme.key_windowBackgroundWhiteHintText, Theme.key_chat_messagePanelHint);
+            // bottom tab bar (Telegram's glass tabs)
+            put(o, "navSelected", Theme.key_glass_tabSelected, Theme.key_glass_tabSelectedText);
+            put(o, "navUnselected", Theme.key_glass_tabUnselected);
+            put(o, "navBackground", Theme.key_glass_targetMainTabs);
             put(o, "dialog", Theme.key_dialogBackground);
             // chat screen
             put(o, "bubbleIn", Theme.key_chat_inBubble);
@@ -277,6 +282,8 @@ public final class SkinSpec {
                 {"inputHint", "components.input.hint"}, {"dialog", "components.dialog.background"},
                 {"bubbleIn", "chat.bubbleIn"}, {"bubbleOut", "chat.bubbleOut"},
                 {"bubbleInText", "chat.bubbleInText"}, {"bubbleOutText", "chat.bubbleOutText"},
+                {"navSelected", "components.navigationBar.selected"}, {"navUnselected", "components.navigationBar.unselected"},
+                {"navBackground", "components.bottomNavigation.background"}, {"inputText", "components.input.foreground"},
         };
         for (String[] m : map) {
             Object v = get(root, m[1]);

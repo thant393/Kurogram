@@ -556,7 +556,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
     public void updateColors() {
         actionBar.setTitleColor(getThemedColor(Theme.key_windowBackgroundWhiteBlackText));
         actionBar.setItemsColor(getThemedColor(Theme.key_windowBackgroundWhiteBlackText), false);
-        contentView.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundGray));
+        contentView.setBackgroundColor(tw.nekomimi.nekogram.skin.KuroSkinManager.get().colorOr("screens.settings.background", getThemedColor(Theme.key_windowBackgroundGray)));
         titleView.setTextColor(getThemedColor(Theme.key_windowBackgroundWhiteBlackText));
         subtitleView.setTextColor(getThemedColor(Theme.key_windowBackgroundWhiteGrayText));
         searchItem.updateColor();

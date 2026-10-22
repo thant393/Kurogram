@@ -535,7 +535,7 @@ public class ContactsActivity extends BaseFragment implements FactorAnimator.Tar
             blur3_InvalidateBlur();
         }));
         listView.setSections(true);
-        contentView.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundGray));
+        contentView.setBackgroundColor(tw.nekomimi.nekogram.skin.KuroSkinManager.get().colorOr("screens.contacts.background", getThemedColor(Theme.key_windowBackgroundGray)));
 
         FlickerLoadingView flickerLoadingView = new FlickerLoadingView(context);
         flickerLoadingView.setViewType(FlickerLoadingView.PROFILE_SEARCH_CELL);
@@ -1452,7 +1452,7 @@ public class ContactsActivity extends BaseFragment implements FactorAnimator.Tar
                 actionBar.updateColors();
             }
             if (contentView != null) {
-                contentView.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundGray));
+                contentView.setBackgroundColor(tw.nekomimi.nekogram.skin.KuroSkinManager.get().colorOr("screens.contacts.background", getThemedColor(Theme.key_windowBackgroundGray)));
             }
         };
 
