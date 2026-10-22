@@ -92,15 +92,10 @@ public class ThemeDetailActivity extends BaseFragment {
 
         int bg = info.background != 0 ? info.background : (info.dark ? 0xFF1C1C1E : 0xFFF2F2F7);
         int accent = info.accent != 0 ? info.accent : KuroSkinManager.get().accent();
-        FrameLayout preview = new FrameLayout(context);
-        preview.setBackground(ThemeCardView.rounded(bg, 18, true));
-        View bar = new View(context);
-        bar.setBackground(ThemeCardView.rounded(accent, 6, false));
-        preview.addView(bar, LayoutHelper.createFrame(110, 12, Gravity.LEFT | Gravity.TOP, 18, 22, 0, 0));
-        View dot = new View(context);
-        dot.setBackground(ThemeCardView.oval(accent));
-        preview.addView(dot, LayoutHelper.createFrame(34, 34, Gravity.RIGHT | Gravity.BOTTOM, 0, 0, 18, 18));
-        card.addView(preview, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 150, 0, 0, 0, 16));
+        ThemeCardView.PhonePreview preview = new ThemeCardView.PhonePreview(context);
+        preview.set(bg, accent, info.dark, tw.nekomimi.nekogram.skin.KuroUi.t().previewRadiusDp);
+        // A phone-sized preview, centred (not stretched across the whole card).
+        card.addView(preview, LayoutHelper.createLinear(170, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL, 0, 0, 0, 16));
 
         TextView title = text(context, info.title, (int) tw.nekomimi.nekogram.skin.KuroUi.title(22), true, Theme.key_windowBackgroundWhiteBlackText);
         title.setGravity(Gravity.CENTER);
