@@ -100,9 +100,23 @@ public final class SkinSpec {
         if (!(v instanceof String)) {
             return 0;
         }
-        String hex = ((String) v).substring(1);
-        long c = Long.parseLong(hex, 16);
-        return hex.length() == 6 ? (int) (0xFF000000L | c) : (int) c;
+        // overlay and scrim are Android-style #AARRGGBB; every other colour is CSS-style #RRGGBBAA
+        return (path.endsWith(".scrim") || path.endsWith(".overlay")) ? parseArgb((String) v) : parseRgba((String) v);
+    }
+
+    /** #RRGGBB (opaque) or #RRGGBBAA to an Android ARGB int. */
+    static int parseRgba(String hex) {
+        long c = Long.parseLong(hex.substring(1), 16);
+        if (hex.length() == 7) {
+            return (int) (0xFF000000L | c);
+        }
+        return (int) (((c & 0xFF) << 24) | (c >>> 8));
+    }
+
+    /** #RRGGBB (opaque) or #AARRGGBB to an Android ARGB int. */
+    static int parseArgb(String hex) {
+        long c = Long.parseLong(hex.substring(1), 16);
+        return hex.length() == 7 ? (int) (0xFF000000L | c) : (int) c;
     }
 
     public boolean has(String path) {
@@ -184,12 +198,12 @@ public final class SkinSpec {
     private static final String NULL = "null";      // reserved: must be absent or null
     private static final String BOOL = "bool";
 
-    /** path | kind. kind is c6, c68, bool, null, int:lo:hi, float:lo:hi or enum:a,b,c */
+    /** path | kind. kind is col (#RRGGBB or #RRGGBBAA), argb (#RRGGBB or #AARRGGBB; overlay/scrim only), bool, null, int:lo:hi, float:lo:hi or enum:a,b,c */
     private static final String[] RULES_V2 = {
-            "tokens.colors.accent|c6", "tokens.colors.onAccent|c6", "tokens.colors.background|c6", "tokens.colors.surface|c6",
-            "tokens.colors.surfaceElevated|c6", "tokens.colors.textPrimary|c6", "tokens.colors.textSecondary|c6",
-            "tokens.colors.divider|c6", "tokens.colors.icon|c6", "tokens.colors.error|c6", "tokens.colors.success|c6",
-            "tokens.colors.overlay|c68",
+            "tokens.colors.accent|col", "tokens.colors.onAccent|col", "tokens.colors.background|col", "tokens.colors.surface|col",
+            "tokens.colors.surfaceElevated|col", "tokens.colors.textPrimary|col", "tokens.colors.textSecondary|col",
+            "tokens.colors.divider|col", "tokens.colors.icon|col", "tokens.colors.error|col", "tokens.colors.success|col",
+            "tokens.colors.overlay|argb",
             "tokens.typography.fontFamily|enum:default", "tokens.typography.bodySizeSp|int:12:30",
             "tokens.typography.titleSizeSp|int:14:40", "tokens.typography.captionSizeSp|int:8:20",
             "tokens.typography.fontWeight|enum:normal,medium,bold", "tokens.typography.lineHeightMultiplier|float:1:2",
@@ -198,23 +212,23 @@ public final class SkinSpec {
             "tokens.shapes.cardRadiusDp|int:0:32", "tokens.shapes.buttonRadiusDp|int:0:32",
             "tokens.shapes.inputRadiusDp|int:0:32", "tokens.shapes.dialogRadiusDp|int:0:32", "tokens.shapes.bubbleRadiusDp|int:0:17",
             "tokens.elevation.cardDp|int:0:24", "tokens.elevation.dialogDp|int:0:24",
-            "components.appBar.background|c6", "components.appBar.foreground|c6", "components.appBar.heightDp|int:40:72",
-            "components.navigationBar.background|c6", "components.navigationBar.selected|c6", "components.navigationBar.unselected|c6",
-            "components.bottomNavigation.background|c6", "components.bottomNavigation.selectedBackground|c6",
+            "components.appBar.background|col", "components.appBar.foreground|col", "components.appBar.heightDp|int:40:72",
+            "components.navigationBar.background|col", "components.navigationBar.selected|col", "components.navigationBar.unselected|col",
+            "components.bottomNavigation.background|col", "components.bottomNavigation.selectedBackground|col",
             "components.bottomNavigation.iconSizeDp|int:16:40",
-            "components.card.background|c6", "components.card.borderColor|c6", "components.card.borderWidthDp|int:0:4",
-            "components.button.background|c6", "components.button.foreground|c6", "components.button.heightDp|int:36:64",
-            "components.input.background|c6", "components.input.foreground|c6", "components.input.hint|c6",
-            "components.dialog.background|c6", "components.dialog.scrim|c68",
-            "screens.chats.background|c6", "screens.chats.listStyle|enum:card,flat", "screens.chats.avatarSizeDp|int:32:72",
+            "components.card.background|col", "components.card.borderColor|col", "components.card.borderWidthDp|int:0:4",
+            "components.button.background|col", "components.button.foreground|col", "components.button.heightDp|int:36:64",
+            "components.input.background|col", "components.input.foreground|col", "components.input.hint|col",
+            "components.dialog.background|col", "components.dialog.scrim|argb",
+            "screens.chats.background|col", "screens.chats.listStyle|enum:card,flat,glass", "screens.chats.avatarSizeDp|int:32:72",
             "screens.chats.showDividers|bool", "screens.chats.threeLines|bool",
-            "screens.contacts.background|c6", "screens.contacts.sectionStyle|enum:card,flat", "screens.contacts.avatarSizeDp|int:32:72",
-            "screens.profile.background|c6", "screens.profile.headerStyle|enum:centered,left",
+            "screens.contacts.background|col", "screens.contacts.sectionStyle|enum:card,flat,glass", "screens.contacts.avatarSizeDp|int:32:72",
+            "screens.profile.background|col", "screens.profile.headerStyle|enum:centered,left,glass",
             "screens.profile.avatarSizeDp|int:64:160", "screens.profile.cardRadiusDp|int:0:32",
-            "screens.settings.background|c6", "screens.settings.groupStyle|enum:card,flat",
+            "screens.settings.background|col", "screens.settings.groupStyle|enum:card,flat,glass",
             "screens.settings.iconStyle|enum:rounded,square,plain", "screens.settings.showDescriptions|bool",
-            "screens.themeStore.background|c6", "screens.themeStore.gridColumns|int:2:3", "screens.themeStore.previewRadiusDp|int:0:32",
-            "chat.bubbleIn|c6", "chat.bubbleOut|c6", "chat.bubbleInText|c6", "chat.bubbleOutText|c6",
+            "screens.themeStore.background|col", "screens.themeStore.gridColumns|int:2:3", "screens.themeStore.previewRadiusDp|int:0:32",
+            "chat.bubbleIn|col", "chat.bubbleOut|col", "chat.bubbleInText|col", "chat.bubbleOutText|col",
             "chat.bubbleRadiusDp|int:0:17", "chat.fontSizeSp|int:12:30",
             "assets.wallpaper|null", "assets.font|null", "assets.iconPack|null",
             "effects.blur|bool", "effects.glass|bool", "effects.animations|bool", "effects.reducedMotion|bool",
@@ -288,7 +302,7 @@ public final class SkinSpec {
         for (String[] m : map) {
             Object v = get(root, m[1]);
             if (v instanceof String) {
-                colors.put(m[0], 0xFF000000 | (int) Long.parseLong(((String) v).substring(1), 16));
+                colors.put(m[0], parseRgba((String) v));
             }
         }
         int card = intOr(root, "tokens.shapes.cardRadiusDp", 22);
@@ -372,10 +386,8 @@ public final class SkinSpec {
         boolean ok;
         String[] k = kind.split(":");
         switch (k[0]) {
-            case "c6":
-                ok = v instanceof String && ((String) v).matches("#[0-9A-Fa-f]{6}");
-                break;
-            case "c68":
+            case "col":
+            case "argb":
                 ok = v instanceof String && ((String) v).matches("#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?");
                 break;
             case "bool":

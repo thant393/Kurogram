@@ -123,7 +123,7 @@ public class StickerPackGridCell extends FrameLayout {
         d.setColor(inset ? insetColor() : Theme.getColor(Theme.key_windowBackgroundWhite));
         int borderDp = skin.intValue("components.card.borderWidthDp", -1);
         int borderColor = skin.colorValue("components.card.borderColor");
-        boolean card = tw.nekomimi.nekogram.skin.SkinSpec.LIST_CARD.equals(skin.listStyle);
+        boolean card = !tw.nekomimi.nekogram.skin.SkinSpec.LIST_FLAT.equals(skin.listStyle);
         if (borderDp > 0) {
             d.setStroke(AndroidUtilities.dp(borderDp), borderColor != 0 ? borderColor : strokeColor());
         } else if (borderDp < 0 && (card || inset)) {

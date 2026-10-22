@@ -111,12 +111,12 @@ public final class ThemeStoreApi {
                 JSONObject tokens = root.optJSONObject("tokens");
                 JSONObject colors = tokens != null ? tokens.optJSONObject("colors") : root.optJSONObject("colors");
                 String a = colors != null ? colors.optString("accent", "") : "";
-                if (a.matches("#[0-9A-Fa-f]{6}")) {
-                    accent = 0xFF000000 | (int) Long.parseLong(a.substring(1), 16);
+                if (a.matches("#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?")) {
+                    accent = 0xFF000000 | (int) Long.parseLong(a.substring(1, 7), 16); // preview ignores alpha
                 }
                 String b = colors != null ? colors.optString("background", "") : "";
-                if (b.matches("#[0-9A-Fa-f]{6}")) {
-                    background = 0xFF000000 | (int) Long.parseLong(b.substring(1), 16);
+                if (b.matches("#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?")) {
+                    background = 0xFF000000 | (int) Long.parseLong(b.substring(1, 7), 16);
                 }
             } else {
                 for (String raw : content.split("\n")) {
