@@ -26,7 +26,7 @@ import tw.nekomimi.nekogram.stickerstore.ProfileTabView;
 import tw.nekomimi.nekogram.stickerstore.StickersTabView;
 import tw.nekomimi.nekogram.stickerstore.ThemesTabView;
 
-public class KuroThemeActivity extends BaseFragment {
+public class KuroThemeActivity extends BaseFragment implements tw.nekomimi.nekogram.skin.SkinAware {
 
     private static final int TAB_THEMES = 0;
     private static final int TAB_STICKERS = 1;
@@ -37,6 +37,9 @@ public class KuroThemeActivity extends BaseFragment {
     // matches, and every tab's content runs underneath it.
 
     private FrameLayout contentFrame;
+    private FrameLayout rootLayout;
+    private View scrimView;
+    private LinearLayout tabBarView;
     private View[] tabContents = new View[3];
     private TabButton[] tabButtons = new TabButton[3];
     private int selectedTab = TAB_THEMES;
@@ -115,10 +118,9 @@ public class KuroThemeActivity extends BaseFragment {
 
         // A rebuild (the skin changed) must not reuse tab views built with the old colours.
         tabContents = new View[3];
-        FrameLayout rootLayout = new FrameLayout(context);
+        rootLayout = new FrameLayout(context);
         fragmentView = rootLayout;
-        int storeBg = tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec().colorValue("screens.themeStore.background");
-        rootLayout.setBackgroundColor(storeBg != 0 ? storeBg : Theme.getColor(Theme.key_windowBackgroundGray));
+        rootLayout.setBackgroundColor(tw.nekomimi.nekogram.skin.KuroUi.pageBackground());
 
         // Content fills the whole screen and runs UNDER the translucent bar - each tab
         // leaves its own bottom inset (see createTabContent) so its last row can still be
@@ -128,11 +130,13 @@ public class KuroThemeActivity extends BaseFragment {
 
         // Full-width translucent layer behind the bar (fades out at its top); the bar itself
         // is a solid pill drawn above it.
-        rootLayout.addView(KuroBarStyle.createBottomScrim(context),
+        scrimView = KuroBarStyle.createBottomScrim(context);
+        rootLayout.addView(scrimView,
                 LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, KuroBarStyle.SCRIM_HEIGHT_DP, Gravity.BOTTOM));
 
         LinearLayout tabBar = new LinearLayout(context);
         tabBar.setOrientation(LinearLayout.HORIZONTAL);
+        tabBarView = tabBar;
         tabBar.setBackground(KuroBarStyle.background());
         // Clip children (ripples/highlights) to the rounded outline; no elevation, since a
         // drop shadow would show through the translucent fill.
@@ -152,6 +156,63 @@ public class KuroThemeActivity extends BaseFragment {
         tw.nekomimi.nekogram.stickerstore.OwnerProfileSync.sync(currentAccount);
 
         return fragmentView;
+    }
+
+    @Override
+    public boolean restylesInPlace() {
+        return true;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        tw.nekomimi.nekogram.skin.KuroSkinManager.get().register(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        tw.nekomimi.nekogram.skin.KuroSkinManager.get().unregister(this);
+    }
+
+    @Override
+    public void onFragmentDestroy() {
+        tw.nekomimi.nekogram.skin.KuroSkinManager.get().unregister(this);
+        super.onFragmentDestroy();
+    }
+
+    /** The skin changed: restyle everything here in place (tab, scroll position and loaded lists are kept). */
+    @Override
+    public void onSkinChanged(tw.nekomimi.nekogram.skin.SkinTokens tokens) {
+        if (rootLayout == null) {
+            return;
+        }
+        rootLayout.setBackgroundColor(tw.nekomimi.nekogram.skin.KuroUi.pageBackground());
+        if (scrimView != null) {
+            scrimView.setBackground(KuroBarStyle.scrimDrawable());
+        }
+        if (tabBarView != null) {
+            tabBarView.setBackground(KuroBarStyle.background());
+        }
+        for (int i = 0; i < tabButtons.length; i++) {
+            if (tabButtons[i] != null) {
+                tabButtons[i].applySelected(i == selectedTab);
+            }
+        }
+        if (tabContents[TAB_THEMES] instanceof ThemesTabView) {
+            ((ThemesTabView) tabContents[TAB_THEMES]).applySkin();
+        }
+        if (tabContents[TAB_STICKERS] instanceof StickersTabView) {
+            ((StickersTabView) tabContents[TAB_STICKERS]).applySkin();
+        }
+        // The Profile tab restyles itself (it listens for the skin change on its own).
+        if (actionBar != null) {
+            actionBar.setBackgroundColor(getThemedColor(Theme.key_actionBarDefault));
+            actionBar.setTitleColor(getThemedColor(Theme.key_actionBarDefaultTitle));
+            actionBar.setItemsColor(getThemedColor(Theme.key_actionBarDefaultIcon), false);
+            actionBar.setItemsBackgroundColor(getThemedColor(Theme.key_actionBarDefaultSelector), false);
+            actionBar.updateColors();
+        }
     }
 
     private void addTabButton(Context context, LinearLayout tabBar, int index, int iconRes, String text) {

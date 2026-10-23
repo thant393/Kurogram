@@ -31,6 +31,7 @@ public class StickersTabView extends FrameLayout {
     private final RadialProgressView progressView;
     private final TextView infoView;
     private final TextView sortPopular;
+    private final FrameLayout header;
     private final TextView sortNewest;
 
     private final ArrayList<StickerPackInfo> packs = new ArrayList<>();
@@ -89,7 +90,7 @@ public class StickersTabView extends FrameLayout {
         // translucent fade (strongest behind the chips, gone at the bottom edge) rather than
         // a flat strip, so it blends into the page and the grid scrolls "into" it softly.
         // The chips themselves stay solid.
-        FrameLayout header = new FrameLayout(context);
+        header = new FrameLayout(context);
         header.setBackground(KuroBarStyle.headerFade());
         addView(header, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, HEADER_HEIGHT_DP + HEADER_FADE_DP, Gravity.TOP));
 
@@ -182,6 +183,16 @@ public class StickersTabView extends FrameLayout {
             chip.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGrayText));
         }
         chip.setBackground(bg);
+    }
+
+    /** Restyles this tab for the active skin without rebuilding it (the loaded packs and scroll position are kept). */
+    public void applySkin() {
+        setBackgroundColor(tw.nekomimi.nekogram.skin.KuroUi.pageBackground());
+        header.setBackground(KuroBarStyle.headerFade());
+        updateSortChips();
+        android.os.Parcelable state = layoutManager.onSaveInstanceState();
+        listView.setAdapter(adapter); // new cells pick up the card colours / radius
+        layoutManager.onRestoreInstanceState(state);
     }
 
     private void updateSortChips() {

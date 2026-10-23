@@ -46,12 +46,17 @@ public final class KuroBarStyle {
      *  edge so no rectangular strip is visible. Add it BEFORE the pill so the pill is above. */
     public static View createBottomScrim(Context context) {
         View scrim = new View(context);
+        scrim.setBackground(scrimDrawable());
+        return scrim;
+    }
+
+    /** The scrim's fill alone, so a screen can re-apply it when the skin changes. */
+    public static Drawable scrimDrawable() {
         int base = tw.nekomimi.nekogram.skin.KuroUi.pageBackground();
-        scrim.setBackground(new GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP, new int[]{
+        return new GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP, new int[]{
                 ColorUtils.setAlphaComponent(base, 0xE6),
                 ColorUtils.setAlphaComponent(base, 0x99),
-                ColorUtils.setAlphaComponent(base, 0x00)}));
-        return scrim;
+                ColorUtils.setAlphaComponent(base, 0x00)});
     }
 
     /** Background for the header behind the Popular/Newest chips: translucent at the top,

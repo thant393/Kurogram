@@ -94,7 +94,10 @@ public class ThemesTabView extends FrameLayout {
 
     /** Rebuilds the cards with the active skin's colours and radii (data is kept). */
     public void applySkin() {
+        // New cells pick up the colours / radius; keep the scroll position across the swap.
+        android.os.Parcelable state = layoutManager.onSaveInstanceState();
         listView.setAdapter(adapter);
+        layoutManager.onRestoreInstanceState(state);
     }
 
     public ThemesTabView(Context context, BaseFragment fragment, long ownerId, String emptyText) {
