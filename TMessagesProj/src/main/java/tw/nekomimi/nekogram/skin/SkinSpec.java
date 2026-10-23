@@ -142,25 +142,32 @@ public final class SkinSpec {
                     Theme.key_windowBackgroundWhiteBlueHeader, Theme.key_windowBackgroundWhiteLinkText,
                     Theme.key_dialogTextBlue, Theme.key_dialogTextBlue2, Theme.key_dialogButton,
                     Theme.key_switchTrackChecked, Theme.key_radioBackgroundChecked, Theme.key_checkbox,
-                    Theme.key_chats_unreadCounter, Theme.key_chats_actionBackground, Theme.key_featuredStickers_addButton);
+                    Theme.key_chats_unreadCounter, Theme.key_chats_actionBackground, Theme.key_featuredStickers_addButton,
+                    Theme.key_chats_tabUnreadActiveBackground, Theme.key_actionBarTabActiveText, Theme.key_actionBarTabLine,
+                    Theme.key_chat_topPanelLine, Theme.key_chat_goDownButtonCounterBackground);
             put(o, "onAccent", Theme.key_featuredStickers_buttonText, Theme.key_chats_unreadCounterText, Theme.key_chats_actionIcon);
             put(o, "background", Theme.key_windowBackgroundGray, Theme.key_dialogBackgroundGray);
-            put(o, "surface", Theme.key_windowBackgroundWhite);
-            put(o, "surfaceElevated", Theme.key_dialogBackground, Theme.key_actionBarDefaultSubmenuBackground);
+            put(o, "surface", Theme.key_windowBackgroundWhite, Theme.key_chat_goDownButton);
+            put(o, "surfaceElevated", Theme.key_dialogBackground, Theme.key_actionBarDefaultSubmenuBackground,
+                    Theme.key_chats_tabUnreadUnactiveBackground);
             put(o, "textPrimary", Theme.key_windowBackgroundWhiteBlackText, Theme.key_dialogTextBlack, Theme.key_chats_name,
-                    Theme.key_actionBarDefaultSubmenuItem, Theme.key_chat_messagePanelText);
+                    Theme.key_actionBarDefaultSubmenuItem, Theme.key_chat_messagePanelText, Theme.key_glass_defaultText,
+                    Theme.key_chat_topPanelTitle);
             put(o, "textSecondary", Theme.key_windowBackgroundWhiteGrayText, Theme.key_windowBackgroundWhiteGrayText2,
                     Theme.key_windowBackgroundWhiteGrayText3, Theme.key_windowBackgroundWhiteGrayText4,
                     Theme.key_windowBackgroundWhiteGrayText5, Theme.key_windowBackgroundWhiteGrayText6,
                     Theme.key_windowBackgroundWhiteGrayText7, Theme.key_windowBackgroundWhiteGrayText8,
-                    Theme.key_chats_message, Theme.key_dialogTextGray);
+                    Theme.key_chats_message, Theme.key_dialogTextGray, Theme.key_chat_topPanelMessage,
+                    Theme.key_actionBarTabUnactiveText);
             put(o, "divider", Theme.key_divider, Theme.key_dialogGrayLine);
-            put(o, "icon", Theme.key_windowBackgroundWhiteGrayIcon, Theme.key_chat_messagePanelIcons);
+            put(o, "icon", Theme.key_windowBackgroundWhiteGrayIcon, Theme.key_chat_messagePanelIcons, Theme.key_glass_defaultIcon);
             put(o, "error", Theme.key_text_RedBold, Theme.key_text_RedRegular);
             put(o, "success", Theme.key_windowBackgroundWhiteGreenText, Theme.key_color_green);
             // components
             put(o, "card", Theme.key_windowBackgroundWhite);
-            put(o, "appBar", Theme.key_actionBarDefault);
+            // Telegram's glass panels (chat list folder tabs, profile tabs, chat header/pinned/bottom bars)
+            // are built from these; left alone they keep the base theme's light colours.
+            put(o, "appBar", Theme.key_actionBarDefault, Theme.key_chat_topPanelBackground, Theme.key_glass_targetMainTopPanel);
             put(o, "appBarText", Theme.key_actionBarDefaultTitle, Theme.key_actionBarDefaultIcon, Theme.key_actionBarDefaultSubtitle);
             put(o, "button", Theme.key_featuredStickers_addButton);
             put(o, "buttonText", Theme.key_featuredStickers_buttonText);
@@ -182,13 +189,42 @@ public final class SkinSpec {
         return keyOverrides;
     }
 
+    /** Colours Telegram paints as solid fills and sometimes forces opaque (setAlphaComponent(c, 255), solveSrcColor). */
+    private static final java.util.Set<String> SOLID = new java.util.HashSet<>(java.util.Arrays.asList(
+            "background", "surface", "surfaceElevated", "card", "appBar", "input", "dialog", "navBackground",
+            "bubbleIn", "bubbleOut"));
+
     private void put(SparseIntArray target, String name, int... keys) {
         Integer c = colors.get(name);
         if (c != null) {
+            int value = SOLID.contains(name) ? solid(c) : c;
             for (int k : keys) {
-                target.put(k, c);
+                target.put(k, value);
             }
         }
+    }
+
+    /**
+     * A skin may give translucent surfaces (e.g. white at 7%) for a glass look. Telegram forces many
+     * of its panel colours opaque, which turns "white at 7%" into pure white. So a solid-fill colour is
+     * composited onto the skin's backdrop first: what the glass would look like, as an opaque colour.
+     */
+    private int solid(int color) {
+        if ((color >>> 24) == 0xFF) {
+            return color;
+        }
+        return androidx.core.graphics.ColorUtils.compositeColors(color, backdrop());
+    }
+
+    /** The skin's own background colour (opaque), else black for a skin with light text or white for dark text. */
+    private int backdrop() {
+        Integer bg = colors.get("background");
+        if (bg != null && (bg >>> 24) == 0xFF) {
+            return bg;
+        }
+        Integer text = colors.get("textPrimary");
+        boolean lightText = text != null && androidx.core.graphics.ColorUtils.calculateLuminance(text | 0xFF000000) > 0.5;
+        return lightText ? 0xFF000000 : 0xFFFFFFFF;
     }
 
     // ---- validation rules (the backend's _validate_skin mirrors this table exactly) ----
