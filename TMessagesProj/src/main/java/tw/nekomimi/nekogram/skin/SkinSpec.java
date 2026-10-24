@@ -191,8 +191,7 @@ public final class SkinSpec {
 
     /** Colours Telegram paints as solid fills and sometimes forces opaque (setAlphaComponent(c, 255), solveSrcColor). */
     private static final java.util.Set<String> SOLID = new java.util.HashSet<>(java.util.Arrays.asList(
-            "background", "surface", "surfaceElevated", "card", "appBar", "input", "dialog", "navBackground",
-            "bubbleIn", "bubbleOut"));
+            "background", "surface", "surfaceElevated", "card", "appBar", "input", "dialog", "navBackground"));
 
     private void put(SparseIntArray target, String name, int... keys) {
         Integer c = colors.get(name);
