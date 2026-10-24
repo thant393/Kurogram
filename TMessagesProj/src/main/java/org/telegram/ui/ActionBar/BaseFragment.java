@@ -287,6 +287,7 @@ public abstract class BaseFragment {
     @CallSuper
     protected void onViewCreated(View view) {
         glassEngine.setRoot(view);
+        tw.nekomimi.nekogram.skin.KuroUi.paintFragmentRoot(view, this);
     }
 
     protected View createView(Context context) {

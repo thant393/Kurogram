@@ -102,6 +102,41 @@ public final class KuroUi {
         return pageBackground();
     }
 
+    /**
+     * Telegram's own screens: when the skin has a gradient and a screen's root is painted with the plain
+     * page colour (Telegram's grey or white), swap it for the gradient. Opaque, so fragment transitions
+     * never show the screen underneath. Screens with their own backdrop (chat wallpaper) are left alone.
+     */
+    public static void paintFragmentRoot(android.view.View root, Object fragment) {
+        try {
+            if (root == null || !hasGradient() || fragment instanceof org.telegram.ui.ChatActivity) {
+                return;
+            }
+            android.graphics.drawable.Drawable bg = root.getBackground();
+            if (!(bg instanceof android.graphics.drawable.ColorDrawable)) {
+                return;
+            }
+            int c = ((android.graphics.drawable.ColorDrawable) bg).getColor() | 0xFF000000;
+            if (c != (Theme.getColor(Theme.key_windowBackgroundGray) | 0xFF000000)
+                    && c != (Theme.getColor(Theme.key_windowBackgroundWhite) | 0xFF000000)) {
+                return;
+            }
+            SkinTokens t = t();
+            int[] colors = t.gradientMiddle != 0
+                    ? new int[]{t.gradientTop | 0xFF000000, t.gradientMiddle | 0xFF000000, t.gradientBottom | 0xFF000000}
+                    : new int[]{t.gradientTop | 0xFF000000, t.gradientBottom | 0xFF000000};
+            root.setBackground(new GradientDrawable(orientation(t.gradientDirection), colors));
+        } catch (Throwable ignore) {
+            // cosmetic only: never break a screen over its background
+        }
+    }
+
+    private static GradientDrawable.Orientation orientation(String direction) {
+        return "horizontal".equals(direction) ? GradientDrawable.Orientation.LEFT_RIGHT
+                : "diagonal".equals(direction) ? GradientDrawable.Orientation.TL_BR
+                : GradientDrawable.Orientation.TOP_BOTTOM;
+    }
+
     public static void applyPageBackground(android.view.View v) {
         applyBackground(v, t().themeStoreBackground);
     }
