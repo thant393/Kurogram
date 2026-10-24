@@ -56,7 +56,7 @@ public class StickersTabView extends FrameLayout {
     public StickersTabView(Context context, BaseFragment fragment) {
         super(context);
         this.fragment = fragment;
-        setBackgroundColor(tw.nekomimi.nekogram.skin.KuroUi.pageBackground());
+        tw.nekomimi.nekogram.skin.KuroUi.applyPageBackground(this);
 
         layoutManager = new GridLayoutManager(context, 3);
         listView = new RecyclerListView(context);
@@ -187,7 +187,7 @@ public class StickersTabView extends FrameLayout {
 
     /** Restyles this tab for the active skin without rebuilding it (the loaded packs and scroll position are kept). */
     public void applySkin() {
-        setBackgroundColor(tw.nekomimi.nekogram.skin.KuroUi.pageBackground());
+        tw.nekomimi.nekogram.skin.KuroUi.applyPageBackground(this);
         header.setBackground(KuroBarStyle.headerFade());
         updateSortChips();
         android.os.Parcelable state = layoutManager.onSaveInstanceState();

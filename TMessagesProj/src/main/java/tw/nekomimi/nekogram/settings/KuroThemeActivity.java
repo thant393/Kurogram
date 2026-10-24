@@ -120,7 +120,7 @@ public class KuroThemeActivity extends BaseFragment implements tw.nekomimi.nekog
         tabContents = new View[3];
         rootLayout = new FrameLayout(context);
         fragmentView = rootLayout;
-        rootLayout.setBackgroundColor(tw.nekomimi.nekogram.skin.KuroUi.pageBackground());
+        tw.nekomimi.nekogram.skin.KuroUi.applyPageBackground(rootLayout);
 
         // Content fills the whole screen and runs UNDER the translucent bar - each tab
         // leaves its own bottom inset (see createTabContent) so its last row can still be
@@ -187,7 +187,7 @@ public class KuroThemeActivity extends BaseFragment implements tw.nekomimi.nekog
         if (rootLayout == null) {
             return;
         }
-        rootLayout.setBackgroundColor(tw.nekomimi.nekogram.skin.KuroUi.pageBackground());
+        tw.nekomimi.nekogram.skin.KuroUi.applyPageBackground(rootLayout);
         if (scrimView != null) {
             scrimView.setBackground(KuroBarStyle.scrimDrawable());
         }
@@ -290,7 +290,7 @@ public class KuroThemeActivity extends BaseFragment implements tw.nekomimi.nekog
 
     private View createComingSoonView(Context context) {
         FrameLayout frameLayout = new FrameLayout(context);
-        frameLayout.setBackgroundColor(tw.nekomimi.nekogram.skin.KuroUi.pageBackground());
+        tw.nekomimi.nekogram.skin.KuroUi.applyPageBackground(frameLayout);
 
         TextView textView = new TextView(context);
         textView.setText("Coming soon");

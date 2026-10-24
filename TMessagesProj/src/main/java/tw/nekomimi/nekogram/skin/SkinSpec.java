@@ -240,6 +240,8 @@ public final class SkinSpec {
             "tokens.colors.surfaceElevated|col", "tokens.colors.textPrimary|col", "tokens.colors.textSecondary|col",
             "tokens.colors.divider|col", "tokens.colors.icon|col", "tokens.colors.error|col", "tokens.colors.success|col",
             "tokens.colors.overlay|argb",
+            "tokens.gradient.top|col", "tokens.gradient.middle|col", "tokens.gradient.bottom|col",
+            "tokens.gradient.direction|enum:vertical,diagonal,horizontal",
             "tokens.typography.fontFamily|enum:default", "tokens.typography.bodySizeSp|int:12:30",
             "tokens.typography.titleSizeSp|int:14:40", "tokens.typography.captionSizeSp|int:8:20",
             "tokens.typography.fontWeight|enum:normal,medium,bold", "tokens.typography.lineHeightMultiplier|float:1:2",

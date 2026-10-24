@@ -117,7 +117,7 @@ public abstract class BaseKuroSettingsActivity extends BaseFragment {
                 super.dispatchDraw(canvas);
             }
         };
-        contentView.setBackgroundColor(tw.nekomimi.nekogram.skin.KuroUi.screenBackground(tw.nekomimi.nekogram.skin.KuroUi.t().settingsBackground));
+        tw.nekomimi.nekogram.skin.KuroUi.applyBackground(contentView, tw.nekomimi.nekogram.skin.KuroUi.t().settingsBackground);
 
         listView = new UniversalRecyclerView(this, this::fillItems, this::onItemClick, (item, view, position, x, y) -> {
             if (onItemLongClick(item, view, position, x, y)) {

@@ -130,7 +130,7 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
 
         FrameLayout rootFrame = new FrameLayout(context);
         fragmentView = rootFrame;
-        rootFrame.setBackgroundColor(tw.nekomimi.nekogram.skin.KuroUi.pageBackground());
+        tw.nekomimi.nekogram.skin.KuroUi.applyPageBackground(rootFrame);
 
         // The content scrolls; the action bar below is a sibling, NOT part of the scrolled
         // content, so it stays fixed at the bottom whether the sticker list is short or long.

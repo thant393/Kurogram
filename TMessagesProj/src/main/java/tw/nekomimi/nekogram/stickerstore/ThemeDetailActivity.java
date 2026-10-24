@@ -74,7 +74,7 @@ public class ThemeDetailActivity extends BaseFragment {
         }
 
         FrameLayout root = new FrameLayout(context);
-        root.setBackgroundColor(tw.nekomimi.nekogram.skin.KuroUi.pageBackground());
+        tw.nekomimi.nekogram.skin.KuroUi.applyPageBackground(root);
         fragmentView = root;
         ScrollView scroll = new ScrollView(context);
         root.addView(scroll, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));

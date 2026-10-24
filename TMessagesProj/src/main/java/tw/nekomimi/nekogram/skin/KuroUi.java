@@ -68,6 +68,44 @@ public final class KuroUi {
         return c != 0 ? c : Theme.getColor(Theme.key_windowBackgroundGray);
     }
 
+    /** True when the skin paints its pages with a gradient (needs a top and a bottom colour). */
+    public static boolean hasGradient() {
+        SkinTokens t = t();
+        return t.gradientTop != 0 && t.gradientBottom != 0;
+    }
+
+    /**
+     * Paints a page: the skin's gradient when it has one and this screen has no colour of its own,
+     * else the plain background colour. Always use this instead of setBackgroundColor on a Kuro page.
+     */
+    public static void applyBackground(android.view.View v, int skinColor) {
+        SkinTokens t = t();
+        if (skinColor == 0 && hasGradient()) {
+            int[] colors = t.gradientMiddle != 0
+                    ? new int[]{t.gradientTop, t.gradientMiddle, t.gradientBottom}
+                    : new int[]{t.gradientTop, t.gradientBottom};
+            GradientDrawable.Orientation o = "horizontal".equals(t.gradientDirection) ? GradientDrawable.Orientation.LEFT_RIGHT
+                    : "diagonal".equals(t.gradientDirection) ? GradientDrawable.Orientation.TL_BR
+                    : GradientDrawable.Orientation.TOP_BOTTOM;
+            v.setBackground(new GradientDrawable(o, colors));
+        } else {
+            v.setBackgroundColor(screenBackground(skinColor));
+        }
+    }
+
+    /** Opaque colour at the top or bottom edge of a page (the gradient's end, else the page colour), for fades. */
+    public static int edgeColor(boolean top) {
+        SkinTokens t = t();
+        if (hasGradient()) {
+            return (top ? t.gradientTop : t.gradientBottom) | 0xFF000000;
+        }
+        return pageBackground();
+    }
+
+    public static void applyPageBackground(android.view.View v) {
+        applyBackground(v, t().themeStoreBackground);
+    }
+
     /** A hairline that follows the text colour, so it shows on light and dark alike. */
     public static int hairline() {
         return ColorUtils.setAlphaComponent(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText), 0x26);
@@ -131,7 +169,9 @@ public final class KuroUi {
         d.setShape(GradientDrawable.RECTANGLE);
         d.setCornerRadius(AndroidUtilities.dp(radiusDp));
         // Without a card colour of its own the cell uses Theme's white (which already carries the skin's override).
-        d.setColor(inset ? insetFill() : Theme.getColor(Theme.key_windowBackgroundWhite));
+        // a glass skin keeps its translucent card colour (the page gradient shows through); otherwise Theme's solid white
+        boolean glassCard = t.cardBackground != 0 && (t.cardBackground >>> 24) != 0xFF && hasGradient();
+        d.setColor(glassCard ? t.cardBackground : inset ? insetFill() : Theme.getColor(Theme.key_windowBackgroundWhite));
         if (t.cardBorderWidthDp > 0) {
             d.setStroke(AndroidUtilities.dp(t.cardBorderWidthDp), t.cardBorderColor != 0 ? t.cardBorderColor : hairline());
         } else if (t.cardBorderWidthDp < 0 && (!t.flatLists || inset)) {
@@ -170,7 +210,7 @@ public final class KuroUi {
         d.setCornerRadius(AndroidUtilities.dp(radiusDp));
         // floating bars follow the skin's bottom-bar colour, else its surface
         d.setColor(t.bottomBarBackground != 0 ? t.bottomBarBackground : Theme.getColor(Theme.key_windowBackgroundWhite));
-        d.setStroke(Math.max(1, AndroidUtilities.dp(0.5f)), hairline());
+        d.setStroke(Math.max(1, AndroidUtilities.dp(0.5f)), t.cardBorderColor != 0 && hasGradient() ? t.cardBorderColor : hairline());
         return d;
     }
 }

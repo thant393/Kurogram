@@ -39,7 +39,7 @@ public class OwnerProfileActivity extends BaseFragment {
             }
         });
         FrameLayout root = new FrameLayout(context);
-        root.setBackgroundColor(tw.nekomimi.nekogram.skin.KuroUi.pageBackground());
+        tw.nekomimi.nekogram.skin.KuroUi.applyPageBackground(root);
         root.addView(new ProfileTabView(context, this, currentAccount, ownerId, ownerName, ownerUsername),
                 org.telegram.ui.Components.LayoutHelper.createFrame(
                         org.telegram.ui.Components.LayoutHelper.MATCH_PARENT,

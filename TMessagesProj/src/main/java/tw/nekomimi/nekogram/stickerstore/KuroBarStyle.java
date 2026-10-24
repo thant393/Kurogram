@@ -52,7 +52,7 @@ public final class KuroBarStyle {
 
     /** The scrim's fill alone, so a screen can re-apply it when the skin changes. */
     public static Drawable scrimDrawable() {
-        int base = tw.nekomimi.nekogram.skin.KuroUi.pageBackground();
+        int base = tw.nekomimi.nekogram.skin.KuroUi.edgeColor(false);
         return new GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP, new int[]{
                 ColorUtils.setAlphaComponent(base, 0xE6),
                 ColorUtils.setAlphaComponent(base, 0x99),
@@ -62,7 +62,7 @@ public final class KuroBarStyle {
     /** Background for the header behind the Popular/Newest chips: translucent at the top,
      *  fading out downward, so it blends into the page instead of ending in a hard strip. */
     public static Drawable headerFade() {
-        int base = tw.nekomimi.nekogram.skin.KuroUi.pageBackground();
+        int base = tw.nekomimi.nekogram.skin.KuroUi.edgeColor(true);
         return new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, new int[]{
                 ColorUtils.setAlphaComponent(base, 0xE6),
                 ColorUtils.setAlphaComponent(base, 0x99),

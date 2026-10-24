@@ -18,6 +18,10 @@ public final class SkinTokens {
     public final int accent, onAccent, background, surface, surfaceElevated;
     public final int textPrimary, textSecondary, divider, icon, error, success;
 
+    // layer 1: page gradient (0 = not set); middle is optional
+    public final int gradientTop, gradientMiddle, gradientBottom;
+    public final String gradientDirection;
+
     // layer 1: shapes / elevation
     public final int cardRadiusDp, buttonRadiusDp, dialogRadiusDp, bubbleRadiusDp;
     public final int inputRadiusDp;      // -1 = not set
@@ -54,6 +58,10 @@ public final class SkinTokens {
         background = s.colorValue("tokens.colors.background");
         surface = s.colorValue("tokens.colors.surface");
         surfaceElevated = s.colorValue("tokens.colors.surfaceElevated");
+        gradientTop = s.colorValue("tokens.gradient.top");
+        gradientMiddle = s.colorValue("tokens.gradient.middle");
+        gradientBottom = s.colorValue("tokens.gradient.bottom");
+        gradientDirection = s.stringValue("tokens.gradient.direction", "vertical");
         textPrimary = s.colorValue("tokens.colors.textPrimary");
         textSecondary = s.colorValue("tokens.colors.textSecondary");
         divider = s.colorValue("tokens.colors.divider");

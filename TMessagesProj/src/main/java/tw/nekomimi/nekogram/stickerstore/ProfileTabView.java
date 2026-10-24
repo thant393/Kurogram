@@ -74,7 +74,7 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
         this.ownerId = ownerId;
         final boolean self = ownerId == UserConfig.getInstance(currentAccount).getClientUserId();
         // A touch darker than the theme's grey so the white surfaces read clearly against it.
-        setBackgroundColor(screenBackground());
+        tw.nekomimi.nekogram.skin.KuroUi.applyBackground(this, tw.nekomimi.nekogram.skin.KuroUi.t().profileBackground);
 
         LinearLayout column = new LinearLayout(context);
         column.setOrientation(LinearLayout.VERTICAL);
@@ -261,7 +261,7 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
     /** Re-applies the active skin to this screen's surfaces without rebuilding it. */
     private void applySkin() {
         int r = AndroidUtilities.dp(skinRadius());
-        setBackgroundColor(screenBackground());
+        tw.nekomimi.nekogram.skin.KuroUi.applyBackground(this, tw.nekomimi.nekogram.skin.KuroUi.t().profileBackground);
         cardBg.setCornerRadius(r);
         contentBg.setCornerRadius(r);
         cardBg.setColor(Theme.getColor(Theme.key_windowBackgroundWhite));
