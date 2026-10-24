@@ -43,6 +43,8 @@ public final class SkinTokens {
     public final int profileAvatarDp, profileCardRadiusDp;
     public final int gridColumns;
     public final int previewRadiusDp;
+    /** Which built-in layout pack draws the screens: "classic" (Telegram's own) for now. */
+    public final String layout;
     public final boolean flatLists;      // listStyle == "flat"
     public final boolean showDividers;
 
@@ -103,6 +105,7 @@ public final class SkinTokens {
         profileCardRadiusDp = s.intValue("screens.profile.cardRadiusDp", s.cardRadiusDp);
         gridColumns = s.gridColumns;
         previewRadiusDp = s.intValue("screens.themeStore.previewRadiusDp", 14);
+        layout = s.stringValue("screens.chats.layout", "classic");
         flatLists = SkinSpec.LIST_FLAT.equals(s.listStyle);
         showDividers = s.boolValue("screens.chats.showDividers", true);
 

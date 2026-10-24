@@ -257,7 +257,7 @@ public final class SkinSpec {
             "components.button.background|col", "components.button.foreground|col", "components.button.heightDp|int:36:64",
             "components.input.background|col", "components.input.foreground|col", "components.input.hint|col",
             "components.dialog.background|col", "components.dialog.scrim|argb",
-            "screens.chats.background|col", "screens.chats.listStyle|enum:card,flat,glass", "screens.chats.avatarSizeDp|int:32:72",
+            "screens.chats.layout|enum:classic", "screens.chats.background|col", "screens.chats.listStyle|enum:card,flat,glass", "screens.chats.avatarSizeDp|int:32:72",
             "screens.chats.showDividers|bool", "screens.chats.threeLines|bool",
             "screens.contacts.background|col", "screens.contacts.sectionStyle|enum:card,flat,glass", "screens.contacts.avatarSizeDp|int:32:72",
             "screens.profile.background|col", "screens.profile.headerStyle|enum:centered,left,glass",
