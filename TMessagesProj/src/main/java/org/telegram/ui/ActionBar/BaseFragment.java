@@ -548,6 +548,7 @@ public abstract class BaseFragment {
     @CallSuper
     public void onResume() {
         isPaused = false;
+        tw.nekomimi.nekogram.skin.KuroUi.paintFragmentRoot(fragmentView, this);
         if (actionBar != null) {
             actionBar.onResume();
         }

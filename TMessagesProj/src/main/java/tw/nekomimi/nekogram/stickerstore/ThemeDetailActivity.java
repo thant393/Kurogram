@@ -84,46 +84,89 @@ public class ThemeDetailActivity extends BaseFragment {
         column.setPadding(0, 0, 0, AndroidUtilities.dp(KuroBarStyle.CONTENT_INSET_DP));
         scroll.addView(column, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
 
-        LinearLayout card = new LinearLayout(context);
-        card.setOrientation(LinearLayout.VERTICAL);
-        card.setBackground(ThemeCardView.rounded(Theme.getColor(Theme.key_windowBackgroundWhite), 22, false));
-        card.setPadding(AndroidUtilities.dp(20), AndroidUtilities.dp(20), AndroidUtilities.dp(20), AndroidUtilities.dp(20));
-        column.addView(card, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 16, 12, 16, 12));
-
         int bg = info.background != 0 ? info.background : (info.dark ? 0xFF1C1C1E : 0xFFF2F2F7);
         int accent = info.accent != 0 ? info.accent : KuroSkinManager.get().accent();
-        ThemeCardView.PhonePreview preview = new ThemeCardView.PhonePreview(context);
-        preview.set(bg, accent, info.dark, tw.nekomimi.nekogram.skin.KuroUi.t().previewRadiusDp);
-        // A phone-sized preview, centred (not stretched across the whole card).
-        card.addView(preview, LayoutHelper.createLinear(170, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL, 0, 0, 0, 16));
+        int textColor = tw.nekomimi.nekogram.skin.KuroUi.textPrimary();
+        int subColor = tw.nekomimi.nekogram.skin.KuroUi.textSecondary();
 
-        TextView title = text(context, info.title, (int) tw.nekomimi.nekogram.skin.KuroUi.title(22), true, Theme.key_windowBackgroundWhiteBlackText);
-        title.setGravity(Gravity.CENTER);
-        card.addView(title, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-        TextView meta = text(context, info.category + " · " + ("skin".equals(info.type) ? "Layout skin" : "Colors"), 13, false, Theme.key_windowBackgroundWhiteGrayText);
-        meta.setGravity(Gravity.CENTER);
-        card.addView(meta, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 4, 0, 0));
-        if (!TextUtils.isEmpty(info.description)) {
-            TextView desc = text(context, info.description, 14, false, Theme.key_windowBackgroundWhiteBlackText);
-            desc.setGravity(Gravity.CENTER);
-            card.addView(desc, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 12, 0, 0));
-        }
-
-        // Owner row (tap: their profile; your own theme only shows a note).
+        // Header: square logo, then name, creator and the numbers.
+        LinearLayout header = new LinearLayout(context);
+        header.setOrientation(LinearLayout.HORIZONTAL);
+        header.setGravity(Gravity.CENTER_VERTICAL);
+        column.addView(header, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 20, 16, 20, 0));
+        PhoneScene logo = new PhoneScene(context, PhoneScene.CHAT) {
+            @Override
+            protected void onMeasure(int w, int h) {
+                setMeasuredDimension(AndroidUtilities.dp(64), AndroidUtilities.dp(64));
+            }
+        };
+        logo.set(bg, accent, info.dark, info.gradientTop, info.gradientMiddle, info.gradientBottom, 16);
+        logo.setIconMode(true);
+        header.addView(logo, LayoutHelper.createLinear(64, 64, 0, 0, 14, 0));
+        LinearLayout names = new LinearLayout(context);
+        names.setOrientation(LinearLayout.VERTICAL);
+        header.addView(names, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 1f));
+        TextView title = text(context, info.title, (int) tw.nekomimi.nekogram.skin.KuroUi.title(24), true, Theme.key_windowBackgroundWhiteBlackText);
+        title.setTextColor(textColor);
+        title.setMaxLines(2);
+        title.setEllipsize(TextUtils.TruncateAt.END);
+        names.addView(title, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
         String owner = !TextUtils.isEmpty(info.ownerName) ? info.ownerName
                 : !TextUtils.isEmpty(info.ownerUsername) ? "@" + info.ownerUsername : "ID " + info.ownerTelegramId;
-        TextView ownerView = text(context, "By " + owner, 14, true, Theme.key_featuredStickers_addButton);
-        ownerView.setText("By " + owner);
-        ownerView.setTextColor(KuroSkinManager.get().accent());
-        ownerView.setGravity(Gravity.CENTER);
+        TextView ownerView = text(context, owner, 15, false, Theme.key_windowBackgroundWhiteGrayText);
+        ownerView.setTextColor(subColor);
         ownerView.setOnClickListener(v -> openOwner());
-        card.addView(ownerView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 14, 0, 0));
+        names.addView(ownerView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 2, 0, 0));
         likes = info.likes;
-        TextView stats = text(context, "", 13, false, Theme.key_windowBackgroundWhiteGrayText);
+        TextView stats = text(context, "", 14, false, Theme.key_windowBackgroundWhiteGrayText);
+        stats.setTextColor(subColor);
         statsView = stats;
         updateStats();
-        stats.setGravity(Gravity.CENTER);
-        card.addView(stats, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 6, 0, 0));
+        names.addView(stats, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 2, 0, 0));
+
+        // Previews: the Chats list, a chat and Settings, drawn in code from the theme's own palette.
+        android.widget.HorizontalScrollView strip = new android.widget.HorizontalScrollView(context);
+        strip.setHorizontalScrollBarEnabled(false);
+        strip.setClipToPadding(false);
+        strip.setPadding(AndroidUtilities.dp(20), 0, AndroidUtilities.dp(20), 0);
+        LinearLayout row = new LinearLayout(context);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        strip.addView(row, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT));
+        String[] names3 = {"Chats", "Chat", "Settings"};
+        int[] modes = {PhoneScene.CHATS, PhoneScene.CHAT, PhoneScene.SETTINGS};
+        for (int i = 0; i < 3; i++) {
+            LinearLayout cell = new LinearLayout(context);
+            cell.setOrientation(LinearLayout.VERTICAL);
+            cell.setGravity(Gravity.CENTER_HORIZONTAL);
+            PhoneScene scene = new PhoneScene(context, modes[i]);
+            scene.set(bg, accent, info.dark, info.gradientTop, info.gradientMiddle, info.gradientBottom,
+                    tw.nekomimi.nekogram.skin.KuroUi.t().previewRadiusDp);
+            cell.addView(scene, LayoutHelper.createLinear(150, LayoutHelper.WRAP_CONTENT));
+            TextView label = text(context, names3[i], 12, false, Theme.key_windowBackgroundWhiteGrayText);
+            label.setTextColor(subColor);
+            cell.addView(label, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, 0, 6, 0, 0));
+            row.addView(cell, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, 0, 0, i < 2 ? 10 : 0, 0));
+        }
+        column.addView(strip, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 18, 0, 0));
+
+        // Categories and tags
+        TextView ctTitle = text(context, "Categories and tags", 18, true, Theme.key_windowBackgroundWhiteBlackText);
+        ctTitle.setTextColor(textColor);
+        column.addView(ctTitle, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 20, 24, 20, 0));
+        addChipGroup(context, column, "Categories", java.util.Collections.singletonList(
+                info.category + ("skin".equals(info.type) ? "" : " · Colors")), subColor, textColor);
+        if (!info.tags.isEmpty()) {
+            addChipGroup(context, column, "Tags", info.tags, subColor, textColor);
+        }
+
+        if (!TextUtils.isEmpty(info.description)) {
+            TextView dTitle = text(context, "Description", 18, true, Theme.key_windowBackgroundWhiteBlackText);
+            dTitle.setTextColor(textColor);
+            column.addView(dTitle, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 20, 24, 20, 0));
+            TextView desc = text(context, info.description, 15, false, Theme.key_windowBackgroundWhiteBlackText);
+            desc.setTextColor(subColor);
+            column.addView(desc, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 20, 8, 20, 0));
+        }
 
         refreshReactions();
 
@@ -155,6 +198,25 @@ public class ThemeDetailActivity extends BaseFragment {
         refreshReactions();
         refreshButtons();
         return root;
+    }
+
+    private void addChipGroup(Context context, LinearLayout column, String label, java.util.List<String> items, int subColor, int textColor) {
+        TextView l = text(context, label, 14, false, Theme.key_windowBackgroundWhiteGrayText);
+        l.setTextColor(subColor);
+        column.addView(l, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 20, 12, 20, 0));
+        ChipFlow flow = new ChipFlow(context, AndroidUtilities.dp(8));
+        for (String item : items) {
+            TextView chip = text(context, item, 14, false, Theme.key_windowBackgroundWhiteBlackText);
+            chip.setTextColor(textColor);
+            chip.setPadding(AndroidUtilities.dp(14), AndroidUtilities.dp(8), AndroidUtilities.dp(14), AndroidUtilities.dp(8));
+            GradientDrawable d = new GradientDrawable();
+            d.setCornerRadius(AndroidUtilities.dp(20));
+            d.setColor(0x00000000);
+            d.setStroke(Math.max(1, AndroidUtilities.dp(1)), tw.nekomimi.nekogram.skin.KuroUi.hairline());
+            chip.setBackground(d);
+            flow.addView(chip);
+        }
+        column.addView(flow, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 20, 8, 20, 0));
     }
 
     private void updateStats() {

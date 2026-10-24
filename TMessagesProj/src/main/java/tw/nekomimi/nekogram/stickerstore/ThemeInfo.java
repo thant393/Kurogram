@@ -15,6 +15,8 @@ public class ThemeInfo {
     public int accent;      // 0 = unknown
     public int background;  // 0 = unknown
     public boolean dark;
+    public int gradientTop, gradientMiddle, gradientBottom; // 0 = none
+    public java.util.List<String> tags = new java.util.ArrayList<>();
     public int version = 1;
     public int schemaVersion = 1;
     public int minAppVersion = 1;
@@ -39,6 +41,16 @@ public class ThemeInfo {
             t.accent = parseColor(palette.optString("accent", null));
             t.background = parseColor(palette.optString("background", null));
             t.dark = palette.optBoolean("is_dark", false);
+            t.gradientTop = parseColor(palette.optString("gradient_top", null));
+            t.gradientMiddle = parseColor(palette.optString("gradient_middle", null));
+            t.gradientBottom = parseColor(palette.optString("gradient_bottom", null));
+        }
+        org.json.JSONArray tagArray = o.optJSONArray("tags");
+        if (tagArray != null) {
+            for (int i = 0; i < tagArray.length() && i < 12; i++) {
+                String tag = tagArray.optString(i, "");
+                if (!tag.isEmpty()) t.tags.add(tag);
+            }
         }
         t.version = o.optInt("version", 1);
         t.schemaVersion = o.optInt("schema_version", 1);
