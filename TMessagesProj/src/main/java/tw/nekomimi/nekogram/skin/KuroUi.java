@@ -141,6 +141,12 @@ public final class KuroUi {
         applyBackground(v, t().themeStoreBackground);
     }
 
+    /** Fill of Telegram's profile action buttons (Message / Mute / Leave): the skin's card colour, else {@code def}. */
+    public static int profileActionColor(int def) {
+        int c = t().cardBackground;
+        return c != 0 ? c : def;
+    }
+
     /** A hairline that follows the text colour, so it shows on light and dark alike. */
     public static int hairline() {
         return ColorUtils.setAlphaComponent(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText), 0x26);

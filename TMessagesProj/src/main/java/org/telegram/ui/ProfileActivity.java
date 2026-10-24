@@ -1277,13 +1277,13 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 hasColorById = false;
                 if (AndroidUtilities.computePerceivedBrightness(getThemedColor(Theme.key_actionBarDefault)) > .8f) {
                     emojiColor = Color.WHITE; // getThemedColor(Theme.key_windowBackgroundWhiteBlueText);
-                    btnColor = Color.WHITE; // Theme.multAlpha(getThemedColor(Theme.key_windowBackgroundWhiteBlueText), .75f);
+                    btnColor = tw.nekomimi.nekogram.skin.KuroUi.profileActionColor(Color.WHITE); // Theme.multAlpha(getThemedColor(Theme.key_windowBackgroundWhiteBlueText), .75f);
                 } else if (AndroidUtilities.computePerceivedBrightness(getThemedColor(Theme.key_actionBarDefault)) < .2f) {
                     emojiColor = Theme.multAlpha(Theme.adaptHSV(getThemedColor(Theme.key_actionBarDefault), +0.02f, +0.25f), .5f);
-                    btnColor = Theme.multAlpha(Theme.adaptHSV(getThemedColor(Theme.key_actionBarDefault), +0.02f, +0.25f), .35f);
+                    btnColor = tw.nekomimi.nekogram.skin.KuroUi.profileActionColor(Theme.multAlpha(Theme.adaptHSV(getThemedColor(Theme.key_actionBarDefault), +0.02f, +0.25f), .35f));
                 } else {
                     emojiColor = PeerColorActivity.adaptProfileEmojiColor(getThemedColor(Theme.key_actionBarDefault));
-                    btnColor = Theme.multAlpha(PeerColorActivity.adaptProfileEmojiColor(getThemedColor(Theme.key_actionBarDefault)), .15f);
+                    btnColor = tw.nekomimi.nekogram.skin.KuroUi.profileActionColor(Theme.multAlpha(PeerColorActivity.adaptProfileEmojiColor(getThemedColor(Theme.key_actionBarDefault)), .15f));
                 }
             }
             if (!animated) {
