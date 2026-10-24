@@ -152,7 +152,7 @@ public class ThemeDetailActivity extends BaseFragment {
         ctTitle.setTextColor(textColor);
         column.addView(ctTitle, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 20, 24, 20, 0));
         addChipGroup(context, column, "Categories", java.util.Collections.singletonList(
-                info.category + ("skin".equals(info.type) ? "" : " · Colors")), subColor, textColor);
+                info.category + ("skin".equals(info.type) ? "" : "layout".equals(info.type) ? " · Layout" : " · Colors")), subColor, textColor);
         if (!info.tags.isEmpty()) {
             addChipGroup(context, column, "Tags", info.tags, subColor, textColor);
         }
@@ -532,6 +532,8 @@ public class ThemeDetailActivity extends BaseFragment {
             } else {
                 if ("skin".equals(type)) {
                     KuroSkinManager.get().apply(content);
+                } else if ("layout".equals(type)) {
+                    tw.nekomimi.nekogram.layout.LayoutManager.get().apply(content);
                 } else {
                     applyColors(response.optString("slug", "theme"), content);
                 }
@@ -575,7 +577,9 @@ public class ThemeDetailActivity extends BaseFragment {
     }
 
     private void resetTheme() {
-        if ("skin".equals(info.type)) {
+        if ("layout".equals(info.type)) {
+            tw.nekomimi.nekogram.layout.LayoutManager.get().reset();
+        } else if ("skin".equals(info.type)) {
             try {
                 KuroSkinManager.get().reset();
             } catch (Exception e) {
