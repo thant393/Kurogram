@@ -43,7 +43,7 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
     private ThemesTabView themesView;
     private MyStickersView stickersView;
     private final ImageView fab;
-    private int selectedTab = TAB_STICKERS;
+    private int selectedTab = TAB_THEMES;
     private boolean segmentedReady;
     private int seenUploadVersion;
     private int bottomInset;
@@ -217,7 +217,7 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
         fab.setVisibility(self ? VISIBLE : GONE);
 
         seenUploadVersion = uploadVersion;
-        showTab(TAB_STICKERS);
+        showTab(TAB_THEMES);
     }
 
     private void showTab(int index) {
@@ -343,7 +343,7 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
             labels = new TextView[titles.length];
             GradientDrawable track = new GradientDrawable();
             track.setCornerRadius(AndroidUtilities.dp(18));
-            track.setColor(0x33767680);
+            track.setColor(androidx.core.graphics.ColorUtils.setAlphaComponent(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText), 0x14));
             setBackground(track);
             int pad = AndroidUtilities.dp(2);
             setPadding(pad, pad, pad, pad);
@@ -351,9 +351,10 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
             thumb = new View(context);
             GradientDrawable thumbBg = new GradientDrawable();
             thumbBg.setCornerRadius(AndroidUtilities.dp(16));
-            thumbBg.setColor(Theme.getColor(Theme.key_windowBackgroundWhite));
+            thumbBg.setColor(androidx.core.graphics.ColorUtils.setAlphaComponent(tw.nekomimi.nekogram.skin.KuroUi.accent(), 0x2E));
             thumb.setBackground(thumbBg);
-            thumbBg.setStroke(Math.max(1, AndroidUtilities.dp(0.5f)), 0x1F000000);
+            thumbBg.setStroke(Math.max(1, AndroidUtilities.dp(1)), androidx.core.graphics.ColorUtils.setAlphaComponent(tw.nekomimi.nekogram.skin.KuroUi.accent(), 0x66));
+            thumb.setElevation(AndroidUtilities.dp(1));
             addView(thumb, LayoutHelper.createFrame(0, LayoutHelper.MATCH_PARENT));
 
             LinearLayout row = new LinearLayout(context);
@@ -392,9 +393,8 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
                 thumb.setTranslationX(index * w);
             }
             for (int i = 0; i < labels.length; i++) {
-                labels[i].setTextColor(Theme.getColor(i == index
-                        ? Theme.key_windowBackgroundWhiteBlackText
-                        : Theme.key_windowBackgroundWhiteGrayText));
+                labels[i].setTextColor(i == index ? tw.nekomimi.nekogram.skin.KuroUi.accent()
+                        : Theme.getColor(Theme.key_windowBackgroundWhiteGrayText));
             }
         }
     }

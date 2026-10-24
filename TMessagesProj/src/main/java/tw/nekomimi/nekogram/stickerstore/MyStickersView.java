@@ -49,7 +49,7 @@ public class MyStickersView extends FrameLayout {
         this.fragment = fragment;
         this.ownerId = String.valueOf(ownerTelegramId);
 
-        layoutManager = new GridLayoutManager(context, tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec().gridColumns);
+        layoutManager = new GridLayoutManager(context, 3);
         listView = new RecyclerListView(context);
         listView.setLayoutManager(layoutManager);
         listView.setPadding(AndroidUtilities.dp(10), AndroidUtilities.dp(6), AndroidUtilities.dp(10), AndroidUtilities.dp(16));
@@ -68,8 +68,9 @@ public class MyStickersView extends FrameLayout {
 
             @Override
             public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                StickerPackGridCell cell = new StickerPackGridCell(parent.getContext()).setLarge(true).setInset(true);
-                RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT);
+                StickerPackGridCell cell = new StickerPackGridCell(parent.getContext()).setInset(true);
+                // three columns, same card height as the Stickers tab
+                RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, AndroidUtilities.dp(132));
                 lp.setMargins(AndroidUtilities.dp(6), AndroidUtilities.dp(6), AndroidUtilities.dp(6), AndroidUtilities.dp(6));
                 cell.setLayoutParams(lp);
                 return new RecyclerListView.Holder(cell);
@@ -133,7 +134,7 @@ public class MyStickersView extends FrameLayout {
             return; // nothing changed since the cells were last built
         }
         appliedSkin = skin;
-        layoutManager.setSpanCount(skin.gridColumns);
+        layoutManager.setSpanCount(3);
         listView.setAdapter(adapter); // new cells pick up the radius / style
     }
 

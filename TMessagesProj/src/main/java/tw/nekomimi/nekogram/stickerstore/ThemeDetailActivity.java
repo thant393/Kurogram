@@ -33,8 +33,6 @@ public class ThemeDetailActivity extends BaseFragment {
 
     private final ThemeInfo info;
     private TextView applyButton;
-    private TextView resetButton;
-    private TextView previewButton;
     private TextView statusView;
     private boolean busy;
     private android.widget.ImageView starButton;
@@ -169,22 +167,6 @@ public class ThemeDetailActivity extends BaseFragment {
         }
 
         refreshReactions();
-
-        previewButton = new TextView(context);
-        previewButton.setGravity(Gravity.CENTER);
-        previewButton.setTextSize(15);
-        previewButton.setTypeface(AndroidUtilities.bold());
-        previewButton.setOnClickListener(v -> togglePreview());
-        previewButton.setVisibility("skin".equals(info.type) ? View.VISIBLE : View.GONE);
-        column.addView(previewButton, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 48, 16, 10, 16, 0));
-
-        resetButton = new TextView(context);
-        resetButton.setGravity(Gravity.CENTER);
-        resetButton.setTextSize(15);
-        resetButton.setTypeface(AndroidUtilities.bold());
-        resetButton.setText("Reset to default");
-        resetButton.setOnClickListener(v -> resetTheme());
-        column.addView(resetButton, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 48, 16, 10, 16, 0));
 
         statusView = text(context, "", 13, false, Theme.key_windowBackgroundWhiteGrayText);
         statusView.setGravity(Gravity.CENTER);
@@ -445,19 +427,17 @@ public class ThemeDetailActivity extends BaseFragment {
         int accent = tw.nekomimi.nekogram.skin.KuroUi.accent();
         boolean applied = isApplied();
         int buttonRadius = tw.nekomimi.nekogram.skin.KuroUi.t().buttonRadiusDp;
-        applyButton.setBackground(tw.nekomimi.nekogram.skin.KuroUi.primaryButton(applied));
-        applyButton.setTextColor(tw.nekomimi.nekogram.skin.KuroUi.primaryButtonText(applied));
+        // Applied: the same button becomes "Reset to default" (red); no separate Preview / Reset buttons.
+        GradientDrawable applyBg = tw.nekomimi.nekogram.skin.KuroUi.primaryButton(false);
+        if (applied) {
+            applyBg.setColor(tw.nekomimi.nekogram.skin.KuroUi.error());
+        }
+        applyButton.setBackground(applyBg);
+        applyButton.setTextColor(applied ? 0xFFFFFFFF : tw.nekomimi.nekogram.skin.KuroUi.primaryButtonText(false));
         boolean needsNewerApp = info.minAppVersion > SkinSpec.ENGINE_LEVEL || info.schemaVersion > SkinSpec.SCHEMA_VERSION;
         boolean updatable = !applied && info.id != null && info.id.equals(ThemeStoreApi.appliedId());
-        applyButton.setText(busy ? "Working…" : needsNewerApp ? "Needs a newer Kurogram" : applied ? "Applied" : updatable ? "Update" : "Download & Apply");
+        applyButton.setText(busy ? "Working…" : needsNewerApp ? "Needs a newer Kurogram" : applied ? "Reset to default" : updatable ? "Update" : "Download & Apply");
         applyButton.setAlpha(busy ? 0.6f : 1f);
-        resetButton.setBackground(ThemeCardView.rounded(Theme.getColor(Theme.key_windowBackgroundWhite), buttonRadius, true));
-        previewButton.setBackground(ThemeCardView.rounded(Theme.getColor(Theme.key_windowBackgroundWhite), buttonRadius, true));
-        previewButton.setTextColor(accent);
-        previewButton.setText(KuroSkinManager.get().isPreviewing() ? "Stop preview" : "Preview");
-        previewButton.setAlpha(busy ? 0.6f : 1f);
-        resetButton.setTextColor(Theme.getColor(Theme.key_text_RedBold));
-        resetButton.setVisibility(applied ? View.VISIBLE : View.GONE);
     }
 
     private void setStatus(String s, boolean error) {
@@ -478,7 +458,11 @@ public class ThemeDetailActivity extends BaseFragment {
     }
 
     private void applyTheme() {
-        if (busy || isApplied()) {
+        if (busy) {
+            return;
+        }
+        if (isApplied()) {
+            resetTheme();
             return;
         }
         fetchAndRun(false);
