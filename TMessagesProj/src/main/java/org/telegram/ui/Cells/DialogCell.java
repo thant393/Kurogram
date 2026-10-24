@@ -4792,7 +4792,8 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
             canvas.restore();
         }
 
-        if (useSeparator && tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec().boolValue("screens.chats.showDividers", true)) {
+        if (useSeparator && tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec().boolValue("screens.chats.showDividers", true)
+                && tw.nekomimi.nekogram.layout.LayoutManager.get().spec().boolValue("chatList.row.dividers", true)) {
             int left;
             if (fullSeparator || currentDialogFolderId != 0 && archiveHidden && !fullSeparator2 || fullSeparator2 && !archiveHidden) {
                 left = 0;
