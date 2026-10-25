@@ -800,6 +800,12 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
 
     @Override
     protected BaseFragment createBaseFragmentAt(int position) {
+        if (position == POSITION_CONTACTS && "online".equals(tw.nekomimi.nekogram.layout.LayoutManager.get().spec().stringValue("bottomTabs.peopleSource", "contacts"))) {
+            // A layout pack may make People the "online now" list of the existing Online Contacts feature.
+            Bundle online = new Bundle();
+            online.putBoolean("hasMainTabs", true);
+            return new tw.nekomimi.nekogram.settings.OnlineContactsActivity(online);
+        }
         if (position == POSITION_CONTACTS) {
             Bundle args = new Bundle();
             args.putBoolean("needPhonebook", true);

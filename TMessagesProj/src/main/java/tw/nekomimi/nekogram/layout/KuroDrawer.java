@@ -30,6 +30,7 @@ import org.telegram.ui.CallLogActivity;
 import org.telegram.ui.ChatActivity;
 import org.telegram.ui.Components.AvatarDrawable;
 import org.telegram.ui.Components.BackupImageView;
+import org.telegram.ui.Components.IconBackgroundColors;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.ContactsActivity;
 import org.telegram.ui.DialogsActivity;
@@ -113,25 +114,18 @@ public final class KuroDrawer {
         scroll.addView(list, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         panel.addView(scroll, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 0, 1f));
 
+        avatar.setOnClickListener(v -> {
+            dialog.dismiss();
+            open(from, account, "profile");
+        });
+
         for (String id : items) {
-            final int[] spec = describe(id);
-            if (spec == null) continue;
-            LinearLayout row = new LinearLayout(context);
-            row.setOrientation(LinearLayout.HORIZONTAL);
-            row.setGravity(Gravity.CENTER_VERTICAL);
-            row.setPadding(AndroidUtilities.dp(20), 0, AndroidUtilities.dp(20), 0);
-            row.setMinimumHeight(AndroidUtilities.dp(52));
+            final Entry e = entry(id);
+            if (e == null) continue;
+            SettingsActivity.SettingCell row = new SettingsActivity.SettingCell(context, null);
+            row.set(e.color.top, e.color.bottom, e.icon, e.title(), e.subtitle(), null);
             row.setBackground(Theme.createSelectorDrawable(Theme.getColor(Theme.key_listSelector), 2));
-            ImageView icon = new ImageView(context);
-            icon.setImageResource(spec[1]);
-            icon.setColorFilter(Theme.getColor(Theme.key_windowBackgroundWhiteGrayIcon));
-            row.addView(icon, LayoutHelper.createLinear(24, 24));
-            TextView label = new TextView(context);
-            label.setTextSize(16);
-            label.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
-            label.setText(LocaleController.getString(spec[0]));
-            row.addView(label, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, 20, 0, 0, 0));
-            row.setContentDescription(label.getText());
+            row.setContentDescription(e.title());
             row.setOnClickListener(v -> {
                 dialog.dismiss();
                 open(from, account, id);
@@ -152,15 +146,54 @@ public final class KuroDrawer {
         panel.animate().translationX(0).setDuration(200).start();
     }
 
-    /** {label string id, icon id} for a known item, null for anything unsupported (ignored). */
-    private static int[] describe(String id) {
+    private static final class Entry {
+        final IconBackgroundColors color;
+        final int icon;
+        final String text;
+        final int titleRes;
+        final int subtitleRes;
+
+        Entry(IconBackgroundColors color, int icon, String text, int titleRes, int subtitleRes) {
+            this.color = color;
+            this.icon = icon;
+            this.text = text;
+            this.titleRes = titleRes;
+            this.subtitleRes = subtitleRes;
+        }
+
+        String title() {
+            return text != null ? text : LocaleController.getString(titleRes);
+        }
+
+        String subtitle() {
+            return subtitleRes != 0 ? LocaleController.getString(subtitleRes) : null;
+        }
+    }
+
+    /** The drawer shows the same entries, in the same look, as Telegram's Settings page; unknown ids are ignored. */
+    private static Entry entry(String id) {
         switch (id) {
-            case "profile": return new int[]{R.string.MainTabsProfile, R.drawable.msg_openprofile};
-            case "settings": return new int[]{R.string.Settings, R.drawable.msg_settings};
-            case "contacts": return new int[]{R.string.Contacts, R.drawable.msg_contacts};
-            case "calls": return new int[]{R.string.MainTabsCalls, R.drawable.msg_calls};
-            case "saved": return new int[]{R.string.SavedMessages, R.drawable.msg_saved};
-            case "archive": return new int[]{R.string.ArchivedChats, R.drawable.msg_archive};
+            case "kuroTheme": return new Entry(IconBackgroundColors.BLUE, R.drawable.kuro_theme, "Kuro Theme", 0, 0);
+            case "kuroSettings": return new Entry(IconBackgroundColors.PURPLE, R.drawable.filled_profile_settings, "Kuro Settings", 0, 0);
+            case "numberFinder": return new Entry(IconBackgroundColors.ORANGE, R.drawable.kuro_user_finder, "Number Finder", 0, 0);
+            case "specialContacts": return new Entry(IconBackgroundColors.RED, R.drawable.kuro_special_contacts, "Special Contacts", 0, 0);
+            case "onlineContacts": return new Entry(IconBackgroundColors.CYAN, R.drawable.kuro_online_contacts, "Online Contacts", 0, 0);
+            case "contactChanges": return new Entry(IconBackgroundColors.BLUE_DEEP, R.drawable.kuro_contact_changes, "Contact Changes", 0, 0);
+            case "account": return new Entry(IconBackgroundColors.BLUE, R.drawable.settings_account, null, R.string.SettingsAccount, R.string.SettingsAccountInfo);
+            case "chatSettings": return new Entry(IconBackgroundColors.ORANGE, R.drawable.settings_chat, null, R.string.SettingsChat, R.string.SettingsChatInfo);
+            case "privacy": return new Entry(IconBackgroundColors.GREEN, R.drawable.settings_privacy, null, R.string.SettingsPrivacySecurity, R.string.SettingsPrivacySecurityInfo);
+            case "notifications": return new Entry(IconBackgroundColors.RED, R.drawable.settings_sounds, null, R.string.SettingsNotifications, R.string.SettingsNotificationsInfo);
+            case "data": return new Entry(IconBackgroundColors.BLUE_DEEP, R.drawable.settings_data, null, R.string.SettingsData, R.string.SettingsDataInfo);
+            case "folders": return new Entry(IconBackgroundColors.BLUE_ALT, R.drawable.settings_folders, null, R.string.SettingsFolders, R.string.SettingsFoldersInfo);
+            case "devices": return new Entry(IconBackgroundColors.CYAN, R.drawable.settings_devices, null, R.string.SettingsDevices, R.string.SettingsDevicesInfo);
+            case "power": return new Entry(IconBackgroundColors.ORANGE_DEEP, R.drawable.settings_power, null, R.string.SettingsPowerSaving, R.string.SettingsPowerSavingInfo);
+            case "language": return new Entry(IconBackgroundColors.PURPLE, R.drawable.settings_language, null, R.string.SettingsLanguage, 0);
+            case "profile": return new Entry(IconBackgroundColors.GRAY, R.drawable.msg_openprofile, null, R.string.MainTabsProfile, 0);
+            case "settings": return new Entry(IconBackgroundColors.GRAY, R.drawable.msg_settings, null, R.string.Settings, 0);
+            case "contacts": return new Entry(IconBackgroundColors.GRAY, R.drawable.msg_contacts, null, R.string.Contacts, 0);
+            case "calls": return new Entry(IconBackgroundColors.GRAY, R.drawable.msg_calls, null, R.string.MainTabsCalls, 0);
+            case "saved": return new Entry(IconBackgroundColors.GRAY, R.drawable.msg_saved, null, R.string.SavedMessages, 0);
+            case "archive": return new Entry(IconBackgroundColors.GRAY, R.drawable.msg_archive, null, R.string.ArchivedChats, 0);
             default: return null;
         }
     }
@@ -192,6 +225,21 @@ public final class KuroDrawer {
                 args.putInt("folderId", 1);
                 from.presentFragment(new DialogsActivity(args));
                 break;
+            case "kuroTheme": from.presentFragment(new tw.nekomimi.nekogram.settings.KuroThemeActivity()); break;
+            case "kuroSettings": from.presentFragment(new tw.nekomimi.nekogram.settings.KuroSettingsActivity()); break;
+            case "numberFinder": from.presentFragment(new tw.nekomimi.nekogram.settings.NumberFinderActivity()); break;
+            case "specialContacts": from.presentFragment(new tw.nekomimi.nekogram.settings.SpecialContactsActivity()); break;
+            case "onlineContacts": from.presentFragment(new tw.nekomimi.nekogram.settings.OnlineContactsActivity()); break;
+            case "contactChanges": from.presentFragment(new tw.nekomimi.nekogram.settings.ContactChangesActivity()); break;
+            case "account": from.presentFragment(new org.telegram.ui.UserInfoActivity()); break;
+            case "chatSettings": from.presentFragment(new org.telegram.ui.ThemeActivity(org.telegram.ui.ThemeActivity.THEME_TYPE_BASIC)); break;
+            case "privacy": from.presentFragment(new org.telegram.ui.PrivacySettingsActivity()); break;
+            case "notifications": from.presentFragment(new org.telegram.ui.NotificationsSettingsActivity()); break;
+            case "data": from.presentFragment(new org.telegram.ui.DataSettingsActivity()); break;
+            case "folders": from.presentFragment(new org.telegram.ui.FiltersSetupActivity()); break;
+            case "devices": from.presentFragment(new org.telegram.ui.SessionsActivity(0)); break;
+            case "power": from.presentFragment(new org.telegram.ui.LiteModeSettingsActivity()); break;
+            case "language": from.presentFragment(new org.telegram.ui.LanguageSelectActivity()); break;
             default:
                 break;
         }

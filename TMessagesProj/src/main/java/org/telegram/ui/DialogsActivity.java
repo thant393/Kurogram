@@ -3465,6 +3465,15 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         });
         fragmentSearchFieldWatcher.setDoNotCloseAfterFieldEmpty();
 
+        if (initialDialogsType == DIALOGS_TYPE_DEFAULT && hasMainTabs && folderId == 0 && communityId == 0) {
+            java.util.List<String> right = tw.nekomimi.nekogram.layout.LayoutManager.get().spec().listValue("chatList.header.right", null);
+            if (right != null && right.contains("compose")) {
+                // The layout pack asked for a compose button: it opens Telegram's own "new message" picker.
+                ActionBarMenuItem compose = menu.addItem(105, R.drawable.msg_edit);
+                compose.setContentDescription(getString(R.string.NewMessageTitle));
+                compose.setOnClickListener(v -> openWriteContacts());
+            }
+        }
         if (initialDialogsType == DIALOGS_TYPE_DEFAULT) {
             optionsItem = menu.addItem(4, R.drawable.ic_ab_other);
             optionsItem.setContentDescription(LocaleController.getString(R.string.AccDescrMoreOptions));

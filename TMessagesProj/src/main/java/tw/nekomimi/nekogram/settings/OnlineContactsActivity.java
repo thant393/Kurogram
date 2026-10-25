@@ -52,10 +52,22 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
         super.onFragmentDestroy();
     }
 
+    public OnlineContactsActivity() {
+        super();
+    }
+
+    public OnlineContactsActivity(Bundle args) {
+        super(args);
+    }
+
     @Override
     public View createView(Context context) {
-        actionBar.setBackButtonImage(R.drawable.ic_ab_back);
-        actionBar.setTitle("Online Contacts");
+        // As the People tab of a layout pack there is no back arrow and the list stops above the tab bar.
+        final boolean asTab = arguments != null && arguments.getBoolean("hasMainTabs", false);
+        if (!asTab) {
+            actionBar.setBackButtonImage(R.drawable.ic_ab_back);
+        }
+        actionBar.setTitle(asTab ? "People" : "Online Contacts");
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
@@ -73,6 +85,10 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
         listView = new RecyclerListView(context);
         listView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
         listView.setAdapter(listAdapter);
+        if (asTab) {
+            listView.setClipToPadding(false);
+            listView.setPadding(0, 0, 0, org.telegram.messenger.AndroidUtilities.dp(org.telegram.ui.DialogsActivity.MAIN_TABS_HEIGHT_WITH_MARGINS + 8));
+        }
         listView.setOnItemClickListener((view, position) -> {
             if (position >= 0 && position < onlineUsers.size()) {
                 TLRPC.User user = onlineUsers.get(position);
