@@ -508,6 +508,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     private float contactsAlpha = 1f;
     private ValueAnimator contactsAlphaAnimator;
     private ViewPage[] viewPages;
+    private boolean layoutMenuButton;
     private ActionBarMenuItem passcodeItem;
     private ActionBarMenuItem downloadsItem;
     private DownloadProgressIcon downloadProgressIcon;
@@ -3525,6 +3526,11 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         } else {
             if (searchString != null || folderId != 0 || communityId != 0) {
                 actionBar.setBackButtonDrawable(backDrawable = new BackDrawable(false));
+            } else if (hasMainTabs && initialDialogsType == DIALOGS_TYPE_DEFAULT && tw.nekomimi.nekogram.layout.KuroDrawer.wantsMenuButton()) {
+                // The active layout pack asked for a hamburger that opens its drawer.
+                layoutMenuButton = true;
+                actionBar.setBackButtonDrawable(new MenuDrawable());
+                actionBar.setBackButtonContentDescription(getString(R.string.AccDescrOpenMenu));
             }
             if (folderId != 0) {
                 actionBar.setTitle(getString(R.string.ArchivedChats));
@@ -3890,6 +3896,10 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             public void onItemClick(int id) {
                 if ((id == SearchViewPager.forwardItemId || id == SearchViewPager.forwardNoQuoteItemId || id == SearchViewPager.forwardNoCaptionItemId || id == SearchViewPager.saveItemId || id == SearchViewPager.gotoItemId || id == SearchViewPager.deleteItemId || id == SearchViewPager.speedItemId) && searchViewPager != null) {
                     searchViewPager.onActionBarItemClick(id);
+                    return;
+                }
+                if (id == -1 && layoutMenuButton && !actionBar.isActionModeShowed() && !searchIsShowed) {
+                    tw.nekomimi.nekogram.layout.KuroDrawer.show(DialogsActivity.this);
                     return;
                 }
                 if (id == -1) {
