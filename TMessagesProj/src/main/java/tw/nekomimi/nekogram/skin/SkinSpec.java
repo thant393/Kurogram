@@ -144,7 +144,8 @@ public final class SkinSpec {
                     Theme.key_switchTrackChecked, Theme.key_radioBackgroundChecked, Theme.key_checkbox,
                     Theme.key_chats_unreadCounter, Theme.key_chats_actionBackground, Theme.key_featuredStickers_addButton,
                     Theme.key_chats_tabUnreadActiveBackground, Theme.key_actionBarTabActiveText, Theme.key_actionBarTabLine,
-                    Theme.key_chat_topPanelLine, Theme.key_chat_goDownButtonCounterBackground);
+                    Theme.key_chat_topPanelLine, Theme.key_chat_goDownButtonCounterBackground,
+                    Theme.key_telegram_color_dialogsLogo);
             put(o, "onAccent", Theme.key_featuredStickers_buttonText, Theme.key_chats_unreadCounterText, Theme.key_chats_actionIcon);
             put(o, "background", Theme.key_windowBackgroundGray, Theme.key_dialogBackgroundGray);
             put(o, "surface", Theme.key_windowBackgroundWhite, Theme.key_chat_goDownButton);

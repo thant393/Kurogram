@@ -375,7 +375,11 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         // A layout pack may ask for a flat, full-width tab bar instead of the floating glass pill.
         tabsViewBackground.setRadius(flatTabs ? 0 : dp(DialogsActivity.MAIN_TABS_HEIGHT / 2f));
         tabsViewBackground.setPadding(flatTabs ? 0 : dp(DialogsActivity.MAIN_TABS_MARGIN - 0.334f));
-        tabsView.setBackground(tabsViewBackground);
+        tabsView.setBackground(flatTabs ? null : tabsViewBackground);
+        flatTabsMode = flatTabs;
+        if (flatTabs) {
+            for (GlassTabView tab : tabs) tab.setSkipDrawSelector(true);
+        }
 
         BlurredBackgroundDrawableViewFactory iBlur3FactoryFade = new BlurredBackgroundDrawableViewFactory(iBlur3SourceColor);
         iBlur3FactoryFade.setSourceRootView(viewPositionWatcher, contentView);
@@ -393,6 +397,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         tabsViewWrapper.addView(tabsView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, DialogsActivity.MAIN_TABS_HEIGHT_WITH_MARGINS, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL));
         tabsViewWrapper.setClipToPadding(false);
         contentView.addView(tabsViewWrapper, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM));
+        updateFlatTabsBackground();
 
         updateLayoutWrapper = new UpdateLayoutWrapper(context);
         contentView.addView(updateLayoutWrapper, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM));
@@ -1220,7 +1225,21 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         }
     }
 
+    private boolean flatTabsMode;
+
+    /** Flat bar: one solid strip with a hairline on top, running down to the screen edge (no floating pill). */
+    private void updateFlatTabsBackground() {
+        if (!flatTabsMode || tabsViewWrapper == null) return;
+        int bg = Theme.getColor(Theme.key_windowBackgroundWhite, resourceProvider);
+        int line = Theme.getColor(Theme.key_divider, resourceProvider);
+        android.graphics.drawable.LayerDrawable d = new android.graphics.drawable.LayerDrawable(new android.graphics.drawable.Drawable[]{
+                new android.graphics.drawable.ColorDrawable(line),
+                new android.graphics.drawable.InsetDrawable(new android.graphics.drawable.ColorDrawable(bg), 0, Math.max(1, dp(0.5f)), 0, 0)});
+        tabsViewWrapper.setBackground(d);
+    }
+
     private void blur3_updateColors() {
+        updateFlatTabsBackground();
         blur3_updateFadeColors();
         if (tabsViewBackground != null) {
             tabsViewBackground.updateColors();
