@@ -357,6 +357,8 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
             tabsView.setViewVisible(view, true, false);
         }
         checkUi_callTabVisible(getUserConfig().showCallsTab, false);
+        if (!layoutTabAllowed(INDEX_CONTACTS)) tabsView.setViewVisible(tabs[INDEX_CONTACTS], false, false);
+        if (!layoutTabAllowed(INDEX_PROFILE)) tabsView.setViewVisible(tabs[INDEX_PROFILE], false, false);
 
         selectTab(viewPager.getCurrentPosition(), false);
 
@@ -1080,8 +1082,21 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
 
     private void checkUi_callTabVisible(boolean callTabsVisible, boolean animated) {
         if (tabsView != null) {
-            tabsView.setViewVisible(tabs[INDEX_SETTINGS], !callTabsVisible, animated);
-            tabsView.setViewVisible(tabs[INDEX_CALLS], callTabsVisible, animated);
+            final boolean slot = layoutTabAllowed(INDEX_SETTINGS);
+            tabsView.setViewVisible(tabs[INDEX_SETTINGS], !callTabsVisible && slot, animated);
+            tabsView.setViewVisible(tabs[INDEX_CALLS], callTabsVisible && slot, animated);
+        }
+    }
+
+    /** The active layout pack may limit the bottom tabs (bottomTabs.items); no list = all tabs as usual. */
+    private boolean layoutTabAllowed(int index) {
+        java.util.List<String> items = tw.nekomimi.nekogram.layout.LayoutManager.get().spec().listValue("bottomTabs.items", null);
+        if (items == null || items.isEmpty()) return true;
+        switch (index) {
+            case INDEX_CONTACTS: return items.contains("people");
+            case INDEX_SETTINGS: case INDEX_CALLS: return items.contains("settings");
+            case INDEX_PROFILE: return items.contains("profile");
+            default: return true;
         }
     }
 
