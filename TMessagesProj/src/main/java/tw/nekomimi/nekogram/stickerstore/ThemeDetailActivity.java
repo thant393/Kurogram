@@ -45,6 +45,8 @@ public class ThemeDetailActivity extends BaseFragment {
     private boolean ratingMode;
     private int pendingStars;
     private TextView statsView;
+    private final java.util.ArrayList<PhoneScene> scenes = new java.util.ArrayList<>();
+    private PhoneScene logoScene;
     private int likes;
 
     public ThemeDetailActivity(ThemeInfo info) {
@@ -100,6 +102,8 @@ public class ThemeDetailActivity extends BaseFragment {
         };
         logo.set(bg, accent, info.dark, info.gradientTop, info.gradientMiddle, info.gradientBottom, 16);
         logo.setIconMode(true);
+        logoScene = logo;
+        scenes.add(logo);
         header.addView(logo, LayoutHelper.createLinear(64, 64, 0, 0, 14, 0));
         LinearLayout names = new LinearLayout(context);
         names.setOrientation(LinearLayout.VERTICAL);
@@ -139,6 +143,7 @@ public class ThemeDetailActivity extends BaseFragment {
             PhoneScene scene = new PhoneScene(context, modes[i]);
             scene.set(bg, accent, info.dark, info.gradientTop, info.gradientMiddle, info.gradientBottom,
                     tw.nekomimi.nekogram.skin.KuroUi.t().previewRadiusDp);
+            scenes.add(scene);
             cell.addView(scene, LayoutHelper.createLinear(150, LayoutHelper.WRAP_CONTENT));
             TextView label = text(context, names3[i], 12, false, Theme.key_windowBackgroundWhiteGrayText);
             label.setTextColor(subColor);
@@ -146,6 +151,8 @@ public class ThemeDetailActivity extends BaseFragment {
             row.addView(cell, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, 0, 0, i < 2 ? 10 : 0, 0));
         }
         column.addView(strip, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 18, 0, 0));
+
+        loadRealPreview(bg, accent);
 
         // Categories and tags
         TextView ctTitle = text(context, "Categories and tags", 18, true, Theme.key_windowBackgroundWhiteBlackText);
@@ -180,6 +187,34 @@ public class ThemeDetailActivity extends BaseFragment {
         refreshReactions();
         refreshButtons();
         return root;
+    }
+
+    /** Redraws the previews from the theme's real file (skin colours / layout structure), once it is read. */
+    private void loadRealPreview(final int bg, final int accent) {
+        if (info.id == null || (!"skin".equals(info.type) && !"layout".equals(info.type))) {
+            return;
+        }
+        ThemeStoreApi.fetchVersionContent(info.id, info.version, content -> {
+            if (content == null || fragmentView == null) {
+                return;
+            }
+            try {
+                PhoneScene.Style style = PhoneScene.Style.palette(bg, accent, info.dark, info.gradientTop, info.gradientMiddle, info.gradientBottom);
+                if ("skin".equals(info.type)) {
+                    style.applySkin(SkinSpec.parse(content));
+                    style.applyLayout(tw.nekomimi.nekogram.layout.LayoutManager.get().spec());
+                } else {
+                    style.applySkin(KuroSkinManager.get().spec());
+                    style.applyLayout(tw.nekomimi.nekogram.layout.LayoutSpec.parse(content));
+                }
+                int radius = tw.nekomimi.nekogram.skin.KuroUi.t().previewRadiusDp;
+                for (PhoneScene s : scenes) {
+                    s.setStyle(style, s == logoScene ? 16 : radius);
+                }
+            } catch (Exception ignored) {
+                // keep the palette-only preview
+            }
+        });
     }
 
     private void addChipGroup(Context context, LinearLayout column, String label, java.util.List<String> items, int subColor, int textColor) {

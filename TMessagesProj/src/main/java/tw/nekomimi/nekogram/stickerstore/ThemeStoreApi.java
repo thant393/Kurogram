@@ -22,7 +22,75 @@ public final class ThemeStoreApi {
     private ThemeStoreApi() {
     }
 
+    public interface ContentCallback {
+        void onContent(String content);
+    }
+
+    private static final java.util.HashMap<String, String> VERSION_CONTENT = new java.util.HashMap<>();
+
+    /**
+     * The theme file of one version, without counting a download (used to draw previews from the
+     * theme's real data). Calls back with null when it can't be read.
+     */
+    public static void fetchVersionContent(String id, int version, ContentCallback callback) {
+        final String key = id + "@" + version;
+        String cached = VERSION_CONTENT.get(key);
+        if (cached != null) {
+            callback.onContent(cached);
+            return;
+        }
+        StickerStoreApi.getJson("api/v1/themes/" + id + "/versions/" + version, new StickerStoreApi.JsonCallback() {
+            @Override
+            public void onSuccess(Object root) {
+                String content = root instanceof JSONObject ? ((JSONObject) root).optString("content", null) : null;
+                if (content != null) {
+                    VERSION_CONTENT.put(key, content);
+                }
+                callback.onContent(content);
+            }
+
+            @Override
+            public void onError(String message) {
+                callback.onContent(null);
+            }
+        });
+    }
+
+    public interface CategoriesCallback {
+        void onSuccess(ArrayList<String> names);
+    }
+
+    /** Category names for the filter chips (empty on any failure: the chips just don't show). */
+    public static void fetchCategories(CategoriesCallback callback) {
+        StickerStoreApi.getJson("api/v1/categories/", new StickerStoreApi.JsonCallback() {
+            @Override
+            public void onSuccess(Object root) {
+                ArrayList<String> out = new ArrayList<>();
+                if (root instanceof JSONArray) {
+                    JSONArray array = (JSONArray) root;
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONObject o = array.optJSONObject(i);
+                        String name = o == null ? "" : o.optString("name", "");
+                        if (!name.isEmpty()) {
+                            out.add(name);
+                        }
+                    }
+                }
+                callback.onSuccess(out);
+            }
+
+            @Override
+            public void onError(String message) {
+                callback.onSuccess(new ArrayList<>());
+            }
+        });
+    }
+
     public static void fetchThemes(String sort, int page, int limit, String ownerId, String query, ListCallback callback) {
+        fetchThemes(sort, page, limit, ownerId, query, null, callback);
+    }
+
+    public static void fetchThemes(String sort, int page, int limit, String ownerId, String query, String category, ListCallback callback) {
         int pageSize = limit <= 0 ? 20 : Math.min(limit, 50);
         StringBuilder path = new StringBuilder("api/v1/themes/?sort_by=").append(sort == null ? "newest" : sort)
                 .append("&skip=").append((Math.max(1, page) - 1) * pageSize)
@@ -33,6 +101,9 @@ public final class ThemeStoreApi {
             }
             if (query != null && !query.trim().isEmpty()) {
                 path.append("&q=").append(URLEncoder.encode(query.trim(), "UTF-8"));
+            }
+            if (category != null && !category.isEmpty()) {
+                path.append("&category=").append(URLEncoder.encode(category, "UTF-8"));
             }
         } catch (Exception ignored) {
         }

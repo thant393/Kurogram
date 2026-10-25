@@ -42,6 +42,15 @@ public class ThemesTabView extends FrameLayout {
     private int generation;
     private final Runnable searchRunnable = this::reload;
     private boolean inset;
+    // sort + category filters (only on the store's own grid, not on a profile's list)
+    private static final int HEADER_DP = 100;
+    private String sort = "popular";
+    private String category;
+    private android.view.View header;
+    private TextView sortPopular, sortNewest;
+    private android.widget.LinearLayout categoryRow;
+    private final ArrayList<String> categoryNames = new ArrayList<>();
+    private static ArrayList<String> cachedCategories;
 
     /** What was last loaded, kept so a rebuilt screen (skin change) shows its grid at once instead of reloading. */
     private static final class Cache {
@@ -61,7 +70,7 @@ public class ThemesTabView extends FrameLayout {
     private static final long CACHE_TTL_MS = 5 * 60 * 1000L;
 
     private void saveCache() {
-        if (query.isEmpty()) {
+        if (query.isEmpty() && "popular".equals(sort) && category == null) {
             CACHE.put(ownerId, new Cache(themes, nextPage, hasMore));
         }
     }
@@ -94,6 +103,10 @@ public class ThemesTabView extends FrameLayout {
 
     /** Rebuilds the cards with the active skin's colours and radii (data is kept). */
     public void applySkin() {
+        if (header != null) {
+            header.setBackground(KuroBarStyle.headerFade());
+            updateChips();
+        }
         // New cells pick up the colours / radius; keep the scroll position across the swap.
         android.os.Parcelable state = layoutManager.onSaveInstanceState();
         listView.setAdapter(adapter);
@@ -109,7 +122,7 @@ public class ThemesTabView extends FrameLayout {
         layoutManager = new GridLayoutManager(context, 2);
         listView = new RecyclerListView(context);
         listView.setLayoutManager(layoutManager);
-        listView.setPadding(AndroidUtilities.dp(10), AndroidUtilities.dp(6), AndroidUtilities.dp(10), AndroidUtilities.dp(16));
+        listView.setPadding(AndroidUtilities.dp(10), AndroidUtilities.dp(ownerId == 0 ? HEADER_DP : 6), AndroidUtilities.dp(10), AndroidUtilities.dp(16));
         listView.setClipToPadding(false);
         listView.setSelectorDrawableColor(0);
         adapter = new RecyclerListView.SelectionAdapter() {
@@ -153,6 +166,10 @@ public class ThemesTabView extends FrameLayout {
             }
         });
 
+        if (ownerId == 0) {
+            buildHeader(context);
+        }
+
         progressView = new RadialProgressView(context);
         addView(progressView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER));
         infoView = new TextView(context);
@@ -165,6 +182,112 @@ public class ThemesTabView extends FrameLayout {
         if (!restoreCache()) {
             reload();
         }
+    }
+
+    private void buildHeader(Context context) {
+        android.widget.FrameLayout h = new android.widget.FrameLayout(context);
+        h.setBackground(KuroBarStyle.headerFade());
+        header = h;
+        addView(h, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, HEADER_DP + 16, Gravity.TOP));
+
+        android.widget.LinearLayout sortRow = new android.widget.LinearLayout(context);
+        sortRow.setOrientation(android.widget.LinearLayout.HORIZONTAL);
+        h.addView(sortRow, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, 40, Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 8, 0, 0));
+        sortPopular = chip(context, "Popular");
+        sortNewest = chip(context, "Newest");
+        sortRow.addView(sortPopular, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT, 0, 0, 6, 0));
+        sortRow.addView(sortNewest, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT));
+        sortPopular.setOnClickListener(v -> setSort("popular"));
+        sortNewest.setOnClickListener(v -> setSort("newest"));
+
+        android.widget.HorizontalScrollView scroll = new android.widget.HorizontalScrollView(context);
+        scroll.setHorizontalScrollBarEnabled(false);
+        categoryRow = new android.widget.LinearLayout(context);
+        categoryRow.setOrientation(android.widget.LinearLayout.HORIZONTAL);
+        categoryRow.setPadding(AndroidUtilities.dp(10), 0, AndroidUtilities.dp(10), 0);
+        scroll.addView(categoryRow, new android.widget.FrameLayout.LayoutParams(android.widget.FrameLayout.LayoutParams.WRAP_CONTENT, android.widget.FrameLayout.LayoutParams.MATCH_PARENT));
+        h.addView(scroll, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 36, Gravity.TOP, 0, 54, 0, 0));
+        updateChips();
+
+        if (cachedCategories != null) {
+            categoryNames.addAll(cachedCategories);
+            rebuildCategoryChips();
+        } else {
+            ThemeStoreApi.fetchCategories(names -> {
+                cachedCategories = names;
+                categoryNames.clear();
+                categoryNames.addAll(names);
+                rebuildCategoryChips();
+            });
+        }
+    }
+
+    private TextView chip(Context context, String text) {
+        TextView chip = new TextView(context);
+        chip.setText(text);
+        chip.setTextSize(13);
+        chip.setGravity(Gravity.CENTER);
+        chip.setPadding(AndroidUtilities.dp(16), 0, AndroidUtilities.dp(16), 0);
+        chip.setTypeface(AndroidUtilities.bold());
+        return chip;
+    }
+
+    private void styleChip(TextView chip, boolean selected) {
+        android.graphics.drawable.GradientDrawable bg = new android.graphics.drawable.GradientDrawable();
+        bg.setCornerRadius(AndroidUtilities.dp(18));
+        if (selected) {
+            bg.setColor(tw.nekomimi.nekogram.skin.KuroUi.accent());
+            chip.setTextColor(tw.nekomimi.nekogram.skin.KuroUi.onAccent());
+        } else {
+            bg.setColor(Theme.getColor(Theme.key_windowBackgroundWhite));
+            chip.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGrayText));
+        }
+        chip.setBackground(bg);
+    }
+
+    private void updateChips() {
+        if (sortPopular == null) return;
+        styleChip(sortPopular, "popular".equals(sort));
+        styleChip(sortNewest, "newest".equals(sort));
+        for (int i = 0; i < categoryRow.getChildCount(); i++) {
+            TextView c = (TextView) categoryRow.getChildAt(i);
+            Object tag = c.getTag();
+            styleChip(c, tag == null ? category == null : tag.equals(category));
+        }
+    }
+
+    private void rebuildCategoryChips() {
+        if (categoryRow == null) return;
+        categoryRow.removeAllViews();
+        if (categoryNames.isEmpty()) {
+            categoryRow.setVisibility(GONE);
+            return;
+        }
+        categoryRow.setVisibility(VISIBLE);
+        TextView all = chip(getContext(), "All");
+        all.setOnClickListener(v -> setCategory(null));
+        categoryRow.addView(all, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT, 0, 0, 6, 0));
+        for (String name : categoryNames) {
+            TextView c = chip(getContext(), name);
+            c.setTag(name);
+            c.setOnClickListener(v -> setCategory(name));
+            categoryRow.addView(c, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT, 0, 0, 6, 0));
+        }
+        updateChips();
+    }
+
+    private void setSort(String value) {
+        if (value.equals(sort)) return;
+        sort = value;
+        updateChips();
+        reload();
+    }
+
+    private void setCategory(String value) {
+        if ((value == null && category == null) || (value != null && value.equals(category))) return;
+        category = value;
+        updateChips();
+        reload();
     }
 
     public void setBottomInset(int px) {
@@ -206,7 +329,7 @@ public class ThemesTabView extends FrameLayout {
         }
         loading = true;
         final int gen = generation;
-        ThemeStoreApi.fetchThemes(ThemeStoreApiSort.NEWEST, nextPage, PAGE_SIZE, ownerId > 0 ? String.valueOf(ownerId) : null, query, new ThemeStoreApi.ListCallback() {
+        ThemeStoreApi.fetchThemes(ownerId == 0 ? sort : ThemeStoreApiSort.NEWEST, nextPage, PAGE_SIZE, ownerId > 0 ? String.valueOf(ownerId) : null, query, category, new ThemeStoreApi.ListCallback() {
             @Override
             public void onSuccess(ArrayList<ThemeInfo> result) {
                 if (gen != generation) return;
@@ -224,7 +347,7 @@ public class ThemesTabView extends FrameLayout {
                 progressView.setVisibility(GONE);
                 adapter.notifyDataSetChanged();
                 if (themes.isEmpty()) {
-                    infoView.setText(query.isEmpty() ? emptyText : "No themes match \"" + query + "\"");
+                    infoView.setText(query.isEmpty() && category == null ? emptyText : category != null && query.isEmpty() ? "No themes in this category yet" : "No themes match \"" + query + "\"");
                     infoView.setVisibility(VISIBLE);
                     listView.setVisibility(INVISIBLE);
                 } else {

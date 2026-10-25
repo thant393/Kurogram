@@ -76,7 +76,12 @@ public final class LayoutManager {
     }
 
     private void notifyChanged() {
-        org.telegram.messenger.AndroidUtilities.runOnUIThread(() ->
-                NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.kuroSkinChanged));
+        org.telegram.messenger.AndroidUtilities.runOnUIThread(() -> {
+            NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.kuroSkinChanged);
+            // Layout is read when a screen builds its views (tab bar, chat list), so rebuild the open ones now.
+            if (org.telegram.ui.LaunchActivity.instance != null) {
+                org.telegram.ui.LaunchActivity.instance.rebuildAllFragments(true);
+            }
+        });
     }
 }
