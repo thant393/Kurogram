@@ -314,6 +314,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         final boolean flatTabs = "flat".equals(tw.nekomimi.nekogram.layout.LayoutManager.get().spec().stringValue("bottomTabs.style", "glass"));
         final int tabPad = dp(DialogsActivity.MAIN_TABS_MARGIN + 4);
         tabsView.setPadding(flatTabs ? dp(4) : tabPad, flatTabs ? dp(8) : tabPad, flatTabs ? dp(4) : tabPad, flatTabs ? dp(8) : tabPad);
+        tabsView.setFillWidth(flatTabs);
         tabsView.setMaxWidth(flatTabs ? 0 : dp(328 + DialogsActivity.MAIN_TABS_MARGIN * 2));
 
         tabs = new GlassTabView[5];

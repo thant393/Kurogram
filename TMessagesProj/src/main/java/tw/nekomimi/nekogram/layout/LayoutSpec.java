@@ -90,6 +90,29 @@ public final class LayoutSpec {
             "chat.input.trailing|list:emoji,mic,attach:0:3",
     };
 
+    /**
+     * A skin may carry its own "layout" section (same keys as a layout pack, without schemaVersion/meta).
+     * Returns that section as a standalone layout file, or null when the skin has none.
+     */
+    public static String embeddedJson(String skinJson, String slug) {
+        try {
+            JSONObject section = new JSONObject(skinJson).optJSONObject("layout");
+            if (section == null) {
+                return null;
+            }
+            JSONObject wrapper = new JSONObject(section.toString());
+            String id = ("skin." + (slug == null ? "x" : slug.replaceAll("[^A-Za-z0-9_.-]", "-")));
+            JSONObject meta = new JSONObject();
+            meta.put("id", id.length() > 48 ? id.substring(0, 48) : id);
+            meta.put("name", "Skin layout");
+            wrapper.put("schemaVersion", SCHEMA_VERSION);
+            wrapper.put("meta", meta);
+            return wrapper.toString();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public static LayoutSpec parse(String json) {
         if (json == null || json.getBytes().length > MAX_JSON_BYTES) {
             throw new IllegalArgumentException("Layout file is missing or too large");

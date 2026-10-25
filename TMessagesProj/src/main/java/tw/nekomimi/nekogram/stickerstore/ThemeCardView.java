@@ -98,7 +98,9 @@ public class ThemeCardView extends FrameLayout {
                     PhoneScene.Style style = PhoneScene.Style.palette(fbg, facc, t.dark, t.gradientTop, t.gradientMiddle, t.gradientBottom);
                     if ("skin".equals(t.type)) {
                         style.applySkin(tw.nekomimi.nekogram.skin.SkinSpec.parse(content));
-                        style.applyLayout(tw.nekomimi.nekogram.layout.LayoutManager.get().spec());
+                        String embedded = tw.nekomimi.nekogram.layout.LayoutSpec.embeddedJson(content, t.slug);
+                        style.applyLayout(embedded != null ? tw.nekomimi.nekogram.layout.LayoutSpec.parse(embedded)
+                                : tw.nekomimi.nekogram.layout.LayoutManager.get().spec());
                     } else {
                         style.applySkin(tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec());
                         style.applyLayout(tw.nekomimi.nekogram.layout.LayoutSpec.parse(content));

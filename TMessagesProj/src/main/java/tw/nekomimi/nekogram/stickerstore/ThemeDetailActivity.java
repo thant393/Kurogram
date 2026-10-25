@@ -202,7 +202,9 @@ public class ThemeDetailActivity extends BaseFragment {
                 PhoneScene.Style style = PhoneScene.Style.palette(bg, accent, info.dark, info.gradientTop, info.gradientMiddle, info.gradientBottom);
                 if ("skin".equals(info.type)) {
                     style.applySkin(SkinSpec.parse(content));
-                    style.applyLayout(tw.nekomimi.nekogram.layout.LayoutManager.get().spec());
+                    String embedded = tw.nekomimi.nekogram.layout.LayoutSpec.embeddedJson(content, info.slug);
+                    style.applyLayout(embedded != null ? tw.nekomimi.nekogram.layout.LayoutSpec.parse(embedded)
+                            : tw.nekomimi.nekogram.layout.LayoutManager.get().spec());
                 } else {
                     style.applySkin(KuroSkinManager.get().spec());
                     style.applyLayout(tw.nekomimi.nekogram.layout.LayoutSpec.parse(content));
@@ -567,6 +569,11 @@ public class ThemeDetailActivity extends BaseFragment {
             } else {
                 if ("skin".equals(type)) {
                     KuroSkinManager.get().apply(content);
+                    // A skin can carry its own layout section: colours and structure arrive as one theme.
+                    String embedded = tw.nekomimi.nekogram.layout.LayoutSpec.embeddedJson(content, info.slug);
+                    if (embedded != null) {
+                        tw.nekomimi.nekogram.layout.LayoutManager.get().apply(embedded);
+                    }
                 } else if ("layout".equals(type)) {
                     tw.nekomimi.nekogram.layout.LayoutManager.get().apply(content);
                 } else {
@@ -617,6 +624,10 @@ public class ThemeDetailActivity extends BaseFragment {
         } else if ("skin".equals(info.type)) {
             try {
                 KuroSkinManager.get().reset();
+                String activeLayout = tw.nekomimi.nekogram.layout.LayoutManager.get().spec().id;
+                if (activeLayout != null && activeLayout.startsWith("skin.")) {
+                    tw.nekomimi.nekogram.layout.LayoutManager.get().reset();
+                }
             } catch (Exception e) {
                 setStatus(e.getMessage(), true);
                 refreshButtons();
