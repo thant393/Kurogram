@@ -19,6 +19,7 @@ import org.telegram.ui.Components.LayoutHelper;
 public class ThemeCardView extends FrameLayout {
 
     private final PhoneScene phone;
+    private ThemeInfo shown;
     private final TextView titleView;
     private final TextView ownerView;
     private final TextView statsView;
@@ -88,6 +89,25 @@ public class ThemeCardView extends FrameLayout {
         int bg = t.background != 0 ? t.background : fallbackBg;
         int accent = t.accent != 0 ? t.accent : Theme.getColor(Theme.key_featuredStickers_addButton);
         phone.set(bg, accent, t.dark, t.gradientTop, t.gradientMiddle, t.gradientBottom, tw.nekomimi.nekogram.skin.KuroUi.t().previewRadiusDp);
+        shown = t;
+        if (t.id != null && ("skin".equals(t.type) || "layout".equals(t.type))) {
+            final int fbg = bg, facc = accent;
+            ThemeStoreApi.fetchVersionContent(t.id, t.version, content -> {
+                if (content == null || shown != t) return;
+                try {
+                    PhoneScene.Style style = PhoneScene.Style.palette(fbg, facc, t.dark, t.gradientTop, t.gradientMiddle, t.gradientBottom);
+                    if ("skin".equals(t.type)) {
+                        style.applySkin(tw.nekomimi.nekogram.skin.SkinSpec.parse(content));
+                        style.applyLayout(tw.nekomimi.nekogram.layout.LayoutManager.get().spec());
+                    } else {
+                        style.applySkin(tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec());
+                        style.applyLayout(tw.nekomimi.nekogram.layout.LayoutSpec.parse(content));
+                    }
+                    phone.setStyle(style, tw.nekomimi.nekogram.skin.KuroUi.t().previewRadiusDp);
+                } catch (Exception ignored) {
+                }
+            });
+        }
         titleView.setText(t.title);
         String owner = t.ownerName != null && !t.ownerName.isEmpty() ? t.ownerName
                 : t.ownerUsername != null && !t.ownerUsername.isEmpty() ? "@" + t.ownerUsername : "";

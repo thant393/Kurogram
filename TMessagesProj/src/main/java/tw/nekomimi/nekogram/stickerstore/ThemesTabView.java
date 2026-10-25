@@ -2,6 +2,7 @@ package tw.nekomimi.nekogram.stickerstore;
 
 import android.content.Context;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -43,7 +44,7 @@ public class ThemesTabView extends FrameLayout {
     private final Runnable searchRunnable = this::reload;
     private boolean inset;
     // sort + category filters (only on the store's own grid, not on a profile's list)
-    private static final int HEADER_DP = 100;
+    private static final int HEADER_DP = 56;
     private String sort = "popular";
     private String category;
     private android.view.View header;
@@ -190,24 +191,18 @@ public class ThemesTabView extends FrameLayout {
         header = h;
         addView(h, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, HEADER_DP + 16, Gravity.TOP));
 
-        android.widget.LinearLayout sortRow = new android.widget.LinearLayout(context);
-        sortRow.setOrientation(android.widget.LinearLayout.HORIZONTAL);
-        h.addView(sortRow, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, 40, Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 8, 0, 0));
-        sortPopular = chip(context, "Popular");
-        sortNewest = chip(context, "Newest");
-        sortRow.addView(sortPopular, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT, 0, 0, 6, 0));
-        sortRow.addView(sortNewest, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT));
-        sortPopular.setOnClickListener(v -> setSort("popular"));
-        sortNewest.setOnClickListener(v -> setSort("newest"));
-
         android.widget.HorizontalScrollView scroll = new android.widget.HorizontalScrollView(context);
         scroll.setHorizontalScrollBarEnabled(false);
         categoryRow = new android.widget.LinearLayout(context);
         categoryRow.setOrientation(android.widget.LinearLayout.HORIZONTAL);
         categoryRow.setPadding(AndroidUtilities.dp(10), 0, AndroidUtilities.dp(10), 0);
         scroll.addView(categoryRow, new android.widget.FrameLayout.LayoutParams(android.widget.FrameLayout.LayoutParams.WRAP_CONTENT, android.widget.FrameLayout.LayoutParams.MATCH_PARENT));
-        h.addView(scroll, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 36, Gravity.TOP, 0, 54, 0, 0));
-        updateChips();
+        h.addView(scroll, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 36, Gravity.TOP, 0, 8, 0, 0));
+        sortPopular = chip(context, "Popular");
+        sortNewest = chip(context, "Newest");
+        sortPopular.setOnClickListener(v -> setSort("popular"));
+        sortNewest.setOnClickListener(v -> setSort("newest"));
+        rebuildCategoryChips();
 
         if (cachedCategories != null) {
             categoryNames.addAll(cachedCategories);
@@ -250,28 +245,29 @@ public class ThemesTabView extends FrameLayout {
         styleChip(sortPopular, "popular".equals(sort));
         styleChip(sortNewest, "newest".equals(sort));
         for (int i = 0; i < categoryRow.getChildCount(); i++) {
-            TextView c = (TextView) categoryRow.getChildAt(i);
+            View v = categoryRow.getChildAt(i);
+            if (!(v instanceof TextView) || v == sortPopular || v == sortNewest) continue;
+            TextView c = (TextView) v;
             Object tag = c.getTag();
             styleChip(c, tag == null ? category == null : tag.equals(category));
         }
     }
 
     private void rebuildCategoryChips() {
-        if (categoryRow == null) return;
+        if (categoryRow == null || sortPopular == null) return;
         categoryRow.removeAllViews();
-        if (categoryNames.isEmpty()) {
-            categoryRow.setVisibility(GONE);
-            return;
-        }
-        categoryRow.setVisibility(VISIBLE);
-        TextView all = chip(getContext(), "All");
-        all.setOnClickListener(v -> setCategory(null));
-        categoryRow.addView(all, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT, 0, 0, 6, 0));
-        for (String name : categoryNames) {
-            TextView c = chip(getContext(), name);
-            c.setTag(name);
-            c.setOnClickListener(v -> setCategory(name));
-            categoryRow.addView(c, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT, 0, 0, 6, 0));
+        categoryRow.addView(sortPopular, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT, 0, 0, 6, 0));
+        categoryRow.addView(sortNewest, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT, 0, 0, 6, 0));
+        if (!categoryNames.isEmpty()) {
+            TextView all = chip(getContext(), "All");
+            all.setOnClickListener(v -> setCategory(null));
+            categoryRow.addView(all, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT, 0, 0, 6, 0));
+            for (String name : categoryNames) {
+                TextView c = chip(getContext(), name);
+                c.setTag(name);
+                c.setOnClickListener(v -> setCategory(name));
+                categoryRow.addView(c, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT, 0, 0, 6, 0));
+            }
         }
         updateChips();
     }

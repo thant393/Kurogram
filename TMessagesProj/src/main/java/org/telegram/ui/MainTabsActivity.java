@@ -311,8 +311,10 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
 
         tabsView = new MainTabsLayout(context, resourceProvider);
         tabsView.setClipChildren(false);
-        tabsView.setPadding(dp(DialogsActivity.MAIN_TABS_MARGIN + 4), dp(DialogsActivity.MAIN_TABS_MARGIN + 4), dp(DialogsActivity.MAIN_TABS_MARGIN + 4), dp(DialogsActivity.MAIN_TABS_MARGIN + 4));
-        tabsView.setMaxWidth(dp(328 + DialogsActivity.MAIN_TABS_MARGIN * 2));
+        final boolean flatTabs = "flat".equals(tw.nekomimi.nekogram.layout.LayoutManager.get().spec().stringValue("bottomTabs.style", "glass"));
+        final int tabPad = dp(DialogsActivity.MAIN_TABS_MARGIN + 4);
+        tabsView.setPadding(flatTabs ? dp(4) : tabPad, flatTabs ? dp(8) : tabPad, flatTabs ? dp(4) : tabPad, flatTabs ? dp(8) : tabPad);
+        tabsView.setMaxWidth(flatTabs ? 0 : dp(328 + DialogsActivity.MAIN_TABS_MARGIN * 2));
 
         tabs = new GlassTabView[5];
         tabs[INDEX_CHATS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.CHATS, R.string.MainTabsChats);
@@ -368,7 +370,6 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
 
         tabsViewBackground = iBlur3FactoryGlass.create(tabsView, BlurredBackgroundProviderImpl.mainTabs(resourceProvider));
         // A layout pack may ask for a flat, full-width tab bar instead of the floating glass pill.
-        final boolean flatTabs = "flat".equals(tw.nekomimi.nekogram.layout.LayoutManager.get().spec().stringValue("bottomTabs.style", "glass"));
         tabsViewBackground.setRadius(flatTabs ? 0 : dp(DialogsActivity.MAIN_TABS_HEIGHT / 2f));
         tabsViewBackground.setPadding(flatTabs ? 0 : dp(DialogsActivity.MAIN_TABS_MARGIN - 0.334f));
         tabsView.setBackground(tabsViewBackground);
