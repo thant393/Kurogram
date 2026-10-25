@@ -1009,6 +1009,24 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
         bottomClip = getMeasuredHeight();
     }
 
+    private void applyLayoutNameWeight(int paintIndex) {
+        tw.nekomimi.nekogram.layout.LayoutSpec spec = tw.nekomimi.nekogram.layout.LayoutManager.get().spec();
+        String weight = spec.stringValue("chatList.row.title.weight", null);
+        if (weight == null) {
+            return; // Telegram's own look: leave the shared paint untouched
+        }
+        if (unreadCount > 0 || markUnread) {
+            weight = spec.stringValue("chatList.row.title.unreadWeight", weight);
+        }
+        android.graphics.Typeface face;
+        switch (weight) {
+            case "normal": face = android.graphics.Typeface.DEFAULT; break;
+            case "bold": face = android.graphics.Typeface.DEFAULT_BOLD; break;
+            default: face = AndroidUtilities.bold(); break;
+        }
+        Theme.dialogs_namePaint[paintIndex].setTypeface(face);
+    }
+
     private int computeHeight() {
         int height;
         if (isForumCell() && !isTransitionSupport && !collapsed) {
@@ -2395,6 +2413,8 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
             if (nameString instanceof String) {
                 nameString = ((String) nameString).replace('\n', ' ');
             }
+            // A layout pack may choose the name weight (and a different one for chats with unread messages).
+            applyLayoutNameWeight(paintIndex);
             CharSequence nameStringFinal = nameString;
             if (nameLayoutEllipsizeByGradient) {
                 nameLayoutFits = nameStringFinal.length() == TextUtils.ellipsize(nameStringFinal, Theme.dialogs_namePaint[paintIndex], ellipsizeWidth, TextUtils.TruncateAt.END).length();
@@ -5284,6 +5304,13 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
 
                 int x = countLeftLocal;
                 rect.set(x, countTop, x + countWidth + dp(BADGE_TEXT_PADDING * 2), countTop + dp(BADGE_SIZE));
+                if ("right".equals(tw.nekomimi.nekogram.layout.LayoutManager.get().spec().stringValue("chatList.row.meta.unreadDot", null)) && unreadCount != 0) {
+                    // Layout pack: a plain dot instead of the numbered badge (the number stays in the chat itself).
+                    final float dotRight = rect.right;
+                    final float dotCy = rect.centerY();
+                    rect.set(dotRight - dp(11), dotCy - dp(5.5f), dotRight, dotCy + dp(5.5f));
+                    Theme.dialogs_countTextPaint2.setAlpha(0);
+                }
 
                 int restoreToCount = canvas.save();
                 if (globalScale != 1f) {
