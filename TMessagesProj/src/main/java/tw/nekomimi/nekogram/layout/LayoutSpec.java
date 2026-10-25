@@ -83,7 +83,7 @@ public final class LayoutSpec {
             "chatList.folders.style|enum:chips,tabs,none", "chatList.folders.position|enum:below-header,below-rail",
             "chatList.folders.collapsible|bool",
             "chatList.specialRows.archive|enum:row,hidden",
-            "drawer.items|list:profile,settings,contacts,calls,saved,archive,kuroTheme,kuroSettings,numberFinder,specialContacts,onlineContacts,contactChanges,account,chatSettings,privacy,notifications,data,folders,devices,power,language:1:24",
+            "drawer.items|list:profile,settings,contacts,calls,saved,archive,kuroTheme,kuroSettings,numberFinder,specialContacts,onlineContacts,contactChanges,account,chatSettings,privacy,notifications,data,folders,devices,power,language,premium,stars,ton,business,gift,askQuestion,faq,features,privacyPolicy:1:40",
             "bottomTabs.items|list:chats,people,settings,profile:2:4", "bottomTabs.peopleSource|enum:contacts,online", "bottomTabs.labels|bool", "bottomTabs.style|enum:flat,glass",
             "chat.header.avatarLeft|bool", "chat.header.actions|list:call,video,more,search:0:4",
             "chat.input.style|enum:classic,pill", "chat.input.leading|list:plus,attach,emoji:0:2",

@@ -31,6 +31,14 @@ import org.telegram.ui.ChatActivity;
 import org.telegram.ui.Components.AvatarDrawable;
 import org.telegram.ui.Components.BackupImageView;
 import org.telegram.ui.Components.IconBackgroundColors;
+import org.telegram.ui.Components.AlertsCreator;
+import org.telegram.ui.Components.Premium.boosts.UserSelectorBottomSheet;
+import org.telegram.ui.Stars.StarsController;
+import org.telegram.ui.Stars.StarsIntroActivity;
+import org.telegram.ui.TON.TONIntroActivity;
+import org.telegram.messenger.ApplicationLoader;
+import org.telegram.messenger.BirthdayController;
+import org.telegram.messenger.browser.Browser;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.ContactsActivity;
 import org.telegram.ui.DialogsActivity;
@@ -121,9 +129,9 @@ public final class KuroDrawer {
 
         for (String id : items) {
             final Entry e = entry(id);
-            if (e == null) continue;
+            if (e == null || !available(id, account)) continue;
             SettingsActivity.SettingCell row = new SettingsActivity.SettingCell(context, null);
-            row.set(e.color.top, e.color.bottom, e.icon, e.title(), e.subtitle(), null);
+            row.set(e.top, e.bottom, e.icon, e.title(), e.subtitle(), null);
             row.setBackground(Theme.createSelectorDrawable(Theme.getColor(Theme.key_listSelector), 2));
             row.setContentDescription(e.title());
             row.setOnClickListener(v -> {
@@ -147,14 +155,20 @@ public final class KuroDrawer {
     }
 
     private static final class Entry {
-        final IconBackgroundColors color;
+        final int top;
+        final int bottom;
         final int icon;
         final String text;
         final int titleRes;
         final int subtitleRes;
 
         Entry(IconBackgroundColors color, int icon, String text, int titleRes, int subtitleRes) {
-            this.color = color;
+            this(color.top, color.bottom, icon, text, titleRes, subtitleRes);
+        }
+
+        Entry(int top, int bottom, int icon, String text, int titleRes, int subtitleRes) {
+            this.top = top;
+            this.bottom = bottom;
             this.icon = icon;
             this.text = text;
             this.titleRes = titleRes;
@@ -188,6 +202,15 @@ public final class KuroDrawer {
             case "devices": return new Entry(IconBackgroundColors.CYAN, R.drawable.settings_devices, null, R.string.SettingsDevices, R.string.SettingsDevicesInfo);
             case "power": return new Entry(IconBackgroundColors.ORANGE_DEEP, R.drawable.settings_power, null, R.string.SettingsPowerSaving, R.string.SettingsPowerSavingInfo);
             case "language": return new Entry(IconBackgroundColors.PURPLE, R.drawable.settings_language, null, R.string.SettingsLanguage, 0);
+            case "premium": return new Entry(0xFFB659FF, 0xFF617CFF, R.drawable.settings_premium, null, R.string.TelegramPremium, 0);
+            case "stars": return new Entry(0xFFEFA612, 0xFFE77512, R.drawable.settings_stars, null, R.string.TelegramStars, 0);
+            case "ton": return new Entry(0xFF1BA4ED, 0xFF1488E1, R.drawable.settings_gram_24, null, R.string.MyTON, 0);
+            case "business": return new Entry(0xFFF45255, 0xFFDF3955, R.drawable.settings_business, null, R.string.TelegramBusiness, 0);
+            case "gift": return new Entry(0xFFF38B31, 0xFFE26314, R.drawable.settings_gift, null, R.string.SendAGift, 0);
+            case "askQuestion": return new Entry(IconBackgroundColors.ORANGE, R.drawable.settings_ask, null, R.string.AskAQuestion, 0);
+            case "faq": return new Entry(IconBackgroundColors.BLUE_LIGHT, R.drawable.settings_faq, null, R.string.TelegramFAQ, 0);
+            case "features": return new Entry(IconBackgroundColors.PURPLE, R.drawable.settings_features, null, R.string.TelegramFeatures, 0);
+            case "privacyPolicy": return new Entry(IconBackgroundColors.GREEN, R.drawable.settings_policy, null, R.string.PrivacyPolicy, 0);
             case "profile": return new Entry(IconBackgroundColors.GRAY, R.drawable.msg_openprofile, null, R.string.MainTabsProfile, 0);
             case "settings": return new Entry(IconBackgroundColors.GRAY, R.drawable.msg_settings, null, R.string.Settings, 0);
             case "contacts": return new Entry(IconBackgroundColors.GRAY, R.drawable.msg_contacts, null, R.string.Contacts, 0);
@@ -195,6 +218,27 @@ public final class KuroDrawer {
             case "saved": return new Entry(IconBackgroundColors.GRAY, R.drawable.msg_saved, null, R.string.SavedMessages, 0);
             case "archive": return new Entry(IconBackgroundColors.GRAY, R.drawable.msg_archive, null, R.string.ArchivedChats, 0);
             default: return null;
+        }
+    }
+
+    /** Same conditions Telegram's Settings page uses before showing an entry. */
+    private static boolean available(String id, int account) {
+        MessagesController mc = MessagesController.getInstance(account);
+        switch (id) {
+            case "premium":
+            case "business":
+                return !mc.premiumFeaturesBlocked();
+            case "gift":
+                return !mc.premiumPurchaseBlocked();
+            case "stars":
+                return mc.starsPurchaseAvailable();
+            case "ton": {
+                StarsController c = StarsController.getInstance(account, true);
+                return ApplicationLoader.isBetaBuild() || ApplicationLoader.isStandaloneBuild() || ApplicationLoader.isHuaweiStoreBuild()
+                        || (c.balanceAvailable() && (c.hasTransactions() || c.getBalance().positive()));
+            }
+            default:
+                return true;
         }
     }
 
@@ -240,6 +284,21 @@ public final class KuroDrawer {
             case "devices": from.presentFragment(new org.telegram.ui.SessionsActivity(0)); break;
             case "power": from.presentFragment(new org.telegram.ui.LiteModeSettingsActivity()); break;
             case "language": from.presentFragment(new org.telegram.ui.LanguageSelectActivity()); break;
+            case "premium": from.presentFragment(new org.telegram.ui.PremiumPreviewFragment("settings")); break;
+            case "stars": from.presentFragment(new StarsIntroActivity()); break;
+            case "ton": from.presentFragment(new TONIntroActivity()); break;
+            case "business": from.presentFragment(new org.telegram.ui.PremiumPreviewFragment(org.telegram.ui.PremiumPreviewFragment.FEATURES_BUSINESS, "settings")); break;
+            case "gift": UserSelectorBottomSheet.open(0, BirthdayController.getInstance(UserConfig.selectedAccount).getState()); break;
+            case "askQuestion": from.showDialog(AlertsCreator.createSupportAlert(from, null)); break;
+            case "faq": Browser.openUrl(from.getParentActivity(), LocaleController.getString(R.string.TelegramFaqUrl)); break;
+            case "features":
+                if (MessagesController.getInstance(account).isFrozen()) {
+                    org.telegram.ui.AccountFrozenAlert.show(account);
+                } else {
+                    Browser.openUrl(from.getParentActivity(), LocaleController.getString(R.string.TelegramFeaturesUrl));
+                }
+                break;
+            case "privacyPolicy": Browser.openUrl(from.getParentActivity(), LocaleController.getString(R.string.PrivacyPolicyUrl)); break;
             default:
                 break;
         }
