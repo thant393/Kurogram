@@ -96,8 +96,10 @@ public final class LayoutSpec {
      */
     public static String embeddedJson(String skinJson, String slug) {
         try {
-            JSONObject section = new JSONObject(skinJson).optJSONObject("layout");
-            if (section == null) {
+            JSONObject root = new JSONObject(skinJson);
+            JSONObject section = root.optJSONObject("layout");
+            // v1 skins use "layout" for something else; "classic" (or an empty section) means Telegram's own layout.
+            if (root.optInt("schemaVersion", 1) < 2 || section == null || section.length() == 0) {
                 return null;
             }
             JSONObject wrapper = new JSONObject(section.toString());

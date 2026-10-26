@@ -159,7 +159,7 @@ public class ThemeDetailActivity extends BaseFragment {
         ctTitle.setTextColor(textColor);
         column.addView(ctTitle, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 20, 24, 20, 0));
         addChipGroup(context, column, "Categories", java.util.Collections.singletonList(
-                info.category + ("skin".equals(info.type) ? "" : "layout".equals(info.type) ? " · Layout" : " · Colors")), subColor, textColor);
+                info.category + ("skin".equals(info.type) ? "" : " · Colors")), subColor, textColor);
         if (!info.tags.isEmpty()) {
             addChipGroup(context, column, "Tags", info.tags, subColor, textColor);
         }
@@ -191,7 +191,7 @@ public class ThemeDetailActivity extends BaseFragment {
 
     /** Redraws the previews from the theme's real file (skin colours / layout structure), once it is read. */
     private void loadRealPreview(final int bg, final int accent) {
-        if (info.id == null || (!"skin".equals(info.type) && !"layout".equals(info.type))) {
+        if (info.id == null || !"skin".equals(info.type)) {
             return;
         }
         ThemeStoreApi.fetchVersionContent(info.id, info.version, content -> {
@@ -200,15 +200,10 @@ public class ThemeDetailActivity extends BaseFragment {
             }
             try {
                 PhoneScene.Style style = PhoneScene.Style.palette(bg, accent, info.dark, info.gradientTop, info.gradientMiddle, info.gradientBottom);
-                if ("skin".equals(info.type)) {
-                    style.applySkin(SkinSpec.parse(content));
-                    String embedded = tw.nekomimi.nekogram.layout.LayoutSpec.embeddedJson(content, info.slug);
-                    style.applyLayout(embedded != null ? tw.nekomimi.nekogram.layout.LayoutSpec.parse(embedded)
-                            : tw.nekomimi.nekogram.layout.LayoutManager.get().spec());
-                } else {
-                    style.applySkin(KuroSkinManager.get().spec());
-                    style.applyLayout(tw.nekomimi.nekogram.layout.LayoutSpec.parse(content));
-                }
+                style.applySkin(SkinSpec.parse(content));
+                String embedded = tw.nekomimi.nekogram.layout.LayoutSpec.embeddedJson(content, info.slug);
+                style.applyLayout(embedded != null ? tw.nekomimi.nekogram.layout.LayoutSpec.parse(embedded)
+                        : tw.nekomimi.nekogram.layout.LayoutSpec.classic());
                 int radius = tw.nekomimi.nekogram.skin.KuroUi.t().previewRadiusDp;
                 for (PhoneScene s : scenes) {
                     s.setStyle(style, s == logoScene ? 16 : radius);
@@ -574,14 +569,9 @@ public class ThemeDetailActivity extends BaseFragment {
                     if (embedded != null) {
                         tw.nekomimi.nekogram.layout.LayoutManager.get().apply(embedded);
                     } else {
-                        // Switching to a skin that has no layout of its own must not keep the previous skin's layout.
-                        String active = tw.nekomimi.nekogram.layout.LayoutManager.get().spec().id;
-                        if (active != null && active.startsWith("skin.")) {
-                            tw.nekomimi.nekogram.layout.LayoutManager.get().reset();
-                        }
+                        // A theme is a skin plus a layout; no layout section means Telegram's own layout.
+                        tw.nekomimi.nekogram.layout.LayoutManager.get().reset();
                     }
-                } else if ("layout".equals(type)) {
-                    tw.nekomimi.nekogram.layout.LayoutManager.get().apply(content);
                 } else {
                     applyColors(response.optString("slug", "theme"), content);
                 }
@@ -625,15 +615,10 @@ public class ThemeDetailActivity extends BaseFragment {
     }
 
     private void resetTheme() {
-        if ("layout".equals(info.type)) {
-            tw.nekomimi.nekogram.layout.LayoutManager.get().reset();
-        } else if ("skin".equals(info.type)) {
+        if ("skin".equals(info.type)) {
             try {
                 KuroSkinManager.get().reset();
-                String activeLayout = tw.nekomimi.nekogram.layout.LayoutManager.get().spec().id;
-                if (activeLayout != null && activeLayout.startsWith("skin.")) {
-                    tw.nekomimi.nekogram.layout.LayoutManager.get().reset();
-                }
+                tw.nekomimi.nekogram.layout.LayoutManager.get().reset();
             } catch (Exception e) {
                 setStatus(e.getMessage(), true);
                 refreshButtons();

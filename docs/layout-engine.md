@@ -107,3 +107,8 @@ Like a phone theme (lock screen, home screen, icons, status bar) a Kurogram them
 - **Not themeable:** wallpaper, font, icon pack. The app has none, so there is nothing to ship or to break.
 
 Rules that follow from this: a layout never adds a feature, it only arranges what Telegram or Kurogram already has; a skin that carries a `layout` section replaces the previous skin's layout, and a skin without one clears it.
+
+### Layout is never a separate theme
+There are no layout-only or skin-only themes. A theme is one skin document; its optional top-level `layout` object
+carries the arrangement. A missing `layout`, `"classic"` or `{}` means Telegram's own layout. Applying any theme
+always resets the previous layout first.

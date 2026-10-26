@@ -90,21 +90,16 @@ public class ThemeCardView extends FrameLayout {
         int accent = t.accent != 0 ? t.accent : Theme.getColor(Theme.key_featuredStickers_addButton);
         phone.set(bg, accent, t.dark, t.gradientTop, t.gradientMiddle, t.gradientBottom, tw.nekomimi.nekogram.skin.KuroUi.t().previewRadiusDp);
         shown = t;
-        if (t.id != null && ("skin".equals(t.type) || "layout".equals(t.type))) {
+        if (t.id != null && "skin".equals(t.type)) {
             final int fbg = bg, facc = accent;
             ThemeStoreApi.fetchVersionContent(t.id, t.version, content -> {
                 if (content == null || shown != t) return;
                 try {
                     PhoneScene.Style style = PhoneScene.Style.palette(fbg, facc, t.dark, t.gradientTop, t.gradientMiddle, t.gradientBottom);
-                    if ("skin".equals(t.type)) {
-                        style.applySkin(tw.nekomimi.nekogram.skin.SkinSpec.parse(content));
-                        String embedded = tw.nekomimi.nekogram.layout.LayoutSpec.embeddedJson(content, t.slug);
-                        style.applyLayout(embedded != null ? tw.nekomimi.nekogram.layout.LayoutSpec.parse(embedded)
-                                : tw.nekomimi.nekogram.layout.LayoutManager.get().spec());
-                    } else {
-                        style.applySkin(tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec());
-                        style.applyLayout(tw.nekomimi.nekogram.layout.LayoutSpec.parse(content));
-                    }
+                    style.applySkin(tw.nekomimi.nekogram.skin.SkinSpec.parse(content));
+                    String embedded = tw.nekomimi.nekogram.layout.LayoutSpec.embeddedJson(content, t.slug);
+                    style.applyLayout(embedded != null ? tw.nekomimi.nekogram.layout.LayoutSpec.parse(embedded)
+                            : tw.nekomimi.nekogram.layout.LayoutSpec.classic());
                     phone.setStyle(style, tw.nekomimi.nekogram.skin.KuroUi.t().previewRadiusDp);
                 } catch (Exception ignored) {
                 }
