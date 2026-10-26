@@ -159,7 +159,7 @@ public class ThemeDetailActivity extends BaseFragment {
         ctTitle.setTextColor(textColor);
         column.addView(ctTitle, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 20, 24, 20, 0));
         addChipGroup(context, column, "Categories", java.util.Collections.singletonList(
-                info.category + ("skin".equals(info.type) ? "" : " · Colors")), subColor, textColor);
+                info.category + ""), subColor, textColor);
         if (!info.tags.isEmpty()) {
             addChipGroup(context, column, "Tags", info.tags, subColor, textColor);
         }
@@ -573,7 +573,7 @@ public class ThemeDetailActivity extends BaseFragment {
                         tw.nekomimi.nekogram.layout.LayoutManager.get().reset();
                     }
                 } else {
-                    applyColors(response.optString("slug", "theme"), content);
+                    throw new IllegalArgumentException("unsupported theme type");
                 }
                 ThemeStoreApi.setApplied(info.id, response.optInt("version", info.version));
                 setStatus(fromCache ? "Applied (offline copy)" : "Applied", false);
@@ -604,16 +604,6 @@ public class ThemeDetailActivity extends BaseFragment {
         }
     }
 
-    private void applyColors(String slug, String content) throws Exception {
-        File file = new File(ApplicationLoader.applicationContext.getCacheDir(), "kuro_" + slug + ".attheme");
-        try (FileOutputStream out = new FileOutputStream(file)) {
-            out.write(content.getBytes("UTF-8"));
-        }
-        if (Theme.applyThemeFile(file, "kuro_" + slug, null, false) == null) {
-            throw new IllegalStateException("Telegram couldn't read the colors");
-        }
-    }
-
     private void resetTheme() {
         if ("skin".equals(info.type)) {
             try {
@@ -622,14 +612,6 @@ public class ThemeDetailActivity extends BaseFragment {
             } catch (Exception e) {
                 setStatus(e.getMessage(), true);
                 refreshButtons();
-                return;
-            }
-        } else {
-            org.telegram.ui.ActionBar.Theme.ThemeInfo fallback = Theme.getTheme("Blue");
-            if (fallback != null) {
-                Theme.applyTheme(fallback);
-            } else {
-                setStatus("Pick a theme in Settings → Chat Settings to switch back.", true);
                 return;
             }
         }

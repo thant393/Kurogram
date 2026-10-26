@@ -135,7 +135,7 @@ public class UploadHubActivity extends BaseFragment {
                 LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 4, 0, 14));
         themeTitleInput = outlined(context, themeCard, "Theme name", false, 58);
         themeDescInput = outlined(context, themeCard, "Description (optional)", false, 58);
-        themeContentInput = outlined(context, themeCard, "Skin JSON or colors text", true, 150);
+        themeContentInput = outlined(context, themeCard, "Complete theme JSON", true, 150);
 
         themeCategoryView = new TextView(context);
         themeCategoryView.setTextSize(15);
@@ -363,18 +363,20 @@ public class UploadHubActivity extends BaseFragment {
             return;
         }
         if (content.isEmpty()) {
-            setThemeStatus("Paste the theme's JSON or colors text first.", true);
+            setThemeStatus("Paste the theme's JSON first.", true);
             return;
         }
-        // A skin is JSON; anything else is treated as colors text.
-        final String type = content.startsWith("{") ? "skin" : "colors";
-        if ("skin".equals(type)) {
-            try {
-                tw.nekomimi.nekogram.skin.SkinSpec.parse(content);
-            } catch (IllegalArgumentException e) {
-                setThemeStatus("Invalid skin: " + e.getMessage(), true);
-                return;
-            }
+        // A theme is one complete JSON document (skin + layout); the server checks that it is complete.
+        final String type = "skin";
+        if (!content.startsWith("{")) {
+            setThemeStatus("A theme must be a complete JSON document.", true);
+            return;
+        }
+        try {
+            tw.nekomimi.nekogram.skin.SkinSpec.parse(content);
+        } catch (IllegalArgumentException e) {
+            setThemeStatus("Invalid theme: " + e.getMessage(), true);
+            return;
         }
         final OwnerProfileSync.Profile me = OwnerProfileSync.currentProfile(currentAccount);
         if (me == null) {

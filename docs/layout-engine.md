@@ -112,3 +112,8 @@ Rules that follow from this: a layout never adds a feature, it only arranges wha
 There are no layout-only or skin-only themes. A theme is one skin document; its optional top-level `layout` object
 carries the arrangement. A missing `layout`, `"classic"` or `{}` means Telegram's own layout. Applying any theme
 always resets the previous layout first.
+
+### A theme is one complete document
+Only `type: "skin"` exists (no `colors` themes). The server accepts a theme only as schemaVersion 2 with every standard
+value filled (all tokens, components, screens, chat, effects) and an explicit `layout` (object, or `"classic"`).
+`docs/theme-template.json` lists every key with its default; copy it and change values.

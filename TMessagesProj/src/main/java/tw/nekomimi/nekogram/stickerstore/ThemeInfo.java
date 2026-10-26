@@ -11,7 +11,7 @@ public class ThemeInfo {
     public String title;
     public String description;
     public String category;
-    public String type; // "skin" | "colors"
+    public String type; // always "skin"
     public int accent;      // 0 = unknown
     public int background;  // 0 = unknown
     public boolean dark;
