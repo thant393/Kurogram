@@ -668,6 +668,9 @@ public class DialogsAdapter extends RecyclerListView.SelectionAdapter implements
                     dialogCell.setPreloader(preloader);
                     dialogCell.setDialogCellDelegate(this);
                     dialogCell.setIsTransitionSupport(isTransitionSupport);
+                    if (dialogsType == DialogsActivity.DIALOGS_TYPE_DEFAULT && viewType == VIEW_TYPE_DIALOG) {
+                        dialogCell.applyLayoutConfig();
+                    }
                     if (viewType == VIEW_TYPE_FORWARD_TO_STORIES_CELL) {
                         dialogCell.setIsShareToStoryCell();
                     }

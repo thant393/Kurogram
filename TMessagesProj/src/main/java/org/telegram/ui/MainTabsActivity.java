@@ -383,8 +383,17 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         tabsViewBackground.setPadding(flatTabs ? 0 : dp(DialogsActivity.MAIN_TABS_MARGIN - 0.334f));
         tabsView.setBackground(flatTabs ? null : tabsViewBackground);
         flatTabsMode = flatTabs;
-        if (flatTabs) {
-            for (GlassTabView tab : tabs) tab.setSkipDrawSelector(true);
+        {
+            tw.nekomimi.nekogram.layout.LayoutSpec barSpec = tw.nekomimi.nekogram.layout.LayoutManager.get().spec();
+            final boolean pill = "pill".equals(barSpec.stringValue("bottomTabs.indicator", flatTabs ? "none" : "pill"));
+            final boolean showLabels = barSpec.boolValue("bottomTabs.labels", true);
+            final int labelSp = barSpec.intValue("bottomTabs.labelSizeSp", 0);
+            for (GlassTabView tab : tabs) {
+                if (flatTabs || !pill) tab.setSkipDrawSelector(!pill);
+                if (labelSp > 0) tab.setTextSizeDp(labelSp);
+                if (!showLabels) tab.setLabelVisible(false);
+            }
+            flatTabBorder = barSpec.boolValue("bottomTabs.border", true);
         }
 
         BlurredBackgroundDrawableViewFactory iBlur3FactoryFade = new BlurredBackgroundDrawableViewFactory(iBlur3SourceColor);
@@ -1249,6 +1258,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
     }
 
     private boolean flatTabsMode;
+    private boolean flatTabBorder = true;
 
     /** Flat bar: one solid strip with a hairline on top, running down to the screen edge (no floating pill). */
     private void updateFlatTabsBackground() {
@@ -1256,8 +1266,8 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         int bg = Theme.getColor(Theme.key_windowBackgroundWhite, resourceProvider);
         int line = Theme.getColor(Theme.key_divider, resourceProvider);
         android.graphics.drawable.LayerDrawable d = new android.graphics.drawable.LayerDrawable(new android.graphics.drawable.Drawable[]{
-                new android.graphics.drawable.ColorDrawable(line),
-                new android.graphics.drawable.InsetDrawable(new android.graphics.drawable.ColorDrawable(bg), 0, Math.max(1, dp(0.5f)), 0, 0)});
+                new android.graphics.drawable.ColorDrawable(flatTabBorder ? line : bg),
+                new android.graphics.drawable.InsetDrawable(new android.graphics.drawable.ColorDrawable(bg), 0, flatTabBorder ? Math.max(1, dp(0.5f)) : 0, 0, 0)});
         tabsViewWrapper.setBackground(d);
     }
 

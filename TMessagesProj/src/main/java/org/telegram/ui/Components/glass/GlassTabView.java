@@ -432,6 +432,14 @@ public class GlassTabView extends FrameLayout implements MainTabsLayout.Tab, Fac
         return tab;
     }
 
+    /** Layout config: icon-only tab (label hidden, icon centred). */
+    public void setLabelVisible(boolean visible) {
+        textView.setVisibility(visible ? VISIBLE : GONE);
+        if (!visible) {
+            imageView.setLayoutParams(LayoutHelper.createFrame(44, 44, Gravity.CENTER, 0, 0, 0, 0));
+        }
+    }
+
     public void setLabel(CharSequence label) {
         textView.setText(label);
     }

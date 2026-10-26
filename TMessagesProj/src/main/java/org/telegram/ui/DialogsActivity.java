@@ -4145,7 +4145,9 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             };
             viewPage.listView.setVerticalScrollBarEnabled(true);
             viewPage.listView.setInstantClick(true);
-            viewPage.layoutManager = new LinearLayoutManager(context) {
+            final tw.nekomimi.nekogram.layout.LayoutSpec gridSpec = tw.nekomimi.nekogram.layout.LayoutManager.get().spec();
+            final int gridColumns = "grid".equals(gridSpec.stringValue("chatList.mode", "list")) ? Math.max(2, gridSpec.intValue("chatList.grid.columns", 3)) : 1;
+            viewPage.layoutManager = new androidx.recyclerview.widget.GridLayoutManager(context, gridColumns) {
 
                 @Override
                 protected int firstPosition() {
@@ -4414,6 +4416,18 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 }
             };
             viewPage.layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+            if (gridColumns > 1) {
+                ((androidx.recyclerview.widget.GridLayoutManager) viewPage.layoutManager).setSpanSizeLookup(new androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup() {
+                    @Override
+                    public int getSpanSize(int position) {
+                        DialogsAdapter adapter = viewPage.dialogsAdapter;
+                        if (adapter == null || position < 0 || position >= adapter.getItemCount()) {
+                            return gridColumns;
+                        }
+                        return adapter.getItemViewType(position) == DialogsAdapter.VIEW_TYPE_DIALOG ? 1 : gridColumns;
+                    }
+                });
+            }
             viewPage.listView.setLayoutManager(viewPage.layoutManager);
             viewPage.listView.setVerticalScrollbarPosition(LocaleController.isRTL ? RecyclerListView.SCROLLBAR_POSITION_LEFT : RecyclerListView.SCROLLBAR_POSITION_RIGHT);
             viewPage.addView(viewPage.listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));

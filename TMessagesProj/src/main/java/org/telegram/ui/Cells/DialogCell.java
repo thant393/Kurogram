@@ -685,6 +685,61 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
         }
     }
 
+    // ---- JSON layout config (chatList.*); inactive unless applyLayoutConfig() was called for the main list ----
+    private boolean lcOn;
+    private int lcAvatarDp, lcRowDp, lcDy;
+    private boolean lcHidePreview, lcHideTime;
+    private boolean tile;
+    private int tileAvatarDp = 64;
+    private boolean tileShowName = true, tileShowBadge = true;
+    private StaticLayout tileNameLayout;
+    private CharSequence tileNameText;
+    private int tileNameWidth;
+    private TextPaint tileNamePaint, tileBadgePaint;
+    private android.graphics.Paint tileBadgeBg;
+
+    /** Reads chatList.row.* / chatList.mode / chatList.grid.* from the active layout. */
+    public void applyLayoutConfig() {
+        tw.nekomimi.nekogram.layout.LayoutSpec spec = tw.nekomimi.nekogram.layout.LayoutManager.get().spec();
+        lcOn = true;
+        tile = "grid".equals(spec.stringValue("chatList.mode", "list"));
+        tileAvatarDp = spec.intValue("chatList.grid.avatarDp", 64);
+        tileShowName = spec.boolValue("chatList.grid.showName", true);
+        tileShowBadge = spec.boolValue("chatList.grid.showBadge", true);
+        lcAvatarDp = spec.intValue("chatList.row.avatar.sizeDp", 0);
+        lcRowDp = spec.intValue("chatList.row.heightDp", 0);
+        lcHidePreview = !spec.boolValue("chatList.row.preview.show", true);
+        lcHideTime = "hidden".equals(spec.stringValue("chatList.row.meta.time", ""));
+        if (lcAvatarDp > 0) {
+            messagePaddingStart = avatarStart + lcAvatarDp + 5;
+        }
+        if (lcRowDp > 0) {
+            heightDefault = lcRowDp - 1;
+            heightThreeLines = lcRowDp - 1;
+            lcDy = (lcRowDp - 71) / 2;
+        }
+    }
+
+    public boolean isTile() {
+        return tile;
+    }
+
+    private int lcAvatar(int def) {
+        return lcOn && lcAvatarDp > 0 ? lcAvatarDp : def;
+    }
+
+    private int lcAvatarTop(int def) {
+        if (!lcOn || (lcAvatarDp <= 0 && lcRowDp <= 0)) {
+            return def;
+        }
+        int h = lcRowDp > 0 ? lcRowDp : 71;
+        return (h - lcAvatar(52)) / 2;
+    }
+
+    private int lcDyPx() {
+        return lcOn ? dp(lcDy) : 0;
+    }
+
     public DialogCell(DialogsActivity fragment, Context context, boolean needCheck, boolean forceThreeLines) {
         this(fragment, context, needCheck, forceThreeLines, UserConfig.selectedAccount, null);
     }
@@ -999,6 +1054,12 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                 MeasureSpec.makeMeasureSpec(dp(24), MeasureSpec.EXACTLY)
             );
         }
+        if (tile && !isTopic) {
+            setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), dp(tileAvatarDp + 14 + (tileShowName ? 40 : 0)));
+            topClip = 0;
+            bottomClip = getMeasuredHeight();
+            return;
+        }
         if (isTopic) {
             setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), dp((useForceThreeLines || SharedConfig.useThreeLinesLayout ? heightThreeLines : heightDefault) + (hasTags() && (!(useForceThreeLines || SharedConfig.useThreeLinesLayout) || isForumCell()) ? (isForumCell() ? addForumHeightForTags : addHeightForTags) : 0)) + (useSeparator ? 1 : 0));
             checkTwoLinesForName();
@@ -1025,6 +1086,57 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
             default: face = AndroidUtilities.bold(); break;
         }
         Theme.dialogs_namePaint[paintIndex].setTypeface(face);
+    }
+
+    /** Grid mode: avatar, a centred name and an unread badge; clicks/long-press/swipe stay Telegram's own. */
+    private void drawTile(Canvas canvas) {
+        int w = getMeasuredWidth();
+        int size = dp(tileAvatarDp);
+        float left = (w - size) / 2f;
+        float top = dp(6);
+        storyParams.originalAvatarRect.set(left, top, left + size, top + size);
+        avatarImage.setRoundRadius(size / 2);
+        if (avatarImage.getVisible()) {
+            StoriesUtilities.drawAvatarWithStory(currentDialogId, canvas, avatarImage, storyParams);
+        }
+        if (tileShowName && nameLayout != null) {
+            CharSequence text = nameLayout.getText();
+            int width = Math.max(dp(20), w - dp(8));
+            if (tileNameLayout == null || tileNameWidth != width || !TextUtils.equals(tileNameText, text)) {
+                if (tileNamePaint == null) {
+                    tileNamePaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+                    tileNamePaint.setTextSize(dp(13));
+                }
+                tileNameText = text;
+                tileNameWidth = width;
+                tileNameLayout = StaticLayout.Builder.obtain(text, 0, text.length(), tileNamePaint, width)
+                        .setAlignment(Layout.Alignment.ALIGN_CENTER).setMaxLines(2).setEllipsize(TextUtils.TruncateAt.END).build();
+            }
+            tileNamePaint.setTypeface(unreadCount > 0 || markUnread ? AndroidUtilities.bold() : android.graphics.Typeface.DEFAULT);
+            tileNamePaint.setColor(Theme.getColor(Theme.key_chats_name, resourcesProvider));
+            canvas.save();
+            canvas.translate(dp(4), top + size + dp(5));
+            tileNameLayout.draw(canvas);
+            canvas.restore();
+        }
+        if (tileShowBadge && currentDialogFolderId == 0 && (unreadCount > 0 || markUnread)) {
+            if (tileBadgePaint == null) {
+                tileBadgePaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+                tileBadgePaint.setTypeface(AndroidUtilities.bold());
+                tileBadgePaint.setTextSize(dp(11));
+                tileBadgePaint.setTextAlign(Paint.Align.CENTER);
+                tileBadgeBg = new Paint(Paint.ANTI_ALIAS_FLAG);
+            }
+            String label = unreadCount > 99 ? "99+" : unreadCount > 0 ? String.valueOf(unreadCount) : "";
+            float bw = Math.max(dp(18), tileBadgePaint.measureText(label) + dp(10));
+            float bh = dp(18);
+            float right = Math.min(w - dp(2), left + size + dp(4));
+            float btop = top - dp(2);
+            tileBadgeBg.setColor(Theme.getColor(isCounterMuted() ? Theme.key_chats_unreadCounterMuted : Theme.key_chats_unreadCounter, resourcesProvider));
+            canvas.drawRoundRect(right - bw, btop, right, btop + bh, bh / 2, bh / 2, tileBadgeBg);
+            tileBadgePaint.setColor(Theme.getColor(Theme.key_chats_unreadCounterText, resourcesProvider));
+            canvas.drawText(label, right - bw / 2, btop + bh / 2 + dp(4), tileBadgePaint);
+        }
     }
 
     private int computeHeight() {
@@ -2284,7 +2396,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
         }
 
         int timeWidth;
-        if (drawTime) {
+        if (drawTime && !lcHideTime) {
             final TextPaint tp = getTimeTextPaint();
             timeWidth = (int) Math.ceil(tp.measureText(timeString));
             timeLayout = new StaticLayout(timeString, tp, timeWidth, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
@@ -2453,7 +2565,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
         int avatarTop;
         int thumbLeft;
         if (useForceThreeLines || SharedConfig.useThreeLinesLayout) {
-            avatarTop = dp(11);
+            avatarTop = dp(lcAvatarTop(11));
             messageNameTop = dp(32);
             timeTop = dp(13);
             errorTop = dp(42.33f);
@@ -2464,19 +2576,19 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
 
             if (LocaleController.isRTL) {
                 buttonLeft = typingLeft = messageLeft = messageNameLeft = dp(16);
-                avatarLeft = getMeasuredWidth() - dp(56 + avatarStart);
+                avatarLeft = getMeasuredWidth() - dp(lcAvatar(56) + avatarStart);
                 thumbLeft = avatarLeft - dp(13 + 18);
             } else {
                 buttonLeft = typingLeft = messageLeft = messageNameLeft = dp(messagePaddingStart + 6);
                 avatarLeft = dp(avatarStart);
-                thumbLeft = avatarLeft + dp(56 + 13);
+                thumbLeft = avatarLeft + dp(lcAvatar(56) + 13);
             }
-            storyParams.originalAvatarRect.set(avatarLeft, avatarTop, avatarLeft + dp(56), avatarTop + dp(56));
+            storyParams.originalAvatarRect.set(avatarLeft, avatarTop, avatarLeft + dp(lcAvatar(56)), avatarTop + dp(lcAvatar(56)));
             for (int i = 0; i < thumbImage.length; ++i) {
                 thumbImage[i].setImageCoords(thumbLeft + (thumbSize + 2) * i, avatarTop + dp(31) + (twoLinesForName ? dp(20) : 0) - (!(useForceThreeLines || SharedConfig.useThreeLinesLayout) && tags != null && !tags.isEmpty() ? dp(9) : 0), dp(18), dp(18));
             }
         } else {
-            avatarTop = dp(9);
+            avatarTop = dp(lcAvatarTop(9));
             messageNameTop = dp(31);
             timeTop = dp(16);
             errorTop = dp(38);
@@ -2487,14 +2599,14 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
 
             if (LocaleController.isRTL) {
                 buttonLeft = typingLeft = messageLeft = messageNameLeft = dp(22);
-                avatarLeft = getMeasuredWidth() - dp(52 + avatarStart);
+                avatarLeft = getMeasuredWidth() - dp(lcAvatar(52) + avatarStart);
                 thumbLeft = avatarLeft - dp(11 + (thumbsCount * (thumbSize + 2) - 2));
             } else {
                 buttonLeft = typingLeft = messageLeft = messageNameLeft = dp(messagePaddingStart + 4);
                 avatarLeft = dp(avatarStart);
-                thumbLeft = avatarLeft + dp(56 + 11);
+                thumbLeft = avatarLeft + dp(lcAvatar(56) + 11);
             }
-            storyParams.originalAvatarRect.set(avatarLeft, avatarTop, avatarLeft + dp(52), avatarTop + dp(52));
+            storyParams.originalAvatarRect.set(avatarLeft, avatarTop, avatarLeft + dp(lcAvatar(52)), avatarTop + dp(lcAvatar(52)));
             for (int i = 0; i < thumbImage.length; ++i) {
                 thumbImage[i].setImageCoords(thumbLeft + (thumbSize + 2) * i, avatarTop + dp(30) + (twoLinesForName ? dp(20) : 0) - (!(useForceThreeLines || SharedConfig.useThreeLinesLayout) && tags != null && !tags.isEmpty() ? dp(9) : 0), dp(thumbSize), dp(thumbSize));
             }
@@ -2677,6 +2789,15 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
             }
         }
         messageWidth = Math.max(dp(12), messageWidth);
+        if (lcOn && lcDy != 0) {
+            int dyPx = lcDyPx();
+            messageNameTop += dyPx;
+            timeTop += dyPx;
+            errorTop += dyPx;
+            pinTop += dyPx;
+            countTop += dyPx;
+            checkDrawTop += dyPx;
+        }
         buttonTop = dp(useForceThreeLines || SharedConfig.useThreeLinesLayout ? 58 : 62);
         if ((!(useForceThreeLines || SharedConfig.useThreeLinesLayout) || isForumCell()) && hasTags()) {
             buttonTop -= dp(isForumCell() ? 10 : 12);
@@ -2718,6 +2839,9 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
 
         if (twoLinesForName) {
             messageTop += dp(20);
+        }
+        if (lcOn && lcDy != 0) {
+            messageTop += lcDyPx();
         }
         animatedEmojiStack2 = AnimatedEmojiSpan.update(AnimatedEmojiDrawable.CACHE_TYPE_MESSAGES, this, animatedEmojiStack2, messageNameLayout);
 
@@ -3813,6 +3937,11 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
             return;
         }
 
+        if (tile && !isTopic) {
+            drawTile(canvas);
+            return;
+        }
+
         boolean needInvalidate = false;
 
         if (drawArchive && (currentDialogFolderId != 0 || isTopic && forumTopic != null && forumTopic.id == 1) && archivedChatsDrawable != null && archivedChatsDrawable.outProgress == 0.0f && translationX == 0.0f) {
@@ -4119,7 +4248,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                 Theme.dialogs_lockDrawable.draw(canvas);
             }
 
-            int nameTop = dp(useForceThreeLines || SharedConfig.useThreeLinesLayout ? 10 : 14);
+            int nameTop = dp(useForceThreeLines || SharedConfig.useThreeLinesLayout ? 10 : 14) + lcDyPx() + (lcOn && lcHidePreview ? dp(9) : 0);
             if ((!(useForceThreeLines || SharedConfig.useThreeLinesLayout) || isForumCell()) && hasTags()) {
                 nameTop -= dp(isForumCell() ? 8 : 9);
             }
@@ -4236,7 +4365,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                 canvas.restore();
             }
 
-            if (messageLayout != null) {
+            if (messageLayout != null && !(lcOn && lcHidePreview)) {
                 if (currentDialogFolderId != 0) {
                     if (chat != null) {
                         Theme.dialogs_messagePaint[paintIndex].setColor(Theme.dialogs_messagePaint[paintIndex].linkColor = Theme.getColor(Theme.key_chats_nameMessageArchived, resourcesProvider));

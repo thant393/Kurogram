@@ -117,3 +117,9 @@ always resets the previous layout first.
 Only `type: "skin"` exists (no `colors` themes). The server accepts a theme only as schemaVersion 2 with every standard
 value filled (all tokens, components, screens, chat, effects) and an explicit `layout` (object, or `"classic"`).
 `docs/theme-template.json` lists every key with its default; copy it and change values.
+
+### Chats list engine (JSON-driven)
+`chatList.mode` = `list` | `grid`; grid: `chatList.grid.columns` (2-5), `avatarDp`, `showName`, `showBadge`.
+List rows: `chatList.row.heightDp`, `row.avatar.sizeDp`, `row.preview.show`, `row.meta.time=hidden`.
+Bottom bar: `bottomTabs.items/labels/labelSizeSp/indicator(none|pill)/border/style`.
+Grid is a tile mode of DialogCell, so open/long-press/swipe/selection stay Telegram's own.
