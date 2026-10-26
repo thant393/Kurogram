@@ -312,6 +312,11 @@ public class FilterTabsView extends FrameLayout {
                 );
                 canvas.rotate(1.4f * s, getMeasuredWidth() / 2f, getMeasuredHeight() / 2f);
             }
+            if (chipsStyle() && currentTab.id != selectedTabId) {
+                CHIP_PAINT.setColor(Theme.getColor(Theme.key_divider, resourcesProvider));
+                final float cy = getMeasuredHeight() / 2f;
+                canvas.drawRoundRect(dp(2), cy - dp(14), getMeasuredWidth() - dp(2), cy + dp(14), dp(14), dp(14), CHIP_PAINT);
+            }
             int key;
             int animateToKey;
             int otherKey;
@@ -1257,11 +1262,18 @@ public class FilterTabsView extends FrameLayout {
         selectedTabId = -1;
     }
 
+    /** A layout pack can ask for plain filled chips instead of the glass strip with folder icons. */
+    public static boolean chipsStyle() {
+        return "chips".equals(tw.nekomimi.nekogram.layout.LayoutManager.get().spec().stringValue("chatList.folders.style", null));
+    }
+
+    private static final Paint CHIP_PAINT = new Paint(Paint.ANTI_ALIAS_FLAG);
+
     public CharSequence text(String t, ArrayList<TLRPC.MessageEntity> e, String emoticon)  {
         CharSequence title = new SpannableStringBuilder(t);
         title = Emoji.replaceEmoji(title, textPaint.getFontMetricsInt(), false);
         title = MessageObject.replaceAnimatedEmoji(title, e, textPaint.getFontMetricsInt());
-        if (KuroConfig.tabsTitleType == KuroConfig.TITLE_TYPE_TEXT || emoticon == null) {
+        if (KuroConfig.tabsTitleType == KuroConfig.TITLE_TYPE_TEXT || emoticon == null || chipsStyle()) {
             return title;
         }
         var builder = new SpannableStringBuilder(emoticon);

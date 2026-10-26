@@ -65,11 +65,115 @@ public final class KuroDrawer {
 
     public static boolean wantsMenuButton() {
         List<String> left = LayoutManager.get().spec().listValue("chatList.header.left", null);
-        return left != null && left.contains("menu") && items() != null;
+        return left != null && left.contains("menu") && (items() != null || showsSettings());
+    }
+
+    /** drawer.content = "settings": the drawer is Telegram's own Settings page. */
+    private static boolean showsSettings() {
+        return "settings".equals(LayoutManager.get().spec().stringValue("drawer.content", null));
+    }
+
+    private static void edgeToEdge(Window w) {
+        w.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        w.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        w.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        w.setDimAmount(0.45f);
+        w.setStatusBarColor(Color.TRANSPARENT);
+        w.setNavigationBarColor(Color.TRANSPARENT);
+        androidx.core.view.WindowCompat.setDecorFitsSystemWindows(w, false);
+        if (android.os.Build.VERSION.SDK_INT >= 28) {
+            WindowManager.LayoutParams lp = w.getAttributes();
+            lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+            w.setAttributes(lp);
+        }
+    }
+
+    /** The whole Settings page, hosted in a start-side panel that runs from the top edge to the bottom edge. */
+    private static void showSettingsPage(final BaseFragment from) {
+        final Context context = from.getParentActivity();
+        final Dialog[] ref = new Dialog[1];
+        final SettingsActivity[] holder = new SettingsActivity[1];
+        final SettingsActivity page = new SettingsActivity(new Bundle()) {
+            @Override
+            public boolean presentFragment(BaseFragment fragment) {
+                dismissDrawer(ref, holder);
+                return from.presentFragment(fragment);
+            }
+
+            @Override
+            public boolean presentFragment(BaseFragment fragment, boolean removeLast) {
+                dismissDrawer(ref, holder);
+                return from.presentFragment(fragment, removeLast);
+            }
+
+            @Override
+            public void finishFragment() {
+                dismissDrawer(ref, holder);
+            }
+
+            @Override
+            public boolean finishFragment(boolean animated) {
+                dismissDrawer(ref, holder);
+                return true;
+            }
+        };
+        holder[0] = page;
+
+        final Dialog dialog = new Dialog(context);
+        ref[0] = dialog;
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        FrameLayout root = new FrameLayout(context);
+        root.setOnClickListener(v -> dialog.dismiss());
+        final int width = Math.min(AndroidUtilities.dp(360), (int) (AndroidUtilities.displaySize.x * 0.88f));
+        final FrameLayout panel = new FrameLayout(context);
+        panel.setClickable(true);
+        panel.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
+        root.addView(panel, new FrameLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT, Gravity.START));
+
+        page.onFragmentCreate();
+        page.setParentLayout(from.getParentLayout());
+        page.performCreateView(context);
+        View content = page.getFragmentView();
+        AndroidUtilities.removeFromParent(content);
+        panel.addView(content, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+        if (page.getActionBar() != null && page.getActionBar().shouldAddToContainer()) {
+            AndroidUtilities.removeFromParent(page.getActionBar());
+            panel.addView(page.getActionBar());
+        }
+
+        dialog.setContentView(root);
+        dialog.setOnDismissListener(d -> {
+            try {
+                page.onPause();
+                page.onFragmentDestroy();
+            } catch (Exception ignored) {
+            }
+        });
+        Window w = dialog.getWindow();
+        if (w != null) {
+            edgeToEdge(w);
+        }
+        panel.setTranslationX(-width);
+        dialog.show();
+        androidx.core.view.ViewCompat.requestApplyInsets(panel);
+        page.onResume();
+        panel.animate().translationX(0).setDuration(200).start();
+    }
+
+    private static void dismissDrawer(Dialog[] ref, SettingsActivity[] holder) {
+        if (ref[0] != null && ref[0].isShowing()) {
+            ref[0].dismiss();
+        }
     }
 
     public static void show(final BaseFragment from) {
         if (from == null || from.getParentActivity() == null) return;
+        if (showsSettings()) {
+            showSettingsPage(from);
+            return;
+        }
         List<String> items = items();
         if (items == null || items.isEmpty()) return;
         final Context context = from.getParentActivity();
@@ -144,10 +248,7 @@ public final class KuroDrawer {
         dialog.setContentView(root);
         Window w = dialog.getWindow();
         if (w != null) {
-            w.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            w.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            w.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-            w.setDimAmount(0.45f);
+            edgeToEdge(w);
         }
         panel.setTranslationX(-width);
         dialog.show();

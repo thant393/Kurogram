@@ -79,7 +79,7 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
 
         FrameLayout frameLayout = new FrameLayout(context);
         fragmentView = frameLayout;
-        fragmentView.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
+        fragmentView.setBackgroundColor(Theme.getColor(asTab ? Theme.key_windowBackgroundWhite : Theme.key_windowBackgroundGray));
 
         listAdapter = new ListAdapter(context);
         listView = new RecyclerListView(context);
@@ -90,8 +90,9 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
             listView.setPadding(0, 0, 0, org.telegram.messenger.AndroidUtilities.dp(org.telegram.ui.DialogsActivity.MAIN_TABS_HEIGHT_WITH_MARGINS + 8));
         }
         listView.setOnItemClickListener((view, position) -> {
-            if (position >= 0 && position < onlineUsers.size()) {
-                TLRPC.User user = onlineUsers.get(position);
+            int index = tabMode() ? position - 1 : position;
+            if (index >= 0 && index < onlineUsers.size()) {
+                TLRPC.User user = onlineUsers.get(index);
                 Bundle args = new Bundle();
                 args.putLong("user_id", user.id);
                 presentFragment(new ChatActivity(args));
@@ -164,6 +165,62 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
         }
     }
 
+    private boolean tabMode() {
+        return arguments != null && arguments.getBoolean("hasMainTabs", false);
+    }
+
+    /** Messenger-style "People" rows: round avatar with a green active dot, name, short status. */
+    private static final class PersonRow extends android.widget.LinearLayout {
+        private final org.telegram.ui.Components.BackupImageView avatar;
+        private final TextView name;
+        private final TextView status;
+        private final View dot;
+
+        PersonRow(Context context) {
+            super(context);
+            setOrientation(HORIZONTAL);
+            setGravity(android.view.Gravity.CENTER_VERTICAL);
+            setPadding(org.telegram.messenger.AndroidUtilities.dp(16), 0, org.telegram.messenger.AndroidUtilities.dp(16), 0);
+            FrameLayout avatarBox = new FrameLayout(context);
+            avatar = new org.telegram.ui.Components.BackupImageView(context);
+            avatar.setRoundRadius(org.telegram.messenger.AndroidUtilities.dp(28));
+            avatarBox.addView(avatar, LayoutHelper.createFrame(56, 56));
+            dot = new View(context);
+            android.graphics.drawable.GradientDrawable d = new android.graphics.drawable.GradientDrawable();
+            d.setShape(android.graphics.drawable.GradientDrawable.OVAL);
+            d.setColor(Theme.getColor(Theme.key_windowBackgroundWhiteGreenText));
+            d.setStroke(org.telegram.messenger.AndroidUtilities.dp(2.5f), Theme.getColor(Theme.key_windowBackgroundWhite));
+            dot.setBackground(d);
+            avatarBox.addView(dot, LayoutHelper.createFrame(16, 16, android.view.Gravity.BOTTOM | android.view.Gravity.RIGHT));
+            addView(avatarBox, LayoutHelper.createLinear(56, 56));
+            android.widget.LinearLayout col = new android.widget.LinearLayout(context);
+            col.setOrientation(VERTICAL);
+            name = new TextView(context);
+            name.setTextSize(17);
+            name.setSingleLine(true);
+            name.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
+            col.addView(name, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+            status = new TextView(context);
+            status.setTextSize(14);
+            status.setSingleLine(true);
+            status.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGrayText));
+            col.addView(status, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 2, 0, 0));
+            addView(col, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 1f, 14, 0, 0, 0));
+            setBackground(Theme.createSelectorDrawable(Theme.getColor(Theme.key_listSelector), 2));
+        }
+
+        void bind(TLRPC.User user, String statusText) {
+            avatar.setForUserOrChat(user, new org.telegram.ui.Components.AvatarDrawable(user));
+            name.setText(UserObject.getUserName(user));
+            status.setText(statusText);
+        }
+
+        @Override
+        protected void onMeasure(int w, int h) {
+            super.onMeasure(w, MeasureSpec.makeMeasureSpec(org.telegram.messenger.AndroidUtilities.dp(76), MeasureSpec.EXACTLY));
+        }
+    }
+
     private class ListAdapter extends RecyclerListView.SelectionAdapter {
 
         private final Context mContext;
@@ -174,16 +231,49 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
 
         @Override
         public boolean isEnabled(RecyclerView.ViewHolder holder) {
-            return true;
+            return !(tabMode() && holder.getAdapterPosition() == 0);
         }
 
         @Override
         public int getItemCount() {
-            return onlineUsers.size();
+            return onlineUsers.size() + (tabMode() ? 1 : 0);
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return tabMode() ? (position == 0 ? 1 : 2) : 0;
         }
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            if (viewType == 1) {
+                TextView chip = new TextView(mContext);
+                chip.setTextSize(16);
+                chip.setTypeface(org.telegram.messenger.AndroidUtilities.bold());
+                chip.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
+                chip.setGravity(android.view.Gravity.CENTER_VERTICAL);
+                chip.setCompoundDrawablePadding(org.telegram.messenger.AndroidUtilities.dp(8));
+                android.graphics.drawable.GradientDrawable dotShape = new android.graphics.drawable.GradientDrawable();
+                dotShape.setShape(android.graphics.drawable.GradientDrawable.OVAL);
+                dotShape.setColor(Theme.getColor(Theme.key_windowBackgroundWhiteGreenText));
+                dotShape.setSize(org.telegram.messenger.AndroidUtilities.dp(9), org.telegram.messenger.AndroidUtilities.dp(9));
+                chip.setCompoundDrawablesWithIntrinsicBounds(dotShape, null, null, null);
+                android.graphics.drawable.GradientDrawable bg = new android.graphics.drawable.GradientDrawable();
+                bg.setCornerRadius(org.telegram.messenger.AndroidUtilities.dp(20));
+                bg.setColor(Theme.getColor(Theme.key_windowBackgroundGray));
+                chip.setBackground(bg);
+                chip.setPadding(org.telegram.messenger.AndroidUtilities.dp(14), 0, org.telegram.messenger.AndroidUtilities.dp(16), 0);
+                android.widget.FrameLayout wrap = new android.widget.FrameLayout(mContext);
+                wrap.setPadding(org.telegram.messenger.AndroidUtilities.dp(16), org.telegram.messenger.AndroidUtilities.dp(8), 0, org.telegram.messenger.AndroidUtilities.dp(8));
+                wrap.addView(chip, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, 40, android.view.Gravity.LEFT));
+                wrap.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                return new RecyclerListView.Holder(wrap);
+            }
+            if (viewType == 2) {
+                PersonRow row = new PersonRow(mContext);
+                row.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                return new RecyclerListView.Holder(row);
+            }
             UserCell cell = new UserCell(mContext, 8, 0, false);
             cell.setLayoutParams(GroupCardHelper.freshLayoutParams());
             return new RecyclerListView.Holder(cell);
@@ -191,6 +281,14 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            if (tabMode()) {
+                if (position == 0) {
+                    ((TextView) ((android.widget.FrameLayout) holder.itemView).getChildAt(0)).setText(onlineUsers.size() + " active");
+                } else {
+                    ((PersonRow) holder.itemView).bind(onlineUsers.get(position - 1), org.telegram.messenger.LocaleController.getString("Online", R.string.Online));
+                }
+                return;
+            }
             TLRPC.User user = onlineUsers.get(position);
             UserCell cell = (UserCell) holder.itemView;
             int pos = GroupCardHelper.positionInGroup(position, onlineUsers.size());

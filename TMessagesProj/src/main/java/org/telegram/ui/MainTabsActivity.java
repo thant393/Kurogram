@@ -322,7 +322,13 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         tabs[INDEX_CONTACTS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.CONTACTS, R.string.MainTabsContacts);
         tabs[INDEX_SETTINGS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.SETTINGS, R.string.Settings);
         tabs[INDEX_CALLS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.CALLS, R.string.MainTabsCalls);
-        tabs[INDEX_PROFILE] = GlassTabView.createAvatar(context, resourceProvider, currentAccount, R.string.MainTabsProfile);
+        if (layoutWantsUnreadTab()) {
+            // The layout pack replaced Profile with a tab that only lists chats with unread messages.
+            tabs[INDEX_PROFILE] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.REPLIES, R.string.MainTabsProfile);
+            tabs[INDEX_PROFILE].setLabel("Unread");
+        } else {
+            tabs[INDEX_PROFILE] = GlassTabView.createAvatar(context, resourceProvider, currentAccount, R.string.MainTabsProfile);
+        }
         tabs[INDEX_CHATS].setOnLongClickListener(this::openFoldersSelector);
         tabs[INDEX_CONTACTS].setOnLongClickListener(this::openContactsSelector);
         tabs[INDEX_CALLS].setOnLongClickListener(this::openCallsSelector);
@@ -421,8 +427,10 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         if (unreadCount > 0) {
             final String unreadCountFmt = LocaleController.formatNumber(unreadCount, ',');
             tabs[INDEX_CHATS].setCounter(unreadCountFmt, false, animated);
+            if (layoutWantsUnreadTab()) tabs[INDEX_PROFILE].setCounter(unreadCountFmt, false, animated);
         } else {
             tabs[INDEX_CHATS].setCounter(null, false, animated);
+            if (layoutWantsUnreadTab()) tabs[INDEX_PROFILE].setCounter(null, false, animated);
         }
     }
 
@@ -828,6 +836,10 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
             dialogsActivity = new DialogsActivity(args);
             dialogsActivity.setMainTabsActivityController(new MainTabsActivityControllerImpl());
             return dialogsActivity;
+        } else if (position == POSITION_PROFILE && layoutWantsUnreadTab()) {
+            Bundle unread = new Bundle();
+            unread.putBoolean("hasMainTabs", true);
+            return new tw.nekomimi.nekogram.layout.UnreadChatsActivity(unread);
         } else if (position == POSITION_PROFILE) {
             Bundle args = new Bundle();
             args.putLong("user_id", UserConfig.getInstance(currentAccount).getClientUserId());
@@ -1100,6 +1112,11 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         }
     }
 
+    private boolean layoutWantsUnreadTab() {
+        java.util.List<String> items = tw.nekomimi.nekogram.layout.LayoutManager.get().spec().listValue("bottomTabs.items", null);
+        return items != null && items.contains("unread") && !items.contains("profile");
+    }
+
     /** The active layout pack may limit the bottom tabs (bottomTabs.items); no list = all tabs as usual. */
     private boolean layoutTabAllowed(int index) {
         java.util.List<String> items = tw.nekomimi.nekogram.layout.LayoutManager.get().spec().listValue("bottomTabs.items", null);
@@ -1107,7 +1124,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         switch (index) {
             case INDEX_CONTACTS: return items.contains("people");
             case INDEX_SETTINGS: case INDEX_CALLS: return items.contains("settings");
-            case INDEX_PROFILE: return items.contains("profile");
+            case INDEX_PROFILE: return items.contains("profile") || items.contains("unread");
             default: return true;
         }
     }
