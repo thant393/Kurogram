@@ -96,3 +96,14 @@ Each phase is built (CI) and checked on device with screenshots before the next 
 Telegram upstream merges (keep changes in new files, hook at few points); DialogCell performance with many rows
 (measure on armeabi-v7a, cache layouts per row type); Burmese/RTL text shaping and long names; story rail needs
 Telegram's stories API availability; layouts must degrade gracefully on small/large font scales.
+
+
+## Scope of a theme (decided)
+
+Like a phone theme (lock screen, home screen, icons, status bar) a Kurogram theme only reaches a fixed list of places:
+
+- **Full structure (JSON):** Chats list, Contacts, Settings, Profile, Chat. Everything a layout can place, show or hide on these screens is a JSON key; new looks are new JSON, not new app code. Each key is a primitive built once in the app and reused by every layout.
+- **Colour only:** every other screen. They keep Telegram's structure and only take the skin colours (header, main background, cards, text, accents).
+- **Not themeable:** wallpaper, font, icon pack. The app has none, so there is nothing to ship or to break.
+
+Rules that follow from this: a layout never adds a feature, it only arranges what Telegram or Kurogram already has; a skin that carries a `layout` section replaces the previous skin's layout, and a skin without one clears it.

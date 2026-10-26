@@ -573,6 +573,12 @@ public class ThemeDetailActivity extends BaseFragment {
                     String embedded = tw.nekomimi.nekogram.layout.LayoutSpec.embeddedJson(content, info.slug);
                     if (embedded != null) {
                         tw.nekomimi.nekogram.layout.LayoutManager.get().apply(embedded);
+                    } else {
+                        // Switching to a skin that has no layout of its own must not keep the previous skin's layout.
+                        String active = tw.nekomimi.nekogram.layout.LayoutManager.get().spec().id;
+                        if (active != null && active.startsWith("skin.")) {
+                            tw.nekomimi.nekogram.layout.LayoutManager.get().reset();
+                        }
                     }
                 } else if ("layout".equals(type)) {
                     tw.nekomimi.nekogram.layout.LayoutManager.get().apply(content);
