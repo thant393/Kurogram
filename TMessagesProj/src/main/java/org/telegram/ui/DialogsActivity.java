@@ -14327,7 +14327,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         final int mainTabTop = mainTabBottom - dp(DialogsActivity.MAIN_TABS_HEIGHT) - getFilterTabsHeight();
 
         final int actionBarHeight = actionBar.getMeasuredHeight()
-            + dp(DialogsActivity.searchFieldHeightDp())
+            + dp(searchFieldHeightDp())
             + dp(hasStories ? DialogStoriesCell.HEIGHT_IN_DP : 0)
             + (filterTabsView != null && filterTabsView.getVisibility() == View.VISIBLE && !bottomFilterTabs() ? filterTabsView.getMeasuredHeight() : 0)
             + (topPanelLayout != null && topPanelLayout.getVisibility() == View.VISIBLE ? topPanelLayout.getSumHeightOfAllVisibleChild() : 0)
