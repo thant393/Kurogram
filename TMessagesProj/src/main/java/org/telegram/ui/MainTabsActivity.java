@@ -306,6 +306,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
 
     @Override
     public View createView(Context context) {
+        dropStaleLayoutTabs();
         super.createView(context);
         tabletLayout = false;
 
@@ -813,6 +814,28 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         dialogsActivity.setMainTabsActivityController(new MainTabsActivityControllerImpl());
         putFragmentAtPosition(POSITION_CHATS, dialogsActivity);
         return dialogsActivity;
+    }
+
+    /** A layout change (apply or reset) can swap what People / the last tab show; cached pages of the old layout must go. */
+    private void dropStaleLayoutTabs() {
+        final boolean wantsOnline = "online".equals(tw.nekomimi.nekogram.layout.LayoutManager.get().spec().stringValue("bottomTabs.peopleSource", "contacts"));
+        final boolean wantsUnread = layoutWantsUnreadTab();
+        final int[] positions = {POSITION_CONTACTS, POSITION_PROFILE};
+        for (int position : positions) {
+            final FragmentState state = fragmentsArr.get(position);
+            if (state == null) continue;
+            final boolean isOnline = state.fragment instanceof tw.nekomimi.nekogram.settings.OnlineContactsActivity;
+            final boolean isUnread = state.fragment instanceof tw.nekomimi.nekogram.layout.UnreadChatsActivity;
+            final boolean stale = position == POSITION_CONTACTS ? isOnline != wantsOnline : isUnread != wantsUnread;
+            if (!stale) continue;
+            try {
+                state.fragment.onPause();
+                state.fragment.onFragmentDestroy();
+            } catch (Exception e) {
+                org.telegram.messenger.FileLog.e(e);
+            }
+            fragmentsArr.remove(position);
+        }
     }
 
     @Override
