@@ -46,13 +46,42 @@ public final class KuroSkinManager {
 
     public SkinSpec spec() {
         SkinSpec p = preview;
-        if (p != null) {
-            return p;
+        if (p == null) {
+            p = loaded ? active : load(); // hot path (Theme.getColor): no locking once loaded
         }
-        if (loaded) {
-            return active; // hot path (Theme.getColor): no locking once loaded
+        return p.forMode(isDark());
+    }
+
+    private static boolean isDark() {
+        try {
+            return Theme.getActiveTheme() != null && Theme.isCurrentThemeDark();
+        } catch (Throwable t) {
+            return false;
         }
-        return load();
+    }
+
+    private boolean observerAdded;
+    private boolean lastDark;
+
+    /** Telegram's day/night switch must refresh a skin that follows it. */
+    private void ensureDayNightObserver() {
+        if (observerAdded || ApplicationLoader.applicationContext == null) {
+            return;
+        }
+        observerAdded = true;
+        AndroidUtilities.runOnUIThread(() -> {
+            lastDark = isDark();
+            NotificationCenter.getGlobalInstance().addObserver((id, account, args) -> {
+                boolean dark = isDark();
+                if (dark != lastDark) {
+                    lastDark = dark;
+                    SkinSpec base = preview != null ? preview : active;
+                    if (base.followsDayNight() || base.forMode(true) != base.forMode(false)) {
+                        NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.kuroSkinChanged);
+                    }
+                }
+            }, NotificationCenter.didSetNewTheme);
+        });
     }
 
     private SkinTokens tokens;
@@ -86,6 +115,7 @@ public final class KuroSkinManager {
                 active = SkinSpec.defaults();
             }
             loaded = true;
+            ensureDayNightObserver();
         }
         return active;
     }

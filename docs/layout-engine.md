@@ -123,3 +123,8 @@ value filled (all tokens, components, screens, chat, effects) and an explicit `l
 List rows: `chatList.row.heightDp`, `row.avatar.sizeDp`, `row.preview.show`, `row.meta.time=hidden`.
 Bottom bar: `bottomTabs.items/labels/labelSizeSp/indicator(none|pill)/border/style`.
 Grid is a tile mode of DialogCell, so open/long-press/swipe/selection stay Telegram's own.
+
+### Day / night
+A theme without a `night` section follows Telegram: day uses the theme's colours, night shows Telegram's own night colours
+(layout stays). A `night` section (only what differs from day) is used in night mode. `"appearance": "light"|"dark"` pins
+one palette whatever Telegram does; default is `"auto"`.

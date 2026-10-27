@@ -273,6 +273,50 @@ public final class SkinSpec {
     };
 
     /** Parses and validates; throws IllegalArgumentException with a readable reason on any problem. */
+    // ---- day / night ----
+    private static final SkinSpec NEUTRAL = defaults();
+    /** "auto" (follow Telegram's day/night), "light" or "dark" (the theme pins one palette). */
+    private String appearance = "auto";
+    /** The theme's own night palette (day merged with the night section), or null when it has none. */
+    private SkinSpec nightSpec;
+
+    /**
+     * The skin to use for Telegram's current day/night state. A theme without a night section does not
+     * recolour Telegram's night mode (Telegram's own night colours show); one with a night section uses
+     * it; "light"/"dark" pin the palette whatever Telegram does.
+     */
+    public SkinSpec forMode(boolean dark) {
+        if ("light".equals(appearance)) {
+            return this;
+        }
+        if ("dark".equals(appearance)) {
+            return nightSpec != null ? nightSpec : this;
+        }
+        if (!dark) {
+            return this;
+        }
+        return nightSpec != null ? nightSpec : NEUTRAL;
+    }
+
+    /** True when day and night can differ (so a day/night switch must refresh the skin). */
+    public boolean followsDayNight() {
+        return "auto".equals(appearance);
+    }
+
+    private static void mergeInto(JSONObject target, JSONObject patch) throws JSONException {
+        java.util.Iterator<String> keys = patch.keys();
+        while (keys.hasNext()) {
+            String k = keys.next();
+            Object v = patch.get(k);
+            Object cur = target.opt(k);
+            if (v instanceof JSONObject && cur instanceof JSONObject) {
+                mergeInto((JSONObject) cur, (JSONObject) v);
+            } else {
+                target.put(k, v);
+            }
+        }
+    }
+
     public static SkinSpec parse(String json) {
         if (json == null || json.getBytes().length > MAX_JSON_BYTES) {
             throw new IllegalArgumentException("Skin file is missing or too large");
@@ -284,7 +328,22 @@ public final class SkinSpec {
                 return parseV1(root);
             }
             if (version == 2) {
-                return parseV2(root);
+                SkinSpec day = parseV2(root);
+                String appearance = root.optString("appearance", "auto");
+                if (!"auto".equals(appearance) && !"light".equals(appearance) && !"dark".equals(appearance)) {
+                    throw new IllegalArgumentException("appearance must be auto, light or dark");
+                }
+                day.appearance = appearance;
+                JSONObject night = root.optJSONObject("night");
+                if (night != null && night.length() > 0) {
+                    // The night section only lists what differs from day; everything else is inherited.
+                    JSONObject merged = new JSONObject(root.toString());
+                    merged.remove("night");
+                    merged.remove("appearance");
+                    mergeInto(merged, night);
+                    day.nightSpec = parseV2(merged);
+                }
+                return day;
             }
             throw new IllegalArgumentException(version > SCHEMA_VERSION
                     ? "This theme needs a newer version of Kurogram" : "Unsupported skin schemaVersion");
