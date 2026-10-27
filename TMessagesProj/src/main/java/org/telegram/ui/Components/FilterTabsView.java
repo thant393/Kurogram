@@ -469,6 +469,11 @@ public class FilterTabsView extends FrameLayout {
                 } else {
                     counterPaint.setColor(textPaint.getColor());
                 }
+                if (chipsStyle()) {
+                    // Chips sit on a grey/blue chip: the count needs its own readable badge on both.
+                    counterPaint.setColor(Theme.getColor(Theme.key_chats_unreadCounter, resourcesProvider));
+                    textCounterPaint.setColor(Theme.getColor(Theme.key_chats_unreadCounterText, resourcesProvider));
+                }
 
                 float x;
                 float titleWidth = currentTab.titleWidth;

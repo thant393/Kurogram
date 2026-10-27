@@ -5433,7 +5433,8 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
 
                 int x = countLeftLocal;
                 rect.set(x, countTop, x + countWidth + dp(BADGE_TEXT_PADDING * 2), countTop + dp(BADGE_SIZE));
-                if ("right".equals(tw.nekomimi.nekogram.layout.LayoutManager.get().spec().stringValue("chatList.row.meta.unreadDot", null)) && unreadCount != 0) {
+                if ("right".equals(tw.nekomimi.nekogram.layout.LayoutManager.get().spec().stringValue("chatList.row.meta.unreadDot", null)) && unreadCount != 0
+                        && !tw.nekomimi.nekogram.layout.LayoutManager.get().spec().boolValue("chatList.row.meta.unreadCount", true)) {
                     // Layout pack: a plain dot instead of the numbered badge (the number stays in the chat itself).
                     final float dotRight = rect.right;
                     final float dotCy = rect.centerY();

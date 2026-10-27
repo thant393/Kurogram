@@ -80,7 +80,7 @@ public final class LayoutSpec {
             "chatList.row.meta.time|enum:top-right,bottom-right,hidden",
             "chatList.row.meta.seenAvatar|enum:none,bottom-right", "chatList.row.meta.unreadDot|enum:none,right",
             "chatList.row.pinned|enum:none,icon-left-of-time", "chatList.row.dividers|bool",
-            "chatList.header.left|list:menu,compose,search:0:2", "chatList.header.right|list:menu,compose,search:0:3",
+            "chatList.header.collapse|enum:scroll,pinned", "chatList.header.left|list:menu,compose,search:0:2", "chatList.header.right|list:menu,compose,search:0:3",
             "chatList.storyRail.enabled|bool", "chatList.storyRail.avatarSizeDp|int:40:80", "chatList.storyRail.showCreate|bool",
             "chatList.folders.style|enum:chips,tabs,none", "chatList.folders.position|enum:below-header,below-rail",
             "chatList.folders.collapsible|bool",

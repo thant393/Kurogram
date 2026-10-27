@@ -9049,7 +9049,15 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         }, 300);
     }
 
+    /** chatList.header.collapse = pinned: the stories tray and folder bar never scroll away (Messenger-style). */
+    private boolean headerPinned() {
+        return hasMainTabs && "pinned".equals(tw.nekomimi.nekogram.layout.LayoutManager.get().spec().stringValue("chatList.header.collapse", "scroll"));
+    }
+
     private void setScrollY(float value) {
+        if (headerPinned()) {
+            value = 0;
+        }
         if (viewPages != null) {
             int glowOffset = viewPages[0].listView.getPaddingTop() + (int) value;
             for (int a = 0; a < viewPages.length; a++) {

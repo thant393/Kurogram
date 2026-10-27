@@ -314,7 +314,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         tabsView.setClipChildren(false);
         final boolean flatTabs = "flat".equals(tw.nekomimi.nekogram.layout.LayoutManager.get().spec().stringValue("bottomTabs.style", "glass"));
         final int tabPad = dp(DialogsActivity.MAIN_TABS_MARGIN + 4);
-        tabsView.setPadding(flatTabs ? dp(4) : tabPad, flatTabs ? dp(8) : tabPad, flatTabs ? dp(4) : tabPad, flatTabs ? dp(8) : tabPad);
+        tabsView.setPadding(flatTabs ? dp(4) : tabPad, flatTabs ? dp(2) : tabPad, flatTabs ? dp(4) : tabPad, flatTabs ? dp(2) : tabPad);
         tabsView.setFillWidth(flatTabs);
         tabsView.setMaxWidth(flatTabs ? 0 : dp(328 + DialogsActivity.MAIN_TABS_MARGIN * 2));
 
@@ -410,7 +410,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
 
         tabsViewWrapper = new FrameLayout(context);
         tabsViewWrapper.setOnClickListener(v -> {});
-        tabsViewWrapper.addView(tabsView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, DialogsActivity.MAIN_TABS_HEIGHT_WITH_MARGINS, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL));
+        tabsViewWrapper.addView(tabsView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, flatTabs ? FLAT_BAR_HEIGHT : DialogsActivity.MAIN_TABS_HEIGHT_WITH_MARGINS, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL));
         tabsViewWrapper.setClipToPadding(false);
         contentView.addView(tabsViewWrapper, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM));
         updateFlatTabsBackground();
@@ -970,7 +970,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
 
         ViewGroup.MarginLayoutParams lp;
         {
-            final int height = navigationBarHeight + updateLayoutHeight + dp(KuroConfig.hideBottomNavigationBar ? 0 : DialogsActivity.MAIN_TABS_HEIGHT_WITH_MARGINS);
+            final int height = navigationBarHeight + updateLayoutHeight + dp(KuroConfig.hideBottomNavigationBar ? 0 : (flatTabsMode ? FLAT_BAR_HEIGHT : DialogsActivity.MAIN_TABS_HEIGHT_WITH_MARGINS));
             lp = (ViewGroup.MarginLayoutParams) fadeView.getLayoutParams();
             if (lp.height != height) {
                 lp.height = height;
@@ -1280,6 +1280,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         }
     }
 
+    private static final int FLAT_BAR_HEIGHT = 52;
     private boolean flatTabsMode;
     private boolean flatTabBorder = true;
 
