@@ -185,6 +185,9 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
     private TextView subtitleView;
     private TextView versionView;
     public boolean hasMainTabs;
+    /** Hosted as the layout drawer: photo cover header, no action bar, tapping the cover opens the profile. */
+    private boolean drawerMode;
+    private BackupImageView coverImage;
 
     private View navigationBar;
 
@@ -216,6 +219,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
 
         if (arguments != null) {
             hasMainTabs = arguments.getBoolean("hasMainTabs", false);
+            drawerMode = arguments.getBoolean("kuroDrawer", false);
         }
 
         additionNavigationBarHeight = hasMainTabs ? dp(DialogsActivity.MAIN_TABS_HEIGHT_WITH_MARGINS) : 0;
@@ -355,7 +359,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         listView = new UniversalRecyclerView(this, this::fillItems, this::onClick, this::onLongClick);
         listView.adapter.setApplyBackground(false);
         listView.setSections();
-        listView.setPadding(0, AndroidUtilities.statusBarHeight + dp(12), 0, AndroidUtilities.navigationBarHeight + additionNavigationBarHeight);
+        listView.setPadding(0, drawerMode ? 0 : AndroidUtilities.statusBarHeight + dp(12), 0, AndroidUtilities.navigationBarHeight + additionNavigationBarHeight);
         listView.setClipToPadding(false);
         listView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -471,6 +475,10 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         subtitleView.setEllipsize(TextUtils.TruncateAt.END);
         topView.addView(subtitleView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL | Gravity.TOP, 0, 168 - 12, 0, 0));
 
+        if (drawerMode) {
+            buildDrawerCover(context);
+        }
+
         versionView = new TextView(context);
         versionView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
         versionView.setTextColor(getThemedColor(Theme.key_windowBackgroundWhiteGrayText4));
@@ -532,12 +540,40 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         setInfo(getUserConfig().getCurrentUser());
     }
 
+    /** Old-drawer style header: the profile photo fills the top (under the status bar), name and phone at the bottom-left. */
+    private void buildDrawerCover(Context context) {
+        avatarContainer.setVisibility(View.GONE);
+        topView.removeView(titleView);
+        topView.removeView(subtitleView);
+        coverImage = new BackupImageView(context);
+        coverImage.setRoundRadius(0);
+        topView.addView(coverImage, 0, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+        View scrim = new View(context);
+        scrim.setBackground(new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, new int[]{0x00000000, 0x99000000}));
+        topView.addView(scrim, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 90, Gravity.BOTTOM));
+        titleView.setGravity(Gravity.LEFT);
+        titleView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+        subtitleView.setGravity(Gravity.LEFT);
+        subtitleView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+        topView.addView(titleView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.LEFT, 16, 0, 16, 36));
+        topView.addView(subtitleView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.LEFT, 16, 0, 16, 14));
+        topView.setOnClickListener(v -> {
+            Bundle args = new Bundle();
+            args.putLong("user_id", getUserConfig().getClientUserId());
+            args.putBoolean("my_profile", true);
+            presentFragment(new ProfileActivity(args));
+        });
+    }
+
     public void setInfo(TLRPC.User user) {
         if (avatarView == null) return;
         if (avatarUploadingRequest != -1) return;
 
         avatarDrawable.setInfo(user);
         avatarView.setForUserOrChat(user, avatarDrawable);
+        if (coverImage != null) {
+            coverImage.setForUserOrChat(user, avatarDrawable);
+        }
         titleView.setText(UserObject.getUserName(user));
         final StringBuilder sb = new StringBuilder();
         if (user != null) {
@@ -559,6 +595,10 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         contentView.setBackgroundColor(tw.nekomimi.nekogram.skin.KuroSkinManager.get().colorOr("screens.settings.background", getThemedColor(Theme.key_windowBackgroundGray)));
         titleView.setTextColor(getThemedColor(Theme.key_windowBackgroundWhiteBlackText));
         subtitleView.setTextColor(getThemedColor(Theme.key_windowBackgroundWhiteGrayText));
+        if (drawerMode) {
+            titleView.setTextColor(0xFFFFFFFF);
+            subtitleView.setTextColor(0xE6FFFFFF);
+        }
         searchItem.updateColor();
 
         final int navigationBarColor = getThemedColor(Theme.key_windowBackgroundWhite);
@@ -626,7 +666,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
             return;
         }
 
-        items.add(UItem.asCustomShadow(topView, 200 - 12));
+        items.add(UItem.asCustomShadow(topView, drawerMode ? (int) (AndroidUtilities.statusBarHeight / AndroidUtilities.density) + 150 : 200 - 12));
 
         accountNumbers.clear();
         for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
@@ -985,7 +1025,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         final Insets systemInsets = AndroidUtilities.getDefaultWindowInsets(insets, false);
         navigationBarHeight = systemInsets.bottom;
         final int statusBarHeight = systemInsets.top;
-        listView.setPadding(0, statusBarHeight + dp(12), 0, navigationBarHeight + additionNavigationBarHeight);
+        listView.setPadding(0, drawerMode ? 0 : statusBarHeight + dp(12), 0, navigationBarHeight + additionNavigationBarHeight);
         return WindowInsetsCompat.CONSUMED;
     }
 

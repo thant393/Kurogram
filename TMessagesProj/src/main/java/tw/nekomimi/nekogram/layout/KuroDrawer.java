@@ -77,12 +77,14 @@ public final class KuroDrawer {
         w.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         w.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         w.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-                | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
-                | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+                | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        w.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         w.setDimAmount(0.45f);
         w.setStatusBarColor(Color.TRANSPARENT);
         w.setNavigationBarColor(Color.TRANSPARENT);
         androidx.core.view.WindowCompat.setDecorFitsSystemWindows(w, false);
+        // White status-bar icons: the drawer's cover photo sits behind them.
+        androidx.core.view.WindowCompat.getInsetsController(w, w.getDecorView()).setAppearanceLightStatusBars(false);
         if (android.os.Build.VERSION.SDK_INT >= 28) {
             WindowManager.LayoutParams lp = w.getAttributes();
             lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
@@ -95,7 +97,9 @@ public final class KuroDrawer {
         final Context context = from.getParentActivity();
         final Dialog[] ref = new Dialog[1];
         final SettingsActivity[] holder = new SettingsActivity[1];
-        final SettingsActivity page = new SettingsActivity(new Bundle()) {
+        final Bundle drawerArgs = new Bundle();
+        drawerArgs.putBoolean("kuroDrawer", true);
+        final SettingsActivity page = new SettingsActivity(drawerArgs) {
             @Override
             public boolean presentFragment(BaseFragment fragment) {
                 dismissDrawer(ref, holder);
@@ -126,7 +130,7 @@ public final class KuroDrawer {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         FrameLayout root = new FrameLayout(context);
         root.setOnClickListener(v -> dialog.dismiss());
-        final int width = Math.min(AndroidUtilities.dp(360), (int) (AndroidUtilities.displaySize.x * 0.88f));
+        final int width = Math.min(AndroidUtilities.dp(300), (int) (AndroidUtilities.displaySize.x * 0.76f));
         final FrameLayout panel = new FrameLayout(context);
         panel.setClickable(true);
         panel.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
@@ -138,10 +142,7 @@ public final class KuroDrawer {
         View content = page.getFragmentView();
         AndroidUtilities.removeFromParent(content);
         panel.addView(content, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
-        if (page.getActionBar() != null && page.getActionBar().shouldAddToContainer()) {
-            AndroidUtilities.removeFromParent(page.getActionBar());
-            panel.addView(page.getActionBar());
-        }
+        // No action bar in the drawer (no back arrow); the photo cover is the header.
 
         dialog.setContentView(root);
         dialog.setOnDismissListener(d -> {
