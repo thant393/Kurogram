@@ -257,6 +257,62 @@ public class UserCell extends FrameLayout implements NotificationCenter.Notifica
         setFocusable(true);
     }
 
+    // ---- JSON layout config (contacts.*), applied by ContactsAdapter for the Contacts tab ----
+    private boolean layoutTile;
+    private int layoutTileHeightPx;
+    private int layoutRowDp;
+
+    /** Reads contacts.mode / contacts.grid.* / contacts.row.* from the active layout; call after setAvatarPadding + setData. */
+    public void applyContactsLayout() {
+        tw.nekomimi.nekogram.layout.LayoutSpec spec = tw.nekomimi.nekogram.layout.LayoutManager.get().spec();
+        final boolean tile = "grid".equals(spec.stringValue("contacts.mode", "list"));
+        final int avatar = spec.intValue("contacts.row.avatarSizeDp", 0);
+        final int rowH = spec.intValue("contacts.row.heightDp", 0);
+        final boolean showStatus = spec.boolValue("contacts.row.status", true);
+        layoutTile = tile;
+        if (tile) {
+            final int size = spec.intValue("contacts.grid.avatarDp", 64);
+            LayoutParams lp = new LayoutParams(dp(size), dp(size), Gravity.CENTER_HORIZONTAL | Gravity.TOP);
+            lp.topMargin = dp(8);
+            avatarImageView.setLayoutParams(lp);
+            avatarImageView.setRoundRadius(dp(size / 2f));
+            LayoutParams nlp = new LayoutParams(LayoutParams.MATCH_PARENT, dp(20), Gravity.CENTER_HORIZONTAL | Gravity.TOP);
+            nlp.topMargin = dp(8 + size + 4);
+            nlp.leftMargin = nlp.rightMargin = dp(4);
+            nameTextView.setLayoutParams(nlp);
+            nameTextView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP);
+            nameTextView.setTextSize(13);
+            statusTextView.setVisibility(GONE);
+            layoutTileHeightPx = dp(8 + size + 4 + 20 + 8);
+            return;
+        }
+        statusTextView.setVisibility(showStatus ? VISIBLE : GONE);
+        if (avatar > 0 || rowH > 0) {
+            final int size = avatar > 0 ? avatar : 44;
+            final int height = rowH > 0 ? rowH : 56;
+            final int delta = dp(size - 44);
+            LayoutParams alp = (LayoutParams) avatarImageView.getLayoutParams();
+            alp.width = alp.height = dp(size);
+            alp.topMargin = dp((height - size) / 2f);
+            avatarImageView.setLayoutParams(alp);
+            avatarImageView.setRoundRadius(dp(size / 2f));
+            LayoutParams nlp = (LayoutParams) nameTextView.getLayoutParams();
+            LayoutParams slp = (LayoutParams) statusTextView.getLayoutParams();
+            if (LocaleController.isRTL) {
+                nlp.rightMargin += delta;
+                slp.rightMargin += delta;
+            } else {
+                nlp.leftMargin += delta;
+                slp.leftMargin += delta;
+            }
+            nlp.topMargin = dp(showStatus ? (height - 42) / 2f : (height - 20) / 2f);
+            slp.topMargin = nlp.topMargin + dp(22);
+            nameTextView.setLayoutParams(nlp);
+            statusTextView.setLayoutParams(slp);
+            layoutRowDp = height;
+        }
+    }
+
     public void setAvatarPadding(int padding) {
         setAvatarPadding(padding, 0);
     }
@@ -517,7 +573,7 @@ public class UserCell extends FrameLayout implements NotificationCenter.Notifica
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(
             MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.EXACTLY),
-            MeasureSpec.makeMeasureSpec(dp(callCellStyle ? 56 : 58) + (needDivider ? 1 : 0), MeasureSpec.EXACTLY));
+            MeasureSpec.makeMeasureSpec(layoutTile ? layoutTileHeightPx : layoutRowDp > 0 ? dp(layoutRowDp) + (needDivider ? 1 : 0) : dp(callCellStyle ? 56 : 58) + (needDivider ? 1 : 0), MeasureSpec.EXACTLY));
     }
 
     public void setStatusColors(int color, int onlineColor) {
@@ -802,7 +858,7 @@ public class UserCell extends FrameLayout implements NotificationCenter.Notifica
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (needDivider) {
+        if (needDivider && !layoutTile) {
             canvas.drawLine(LocaleController.isRTL ? 0 : dp(68), getMeasuredHeight() - 1, getMeasuredWidth() - (LocaleController.isRTL ? dp(68) : 0), getMeasuredHeight() - 1, Theme.dividerPaint);
         }
     }

@@ -128,3 +128,8 @@ Grid is a tile mode of DialogCell, so open/long-press/swipe/selection stay Teleg
 A theme without a `night` section follows Telegram: day uses the theme's colours, night shows Telegram's own night colours
 (layout stays). A `night` section (only what differs from day) is used in night mode. `"appearance": "light"|"dark"` pins
 one palette whatever Telegram does; default is `"auto"`.
+
+### Settings and Contacts keys
+`settings.header` = centered | cover; `settings.items` = list of row names to keep (same names as drawer.items).
+`contacts.mode` = list | grid; `contacts.grid.columns/avatarDp`; `contacts.row.avatarSizeDp/heightDp/status`; `contacts.sort` = name | time.
+`docs` demo: Grid Demo theme.

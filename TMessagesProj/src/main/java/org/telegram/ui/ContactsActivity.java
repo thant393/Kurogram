@@ -247,6 +247,12 @@ public class ContactsActivity extends BaseFragment implements FactorAnimator.Tar
 
         if (!createSecretChat && !returnAsResult) {
             sortByName = SharedConfig.sortContactsByName;
+            if (hasMainTabs) {
+                String layoutSort = tw.nekomimi.nekogram.layout.LayoutManager.get().spec().stringValue("contacts.sort", null);
+                if (layoutSort != null) {
+                    sortByName = "name".equals(layoutSort);
+                }
+            }
         }
 
         getContactsController().checkInviteText();
@@ -557,7 +563,19 @@ public class ContactsActivity extends BaseFragment implements FactorAnimator.Tar
         listView.setSectionsType(RecyclerListView.SECTIONS_TYPE_STICKY_HEADERS);
         listView.setVerticalScrollBarEnabled(false);
         listView.setFastScrollEnabled(RecyclerListView.FastScroll.LETTER_TYPE);
-        listView.setLayoutManager(layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+        final tw.nekomimi.nekogram.layout.LayoutSpec contactsSpec = tw.nekomimi.nekogram.layout.LayoutManager.get().spec();
+        final int contactsColumns = hasMainTabs && "grid".equals(contactsSpec.stringValue("contacts.mode", "list")) ? Math.max(2, contactsSpec.intValue("contacts.grid.columns", 3)) : 1;
+        final androidx.recyclerview.widget.GridLayoutManager contactsLayoutManager = new androidx.recyclerview.widget.GridLayoutManager(context, contactsColumns, LinearLayoutManager.VERTICAL, false);
+        if (contactsColumns > 1) {
+            contactsLayoutManager.setSpanSizeLookup(new androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    return position >= 0 && position < listViewAdapter.getItemCount() && ContactsAdapter.isUserCellType(listViewAdapter.getItemViewType(position)) ? 1 : contactsColumns;
+                }
+            });
+        }
+        listView.setLayoutManager(layoutManager = contactsLayoutManager);
+        listViewAdapter.layoutDriven = hasMainTabs;
         listView.setAdapter(listViewAdapter);
         listView.setClipToPadding(false);
         scrollHelper = new RecyclerAnimationScrollHelper(listView, layoutManager);

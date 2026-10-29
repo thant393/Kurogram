@@ -56,6 +56,12 @@ import java.util.Objects;
 public class ContactsAdapter extends RecyclerListView.SectionsAdapter {
 
     public boolean includeSearch;
+    /** The Contacts tab: rows follow the contacts.* layout keys. */
+    public boolean layoutDriven;
+
+    public static boolean isUserCellType(int viewType) {
+        return viewType == 0;
+    }
     private final int currentAccount = UserConfig.selectedAccount;
     private final Context mContext;
     private final int onlyUsers;
@@ -543,6 +549,9 @@ public class ContactsAdapter extends RecyclerListView.SectionsAdapter {
                 }
                 TLRPC.User user = MessagesController.getInstance(currentAccount).getUser(arr.get(position).user_id);
                 userCell.setData(user, null, null, 0);
+                if (layoutDriven) {
+                    userCell.applyContactsLayout();
+                }
                 userCell.setChecked(selectedContacts.indexOfKey(user.id) >= 0, false);
                 if (ignoreUsers != null) {
                     if (ignoreUsers.indexOfKey(user.id) >= 0) {

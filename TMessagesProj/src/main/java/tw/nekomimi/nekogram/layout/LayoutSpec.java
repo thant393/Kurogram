@@ -66,6 +66,9 @@ public final class LayoutSpec {
 
     // path | kind: bool, int:lo:hi, enum:a,b,c, list:a,b,c:min:max
     private static final String[] RULES = {
+            "settings.header|enum:centered,cover", "settings.items|list:profile,settings,contacts,calls,saved,archive,kuroTheme,kuroSettings,numberFinder,specialContacts,onlineContacts,contactChanges,account,chatSettings,privacy,notifications,data,folders,devices,power,language,premium,stars,ton,business,gift,askQuestion,faq,features,privacyPolicy:1:40",
+            "contacts.mode|enum:list,grid", "contacts.grid.columns|int:2:5", "contacts.grid.avatarDp|int:48:96", "contacts.row.avatarSizeDp|int:32:64",
+            "contacts.row.heightDp|int:48:80", "contacts.row.status|bool", "contacts.sort|enum:name,time",
             "chatList.mode|enum:list,grid", "chatList.grid.columns|int:2:5", "chatList.grid.avatarDp|int:40:96", "chatList.grid.showName|bool", "chatList.grid.showBadge|bool",
             "chatList.row.preview.show|bool",
             "chatList.row.heightDp|int:56:96",

@@ -359,7 +359,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         listView = new UniversalRecyclerView(this, this::fillItems, this::onClick, this::onLongClick);
         listView.adapter.setApplyBackground(false);
         listView.setSections();
-        listView.setPadding(0, drawerMode ? 0 : AndroidUtilities.statusBarHeight + dp(12), 0, AndroidUtilities.navigationBarHeight + additionNavigationBarHeight);
+        listView.setPadding(0, coverHeader() ? 0 : AndroidUtilities.statusBarHeight + dp(12), 0, AndroidUtilities.navigationBarHeight + additionNavigationBarHeight);
         listView.setClipToPadding(false);
         listView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -475,7 +475,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         subtitleView.setEllipsize(TextUtils.TruncateAt.END);
         topView.addView(subtitleView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL | Gravity.TOP, 0, 168 - 12, 0, 0));
 
-        if (drawerMode) {
+        if (coverHeader()) {
             buildDrawerCover(context);
         }
 
@@ -540,6 +540,48 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         setInfo(getUserConfig().getCurrentUser());
     }
 
+    /** settings.header = "cover" (or the drawer): the photo header instead of the centred avatar. */
+    private boolean coverHeader() {
+        return drawerMode || "cover".equals(tw.nekomimi.nekogram.layout.LayoutManager.get().spec().stringValue("settings.header", "centered"));
+    }
+
+    private static final java.util.Map<Integer, String> LAYOUT_IDS = new java.util.HashMap<>();
+    static {
+        int[] ids = {60, 61, 62, 63, 64, 65, 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 23, 19};
+        String[] names = {"kuroTheme", "kuroSettings", "numberFinder", "specialContacts", "onlineContacts", "contactChanges", "account", "chatSettings",
+                "privacy", "notifications", "data", "folders", "devices", "power", "language", "premium", "stars", "ton", "business", "gift",
+                "askQuestion", "faq", "features", "privacyPolicy"};
+        for (int i = 0; i < ids.length; i++) LAYOUT_IDS.put(ids[i], names[i]);
+    }
+
+    /** settings.items: only the listed rows stay; shadows and headers left empty by that are removed. */
+    private void applyLayoutItems(ArrayList<UItem> items) {
+        final java.util.List<String> wanted = tw.nekomimi.nekogram.layout.LayoutManager.get().spec().listValue("settings.items", null);
+        if (wanted == null) return;
+        final ArrayList<UItem> kept = new ArrayList<>();
+        for (UItem item : items) {
+            if (item.instanceOf(SettingCell.Factory.class) && item.object == null) {
+                String name = LAYOUT_IDS.get(item.id);
+                if (name != null && !wanted.contains(name)) continue;
+            }
+            kept.add(item);
+        }
+        final ArrayList<UItem> out = new ArrayList<>();
+        for (int i = 0; i < kept.size(); i++) {
+            UItem item = kept.get(i);
+            boolean next = i + 1 < kept.size();
+            UItem following = next ? kept.get(i + 1) : null;
+            if (item.viewType == UniversalAdapter.VIEW_TYPE_SHADOW) {
+                UItem last = out.isEmpty() ? null : out.get(out.size() - 1);
+                if (last == null || last.viewType == UniversalAdapter.VIEW_TYPE_SHADOW || last.viewType == UniversalAdapter.VIEW_TYPE_CUSTOM_SHADOW && last.view == topView) continue;
+            }
+            if (item.viewType == UniversalAdapter.VIEW_TYPE_HEADER && (following == null || following.viewType == UniversalAdapter.VIEW_TYPE_SHADOW || following.viewType == UniversalAdapter.VIEW_TYPE_HEADER || following.viewType == UniversalAdapter.VIEW_TYPE_CUSTOM_SHADOW)) continue;
+            out.add(item);
+        }
+        items.clear();
+        items.addAll(out);
+    }
+
     /** Old-drawer style header: the profile photo fills the top (under the status bar), name and phone at the bottom-left. */
     private void buildDrawerCover(Context context) {
         avatarContainer.setVisibility(View.GONE);
@@ -595,9 +637,13 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         contentView.setBackgroundColor(tw.nekomimi.nekogram.skin.KuroSkinManager.get().colorOr("screens.settings.background", getThemedColor(Theme.key_windowBackgroundGray)));
         titleView.setTextColor(getThemedColor(Theme.key_windowBackgroundWhiteBlackText));
         subtitleView.setTextColor(getThemedColor(Theme.key_windowBackgroundWhiteGrayText));
-        if (drawerMode) {
+        if (coverHeader()) {
             titleView.setTextColor(0xFFFFFFFF);
             subtitleView.setTextColor(0xE6FFFFFF);
+            if (!drawerMode) {
+                actionBar.setTitleColor(0xFFFFFFFF);
+                actionBar.setItemsColor(0xFFFFFFFF, false);
+            }
         }
         searchItem.updateColor();
 
@@ -666,7 +712,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
             return;
         }
 
-        items.add(UItem.asCustomShadow(topView, drawerMode ? (int) (AndroidUtilities.statusBarHeight / AndroidUtilities.density) + 150 : 200 - 12));
+        items.add(UItem.asCustomShadow(topView, coverHeader() ? (int) (AndroidUtilities.statusBarHeight / AndroidUtilities.density) + 150 : 200 - 12));
 
         accountNumbers.clear();
         for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
@@ -812,6 +858,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
             items.add(SettingCell.Factory.of(22, 0xFFF45255, 0xFFDF3955, 0, getString(R.string.DebugClearLogs)));
         }
 
+        applyLayoutItems(items);
         items.add(UItem.asCustomShadow(versionView));
     }
 
@@ -1025,7 +1072,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         final Insets systemInsets = AndroidUtilities.getDefaultWindowInsets(insets, false);
         navigationBarHeight = systemInsets.bottom;
         final int statusBarHeight = systemInsets.top;
-        listView.setPadding(0, drawerMode ? 0 : statusBarHeight + dp(12), 0, navigationBarHeight + additionNavigationBarHeight);
+        listView.setPadding(0, coverHeader() ? 0 : statusBarHeight + dp(12), 0, navigationBarHeight + additionNavigationBarHeight);
         return WindowInsetsCompat.CONSUMED;
     }
 
