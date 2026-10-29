@@ -376,4 +376,72 @@ public final class ThemeStoreApi {
     public static void clearApplied() {
         prefs().edit().remove("applied_id").remove("applied_version").apply();
     }
+
+    // ---- keep the applied theme in step with its published file ----
+
+    private static boolean refreshedThisRun;
+
+    /**
+     * Once per app start: if the applied theme's published file changed on the server (same version
+     * number, new content), apply the new file. No download is counted. Failures are silent.
+     */
+    public static void refreshApplied() {
+        if (refreshedThisRun) {
+            return;
+        }
+        final String id = appliedId();
+        if (id == null) {
+            return;
+        }
+        refreshedThisRun = true;
+        final int version = appliedVersion();
+        // The timestamp keeps proxies/CDNs from handing back an hour-old copy of this version file.
+        StickerStoreApi.getJson("api/v1/themes/" + id + "/versions/" + version + "?_=" + System.currentTimeMillis(), new StickerStoreApi.JsonCallback() {
+            @Override
+            public void onSuccess(Object root) {
+                try {
+                    if (!(root instanceof JSONObject)) {
+                        return;
+                    }
+                    Object raw = ((JSONObject) root).opt("content");
+                    final String fresh = raw instanceof JSONObject ? raw.toString() : raw instanceof String ? (String) raw : null;
+                    if (fresh == null) {
+                        return;
+                    }
+                    JSONObject cached = cachedDownload(id, 0);
+                    String old = cached != null ? cached.optString("content") : null;
+                    if (old != null && new JSONObject(old).toString().equals(new JSONObject(fresh).toString())) {
+                        return; // unchanged
+                    }
+                    final String content = fresh;
+                    final String sha = sha256(content);
+                    org.telegram.messenger.AndroidUtilities.runOnUIThread(() -> {
+                        try {
+                            tw.nekomimi.nekogram.skin.KuroSkinManager.get().apply(content);
+                            String embedded = tw.nekomimi.nekogram.layout.LayoutSpec.embeddedJson(content, id);
+                            if (embedded != null) {
+                                tw.nekomimi.nekogram.layout.LayoutManager.get().apply(embedded);
+                            }
+                            cacheContent(id, version, "skin", sha, content);
+                        } catch (Exception ignore) {
+                        }
+                    });
+                } catch (Exception ignore) {
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+            }
+        });
+    }
+
+    private static String sha256(String text) throws Exception {
+        byte[] d = java.security.MessageDigest.getInstance("SHA-256").digest(text.getBytes("UTF-8"));
+        StringBuilder sb = new StringBuilder();
+        for (byte b : d) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
+    }
 }

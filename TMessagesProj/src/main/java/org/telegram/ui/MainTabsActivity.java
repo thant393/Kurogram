@@ -278,6 +278,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         blur3_updateColors();
         checkContactsTabBadge();
         checkUnreadCount(true);
+        tw.nekomimi.nekogram.stickerstore.ThemeStoreApi.refreshApplied();
 
         showAccountChangeHint();
     }
