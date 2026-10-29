@@ -290,6 +290,25 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
     }
 
     /** One story-rail card: "Add to story" (first), a contact with a story, or a recently active contact. */
+    /** Stories from the list often carry only a tiny stripped preview; use the picture only when a real size exists. */
+    private static boolean hasRealThumb(org.telegram.tgnet.tl.TL_stories.StoryItem item) {
+        java.util.List<TLRPC.PhotoSize> sizes = null;
+        if (item.media != null && item.media.document != null) {
+            sizes = item.media.document.thumbs;
+        } else if (item.media != null && item.media.photo != null) {
+            sizes = item.media.photo.sizes;
+        }
+        if (sizes == null) {
+            return false;
+        }
+        for (TLRPC.PhotoSize sz : sizes) {
+            if (sz != null && !(sz instanceof TLRPC.TL_photoStrippedSize) && !(sz instanceof TLRPC.TL_photoSizeEmpty) && sz.w >= 90) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private final class StoryCard extends FrameLayout {
         StoryCard(Context context, TLRPC.User user, boolean add, boolean hasStory, org.telegram.tgnet.tl.TL_stories.StoryItem item) {
             super(context);
@@ -321,7 +340,7 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
             }
             // Big photo fills the card (blurry-free: use the big location when there is one).
             org.telegram.messenger.ImageLocation big = org.telegram.messenger.ImageLocation.getForUserOrChat(user, org.telegram.messenger.ImageLocation.TYPE_BIG);
-            if (item != null) {
+            if (item != null && hasRealThumb(item)) {
                 // The story's own picture / video frame, like Messenger; the poster is the small icon.
                 org.telegram.ui.Stories.StoriesUtilities.setThumbImage(ad, img.getImageReceiver(), item, 90, 150);
             } else if (big != null) {
@@ -333,17 +352,18 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
             View scrim = new View(context);
             scrim.setBackground(new android.graphics.drawable.GradientDrawable(android.graphics.drawable.GradientDrawable.Orientation.TOP_BOTTOM, new int[]{0x00000000, 0x99000000}));
             addView(scrim, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 70, android.view.Gravity.BOTTOM));
+            // Poster icon: one plain avatar view plus a separate ring view on top (no nesting).
             org.telegram.ui.Components.BackupImageView small = new org.telegram.ui.Components.BackupImageView(context);
-            small.setRoundRadius(dp(16));
+            small.setRoundRadius(dp(15));
             small.setForUserOrChat(user, new org.telegram.ui.Components.AvatarDrawable(user));
-            FrameLayout ring = new FrameLayout(context);
+            addView(small, LayoutHelper.createFrame(30, 30, android.view.Gravity.TOP | android.view.Gravity.LEFT, 8, 8, 0, 0));
+            View ring = new View(context);
             android.graphics.drawable.GradientDrawable rg = new android.graphics.drawable.GradientDrawable();
             rg.setShape(android.graphics.drawable.GradientDrawable.OVAL);
             rg.setColor(0);
-            rg.setStroke(dp(hasStory ? 2.5f : 0), Theme.getColor(Theme.key_featuredStickers_addButton));
+            rg.setStroke(dp(hasStory ? 2.5f : 1.5f), hasStory ? Theme.getColor(Theme.key_featuredStickers_addButton) : 0xffffffff);
             ring.setBackground(rg);
-            ring.addView(small, LayoutHelper.createFrame(32, 32, android.view.Gravity.CENTER));
-            addView(ring, LayoutHelper.createFrame(38, 38, android.view.Gravity.TOP | android.view.Gravity.LEFT, 6, 6, 0, 0));
+            addView(ring, LayoutHelper.createFrame(36, 36, android.view.Gravity.TOP | android.view.Gravity.LEFT, 5, 5, 0, 0));
             if (isOnline(user)) {
                 View dot = new View(context);
                 android.graphics.drawable.GradientDrawable dg = new android.graphics.drawable.GradientDrawable();
@@ -351,7 +371,7 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
                 dg.setColor(Theme.getColor(Theme.key_windowBackgroundWhiteGreenText));
                 dg.setStroke(dp(2), 0xffffffff);
                 dot.setBackground(dg);
-                addView(dot, LayoutHelper.createFrame(12, 12, android.view.Gravity.TOP | android.view.Gravity.LEFT, 34, 34, 0, 0));
+                addView(dot, LayoutHelper.createFrame(12, 12, android.view.Gravity.TOP | android.view.Gravity.LEFT, 33, 33, 0, 0));
             }
             TextView name = new TextView(context);
             name.setText(UserObject.getFirstName(user));

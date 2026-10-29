@@ -931,6 +931,10 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
             if (LaunchActivity.instance != null) {
                 LaunchActivity.instance.switchToAccount(account, true);
             }
+            if (drawerMode) {
+                // The drawer still shows the previous account's data; close it like Telegram's own drawer does.
+                finishFragment();
+            }
             return;
         } else if (item.instanceOf(SettingsSearchCell.Factory.class)) {
             if (item.object instanceof ProfileActivity.SearchAdapter.SearchResult) {
