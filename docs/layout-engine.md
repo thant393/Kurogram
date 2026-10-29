@@ -133,3 +133,8 @@ one palette whatever Telegram does; default is `"auto"`.
 `settings.header` = centered | cover; `settings.items` = list of row names to keep (same names as drawer.items).
 `contacts.mode` = list | grid; `contacts.grid.columns/avatarDp`; `contacts.row.avatarSizeDp/heightDp/status`; `contacts.sort` = name | time.
 `docs` demo: Grid Demo theme.
+
+## Settings accounts, People tab (added)
+- `settings.accounts`: `list` (default) or `collapsible` (an "Accounts N ⌄" row that expands the signed-in accounts).
+- `people.storyRail`: `on|off` and `people.chips`: `on|off` — People tab (bottomTabs.peopleSource=online): story-card rail ("Add to story" first; people with stories, else recently active contacts), chips "N active / All", rows with green dot + status. When nobody is online the list falls back to recently active contacts.
+- Profile now honours `screens.profile.background` (use a light gray so white cards stay visible).

@@ -36,6 +36,14 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
     private TextView emptyView;
 
     private final ArrayList<TLRPC.User> onlineUsers = new ArrayList<>();
+    // People tab (Messenger look): rows currently shown, the story rail entries and the selected chip.
+    private final ArrayList<TLRPC.User> shown = new ArrayList<>();
+    private final ArrayList<TLRPC.User> railUsers = new ArrayList<>();
+    private final ArrayList<Long> railStoryPeers = new ArrayList<>();
+    private boolean showAll;
+    private boolean nobodyOnline;
+    private boolean railOn = true;
+    private boolean chipsOn = true;
 
     @Override
     public boolean onFragmentCreate() {
@@ -90,18 +98,21 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
             listView.setPadding(0, 0, 0, org.telegram.messenger.AndroidUtilities.dp(org.telegram.ui.DialogsActivity.MAIN_TABS_HEIGHT_WITH_MARGINS + 8));
         }
         listView.setOnItemClickListener((view, position) -> {
-            int index = tabMode() ? position - 1 : position;
-            if (index >= 0 && index < onlineUsers.size()) {
-                TLRPC.User user = onlineUsers.get(index);
-                Bundle args = new Bundle();
-                args.putLong("user_id", user.id);
-                presentFragment(new ChatActivity(args));
+            if (tabMode()) {
+                int index = position - headerCount();
+                if (index >= 0 && index < shown.size()) {
+                    openChat(shown.get(index));
+                }
+                return;
+            }
+            if (position >= 0 && position < onlineUsers.size()) {
+                openChat(onlineUsers.get(position));
             }
         });
         frameLayout.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
         emptyView = new TextView(context);
-        emptyView.setText("No contacts are currently online.");
+        emptyView.setText(tabMode() ? "No contacts yet." : "No contacts are currently online.");
         emptyView.setTextSize(15);
         emptyView.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGrayText));
         emptyView.setGravity(android.view.Gravity.CENTER);
@@ -135,14 +146,74 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
             }
         }
         Collections.sort(onlineUsers, Comparator.comparingLong(u -> u.id));
+        buildPeople();
+    }
+
+    private int lastSeen(TLRPC.User u) {
+        if (isOnline(u)) {
+            return Integer.MAX_VALUE;
+        }
+        if (u.status instanceof TLRPC.TL_userStatusOffline) {
+            return u.status.expires;
+        }
+        if (u.status instanceof TLRPC.TL_userStatusRecently) {
+            return 2;
+        }
+        return u.status instanceof TLRPC.TL_userStatusLastWeek ? 1 : 0;
+    }
+
+    /** Rows + story rail for the People tab. Never empty while the account has contacts. */
+    private void buildPeople() {
+        final tw.nekomimi.nekogram.layout.LayoutSpec spec = tw.nekomimi.nekogram.layout.LayoutManager.get().spec();
+        railOn = !"off".equals(spec.stringValue("people.storyRail", "on"));
+        chipsOn = !"off".equals(spec.stringValue("people.chips", "on"));
+        ArrayList<TLRPC.User> all = new ArrayList<>();
+        for (TLRPC.TL_contact contact : ContactsController.getInstance(currentAccount).contacts) {
+            TLRPC.User user = MessagesController.getInstance(currentAccount).getUser(contact.user_id);
+            if (user == null || UserObject.isDeleted(user) || UserObject.isUserSelf(user) || user.bot) {
+                continue;
+            }
+            all.add(user);
+        }
+        Collections.sort(all, (a, b) -> Integer.compare(lastSeen(b), lastSeen(a)));
+        nobodyOnline = onlineUsers.isEmpty();
+        shown.clear();
+        if (showAll || nobodyOnline) {
+            shown.addAll(all);
+        } else {
+            shown.addAll(onlineUsers);
+        }
+        // Rail: people with stories first. With no stories, fall back to the most recently active contacts.
+        railUsers.clear();
+        railStoryPeers.clear();
+        try {
+            ArrayList<org.telegram.tgnet.tl.TL_stories.PeerStories> list = MessagesController.getInstance(currentAccount).getStoriesController().getDialogListStories();
+            if (list != null) {
+                for (org.telegram.tgnet.tl.TL_stories.PeerStories ps : list) {
+                    long id = org.telegram.messenger.DialogObject.getPeerDialogId(ps.peer);
+                    TLRPC.User u = id > 0 ? MessagesController.getInstance(currentAccount).getUser(id) : null;
+                    if (u != null && !UserObject.isUserSelf(u)) {
+                        railUsers.add(u);
+                        railStoryPeers.add(id);
+                    }
+                }
+            }
+        } catch (Throwable ignore) {
+        }
+        if (railUsers.isEmpty()) {
+            for (int i = 0; i < all.size() && i < 12; i++) {
+                railUsers.add(all.get(i));
+            }
+        }
     }
 
     private void updateEmptyView() {
         if (emptyView == null || listView == null) {
             return;
         }
-        emptyView.setVisibility(onlineUsers.isEmpty() ? View.VISIBLE : View.GONE);
-        listView.setVisibility(onlineUsers.isEmpty() ? View.GONE : View.VISIBLE);
+        final boolean empty = tabMode() ? (shown.isEmpty() && railUsers.isEmpty()) : onlineUsers.isEmpty();
+        emptyView.setVisibility(empty ? View.VISIBLE : View.GONE);
+        listView.setVisibility(empty ? View.GONE : View.VISIBLE);
     }
 
     @Override
@@ -163,6 +234,186 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
                 updateEmptyView();
             }
         }
+    }
+
+    private int headerCount() {
+        return (railOn ? 1 : 0) + (chipsOn ? 1 : 0) + (nobodyOnline && !showAll ? 1 : 0);
+    }
+
+    private void openChat(TLRPC.User user) {
+        Bundle args = new Bundle();
+        args.putLong("user_id", user.id);
+        presentFragment(new ChatActivity(args));
+    }
+
+    private void refreshList() {
+        if (listAdapter != null) {
+            listAdapter.notifyDataSetChanged();
+        }
+        updateEmptyView();
+    }
+
+    private void openStory(int railIndex) {
+        if (railIndex < railStoryPeers.size() && getParentActivity() != null) {
+            ArrayList<Long> peers = new ArrayList<>(railStoryPeers);
+            getOrCreateStoryViewer().open(getParentActivity(), null, peers, railIndex, null, null,
+                    org.telegram.ui.Stories.StoriesListPlaceProvider.of(listView), false);
+        } else if (railIndex < railUsers.size()) {
+            openChat(railUsers.get(railIndex));
+        }
+    }
+
+    private void addStory() {
+        if (getParentActivity() != null) {
+            org.telegram.ui.Stories.recorder.StoryRecorder.getInstance(getParentActivity(), currentAccount).open((org.telegram.ui.Stories.recorder.StoryRecorder.SourceView) null);
+        }
+    }
+
+    private static int dp(float v) {
+        return org.telegram.messenger.AndroidUtilities.dp(v);
+    }
+
+    private static android.graphics.drawable.GradientDrawable round(int color, float radiusDp) {
+        android.graphics.drawable.GradientDrawable d = new android.graphics.drawable.GradientDrawable();
+        d.setCornerRadius(dp(radiusDp));
+        d.setColor(color);
+        return d;
+    }
+
+    /** One story-rail card: "Add to story" (first), a contact with a story, or a recently active contact. */
+    private final class StoryCard extends FrameLayout {
+        StoryCard(Context context, TLRPC.User user, boolean add, boolean hasStory) {
+            super(context);
+            setBackground(round(Theme.getColor(Theme.key_windowBackgroundGray), 12));
+            setClipToOutline(true);
+            org.telegram.ui.Components.BackupImageView img = new org.telegram.ui.Components.BackupImageView(context);
+            org.telegram.ui.Components.AvatarDrawable ad = new org.telegram.ui.Components.AvatarDrawable(user);
+            if (add) {
+                img.setForUserOrChat(user, ad);
+                addView(img, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 100, android.view.Gravity.TOP));
+                FrameLayout plus = new FrameLayout(context);
+                plus.setBackground(round(Theme.getColor(Theme.key_featuredStickers_addButton), 14));
+                TextView t = new TextView(context);
+                t.setText("+");
+                t.setTextSize(20);
+                t.setGravity(android.view.Gravity.CENTER);
+                t.setTextColor(Theme.getColor(Theme.key_featuredStickers_buttonText));
+                plus.addView(t, LayoutHelper.createFrame(28, 28, android.view.Gravity.CENTER));
+                addView(plus, LayoutHelper.createFrame(28, 28, android.view.Gravity.CENTER_HORIZONTAL | android.view.Gravity.BOTTOM, 0, 0, 0, 38));
+                TextView label = new TextView(context);
+                label.setText("Add to story");
+                label.setTextSize(12);
+                label.setTypeface(org.telegram.messenger.AndroidUtilities.bold());
+                label.setGravity(android.view.Gravity.CENTER);
+                label.setSingleLine(true);
+                label.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
+                addView(label, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, android.view.Gravity.BOTTOM, 4, 0, 4, 10));
+                return;
+            }
+            // Big photo fills the card (blurry-free: use the big location when there is one).
+            org.telegram.messenger.ImageLocation big = org.telegram.messenger.ImageLocation.getForUserOrChat(user, org.telegram.messenger.ImageLocation.TYPE_BIG);
+            if (big != null) {
+                img.setImage(big, "300_300", ad, user);
+            } else {
+                img.setForUserOrChat(user, ad);
+            }
+            addView(img, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+            View scrim = new View(context);
+            scrim.setBackground(new android.graphics.drawable.GradientDrawable(android.graphics.drawable.GradientDrawable.Orientation.TOP_BOTTOM, new int[]{0x00000000, 0x99000000}));
+            addView(scrim, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 70, android.view.Gravity.BOTTOM));
+            org.telegram.ui.Components.BackupImageView small = new org.telegram.ui.Components.BackupImageView(context);
+            small.setRoundRadius(dp(16));
+            small.setForUserOrChat(user, new org.telegram.ui.Components.AvatarDrawable(user));
+            FrameLayout ring = new FrameLayout(context);
+            android.graphics.drawable.GradientDrawable rg = new android.graphics.drawable.GradientDrawable();
+            rg.setShape(android.graphics.drawable.GradientDrawable.OVAL);
+            rg.setColor(0);
+            rg.setStroke(dp(hasStory ? 2.5f : 0), Theme.getColor(Theme.key_featuredStickers_addButton));
+            ring.setBackground(rg);
+            ring.addView(small, LayoutHelper.createFrame(32, 32, android.view.Gravity.CENTER));
+            addView(ring, LayoutHelper.createFrame(38, 38, android.view.Gravity.TOP | android.view.Gravity.LEFT, 6, 6, 0, 0));
+            if (isOnline(user)) {
+                View dot = new View(context);
+                android.graphics.drawable.GradientDrawable dg = new android.graphics.drawable.GradientDrawable();
+                dg.setShape(android.graphics.drawable.GradientDrawable.OVAL);
+                dg.setColor(Theme.getColor(Theme.key_windowBackgroundWhiteGreenText));
+                dg.setStroke(dp(2), 0xffffffff);
+                dot.setBackground(dg);
+                addView(dot, LayoutHelper.createFrame(12, 12, android.view.Gravity.TOP | android.view.Gravity.LEFT, 34, 34, 0, 0));
+            }
+            TextView name = new TextView(context);
+            name.setText(UserObject.getFirstName(user));
+            name.setTextSize(13);
+            name.setTypeface(org.telegram.messenger.AndroidUtilities.bold());
+            name.setSingleLine(true);
+            name.setTextColor(0xffffffff);
+            addView(name, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, android.view.Gravity.BOTTOM, 8, 0, 8, 8));
+        }
+    }
+
+    private final class RailView extends android.widget.HorizontalScrollView {
+        RailView(Context context) {
+            super(context);
+            setHorizontalScrollBarEnabled(false);
+            setOverScrollMode(OVER_SCROLL_NEVER);
+            android.widget.LinearLayout row = new android.widget.LinearLayout(context);
+            row.setOrientation(android.widget.LinearLayout.HORIZONTAL);
+            row.setPadding(dp(12), dp(8), dp(12), dp(8));
+            TLRPC.User self = getUserConfig().getCurrentUser();
+            StoryCard add = new StoryCard(context, self, true, false);
+            add.setOnClickListener(v -> addStory());
+            row.addView(add, LayoutHelper.createLinear(88, 150, 0, 0, 4, 0));
+            for (int i = 0; i < railUsers.size(); i++) {
+                final int index = i;
+                final boolean story = i < railStoryPeers.size();
+                StoryCard card = new StoryCard(context, railUsers.get(i), false, story);
+                card.setOnClickListener(v -> openStory(index));
+                row.addView(card, LayoutHelper.createLinear(88, 150, 0, 0, 4, 0));
+            }
+            addView(row, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        }
+    }
+
+    private TextView chip(Context context, String text, boolean selected, boolean dot, View.OnClickListener click) {
+        TextView c = new TextView(context);
+        c.setText(text);
+        c.setTextSize(15);
+        c.setTypeface(org.telegram.messenger.AndroidUtilities.bold());
+        c.setGravity(android.view.Gravity.CENTER_VERTICAL);
+        c.setTextColor(selected ? Theme.getColor(Theme.key_featuredStickers_addButton) : Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
+        c.setBackground(round(selected ? (Theme.getColor(Theme.key_featuredStickers_addButton) & 0x00ffffff) | 0x26000000 : Theme.getColor(Theme.key_windowBackgroundGray), 20));
+        c.setPadding(dp(14), 0, dp(16), 0);
+        if (dot) {
+            android.graphics.drawable.GradientDrawable ds = new android.graphics.drawable.GradientDrawable();
+            ds.setShape(android.graphics.drawable.GradientDrawable.OVAL);
+            ds.setColor(Theme.getColor(Theme.key_windowBackgroundWhiteGreenText));
+            ds.setSize(dp(9), dp(9));
+            c.setCompoundDrawablePadding(dp(8));
+            c.setCompoundDrawablesWithIntrinsicBounds(ds, null, null, null);
+        } else {
+            c.setPadding(dp(16), 0, dp(16), 0);
+        }
+        c.setOnClickListener(click);
+        return c;
+    }
+
+    private View buildChips(Context context) {
+        android.widget.HorizontalScrollView sv = new android.widget.HorizontalScrollView(context);
+        sv.setHorizontalScrollBarEnabled(false);
+        android.widget.LinearLayout row = new android.widget.LinearLayout(context);
+        row.setPadding(dp(16), dp(4), dp(8), dp(8));
+        row.addView(chip(context, onlineUsers.size() + " active", !showAll, true, v -> {
+            showAll = false;
+            buildPeople();
+            refreshList();
+        }), LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 40, 0, 0, 8, 0));
+        row.addView(chip(context, "All", showAll, false, v -> {
+            showAll = true;
+            buildPeople();
+            refreshList();
+        }), LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 40, 0, 0, 8, 0));
+        sv.addView(row);
+        return sv;
     }
 
     private boolean tabMode() {
@@ -209,7 +460,8 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
             setBackground(Theme.createSelectorDrawable(Theme.getColor(Theme.key_listSelector), 2));
         }
 
-        void bind(TLRPC.User user, String statusText) {
+        void bind(TLRPC.User user, String statusText, boolean online) {
+            dot.setVisibility(online ? View.VISIBLE : View.GONE);
             avatar.setForUserOrChat(user, new org.telegram.ui.Components.AvatarDrawable(user));
             name.setText(UserObject.getUserName(user));
             status.setText(statusText);
@@ -231,61 +483,69 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
 
         @Override
         public boolean isEnabled(RecyclerView.ViewHolder holder) {
-            return !(tabMode() && holder.getAdapterPosition() == 0);
+            return !tabMode() || holder.getItemViewType() == 2;
         }
 
         @Override
         public int getItemCount() {
-            return onlineUsers.size() + (tabMode() ? 1 : 0);
+            return tabMode() ? headerCount() + shown.size() : onlineUsers.size();
         }
 
+        // 1 = story rail, 3 = chips, 4 = "nobody is online" note, 2 = person row, 0 = classic card row
         @Override
         public int getItemViewType(int position) {
-            return tabMode() ? (position == 0 ? 1 : 2) : 0;
+            if (!tabMode()) {
+                return 0;
+            }
+            int p = position;
+            if (railOn) {
+                if (p == 0) return 1;
+                p--;
+            }
+            if (chipsOn) {
+                if (p == 0) return 3;
+                p--;
+            }
+            if (nobodyOnline && !showAll) {
+                if (p == 0) return 4;
+            }
+            return 2;
         }
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View v;
             if (viewType == 1) {
-                TextView chip = new TextView(mContext);
-                chip.setTextSize(16);
-                chip.setTypeface(org.telegram.messenger.AndroidUtilities.bold());
-                chip.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
-                chip.setGravity(android.view.Gravity.CENTER_VERTICAL);
-                chip.setCompoundDrawablePadding(org.telegram.messenger.AndroidUtilities.dp(8));
-                android.graphics.drawable.GradientDrawable dotShape = new android.graphics.drawable.GradientDrawable();
-                dotShape.setShape(android.graphics.drawable.GradientDrawable.OVAL);
-                dotShape.setColor(Theme.getColor(Theme.key_windowBackgroundWhiteGreenText));
-                dotShape.setSize(org.telegram.messenger.AndroidUtilities.dp(9), org.telegram.messenger.AndroidUtilities.dp(9));
-                chip.setCompoundDrawablesWithIntrinsicBounds(dotShape, null, null, null);
-                android.graphics.drawable.GradientDrawable bg = new android.graphics.drawable.GradientDrawable();
-                bg.setCornerRadius(org.telegram.messenger.AndroidUtilities.dp(20));
-                bg.setColor(Theme.getColor(Theme.key_windowBackgroundGray));
-                chip.setBackground(bg);
-                chip.setPadding(org.telegram.messenger.AndroidUtilities.dp(14), 0, org.telegram.messenger.AndroidUtilities.dp(16), 0);
-                android.widget.FrameLayout wrap = new android.widget.FrameLayout(mContext);
-                wrap.setPadding(org.telegram.messenger.AndroidUtilities.dp(16), org.telegram.messenger.AndroidUtilities.dp(8), 0, org.telegram.messenger.AndroidUtilities.dp(8));
-                wrap.addView(chip, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, 40, android.view.Gravity.LEFT));
-                wrap.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                return new RecyclerListView.Holder(wrap);
+                v = new RailView(mContext);
+            } else if (viewType == 3) {
+                v = buildChips(mContext);
+            } else if (viewType == 4) {
+                TextView t = new TextView(mContext);
+                t.setText("Nobody is active right now. Showing recently active contacts.");
+                t.setTextSize(13);
+                t.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGrayText));
+                t.setPadding(dp(16), dp(2), dp(16), dp(8));
+                v = t;
+            } else if (viewType == 2) {
+                v = new PersonRow(mContext);
+            } else {
+                UserCell cell = new UserCell(mContext, 8, 0, false);
+                cell.setLayoutParams(GroupCardHelper.freshLayoutParams());
+                return new RecyclerListView.Holder(cell);
             }
-            if (viewType == 2) {
-                PersonRow row = new PersonRow(mContext);
-                row.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                return new RecyclerListView.Holder(row);
-            }
-            UserCell cell = new UserCell(mContext, 8, 0, false);
-            cell.setLayoutParams(GroupCardHelper.freshLayoutParams());
-            return new RecyclerListView.Holder(cell);
+            v.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            return new RecyclerListView.Holder(v);
         }
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
             if (tabMode()) {
-                if (position == 0) {
-                    ((TextView) ((android.widget.FrameLayout) holder.itemView).getChildAt(0)).setText(onlineUsers.size() + " active");
-                } else {
-                    ((PersonRow) holder.itemView).bind(onlineUsers.get(position - 1), org.telegram.messenger.LocaleController.getString("Online", R.string.Online));
+                if (holder.getItemViewType() == 2) {
+                    TLRPC.User u = shown.get(position - headerCount());
+                    boolean on = isOnline(u);
+                    String status = on ? org.telegram.messenger.LocaleController.getString("Online", R.string.Online)
+                            : org.telegram.messenger.LocaleController.formatUserStatus(currentAccount, u);
+                    ((PersonRow) holder.itemView).bind(u, status, on);
                 }
                 return;
             }

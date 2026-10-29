@@ -296,7 +296,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
             }
         };
 
-        actionBar.setBackButtonImage(R.drawable.ic_ab_back);
+        actionBar.setBackButtonImage(drawerMode ? 0 : R.drawable.ic_ab_back);
         actionBar.setAllowOverlayTitle(true);
         actionBar.setUseContainerForTitles();
         actionBar.setTitle(getString(R.string.Settings));
@@ -589,16 +589,16 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         topView.removeView(subtitleView);
         coverImage = new BackupImageView(context);
         coverImage.setRoundRadius(0);
-        topView.addView(coverImage, 0, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+        topView.addView(coverImage, 0, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.FILL, 0, 0, 0, 4));
         View scrim = new View(context);
         scrim.setBackground(new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, new int[]{0x00000000, 0x99000000}));
-        topView.addView(scrim, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 90, Gravity.BOTTOM));
+        topView.addView(scrim, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 90, Gravity.BOTTOM, 0, 0, 0, 4));
         titleView.setGravity(Gravity.LEFT);
         titleView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
         subtitleView.setGravity(Gravity.LEFT);
         subtitleView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-        topView.addView(titleView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.LEFT, 16, 0, 16, 36));
-        topView.addView(subtitleView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.LEFT, 16, 0, 16, 14));
+        topView.addView(titleView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.LEFT, 16, 0, 16, 40));
+        topView.addView(subtitleView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.LEFT, 16, 0, 16, 18));
         topView.setOnClickListener(v -> {
             Bundle args = new Bundle();
             args.putLong("user_id", getUserConfig().getClientUserId());
@@ -614,7 +614,13 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         avatarDrawable.setInfo(user);
         avatarView.setForUserOrChat(user, avatarDrawable);
         if (coverImage != null) {
-            coverImage.setForUserOrChat(user, avatarDrawable);
+            // The big photo (not the 160px thumbnail) so the cover is sharp.
+            ImageLocation big = user != null ? ImageLocation.getForUserOrChat(user, ImageLocation.TYPE_BIG) : null;
+            if (big != null) {
+                coverImage.setImage(big, "800_800", avatarDrawable, user);
+            } else {
+                coverImage.setForUserOrChat(user, avatarDrawable);
+            }
         }
         titleView.setText(UserObject.getUserName(user));
         final StringBuilder sb = new StringBuilder();
@@ -705,6 +711,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
     }
 
     private ArrayList<Integer> accountNumbers = new ArrayList<>();
+    private boolean accountsExpanded;
     private void fillItems(ArrayList<UItem> items, UniversalAdapter adapter) {
         if (searchItem.isSearchFieldVisible2()) {
             items.add(UItem.asSpace(ActionBar.getCurrentActionBarHeight()));
@@ -773,8 +780,13 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         }
 
         if (accountNumbers.size() > 0) {
-            items.add(UItem.asHeader(getString(R.string.SettingsAccounts)));
-            for (int i = 0; i < accountNumbers.size(); ++i) {
+            final boolean collapsible = "collapsible".equals(tw.nekomimi.nekogram.layout.LayoutManager.get().spec().stringValue("settings.accounts", "list"));
+            if (collapsible) {
+                items.add(AccountsHeaderCell.Factory.of(accountNumbers.size(), accountsExpanded));
+            } else {
+                items.add(UItem.asHeader(getString(R.string.SettingsAccounts)));
+            }
+            for (int i = 0; i < accountNumbers.size() && (!collapsible || accountsExpanded); ++i) {
                 items.add(AccountCell.Factory.of(i, accountNumbers.get(i)));
             }
             items.add(UItem.asShadow(null));
@@ -896,6 +908,11 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
             } else {
                 LaunchActivity.showAttachMenuBot(LaunchActivity.instance, currentAccount, attachMenuBot, null, true);
             }
+            return;
+        }
+        if (item.instanceOf(AccountsHeaderCell.Factory.class)) {
+            accountsExpanded = !accountsExpanded;
+            listView.adapter.update(true);
             return;
         }
         if (item.instanceOf(AccountCell.Factory.class)) {
@@ -1074,6 +1091,85 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         final int statusBarHeight = systemInsets.top;
         listView.setPadding(0, coverHeader() ? 0 : statusBarHeight + dp(12), 0, navigationBarHeight + additionNavigationBarHeight);
         return WindowInsetsCompat.CONSUMED;
+    }
+
+    /** "Accounts" row that expands or collapses the other signed-in accounts (settings.accounts = collapsible). */
+    public static class AccountsHeaderCell extends LinearLayout {
+        private final TextView title;
+        private final TextView count;
+        private final ImageView arrow;
+
+        public AccountsHeaderCell(Context context, Theme.ResourcesProvider resourcesProvider) {
+            super(context);
+            setOrientation(HORIZONTAL);
+            setGravity(Gravity.CENTER_VERTICAL);
+            title = new TextView(context);
+            title.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15);
+            title.setTypeface(AndroidUtilities.bold());
+            title.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlueHeader, resourcesProvider));
+            title.setText(getString(R.string.SettingsAccounts));
+            addView(title, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_VERTICAL, 21, 0, 0, 0));
+            count = new TextView(context);
+            count.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 11);
+            count.setTypeface(AndroidUtilities.bold());
+            count.setGravity(Gravity.CENTER);
+            count.setPadding(dp(6.66f), 0, dp(6.66f), 0);
+            count.setTextColor(Theme.getColor(Theme.key_featuredStickers_buttonText, resourcesProvider));
+            count.setBackground(Theme.createRoundRectDrawable(dp(10), Theme.getColor(Theme.key_featuredStickers_addButton, resourcesProvider)));
+            addView(count, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 20, Gravity.CENTER_VERTICAL, 8, 0, 0, 0));
+            addView(new View(context), LayoutHelper.createLinear(0, 1, 1f));
+            arrow = new ImageView(context);
+            arrow.setImageResource(R.drawable.msg_expand);
+            arrow.setScaleType(ImageView.ScaleType.CENTER);
+            arrow.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_windowBackgroundWhiteGrayIcon, resourcesProvider), PorterDuff.Mode.SRC_IN));
+            addView(arrow, LayoutHelper.createLinear(24, 24, Gravity.CENTER_VERTICAL, 0, 0, 16, 0));
+            setBackground(Theme.createSelectorDrawable(Theme.getColor(Theme.key_listSelector, resourcesProvider), 2));
+        }
+
+        void set(int accounts, boolean expanded) {
+            count.setText(String.valueOf(accounts));
+            arrow.animate().rotation(expanded ? 180f : 0f).setDuration(180).start();
+        }
+
+        @Override
+        protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+            super.onMeasure(
+                MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(dp(48), MeasureSpec.EXACTLY)
+            );
+        }
+
+        public static class Factory extends UItem.UItemFactory<AccountsHeaderCell> {
+            static { setup(new Factory()); }
+
+            @Override
+            public AccountsHeaderCell createView(Context context, RecyclerListView listView, int currentAccount, int classGuid, Theme.ResourcesProvider resourcesProvider) {
+                return new AccountsHeaderCell(context, resourcesProvider);
+            }
+
+            @Override
+            public void bindView(View view, UItem item, boolean divider, UniversalAdapter adapter, UniversalRecyclerView listView) {
+                ((AccountsHeaderCell) view).set(item.intValue, item.checked);
+            }
+
+            public static UItem of(int accounts, boolean expanded) {
+                final UItem item = UItem.ofFactory(AccountsHeaderCell.Factory.class);
+                item.id = 900;
+                item.intValue = accounts;
+                item.checked = expanded;
+                return item;
+            }
+
+            @Override
+            public boolean equals(UItem a, UItem b) {
+                return a.id == b.id;
+            }
+
+            @Override
+            public boolean contentsEquals(UItem a, UItem b) {
+                return a.intValue == b.intValue && a.checked == b.checked;
+            }
+        }
     }
 
     public static class AccountCell extends LinearLayout implements Theme.Colorable {
@@ -2149,7 +2245,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
 
     private void checkUi_menuItems() {
         FragmentFloatingButton.setAnimatedVisibility(otherItem, 1f - animatorSearchPageVisible.getFloatValue());
-        FragmentFloatingButton.setAnimatedVisibility(actionBar.getBackButton(), lerp(hasMainTabs ? 0f : 1f, 1f, animatorSearchPageVisible.getFloatValue()));
+        FragmentFloatingButton.setAnimatedVisibility(actionBar.getBackButton(), lerp(hasMainTabs || drawerMode ? 0f : 1f, 1f, animatorSearchPageVisible.getFloatValue()));
     }
 
 

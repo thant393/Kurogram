@@ -3319,7 +3319,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     if (iBlur3SourceGlass != null && !iBlur3SourceGlass.inRecording()) {
                         //if (iBlur3SourceGlass.needUpdateDisplayList(width, height) || iBlur3Invalidated) {
                         final Canvas c = iBlur3SourceGlass.beginRecording(width, height);
-                        c.drawColor(getThemedColor(Theme.key_windowBackgroundGray));
+                        c.drawColor(profileBg());
                         if (SharedConfig.chatBlurEnabled()) {
                             scrollableViewNoiseSuppressor.draw(c, DownscaleScrollableNoiseSuppressor.DRAW_GLASS);
                         }
@@ -3329,9 +3329,9 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     iBlur3Invalidated = false;
                 }
 
-                whitePaint.setColor(getThemedColor(Theme.key_windowBackgroundGray));
+                whitePaint.setColor(profileBg());
                 if (listView.getVisibility() == VISIBLE) {
-                    grayPaint.setColor(getThemedColor(Theme.key_windowBackgroundGray));
+                    grayPaint.setColor(profileBg());
                     if (transitionAnimationInProress) {
                         whitePaint.setAlpha((int) (255 * listView.getAlpha()));
                     }
@@ -4239,7 +4239,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         };
         listView.setSections();
         listView.applyPaddingToSections = false;
-        listView.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundGray));
+        listView.setBackgroundColor(profileBg());
         listView.setVerticalScrollBarEnabled(false);
         final IBlur3Capture listViewCapture = new ViewGroupPartRenderer(listView, (ViewGroup) fragmentView, (canvas, child, drawingTime) -> {
             if (child == sharedMediaLayout) {
@@ -5228,7 +5228,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
 
         topView = new TopView(context);
         topView.setBackgroundColorId(peerColor, false);
-        topView.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundGray));
+        topView.setBackgroundColor(profileBg());
         frameLayout.addView(topView);
         contentView.blurBehindViews.add(topView);
 
@@ -5942,7 +5942,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 if (sharedMediaLayout != null && sharedMediaLayout.getCurrentListView() != null) {
                     sharedMediaLayout.getCurrentListView().cancelClickRunnables(true);
                 }
-                topView.setBackgroundColor(ColorUtils.blendARGB(getAverageColor(pinchToZoomHelper.getPhotoImage()), getThemedColor(Theme.key_windowBackgroundGray), 0.1f));
+                topView.setBackgroundColor(ColorUtils.blendARGB(getAverageColor(pinchToZoomHelper.getPhotoImage()), profileBg(), 0.1f));
             }
 
             @Override
@@ -8705,7 +8705,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                         } else {
                             expandAnimator.setDuration(0);
                         }
-                        topView.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundGray));
+                        topView.setBackgroundColor(profileBg());
 
                         if (!doNotSetForeground) {
                             BackupImageView imageView = avatarsViewPager.getCurrentItemView();
@@ -12682,6 +12682,11 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         return resourcesProvider;
     }
 
+    /** Page background: the skin's screens.profile.background if set, else Telegram's gray. */
+    private int profileBg() {
+        return tw.nekomimi.nekogram.skin.KuroSkinManager.get().colorOr("screens.profile.background", getThemedColor(Theme.key_windowBackgroundGray));
+    }
+
     public int getThemedColor(int key) {
         return Theme.getColor(key, resourcesProvider);
     }
@@ -15502,7 +15507,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                         ((UserCell) child).update(0);
                     }
                 }
-                listView.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundGray));
+                listView.setBackgroundColor(profileBg());
             }
             if (!isPulledDown) {
                 if (onlineTextView[1] != null) {
