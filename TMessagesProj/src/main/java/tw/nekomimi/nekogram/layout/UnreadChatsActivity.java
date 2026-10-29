@@ -85,7 +85,7 @@ public class UnreadChatsActivity extends BaseFragment implements NotificationCen
         listView.setAdapter(adapter);
         if (asTab) {
             listView.setClipToPadding(false);
-            listView.setPadding(0, 0, 0, AndroidUtilities.dp(DialogsActivity.MAIN_TABS_HEIGHT_WITH_MARGINS + 8));
+            listView.setPadding(0, AndroidUtilities.dp(8), 0, AndroidUtilities.dp(DialogsActivity.MAIN_TABS_HEIGHT_WITH_MARGINS + 8));
         }
         listView.setOnItemClickListener((view, position) -> {
             if (position < 0 || position >= unread.size()) return;

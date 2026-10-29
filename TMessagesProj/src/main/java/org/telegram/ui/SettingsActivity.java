@@ -589,16 +589,27 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         topView.removeView(subtitleView);
         coverImage = new BackupImageView(context);
         coverImage.setRoundRadius(0);
-        topView.addView(coverImage, 0, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.FILL, 0, 0, 0, 4));
+        // Cover + scrim sit in a box with rounded bottom corners (same radius as the cards below) and an 8dp gap.
+        final FrameLayout coverBox = new FrameLayout(context);
+        coverBox.setOutlineProvider(new android.view.ViewOutlineProvider() {
+            @Override
+            public void getOutline(View view, android.graphics.Outline outline) {
+                final int r = dp(16);
+                outline.setRoundRect(0, -r, view.getWidth(), view.getHeight(), r);
+            }
+        });
+        coverBox.setClipToOutline(true);
+        coverBox.addView(coverImage, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         View scrim = new View(context);
         scrim.setBackground(new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, new int[]{0x00000000, 0x99000000}));
-        topView.addView(scrim, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 90, Gravity.BOTTOM, 0, 0, 0, 4));
+        coverBox.addView(scrim, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 90, Gravity.BOTTOM));
+        topView.addView(coverBox, 0, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.FILL, 0, 0, 0, 8));
         titleView.setGravity(Gravity.LEFT);
         titleView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
         subtitleView.setGravity(Gravity.LEFT);
         subtitleView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-        topView.addView(titleView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.LEFT, 16, 0, 16, 40));
-        topView.addView(subtitleView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.LEFT, 16, 0, 16, 18));
+        topView.addView(titleView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.LEFT, 16, 0, 16, 44));
+        topView.addView(subtitleView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.LEFT, 16, 0, 16, 22));
         topView.setOnClickListener(v -> {
             Bundle args = new Bundle();
             args.putLong("user_id", getUserConfig().getClientUserId());

@@ -40,6 +40,7 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
     private final ArrayList<TLRPC.User> shown = new ArrayList<>();
     private final ArrayList<TLRPC.User> railUsers = new ArrayList<>();
     private final ArrayList<Long> railStoryPeers = new ArrayList<>();
+    private final ArrayList<org.telegram.tgnet.tl.TL_stories.StoryItem> railStoryItems = new ArrayList<>();
     private boolean showAll;
     private boolean nobodyOnline;
     private boolean railOn = true;
@@ -186,6 +187,7 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
         // Rail: people with stories first. With no stories, fall back to the most recently active contacts.
         railUsers.clear();
         railStoryPeers.clear();
+        railStoryItems.clear();
         try {
             ArrayList<org.telegram.tgnet.tl.TL_stories.PeerStories> list = MessagesController.getInstance(currentAccount).getStoriesController().getDialogListStories();
             if (list != null) {
@@ -193,8 +195,15 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
                     long id = org.telegram.messenger.DialogObject.getPeerDialogId(ps.peer);
                     TLRPC.User u = id > 0 ? MessagesController.getInstance(currentAccount).getUser(id) : null;
                     if (u != null && !UserObject.isUserSelf(u)) {
+                        org.telegram.tgnet.tl.TL_stories.StoryItem pick = null;
+                        for (org.telegram.tgnet.tl.TL_stories.StoryItem it : ps.stories) {
+                            if (it != null && it.media != null && (pick == null || it.id > ps.max_read_id && pick.id <= ps.max_read_id)) {
+                                pick = it;
+                            }
+                        }
                         railUsers.add(u);
                         railStoryPeers.add(id);
+                        railStoryItems.add(pick);
                     }
                 }
             }
@@ -282,7 +291,7 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
 
     /** One story-rail card: "Add to story" (first), a contact with a story, or a recently active contact. */
     private final class StoryCard extends FrameLayout {
-        StoryCard(Context context, TLRPC.User user, boolean add, boolean hasStory) {
+        StoryCard(Context context, TLRPC.User user, boolean add, boolean hasStory, org.telegram.tgnet.tl.TL_stories.StoryItem item) {
             super(context);
             setBackground(round(Theme.getColor(Theme.key_windowBackgroundGray), 12));
             setClipToOutline(true);
@@ -312,7 +321,10 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
             }
             // Big photo fills the card (blurry-free: use the big location when there is one).
             org.telegram.messenger.ImageLocation big = org.telegram.messenger.ImageLocation.getForUserOrChat(user, org.telegram.messenger.ImageLocation.TYPE_BIG);
-            if (big != null) {
+            if (item != null) {
+                // The story's own picture / video frame, like Messenger; the poster is the small icon.
+                org.telegram.ui.Stories.StoriesUtilities.setThumbImage(ad, img.getImageReceiver(), item, 90, 150);
+            } else if (big != null) {
                 img.setImage(big, "300_300", ad, user);
             } else {
                 img.setForUserOrChat(user, ad);
@@ -360,13 +372,13 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
             row.setOrientation(android.widget.LinearLayout.HORIZONTAL);
             row.setPadding(dp(12), dp(8), dp(12), dp(8));
             TLRPC.User self = getUserConfig().getCurrentUser();
-            StoryCard add = new StoryCard(context, self, true, false);
+            StoryCard add = new StoryCard(context, self, true, false, null);
             add.setOnClickListener(v -> addStory());
             row.addView(add, LayoutHelper.createLinear(88, 150, 0, 0, 4, 0));
             for (int i = 0; i < railUsers.size(); i++) {
                 final int index = i;
                 final boolean story = i < railStoryPeers.size();
-                StoryCard card = new StoryCard(context, railUsers.get(i), false, story);
+                StoryCard card = new StoryCard(context, railUsers.get(i), false, story, story && i < railStoryItems.size() ? railStoryItems.get(i) : null);
                 card.setOnClickListener(v -> openStory(index));
                 row.addView(card, LayoutHelper.createLinear(88, 150, 0, 0, 4, 0));
             }

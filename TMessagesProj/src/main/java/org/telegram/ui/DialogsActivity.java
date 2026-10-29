@@ -2109,8 +2109,21 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
 
             final int b = calculateListViewPaddingBottom();
             if (t != topPadding || b != getPaddingBottom()) {
+                // Stories / folder bar appearing after the first layout grows the top padding; if the list was
+                // resting at its very top, keep it there so the first chat is not left under the header.
+                boolean wasAtTop = false;
+                if (t != getPaddingTop() && getChildCount() > 0 && getLayoutManager() instanceof LinearLayoutManager) {
+                    final View c0 = getChildAt(0);
+                    final int firstPos = ((LinearLayoutManager) getLayoutManager()).findFirstVisibleItemPosition();
+                    wasAtTop = firstPos <= 1 && c0.getTop() <= getPaddingTop() + dp(2) && getChildAdapterPosition(c0) == firstPos
+                            && (firstPos == 0 || (parentPage.dialogsType == DIALOGS_TYPE_DEFAULT && hasHiddenArchive()));
+                }
                 setTopGlowOffset(t);
                 setPadding(0, t, 0, b);
+                if (wasAtTop) {
+                    final int target = parentPage.dialogsType == DIALOGS_TYPE_DEFAULT && hasHiddenArchive() ? 1 : 0;
+                    ((LinearLayoutManager) getLayoutManager()).scrollToPositionWithOffset(target, (int) scrollYOffset);
+                }
                 if (hasStories) {
                     parentPage.progressView.setPaddingTop(t - dp(DialogStoriesCell.HEIGHT_IN_DP));
                 } else {

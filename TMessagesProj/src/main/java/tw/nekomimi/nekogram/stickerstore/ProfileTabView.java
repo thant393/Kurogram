@@ -100,8 +100,8 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
             }
         });
         headerCard = card;
-        card.setPadding(AndroidUtilities.dp(24), AndroidUtilities.dp(28), AndroidUtilities.dp(24), AndroidUtilities.dp(24));
-        column.addView(card, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 16, 12, 16, 14));
+        card.setPadding(AndroidUtilities.dp(16), AndroidUtilities.dp(16), AndroidUtilities.dp(16), AndroidUtilities.dp(14));
+        column.addView(card, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 12, 8, 12, 8));
 
         BackupImageView avatarView = new BackupImageView(context);
         avatarView.setRoundRadius(AndroidUtilities.dp(44));
@@ -120,13 +120,13 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
         avatarRingDrawable = ring;
         ring.setStroke(AndroidUtilities.dp(2.5f), tw.nekomimi.nekogram.skin.KuroSkinManager.get().accent());
         avatarRing.setBackground(ring);
-        int ringDp = tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec().intValue("screens.profile.avatarSizeDp", 100);
+        int ringDp = Math.min(76, tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec().intValue("screens.profile.avatarSizeDp", 100));
         avatarView.setRoundRadius(AndroidUtilities.dp((ringDp - 12) / 2f));
         avatarRing.addView(avatarView, LayoutHelper.createFrame(ringDp - 12, ringDp - 12, Gravity.CENTER));
-        card.addView(avatarRing, LayoutHelper.createLinear(ringDp, ringDp, Gravity.CENTER_HORIZONTAL, 0, 0, 0, 14));
+        card.addView(avatarRing, LayoutHelper.createLinear(ringDp, ringDp, Gravity.CENTER_HORIZONTAL, 0, 0, 0, 8));
 
         TextView nameView = new TextView(context);
-        nameView.setTextSize(23);
+        nameView.setTextSize(20);
         nameView.setTypeface(AndroidUtilities.bold());
         nameView.setGravity(Gravity.CENTER);
         nameView.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
@@ -148,7 +148,7 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
             usernameViewRef = usernameView;
             usernameView.setTextColor(tw.nekomimi.nekogram.skin.KuroSkinManager.get().accent());
             usernameView.setText("@" + username);
-            card.addView(usernameView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL, 0, 0, 0, 8));
+            card.addView(usernameView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL, 0, 0, 0, 4));
         }
 
         if (self && user != null && user.phone != null && !user.phone.isEmpty()) {
@@ -179,7 +179,7 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
         });
         contentCard.setClipToOutline(true);
         this.contentCard = contentCard;
-        column.addView(contentCard, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 0, 1f, 16, 0, 16, 16));
+        column.addView(contentCard, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 0, 1f, 12, 0, 12, 12));
 
         // --- iOS-style segmented control: a capsule track with a white capsule that slides ---
         segmented = new SegmentedControl(context, new String[]{"Themes", "Stickers"}, this::showTab);

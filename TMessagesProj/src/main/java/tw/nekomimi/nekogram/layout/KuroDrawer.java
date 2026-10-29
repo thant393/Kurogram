@@ -128,8 +128,9 @@ public final class KuroDrawer {
         final Dialog dialog = new Dialog(context);
         ref[0] = dialog;
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        FrameLayout root = new FrameLayout(context);
-        root.setOnClickListener(v -> dialog.dismiss());
+        final FrameLayout root = new FrameLayout(context);
+        root.setTag("kuroDrawerRoot");
+        root.setOnClickListener(v -> closeAnimated(dialog, root));
         final int width = Math.min(AndroidUtilities.dp(300), (int) (AndroidUtilities.displaySize.x * 0.76f));
         final FrameLayout panel = new FrameLayout(context);
         panel.setClickable(true);
@@ -152,21 +153,51 @@ public final class KuroDrawer {
             } catch (Exception ignored) {
             }
         });
+        dialog.setOnKeyListener((d, keyCode, event) -> {
+            if (keyCode == android.view.KeyEvent.KEYCODE_BACK && event.getAction() == android.view.KeyEvent.ACTION_UP) {
+                closeAnimated(dialog, root);
+                return true;
+            }
+            return false;
+        });
         Window w = dialog.getWindow();
         if (w != null) {
             edgeToEdge(w);
+            // No default "slide up from the bottom" window animation: the panel itself slides in from the side.
+            w.setWindowAnimations(0);
         }
         panel.setTranslationX(-width);
         dialog.show();
         androidx.core.view.ViewCompat.requestApplyInsets(panel);
         page.onResume();
-        panel.animate().translationX(0).setDuration(200).start();
+        panel.animate().translationX(0).setDuration(240).setInterpolator(new android.view.animation.DecelerateInterpolator(1.6f)).start();
     }
 
     private static void dismissDrawer(Dialog[] ref, SettingsActivity[] holder) {
         if (ref[0] != null && ref[0].isShowing()) {
-            ref[0].dismiss();
+            View root = ref[0].getWindow() != null ? ref[0].getWindow().getDecorView().findViewWithTag("kuroDrawerRoot") : null;
+            if (root instanceof FrameLayout) {
+                closeAnimated(ref[0], (FrameLayout) root);
+            } else {
+                ref[0].dismiss();
+            }
         }
+    }
+
+    private static void closeAnimated(final Dialog dialog, FrameLayout root) {
+        View panel = root.getChildAt(0);
+        if ("closing".equals(panel.getTag())) {
+            return;
+        }
+        panel.setTag("closing");
+        panel.animate().translationX(-panel.getWidth()).setDuration(200)
+                .setInterpolator(new android.view.animation.AccelerateInterpolator(1.2f))
+                .withEndAction(() -> {
+                    try {
+                        dialog.dismiss();
+                    } catch (Exception ignored) {
+                    }
+                }).start();
     }
 
     public static void show(final BaseFragment from) {
