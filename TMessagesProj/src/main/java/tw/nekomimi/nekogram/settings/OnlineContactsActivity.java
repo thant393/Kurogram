@@ -402,7 +402,8 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
                 card.setOnClickListener(v -> openStory(index));
                 row.addView(card, LayoutHelper.createLinear(88, 150, 0, 0, 4, 0));
             }
-            addView(row, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            addView(row, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            setFillViewport(false);
         }
     }
 
@@ -565,7 +566,8 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
                 cell.setLayoutParams(GroupCardHelper.freshLayoutParams());
                 return new RecyclerListView.Holder(cell);
             }
-            v.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            // The story rail needs an explicit height; wrap_content inside a horizontal scroller clipped the cards.
+            v.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, viewType == 1 ? dp(166) : ViewGroup.LayoutParams.WRAP_CONTENT));
             return new RecyclerListView.Holder(v);
         }
 
