@@ -1033,6 +1033,11 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             if (whiteActionBar) {
                 if (searchAnimationProgress == 1f) {
                     actionBarSearchPaint.setColor(getThemedColor(Theme.key_windowBackgroundWhite));
+                    if (fragmentSearchField != null && searchIsShowed) {
+                        // Same position the animation frames use. Without an animation (first open) no frame ran, so the
+                        // field kept its resting translation and sat one field-height too low, covering the search tabs.
+                        fragmentSearchField.setTranslationY(top + actionBarHeight - (actionBar.getHeight() + (filterTabsView != null ? filterTabsView.getMeasuredHeight() : 0)) + getSearchFieldAdditionOffset());
+                    }
                 } else if (searchAnimationProgress == 0) {
                     if (fragmentSearchField != null) {
                         fragmentSearchField.setTranslationY(scrollYOffset + getSearchFieldAdditionOffset());
