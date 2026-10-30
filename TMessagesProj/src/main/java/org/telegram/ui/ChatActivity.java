@@ -391,6 +391,12 @@ public class ChatActivity extends BaseFragment implements
         ForwardContext,
         FactorAnimator.Target
 {
+
+    @Override
+    public boolean usesPageGradient() {
+        return false;
+    }
+
     private final static boolean PULL_DOWN_BACK_FRAGMENT = false;
     private final static boolean DISABLE_PROGRESS_VIEW = true;
     private final static int SKELETON_DISAPPEAR_MS = 200;

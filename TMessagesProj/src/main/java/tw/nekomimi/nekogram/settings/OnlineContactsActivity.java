@@ -31,6 +31,12 @@ import java.util.Comparator;
 
 public class OnlineContactsActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate {
 
+    @Override
+    public boolean usesPageGradient() {
+        return false;
+    }
+
+
     private RecyclerListView listView;
     private ListAdapter listAdapter;
     private TextView emptyView;

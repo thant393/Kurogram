@@ -293,6 +293,12 @@ import tw.nekomimi.nekogram.helpers.remote.ConfigHelper;
 import me.vkryl.android.util.ClickHelper;
 
 public class DialogsActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate, FloatingDebugProvider, FactorAnimator.Target, MainTabsActivity.TabFragmentDelegate {
+
+    @Override
+    public boolean usesPageGradient() {
+        return false;
+    }
+
     private final int ADDITIONAL_LIST_HEIGHT_DP = Build.VERSION.SDK_INT >= 31 ? 48 : 0;
 
     private static final boolean TMP_DISABLE_TOPICS_TWO_COLUMNS = false;

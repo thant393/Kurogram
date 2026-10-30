@@ -1199,6 +1199,14 @@ public abstract class BaseFragment {
         removingFromStack = b;
     }
 
+    /**
+     * Kuro skins: whether this screen's plain page colour may be swapped for the skin's page gradient.
+     * Screens that must keep their own backdrop (chat wallpaper, Messenger-style lists) override this to false.
+     */
+    public boolean usesPageGradient() {
+        return true;
+    }
+
     public boolean isLightStatusBar() {
         if (getLastStoryViewer() != null && getLastStoryViewer().isShown()) {
             return false;

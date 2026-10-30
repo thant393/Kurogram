@@ -32,6 +32,12 @@ import java.util.ArrayList;
  */
 public class UnreadChatsActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate {
 
+    @Override
+    public boolean usesPageGradient() {
+        return false;
+    }
+
+
     private final ArrayList<TLRPC.Dialog> unread = new ArrayList<>();
     private RecyclerListView listView;
     private TextView emptyView;
