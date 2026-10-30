@@ -109,7 +109,11 @@ public final class KuroUi {
      */
     public static void paintFragmentRoot(android.view.View root, Object fragment) {
         try {
-            if (root == null || !hasGradient() || fragment instanceof org.telegram.ui.ChatActivity) {
+            if (root == null || !hasGradient() || fragment instanceof org.telegram.ui.ChatActivity
+                    // Messenger-style list screens keep their own plain page colour.
+                    || fragment instanceof org.telegram.ui.DialogsActivity
+                    || fragment instanceof tw.nekomimi.nekogram.settings.OnlineContactsActivity
+                    || fragment instanceof tw.nekomimi.nekogram.layout.UnreadChatsActivity) {
                 return;
             }
             android.graphics.drawable.Drawable bg = root.getBackground();
