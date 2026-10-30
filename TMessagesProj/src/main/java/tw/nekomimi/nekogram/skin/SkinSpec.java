@@ -185,6 +185,14 @@ public final class SkinSpec {
             put(o, "bubbleOut", Theme.key_chat_outBubble);
             put(o, "bubbleInText", Theme.key_chat_messageTextIn);
             put(o, "bubbleOutText", Theme.key_chat_messageTextOut);
+            // The page colour every ordinary screen paints behind its white cards. screens.settings.background,
+            // when the skin gives one, wins so all screens share the Settings page colour.
+            int pageBg = colorValue("screens.settings.background");
+            if (pageBg != 0) {
+                int solidBg = solid(pageBg);
+                o.put(Theme.key_windowBackgroundGray, solidBg);
+                o.put(Theme.key_dialogBackgroundGray, solidBg);
+            }
             keyOverrides = o;
         }
         return keyOverrides;
