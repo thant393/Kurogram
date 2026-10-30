@@ -7619,6 +7619,9 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     }
 
     private void showSearch(boolean show, boolean startFromDownloads, boolean animated, boolean forceNotOnlyDialogs) {
+        // With the always-visible search field hidden by the layout, the compact "dialogs only" search (first open)
+        // is laid out for a field that is not there. Use the full search (with filter tabs) every time.
+        forceNotOnlyDialogs = forceNotOnlyDialogs || (show && searchFieldHidden());
         animatorSearchVisible.setValue(show, animated);
 
         if (!show) {
