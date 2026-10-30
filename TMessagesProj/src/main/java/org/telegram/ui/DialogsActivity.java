@@ -7623,6 +7623,14 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             searchAnimator = null;
         }
         searchIsShowed = show;
+        if (!show) {
+            // Back to the pinned header once the search animation has finished.
+            AndroidUtilities.runOnUIThread(() -> {
+                if (!searchIsShowed && headerPinned()) {
+                    setScrollY(0);
+                }
+            }, 400);
+        }
         blur3_InvalidateBlur();
         if (show) {
             boolean onlyDialogsAdapter;
@@ -9064,7 +9072,8 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
 
     /** chatList.header.collapse = pinned: the stories tray and folder bar never scroll away (Messenger-style). */
     private boolean headerPinned() {
-        return hasMainTabs && "pinned".equals(tw.nekomimi.nekogram.layout.LayoutManager.get().spec().stringValue("chatList.header.collapse", "scroll"));
+        // While search is open Telegram collapses the header itself; pinning only applies to the plain list.
+        return hasMainTabs && !searchIsShowed && !searching && "pinned".equals(tw.nekomimi.nekogram.layout.LayoutManager.get().spec().stringValue("chatList.header.collapse", "scroll"));
     }
 
     private void setScrollY(float value) {

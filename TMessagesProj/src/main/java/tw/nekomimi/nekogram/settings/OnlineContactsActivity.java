@@ -110,7 +110,12 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
                 openChat(onlineUsers.get(position));
             }
         });
-        frameLayout.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+        FrameLayout.LayoutParams listParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        if (asTab) {
+            // The action bar is drawn over the page: start the list below it so the first row/rail is not hidden.
+            listParams.topMargin = org.telegram.ui.ActionBar.ActionBar.getCurrentActionBarHeight() + (actionBar.getOccupyStatusBar() ? org.telegram.messenger.AndroidUtilities.statusBarHeight : 0);
+        }
+        frameLayout.addView(listView, listParams);
 
         emptyView = new TextView(context);
         emptyView.setText(tabMode() ? "No contacts yet." : "No contacts are currently online.");

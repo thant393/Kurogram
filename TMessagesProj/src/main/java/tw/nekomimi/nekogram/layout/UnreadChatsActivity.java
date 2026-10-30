@@ -100,7 +100,12 @@ public class UnreadChatsActivity extends BaseFragment implements NotificationCen
             }
             presentFragment(new ChatActivity(args));
         });
-        root.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+        FrameLayout.LayoutParams listParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        if (asTab) {
+            // The action bar is drawn over the page: start the list below it so the first chat is not hidden.
+            listParams.topMargin = org.telegram.ui.ActionBar.ActionBar.getCurrentActionBarHeight() + (actionBar.getOccupyStatusBar() ? AndroidUtilities.statusBarHeight : 0);
+        }
+        root.addView(listView, listParams);
 
         emptyView = new TextView(context);
         emptyView.setText("You're all caught up");
