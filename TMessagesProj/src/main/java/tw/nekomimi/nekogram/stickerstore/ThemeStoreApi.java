@@ -423,7 +423,6 @@ public final class ThemeStoreApi {
                                 tw.nekomimi.nekogram.layout.LayoutManager.get().apply(embedded);
                             }
                             cacheContent(id, version, "skin", sha, content);
-                            android.widget.Toast.makeText(org.telegram.messenger.ApplicationLoader.applicationContext, "Theme updated · file " + sha.substring(0, 8), android.widget.Toast.LENGTH_SHORT).show();
                         } catch (Exception ignore) {
                         }
                     });

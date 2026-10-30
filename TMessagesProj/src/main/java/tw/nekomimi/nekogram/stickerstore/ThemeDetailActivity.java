@@ -576,9 +576,7 @@ public class ThemeDetailActivity extends BaseFragment {
                     throw new IllegalArgumentException("unsupported theme type");
                 }
                 ThemeStoreApi.setApplied(info.id, response.optInt("version", info.version));
-                String shaShort = response.optString("sha256", "");
-                shaShort = shaShort.length() >= 8 ? " · file " + shaShort.substring(0, 8) : "";
-                setStatus((fromCache ? "Applied (offline copy)" : "Applied") + shaShort, false);
+                setStatus(fromCache ? "Applied (offline copy)" : "Applied", false);
             }
         } catch (IllegalArgumentException e) {
             setStatus("This theme was rejected: " + e.getMessage(), true);

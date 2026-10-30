@@ -438,6 +438,13 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
     private View buildChips(Context context) {
         android.widget.HorizontalScrollView sv = new android.widget.HorizontalScrollView(context);
         sv.setHorizontalScrollBarEnabled(false);
+        fillChips(sv, context);
+        return sv;
+    }
+
+    /** (Re)draws the chip row so the selected chip always matches the list below it. */
+    private void fillChips(android.widget.HorizontalScrollView sv, Context context) {
+        sv.removeAllViews();
         android.widget.LinearLayout row = new android.widget.LinearLayout(context);
         row.setPadding(dp(16), dp(4), dp(8), dp(8));
         row.addView(chip(context, onlineUsers.size() + " active", !showAll, true, v -> {
@@ -451,7 +458,6 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
             refreshList();
         }), LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 40, 0, 0, 8, 0));
         sv.addView(row);
-        return sv;
     }
 
     private boolean tabMode() {
@@ -579,6 +585,10 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
             if (tabMode()) {
+                if (holder.getItemViewType() == 3) {
+                    fillChips((android.widget.HorizontalScrollView) holder.itemView, mContext);
+                    return;
+                }
                 if (holder.getItemViewType() == 2) {
                     TLRPC.User u = shown.get(position - headerCount());
                     boolean on = isOnline(u);
