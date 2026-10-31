@@ -1066,7 +1066,7 @@ public class PrivacySettingsActivity extends BaseFragment implements Notificatio
                     view = new ShadowSectionCell(mContext);
                     break;
                 case 5:
-                    view = new TextCell(mContext);
+                    view = new TextCell(mContext).useSkinTokens();
                     break;
                 case 3:
                 default:

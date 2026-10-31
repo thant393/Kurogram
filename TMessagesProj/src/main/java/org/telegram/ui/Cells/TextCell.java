@@ -71,6 +71,13 @@ public class TextCell extends FrameLayout {
     private float loadingProgress;
     private float drawLoadingProgress;
 
+    // Kuro skins: components.cell.* (opt-in per screen; see useSkinTokens). All -1 / 0 = Telegram's own values.
+    private boolean skinned;
+    private boolean skinTouched;
+    private int skinVersion = -1;
+    private int skinHeightDp = -1, skinDividerInsetDp = -1, skinDividerVisible = -1, skinDividerColor;
+    private Paint skinDividerPaint;
+
     private AnimatedEmojiDrawable.SwapAnimatedEmojiDrawable emojiDrawable;
 
     private int lastWidth;
@@ -178,10 +185,48 @@ public class TextCell extends FrameLayout {
         }
     }
 
+    /**
+     * Kuro skins: lets the active skin's components.cell.* tokens (height, title/value size, title weight,
+     * divider) apply to this cell. Only for cells without a custom ResourcesProvider; a skin that sets none of
+     * the tokens leaves the cell exactly as Telegram draws it.
+     */
+    public TextCell useSkinTokens() {
+        if (resourcesProvider == null) {
+            skinned = true;
+            if (checkBox != null) {
+                checkBox.useSkinTokens();
+            }
+            applySkinTokens();
+        }
+        return this;
+    }
+
+    private void applySkinTokens() {
+        tw.nekomimi.nekogram.skin.SkinTokens t = tw.nekomimi.nekogram.skin.KuroUi.t();
+        if (t.version == skinVersion) {
+            return;
+        }
+        skinVersion = t.version;
+        skinHeightDp = t.cellHeightDp;
+        skinDividerInsetDp = t.cellDividerInsetDp;
+        skinDividerVisible = t.cellDividerVisible;
+        skinDividerColor = t.cellDividerColor;
+        boolean any = t.cellTitleSizeSp >= 0 || t.cellValueSizeSp >= 0 || t.cellTitleWeight >= 0;
+        if (any || skinTouched) {
+            skinTouched = true; // after the first change, an unset token puts Telegram's value back
+            textView.setTextSize(t.cellTitleSizeSp >= 0 ? t.cellTitleSizeSp : 16);
+            valueTextView.setTextSize(dp(t.cellValueSizeSp >= 0 ? t.cellValueSizeSp : 16));
+            valueSpoilersTextView.setTextSize(t.cellValueSizeSp >= 0 ? t.cellValueSizeSp : 16);
+            textView.setTypeface(tw.nekomimi.nekogram.skin.KuroUi.weightTypeface(t.cellTitleWeight));
+        }
+        requestLayout();
+        invalidate();
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width = MeasureSpec.getSize(widthMeasureSpec);
-        int height = dp(heightDp);
+        int height = dp(skinned && skinHeightDp >= 0 ? skinHeightDp : heightDp);
 
         if (lastWidth != 0 && lastWidth != width && valueText != null) {
             valueTextView.setText(TextUtils.ellipsize(valueText, valueTextView.getPaint(), AndroidUtilities.displaySize.x / 2.5f, TextUtils.TruncateAt.END), false);
@@ -507,6 +552,9 @@ public class TextCell extends FrameLayout {
         setColorfulIcon(color, resId);
         if (checkBox == null) {
             checkBox = new Switch(getContext(), resourcesProvider);
+            if (skinned) {
+                checkBox.useSkinTokens();
+            }
             checkBox.setColors(Theme.key_switchTrack, Theme.key_switchTrackChecked, Theme.key_windowBackgroundWhite, Theme.key_windowBackgroundWhite);
             addView(checkBox, LayoutHelper.createFrame(37, 20, (LocaleController.isRTL ? Gravity.LEFT : Gravity.RIGHT) | Gravity.CENTER_VERTICAL, 22, 0, 22, 0));
         }
@@ -827,12 +875,26 @@ public class TextCell extends FrameLayout {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (needDivider) {
+        if (needDivider && !(skinned && skinDividerVisible == 0)) {
             Paint paint = resourcesProvider != null ? resourcesProvider.getPaint(Theme.key_paint_divider) : null;
             if (paint == null) {
                 paint = Theme.dividerPaint;
             }
-            canvas.drawLine(LocaleController.isRTL ? 0 : dp(imageView.getVisibility() == VISIBLE ? (inDialogs ? 72 : 58) : 20), getMeasuredHeight() - 1, getMeasuredWidth() - (LocaleController.isRTL ? dp(imageView.getVisibility() == VISIBLE ? (inDialogs ? 72 : 58) : 20) : 0), getMeasuredHeight() - 1, paint);
+            int inset = dp(imageView.getVisibility() == VISIBLE ? (inDialogs ? 72 : 58) : 20);
+            if (skinned) {
+                if (skinDividerInsetDp >= 0) {
+                    inset = dp(skinDividerInsetDp);
+                }
+                if (skinDividerColor != 0) {
+                    if (skinDividerPaint == null) {
+                        skinDividerPaint = new Paint();
+                    }
+                    skinDividerPaint.setColor(skinDividerColor);
+                    skinDividerPaint.setStrokeWidth(Theme.dividerPaint.getStrokeWidth());
+                    paint = skinDividerPaint;
+                }
+            }
+            canvas.drawLine(LocaleController.isRTL ? 0 : inset, getMeasuredHeight() - 1, getMeasuredWidth() - (LocaleController.isRTL ? inset : 0), getMeasuredHeight() - 1, paint);
         }
     }
 
@@ -881,6 +943,9 @@ public class TextCell extends FrameLayout {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         attached = true;
+        if (skinned) {
+            applySkinTokens();
+        }
         if (emojiDrawable != null) {
             emojiDrawable.attach();
         }
