@@ -131,12 +131,17 @@ public class DataSettingsActivity extends BaseFragment {
         return true;
     }
 
+    /** Kuro skins: next row index, or -1 when the active layout hides this row (layout.dataStorage.hiddenRows). */
+    private int skinRow(String id) {
+        return tw.nekomimi.nekogram.skin.RowMap.hidden("dataStorage", id) ? -1 : rowCount++;
+    }
+
     private void updateRows(boolean fullNotify) {
 
         rowCount = 0;
         usageSectionRow = rowCount++;
-        storageUsageRow = rowCount++;
-        dataUsageRow = rowCount++;
+        storageUsageRow = skinRow("storageUsage");
+        dataUsageRow = skinRow("dataUsage");
         storageNumRow = -1;
         storageDirs = AndroidUtilities.getRootDirs();
         if (storageDirs.size() > 1) {
@@ -169,9 +174,9 @@ public class DataSettingsActivity extends BaseFragment {
         mediaDownloadSection2Row = rowCount++;
 
         saveToGallerySectionRow = rowCount++;
-        saveToGalleryPeerRow = rowCount++;
-        saveToGalleryGroupsRow = rowCount++;
-        saveToGalleryChannelsRow = rowCount++;
+        saveToGalleryPeerRow = skinRow("saveToGalleryPeer");
+        saveToGalleryGroupsRow = skinRow("saveToGalleryGroups");
+        saveToGalleryChannelsRow = skinRow("saveToGalleryChannels");
         saveToGalleryDividerRow = rowCount++;
 
 //        autoplayHeaderRow = rowCount++;
@@ -191,13 +196,13 @@ public class DataSettingsActivity extends BaseFragment {
 
         enableCacheStreamRow = -1;//rowCount++;
         callsSectionRow = rowCount++;
-        useLessDataForCallsRow = rowCount++;
+        useLessDataForCallsRow = skinRow("useLessDataForCalls");
 //        quickRepliesRow = rowCount++;
         callsSection2Row = rowCount++;
         proxySectionRow = rowCount++;
-        proxyRow = rowCount++;
+        proxyRow = skinRow("proxy");
         proxySection2Row = rowCount++;
-        clearDraftsRow = rowCount++;
+        clearDraftsRow = skinRow("clearDrafts");
         clearDraftsSectionRow = rowCount++;
 
         if (listAdapter != null && fullNotify) {

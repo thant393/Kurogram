@@ -415,6 +415,38 @@
     "chats"
    ],
    "valid": false
+  },
+  {
+   "checker": "layout",
+   "rule": "privacy.hiddenRows|list:phoneNumber,lastSeen,profilePhoto,forwards,calls,voices,noncontacts,birthday,gifts,bio,music,groups,paymentsClear,contactsDelete,contactsSync,contactsSuggest,secretMap,secretWebpage:0:18",
+   "value": [
+    "bio",
+    "music"
+   ],
+   "valid": true
+  },
+  {
+   "checker": "layout",
+   "rule": "privacy.hiddenRows|list:phoneNumber,lastSeen,profilePhoto,forwards,calls,voices,noncontacts,birthday,gifts,bio,music,groups,paymentsClear,contactsDelete,contactsSync,contactsSuggest,secretMap,secretWebpage:0:18",
+   "value": [],
+   "valid": true
+  },
+  {
+   "checker": "layout",
+   "rule": "privacy.hiddenRows|list:phoneNumber,lastSeen,profilePhoto,forwards,calls,voices,noncontacts,birthday,gifts,bio,music,groups,paymentsClear,contactsDelete,contactsSync,contactsSuggest,secretMap,secretWebpage:0:18",
+   "value": [
+    "passcode"
+   ],
+   "valid": false
+  },
+  {
+   "checker": "layout",
+   "rule": "privacy.hiddenRows|list:phoneNumber,lastSeen,profilePhoto,forwards,calls,voices,noncontacts,birthday,gifts,bio,music,groups,paymentsClear,contactsDelete,contactsSync,contactsSuggest,secretMap,secretWebpage:0:18",
+   "value": [
+    "bio",
+    "bio"
+   ],
+   "valid": false
   }
  ]
 }

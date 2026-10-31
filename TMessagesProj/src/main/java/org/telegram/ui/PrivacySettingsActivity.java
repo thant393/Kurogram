@@ -705,6 +705,11 @@ public class PrivacySettingsActivity extends BaseFragment implements Notificatio
         }
     }
 
+    /** Kuro skins: next row index, or -1 when the active layout hides this row (layout.privacy.hiddenRows). */
+    private int skinRow(String id) {
+        return tw.nekomimi.nekogram.skin.RowMap.hidden("privacy", id) ? -1 : rowCount++;
+    }
+
     private void updateRows() {
         updateRows(true);
     }
@@ -737,24 +742,24 @@ public class PrivacySettingsActivity extends BaseFragment implements Notificatio
         sessionsDetailRow = rowCount++;
 
         privacySectionRow = rowCount++;
-        phoneNumberRow = rowCount++;
-        lastSeenRow = rowCount++;
-        profilePhotoRow = rowCount++;
-        forwardsRow = rowCount++;
-        callsRow = rowCount++;
+        phoneNumberRow = skinRow("phoneNumber");
+        lastSeenRow = skinRow("lastSeen");
+        profilePhotoRow = skinRow("profilePhoto");
+        forwardsRow = skinRow("forwards");
+        callsRow = skinRow("calls");
         groupsDetailRow = -1;
         if (!getMessagesController().premiumFeaturesBlocked() || getUserConfig().isPremium()) {
-            voicesRow = rowCount++;
-            noncontactsRow = rowCount++;
+            voicesRow = skinRow("voices");
+            noncontactsRow = skinRow("noncontacts");
         } else {
             voicesRow = -1;
             noncontactsRow = -1;
         }
-        birthdayRow = rowCount++;
-        giftsRow = rowCount++;
-        bioRow = rowCount++;
-        musicRow = rowCount++;
-        groupsRow = rowCount++;
+        birthdayRow = skinRow("birthday");
+        giftsRow = skinRow("gifts");
+        bioRow = skinRow("bio");
+        musicRow = skinRow("music");
+        groupsRow = skinRow("groups");
         privacyShadowRow = rowCount++;
 
         if (getMessagesController().autoarchiveAvailable || getUserConfig().isPremium()) {
@@ -775,7 +780,7 @@ public class PrivacySettingsActivity extends BaseFragment implements Notificatio
         } else {
             passportRow = -1;
         }
-        paymentsClearRow = rowCount++;
+        paymentsClearRow = skinRow("paymentsClear");
         if (!biometryBots.isEmpty()) {
             botsBiometryRow = rowCount++;
         } else {
@@ -791,13 +796,13 @@ public class PrivacySettingsActivity extends BaseFragment implements Notificatio
             botsAndWebsitesShadowRow = rowCount++;
         }
         contactsSectionRow = rowCount++;
-        contactsDeleteRow = rowCount++;
-        contactsSyncRow = rowCount++;
-        contactsSuggestRow = rowCount++;
+        contactsDeleteRow = skinRow("contactsDelete");
+        contactsSyncRow = skinRow("contactsSync");
+        contactsSuggestRow = skinRow("contactsSuggest");
         contactsDetailRow = rowCount++;
         secretSectionRow = rowCount++;
-        secretMapRow = rowCount++;
-        secretWebpageRow = rowCount++;
+        secretMapRow = skinRow("secretMap");
+        secretWebpageRow = skinRow("secretWebpage");
         secretDetailRow = rowCount++;
         if (listAdapter != null && notify) {
             listAdapter.notifyDataSetChanged();
