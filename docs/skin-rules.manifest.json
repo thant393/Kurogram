@@ -204,5 +204,17 @@
  "layoutNotYetSupported": [
   "settings.mode",
   "settings.grid.columns"
+ ],
+ "implementedMinor1": [
+  "components.cell.heightDp",
+  "components.cell.titleSizeSp",
+  "components.cell.valueSizeSp",
+  "components.cell.titleWeight",
+  "components.cell.dividerVisible",
+  "components.cell.dividerInsetDp",
+  "components.cell.dividerColor",
+  "components.section.headerSizeSp",
+  "components.section.headerWeight",
+  "components.section.headerColor"
  ]
 }

@@ -79,6 +79,7 @@ public class HeaderCell extends FrameLayout {
         this.padding = padding;
         this.bottomMargin = bottomMargin;
         this.animated = animated;
+        this.skinColorKey = textColorKey;
 
         if (animated) {
             animatedTextView = new AnimatedTextView(getContext());
@@ -109,6 +110,59 @@ public class HeaderCell extends FrameLayout {
         }
 
         ViewCompat.setAccessibilityHeading(this, true);
+    }
+
+    // Kuro skins: components.section.header* (opt-in per screen; see useSkinTokens). Unset = Telegram's own look.
+    private boolean skinned;
+    private boolean skinTouched;
+    private int skinVersion = -1;
+    private final int skinColorKey;
+
+    /**
+     * Kuro skins: lets the active skin's components.section.header* tokens (size, weight, colour) apply to this
+     * header. Only for cells without a custom ResourcesProvider; the colour token only replaces the standard blue
+     * header colour. A skin that sets none of the tokens leaves the header exactly as Telegram draws it.
+     */
+    public HeaderCell useSkinTokens() {
+        if (resourcesProvider == null) {
+            skinned = true;
+            applySkinTokens();
+        }
+        return this;
+    }
+
+    private void applySkinTokens() {
+        tw.nekomimi.nekogram.skin.SkinTokens t = tw.nekomimi.nekogram.skin.KuroUi.t();
+        if (t.version == skinVersion) {
+            return;
+        }
+        skinVersion = t.version;
+        boolean colorToken = t.sectionHeaderColor != 0 && skinColorKey == Theme.key_windowBackgroundWhiteBlueHeader;
+        boolean any = t.sectionHeaderSizeSp >= 0 || t.sectionHeaderWeight >= 0 || colorToken;
+        if (!any && !skinTouched) {
+            return;
+        }
+        skinTouched = true; // after the first change, an unset token puts Telegram's value back
+        int size = t.sectionHeaderSizeSp >= 0 ? t.sectionHeaderSizeSp : 14;
+        android.graphics.Typeface face = t.sectionHeaderWeight >= 0 ? tw.nekomimi.nekogram.skin.KuroUi.weightTypeface(t.sectionHeaderWeight) : AndroidUtilities.bold();
+        int color = colorToken ? t.sectionHeaderColor : getThemedColor(skinColorKey);
+        if (animated) {
+            animatedTextView.setTextSize(AndroidUtilities.dp(size));
+            animatedTextView.setTypeface(face);
+            animatedTextView.setTextColor(color);
+        } else {
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, size);
+            textView.setTypeface(face);
+            textView.setTextColor(color);
+        }
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if (skinned) {
+            applySkinTokens();
+        }
     }
 
     public void setOnWidthUpdateListener(Runnable listener) {

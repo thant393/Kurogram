@@ -179,6 +179,11 @@ public class PrivacySettingsActivity extends BaseFragment implements Notificatio
     private SessionsActivity webSessionsActivityPreload;
 
     @Override
+    public String screenId() {
+        return "privacy";
+    }
+
+    @Override
     public boolean onFragmentCreate() {
         super.onFragmentCreate();
 
@@ -1049,13 +1054,13 @@ public class PrivacySettingsActivity extends BaseFragment implements Notificatio
             View view;
             switch (viewType) {
                 case 0:
-                    view = new TextSettingsCell(mContext);
+                    view = new TextSettingsCell(mContext).useSkinTokens();
                     break;
                 case 1:
                     view = new TextInfoPrivacyCell(mContext);
                     break;
                 case 2:
-                    view = new HeaderCell(mContext);
+                    view = new HeaderCell(mContext).useSkinTokens();
                     break;
                 case 4:
                     view = new ShadowSectionCell(mContext);

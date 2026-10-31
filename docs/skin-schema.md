@@ -6,8 +6,13 @@
   `skin-rules.manifest.json`). An app that does not know a key ignores it, so a document may use minor-1 keys and still keep
   `min_app_version = 1`. Never change the meaning of an existing key.
 - A newer `schemaMinor` than the app knows is applied anyway (warning `NEWER_MINOR`).
-- Phase 1 only recognises and validates the minor-1 keys. No screen reads them yet, so they change nothing on screen
-  (they raise `RECOGNIZED_NOT_YET_SUPPORTED`). Absent keys always mean "Telegram's own behaviour".
+- Minor-1 keys are read only where a screen opts in. Phase 2 pilot: `TextSettingsCell` and `HeaderCell` on the **Privacy** screen
+  read `components.cell.{heightDp,titleSizeSp,valueSizeSp,titleWeight,dividerVisible,dividerInsetDp,dividerColor}` and
+  `components.section.{headerSizeSp,headerWeight,headerColor}` (`implementedMinor1` in the manifest). Every other minor-1 key still
+  raises `RECOGNIZED_NOT_YET_SUPPORTED`. Absent keys always mean "Telegram's own behaviour"; a cell that did not opt in
+  (`useSkinTokens()`), or has a custom ResourcesProvider, never reads them.
+- Known limit of the pilot: tokens are applied when the cell is created/attached. A skin change while Privacy is open takes effect
+  when the screen is reopened; `headerColor` can be reset by Telegram's own day/night re-tint until then.
 
 ## Warnings (never reject, never change how a skin is applied)
 | Code | Meaning |

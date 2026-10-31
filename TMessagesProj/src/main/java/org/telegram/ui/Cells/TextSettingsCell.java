@@ -61,6 +61,13 @@ public class TextSettingsCell extends FrameLayout {
 
     Paint paint;
 
+    // Kuro skins: components.cell.* (opt-in per screen; see useSkinTokens). All -1 / 0 = Telegram's own values.
+    private boolean skinned;
+    private boolean skinTouched;
+    private int skinVersion = -1;
+    private int skinHeightDp = -1, skinDividerInsetDp = -1, skinDividerVisible = -1, skinDividerColor;
+    private Paint skinDividerPaint;
+
     public TextSettingsCell(Context context) {
         this(context, 21);
     }
@@ -112,6 +119,47 @@ public class TextSettingsCell extends FrameLayout {
         return valueImageView;
     }
 
+    /**
+     * Kuro skins: lets the active skin's components.cell.* tokens (height, title/value size, title weight,
+     * divider) apply to this cell. Only for cells without a custom ResourcesProvider; a skin that sets none of
+     * the tokens leaves the cell exactly as Telegram draws it.
+     */
+    public TextSettingsCell useSkinTokens() {
+        if (resourcesProvider == null) {
+            skinned = true;
+            applySkinTokens();
+        }
+        return this;
+    }
+
+    private void applySkinTokens() {
+        tw.nekomimi.nekogram.skin.SkinTokens t = tw.nekomimi.nekogram.skin.KuroUi.t();
+        if (t.version == skinVersion) {
+            return;
+        }
+        skinVersion = t.version;
+        skinHeightDp = t.cellHeightDp;
+        skinDividerInsetDp = t.cellDividerInsetDp;
+        skinDividerVisible = t.cellDividerVisible;
+        skinDividerColor = t.cellDividerColor;
+        boolean any = t.cellTitleSizeSp >= 0 || t.cellValueSizeSp >= 0 || t.cellTitleWeight >= 0;
+        if (!any && !skinTouched) {
+            return;
+        }
+        skinTouched = true; // after the first change, an unset token puts Telegram's value back
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, t.cellTitleSizeSp >= 0 ? t.cellTitleSizeSp : 16);
+        valueTextView.setTextSize(AndroidUtilities.dp(t.cellValueSizeSp >= 0 ? t.cellValueSizeSp : 16));
+        textView.setTypeface(tw.nekomimi.nekogram.skin.KuroUi.weightTypeface(t.cellTitleWeight));
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if (skinned) {
+            applySkinTokens();
+        }
+    }
+
     private boolean betterLayout = BuildVars.DEBUG_PRIVATE_VERSION;
     public void setBetterLayout(boolean betterLayout) {
         // I might break something with this, gonna need to further test
@@ -120,7 +168,7 @@ public class TextSettingsCell extends FrameLayout {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), AndroidUtilities.dp(50) + (needDivider ? 1 : 0));
+        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), AndroidUtilities.dp(skinned && skinHeightDp >= 0 ? skinHeightDp : 50) + (needDivider ? 1 : 0));
 
         int availableWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight() - AndroidUtilities.dp(34);
         int width = betterLayout ? availableWidth : availableWidth / 2;
@@ -363,9 +411,23 @@ public class TextSettingsCell extends FrameLayout {
         if (isEnabled()) valueTextView.setAlpha(1f - drawLoadingProgress);
         super.dispatchDraw(canvas);
 
-        if (needDivider) {
+        if (needDivider && !(skinned && skinDividerVisible == 0)) {
             int offset = AndroidUtilities.dp(imageView.getVisibility() == View.VISIBLE ? 58 : 20);
-            canvas.drawLine(LocaleController.isRTL ? 0 : offset, getMeasuredHeight() - 1, getMeasuredWidth() - (LocaleController.isRTL ? offset : 0), getMeasuredHeight() - 1, Theme.dividerPaint);
+            Paint dividerPaint = Theme.dividerPaint;
+            if (skinned) {
+                if (skinDividerInsetDp >= 0) {
+                    offset = AndroidUtilities.dp(skinDividerInsetDp);
+                }
+                if (skinDividerColor != 0) {
+                    if (skinDividerPaint == null) {
+                        skinDividerPaint = new Paint();
+                    }
+                    skinDividerPaint.setColor(skinDividerColor);
+                    skinDividerPaint.setStrokeWidth(Theme.dividerPaint.getStrokeWidth());
+                    dividerPaint = skinDividerPaint;
+                }
+            }
+            canvas.drawLine(LocaleController.isRTL ? 0 : offset, getMeasuredHeight() - 1, getMeasuredWidth() - (LocaleController.isRTL ? offset : 0), getMeasuredHeight() - 1, dividerPaint);
         }
     }
 

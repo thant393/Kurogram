@@ -35,6 +35,7 @@ JAVA_LISTS = {
     "skinMinor1": (SKIN_JAVA, "RULES_V2_MINOR1"),
     "structure": (SKIN_JAVA, "STRUCTURE"),
     "layoutNotYetSupported": (SKIN_JAVA, "LAYOUT_NOT_YET"),
+    "implementedMinor1": (SKIN_JAVA, "IMPLEMENTED_MINOR1"),
     "layout": (LAYOUT_JAVA, "RULES"),
 }
 PY_LISTS = {
@@ -42,6 +43,7 @@ PY_LISTS = {
     "skinMinor1": ("app/schemas/theme.py", "RULES_V2_MINOR1"),
     "structure": ("app/schemas/theme.py", "STRUCTURE"),
     "layoutNotYetSupported": ("app/schemas/theme.py", "LAYOUT_NOT_YET"),
+    "implementedMinor1": ("app/schemas/theme.py", "IMPLEMENTED_MINOR1"),
     "layout": ("app/schemas/layout_rules.py", "RULES_LAYOUT"),
 }
 
@@ -91,7 +93,7 @@ def diff(label, a_name, a, b_name, b):
 def check_shape(label, entries, key=None):
     key = key or label
     problems = []
-    if not entries:
+    if not entries and key not in ("implementedMinor1",):
         problems.append(f"{label}: empty")
     seen = set()
     for e in entries:
@@ -99,7 +101,7 @@ def check_shape(label, entries, key=None):
             if not re.fullmatch(r"(leaf|open|overlay|layout):\w+", e):
                 problems.append(f"{label}: bad entry {e!r}")
             continue
-        if key == "layoutNotYetSupported":
+        if key in ("layoutNotYetSupported", "implementedMinor1"):
             continue
         path, _, kind = e.partition("|")
         if not re.fullmatch(r"[A-Za-z][A-Za-z0-9]*(\.[A-Za-z][A-Za-z0-9]*)*", path) or not KIND.match(kind):
@@ -122,6 +124,8 @@ def main():
         problems += check_shape(k, v)
     if java["layoutNotYetSupported"] and not set(java["layoutNotYetSupported"]) <= {e.split("|")[0] for e in java["layout"]}:
         problems.append("layoutNotYetSupported: lists a path that is not a layout rule")
+    if not set(java["implementedMinor1"]) <= {e.split("|")[0] for e in java["skinMinor1"]}:
+        problems.append("implementedMinor1: lists a path that is not a minor-1 rule")
     overlap = {e.split("|")[0] for e in java["skin"]} & {e.split("|")[0] for e in java["skinMinor1"]}
     if overlap:
         problems.append(f"skinMinor1 repeats RULES_V2 paths: {sorted(overlap)}")
@@ -130,7 +134,7 @@ def main():
         if problems:
             print("\n".join(problems))
             return 1
-        manifest = {"manifestVersion": 1, **{k: java[k] for k in ("skin", "skinMinor1", "layout", "structure", "layoutNotYetSupported")}}
+        manifest = {"manifestVersion": 1, **{k: java[k] for k in ("skin", "skinMinor1", "layout", "structure", "layoutNotYetSupported", "implementedMinor1")}}
         with open(MANIFEST, "w", encoding="utf-8") as f:
             json.dump(manifest, f, indent=1, ensure_ascii=False)
             f.write("\n")

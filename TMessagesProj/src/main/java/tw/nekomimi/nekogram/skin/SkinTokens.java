@@ -38,6 +38,16 @@ public final class SkinTokens {
     public final int dialogBackground, dialogScrim;
     public final int bottomBarBackground;
 
+    // layer 2: shared cells and section headers (schemaMinor 1). -1 / 0 = not set: the cell keeps Telegram's own value.
+    // Only cells that opted in (useSkinTokens) read these; see KuroUi.
+    public final int cellHeightDp, cellTitleSizeSp, cellValueSizeSp, cellDividerInsetDp;
+    /** -1 not set, 0 regular, 1 medium, 2 bold. Telegram has one emphasised weight, so 1 and 2 look the same. */
+    public final int cellTitleWeight;
+    /** -1 not set, 0 hidden, 1 shown. */
+    public final int cellDividerVisible;
+    public final int cellDividerColor;
+    public final int sectionHeaderSizeSp, sectionHeaderWeight, sectionHeaderColor;
+
     // layer 3: screens
     public final int chatsBackground, contactsBackground, profileBackground, settingsBackground, themeStoreBackground;
     public final int profileAvatarDp, profileCardRadiusDp;
@@ -50,6 +60,10 @@ public final class SkinTokens {
 
     // layer 4: effects (read by the settings that already honour them)
     public final boolean blur, glass, animations, reducedMotion;
+
+    private static int weight(String w) {
+        return "regular".equals(w) ? 0 : "medium".equals(w) ? 1 : "bold".equals(w) ? 2 : -1;
+    }
 
     SkinTokens(SkinSpec s, int version) {
         this.version = version;
@@ -95,6 +109,17 @@ public final class SkinTokens {
         dialogBackground = s.colorValue("components.dialog.background");
         bottomBarBackground = s.colorValue("components.bottomNavigation.background");
         dialogScrim = s.colorValue("components.dialog.scrim");
+
+        cellHeightDp = s.intValue("components.cell.heightDp", -1);
+        cellTitleSizeSp = s.intValue("components.cell.titleSizeSp", -1);
+        cellValueSizeSp = s.intValue("components.cell.valueSizeSp", -1);
+        cellDividerInsetDp = s.intValue("components.cell.dividerInsetDp", -1);
+        cellTitleWeight = weight(s.stringValue("components.cell.titleWeight", null));
+        cellDividerVisible = s.has("components.cell.dividerVisible") ? (s.boolValue("components.cell.dividerVisible", true) ? 1 : 0) : -1;
+        cellDividerColor = s.colorValue("components.cell.dividerColor");
+        sectionHeaderSizeSp = s.intValue("components.section.headerSizeSp", -1);
+        sectionHeaderWeight = weight(s.stringValue("components.section.headerWeight", null));
+        sectionHeaderColor = s.colorValue("components.section.headerColor");
 
         chatsBackground = s.colorValue("screens.chats.background");
         contactsBackground = s.colorValue("screens.contacts.background");

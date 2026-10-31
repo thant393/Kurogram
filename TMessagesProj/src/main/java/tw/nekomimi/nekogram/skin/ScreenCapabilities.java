@@ -44,7 +44,7 @@ public final class ScreenCapabilities {
         TABLE.put("kuroSettings",  "SNNPNNNNNN"); // BaseKuroSettingsActivity screens
         TABLE.put("profile",       "PNNPNNNNNN"); // ProfileActivity (own ListAdapter)
         TABLE.put("themeStore",    "SPPSNPNNNN"); // stickerstore/*
-        TABLE.put("privacy",       "SNNNNNNNNN"); // PrivacySettingsActivity (row ints)
+        TABLE.put("privacy",       "SPPPNNNNNN"); // PrivacySettingsActivity (row ints); Phase 2 pilot: TextSettingsCell + HeaderCell tokens
         TABLE.put("notifications", "SNNNNNNNNN"); // NotificationsSettingsActivity (row ints)
         TABLE.put("dataStorage",   "SNNNNNNNNN"); // DataSettingsActivity (row ints)
         TABLE.put("devices",       "SNNNNNNNNN"); // SessionsActivity (row ints)

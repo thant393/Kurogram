@@ -322,8 +322,16 @@ public final class SkinSpec {
     /** Layout keys (inside a skin's "layout") that are valid but that no screen reads yet. */
     private static final String[] LAYOUT_NOT_YET = {"settings.mode", "settings.grid.columns"};
 
-    /** Minor-1 paths a screen already reads. Empty in Phase 1: every minor-1 key present raises RECOGNIZED_NOT_YET_SUPPORTED. */
-    private static final java.util.Set<String> IMPLEMENTED_MINOR1 = new java.util.HashSet<>();
+    /**
+     * Minor-1 paths that at least one screen already reads (Phase 2 pilot: TextSettingsCell and HeaderCell on the
+     * Privacy screen). Every other minor-1 key present raises RECOGNIZED_NOT_YET_SUPPORTED. Kept identical to
+     * IMPLEMENTED_MINOR1 in the backend and to the manifest.
+     */
+    private static final String[] IMPLEMENTED_MINOR1 = {
+            "components.cell.heightDp", "components.cell.titleSizeSp", "components.cell.valueSizeSp", "components.cell.titleWeight",
+            "components.cell.dividerVisible", "components.cell.dividerInsetDp", "components.cell.dividerColor",
+            "components.section.headerSizeSp", "components.section.headerWeight", "components.section.headerColor",
+    };
 
     private static SkinGrammar grammar;
 
@@ -376,7 +384,7 @@ public final class SkinSpec {
             JSONObject night = root.optJSONObject("night");
             for (String rule : RULES_V2_MINOR1) {
                 String path = rule.substring(0, rule.indexOf('|'));
-                if (path.equals("schemaMinor") || IMPLEMENTED_MINOR1.contains(path)) {
+                if (path.equals("schemaMinor") || java.util.Arrays.asList(IMPLEMENTED_MINOR1).contains(path)) {
                     continue;
                 }
                 if (get(root, path) != null) {

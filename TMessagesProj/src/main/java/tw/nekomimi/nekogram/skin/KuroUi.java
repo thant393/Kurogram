@@ -24,6 +24,14 @@ public final class KuroUi {
         return KuroSkinManager.get().tokens();
     }
 
+    /** Typeface for a weight token: 0 regular, 1 medium / 2 bold (Telegram has one emphasised weight), -1 = not set (null). */
+    public static android.graphics.Typeface weightTypeface(int weight) {
+        if (weight < 0) {
+            return null;
+        }
+        return weight == 0 ? android.graphics.Typeface.DEFAULT : org.telegram.messenger.AndroidUtilities.bold();
+    }
+
     // ---------- colours ----------
 
     /** The skin's accent, else Telegram's own accent colour. */
