@@ -78,6 +78,48 @@ public class TextCheckCell extends FrameLayout {
         }
     };
 
+    // Kuro skins: components.cell.* / components.switch.* (opt-in per screen; see useSkinTokens).
+    private boolean skinned;
+    private boolean skinTouched;
+    private int skinVersion = -1;
+    private int skinHeightDp = -1, skinTwoLineHeightDp = -1, skinDividerInsetDp = -1, skinDividerVisible = -1, skinDividerColor;
+    private Paint skinDividerPaint;
+
+    /**
+     * Kuro skins: lets the active skin's components.cell.* tokens (height, two-line height, title/value size, title
+     * weight, divider) and components.switch.* colours apply to this cell. Not for dialog-style cells or cells with a
+     * custom ResourcesProvider. A skin that sets none of the tokens leaves the cell exactly as Telegram draws it.
+     */
+    public TextCheckCell useSkinTokens() {
+        if (resourcesProvider == null) {
+            skinned = true;
+            checkBox.useSkinTokens();
+            applySkinTokens();
+        }
+        return this;
+    }
+
+    private void applySkinTokens() {
+        tw.nekomimi.nekogram.skin.SkinTokens t = tw.nekomimi.nekogram.skin.KuroUi.t();
+        if (t.version == skinVersion) {
+            return;
+        }
+        skinVersion = t.version;
+        skinHeightDp = t.cellHeightDp;
+        skinTwoLineHeightDp = t.cellTwoLineHeightDp;
+        skinDividerInsetDp = t.cellDividerInsetDp;
+        skinDividerVisible = t.cellDividerVisible;
+        skinDividerColor = t.cellDividerColor;
+        boolean any = t.cellTitleSizeSp >= 0 || t.cellValueSizeSp >= 0 || t.cellTitleWeight >= 0;
+        if (!any && !skinTouched) {
+            return;
+        }
+        skinTouched = true; // after the first change, an unset token puts Telegram's value back
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, t.cellTitleSizeSp >= 0 ? t.cellTitleSizeSp : 16);
+        valueTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, t.cellValueSizeSp >= 0 ? t.cellValueSizeSp : 13);
+        textView.setTypeface(tw.nekomimi.nekogram.skin.KuroUi.weightTypeface(t.cellTitleWeight));
+    }
+
     public TextCheckCell(Context context) {
         this(context, 21);
     }
@@ -149,7 +191,7 @@ public class TextCheckCell extends FrameLayout {
         if (isMultiline) {
             super.onMeasure(MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
         } else {
-            super.onMeasure(MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(valueTextView.getVisibility() == VISIBLE ? 64 : height) + (needDivider ? 1 : 0), MeasureSpec.EXACTLY));
+            super.onMeasure(MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(valueTextView.getVisibility() == VISIBLE ? (skinned && skinTwoLineHeightDp >= 0 ? skinTwoLineHeightDp : 64) : (skinned && skinHeightDp >= 0 ? skinHeightDp : height)) + (needDivider ? 1 : 0), MeasureSpec.EXACTLY));
         }
     }
 
@@ -392,10 +434,24 @@ public class TextCheckCell extends FrameLayout {
             float animatedRad = rad * animationProgress;
             canvas.drawCircle(cx, cy, animatedRad, animationPaint);
         }
-        if (needDivider) {
+        if (needDivider && !(skinned && skinDividerVisible == 0)) {
             Paint dividerPaint = resourcesProvider != null ? resourcesProvider.getPaint(Theme.key_paint_divider) : Theme.dividerPaint;
+            int inset = -1;
+            if (skinned) {
+                inset = skinDividerInsetDp >= 0 ? AndroidUtilities.dp(skinDividerInsetDp) : -1;
+                if (skinDividerColor != 0 && dividerPaint != null) {
+                    if (skinDividerPaint == null) {
+                        skinDividerPaint = new Paint();
+                    }
+                    skinDividerPaint.setColor(skinDividerColor);
+                    skinDividerPaint.setStrokeWidth(dividerPaint.getStrokeWidth());
+                    dividerPaint = skinDividerPaint;
+                }
+            }
             if (dividerPaint != null) {
-                if (imageView != null) {
+                if (inset >= 0) {
+                    canvas.drawLine(LocaleController.isRTL ? 0 : inset, getMeasuredHeight() - 1, getMeasuredWidth() - (LocaleController.isRTL ? inset : 0), getMeasuredHeight() - 1, dividerPaint);
+                } else if (imageView != null) {
                     canvas.drawLine(LocaleController.isRTL ? 0 : padding, getMeasuredHeight() - 1, getMeasuredWidth() - (LocaleController.isRTL ? padding : 0), getMeasuredHeight() - 1, dividerPaint);
                 } else {
                     canvas.drawLine(LocaleController.isRTL ? 0 : AndroidUtilities.dp(20), getMeasuredHeight() - 1, getMeasuredWidth() - (LocaleController.isRTL ? AndroidUtilities.dp(20) : 0), getMeasuredHeight() - 1, dividerPaint);
@@ -429,6 +485,9 @@ public class TextCheckCell extends FrameLayout {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         attached = true;
+        if (skinned) {
+            applySkinTokens();
+        }
     }
 
     @Override

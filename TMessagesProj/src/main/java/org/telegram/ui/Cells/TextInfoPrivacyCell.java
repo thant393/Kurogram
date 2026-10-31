@@ -92,6 +92,44 @@ public class TextInfoPrivacyCell extends FrameLayout {
         setWillNotDraw(false);
     }
 
+    // Kuro skins: components.section.infoSizeSp (opt-in per screen; see useSkinTokens). Unset = Telegram's own size.
+    private boolean skinned;
+    private boolean skinTouched;
+    private int skinVersion = -1;
+
+    /**
+     * Kuro skins: lets the active skin's components.section.infoSizeSp apply to this info text. Only for cells without a
+     * custom ResourcesProvider. A skin that sets no token leaves the cell exactly as Telegram draws it.
+     */
+    public TextInfoPrivacyCell useSkinTokens() {
+        if (resourcesProvider == null) {
+            skinned = true;
+            applySkinTokens();
+        }
+        return this;
+    }
+
+    private void applySkinTokens() {
+        tw.nekomimi.nekogram.skin.SkinTokens t = tw.nekomimi.nekogram.skin.KuroUi.t();
+        if (t.version == skinVersion) {
+            return;
+        }
+        skinVersion = t.version;
+        if (t.sectionInfoSizeSp < 0 && !skinTouched) {
+            return;
+        }
+        skinTouched = true; // after the first change, an unset token puts Telegram's value back
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, t.sectionInfoSizeSp >= 0 ? t.sectionInfoSizeSp : 14);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if (skinned) {
+            applySkinTokens();
+        }
+    }
+
     public void updateRTL() {
         if (isRTL == LocaleController.isRTL) {
             return;

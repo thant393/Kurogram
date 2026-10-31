@@ -323,14 +323,15 @@ public final class SkinSpec {
     private static final String[] LAYOUT_NOT_YET = {"settings.mode", "settings.grid.columns"};
 
     /**
-     * Minor-1 paths that at least one screen already reads (Phase 2 pilot: TextSettingsCell and HeaderCell on the
-     * Privacy screen). Every other minor-1 key present raises RECOGNIZED_NOT_YET_SUPPORTED. Kept identical to
+     * Minor-1 paths that at least one screen already reads (Phase 2: TextSettingsCell, TextCheckCell, HeaderCell,
+     * TextInfoPrivacyCell and Switch on the Privacy screen). Every other minor-1 key present raises RECOGNIZED_NOT_YET_SUPPORTED. Kept identical to
      * IMPLEMENTED_MINOR1 in the backend and to the manifest.
      */
     private static final String[] IMPLEMENTED_MINOR1 = {
-            "components.cell.heightDp", "components.cell.titleSizeSp", "components.cell.valueSizeSp", "components.cell.titleWeight",
+            "components.cell.heightDp", "components.cell.twoLineHeightDp", "components.cell.titleSizeSp", "components.cell.valueSizeSp", "components.cell.titleWeight",
             "components.cell.dividerVisible", "components.cell.dividerInsetDp", "components.cell.dividerColor",
-            "components.section.headerSizeSp", "components.section.headerWeight", "components.section.headerColor",
+            "components.section.headerSizeSp", "components.section.headerWeight", "components.section.headerColor", "components.section.infoSizeSp",
+            "components.switch.trackOn", "components.switch.trackOff", "components.switch.thumbOn", "components.switch.thumbOff",
     };
 
     private static SkinGrammar grammar;

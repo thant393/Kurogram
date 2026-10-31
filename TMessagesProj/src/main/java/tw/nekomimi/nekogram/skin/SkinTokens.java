@@ -47,6 +47,9 @@ public final class SkinTokens {
     public final int cellDividerVisible;
     public final int cellDividerColor;
     public final int sectionHeaderSizeSp, sectionHeaderWeight, sectionHeaderColor;
+    public final int cellTwoLineHeightDp, sectionInfoSizeSp;
+    /** components.switch.*; 0 = not set (the switch keeps the theme's own colours). */
+    public final int switchTrackOn, switchTrackOff, switchThumbOn, switchThumbOff;
 
     // layer 3: screens
     public final int chatsBackground, contactsBackground, profileBackground, settingsBackground, themeStoreBackground;
@@ -120,6 +123,12 @@ public final class SkinTokens {
         sectionHeaderSizeSp = s.intValue("components.section.headerSizeSp", -1);
         sectionHeaderWeight = weight(s.stringValue("components.section.headerWeight", null));
         sectionHeaderColor = s.colorValue("components.section.headerColor");
+        cellTwoLineHeightDp = s.intValue("components.cell.twoLineHeightDp", -1);
+        sectionInfoSizeSp = s.intValue("components.section.infoSizeSp", -1);
+        switchTrackOn = s.colorValue("components.switch.trackOn");
+        switchTrackOff = s.colorValue("components.switch.trackOff");
+        switchThumbOn = s.colorValue("components.switch.thumbOn");
+        switchThumbOff = s.colorValue("components.switch.thumbOff");
 
         chatsBackground = s.colorValue("screens.chats.background");
         contactsBackground = s.colorValue("screens.contacts.background");

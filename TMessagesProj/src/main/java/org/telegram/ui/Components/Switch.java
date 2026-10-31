@@ -86,6 +86,36 @@ public class Switch extends View {
 
     private int overrideColorProgress;
 
+    // Kuro skins: components.switch.* (opt-in; see useSkinTokens). 0 = not set: the theme's own colours.
+    private boolean skinned;
+    private int skinVersion = -1;
+    private int skinTrackOn, skinTrackOff, skinThumbOn, skinThumbOff;
+
+    /**
+     * Kuro skins: lets the active skin's components.switch.{trackOn,trackOff,thumbOn,thumbOff} colour this switch.
+     * Only for switches without a custom ResourcesProvider; colours the skin leaves out stay the theme's own.
+     */
+    public Switch useSkinTokens() {
+        if (resourcesProvider == null) {
+            skinned = true;
+            applySkinTokens();
+        }
+        return this;
+    }
+
+    private void applySkinTokens() {
+        tw.nekomimi.nekogram.skin.SkinTokens t = tw.nekomimi.nekogram.skin.KuroUi.t();
+        if (t.version == skinVersion) {
+            return;
+        }
+        skinVersion = t.version;
+        skinTrackOn = t.switchTrackOn;
+        skinTrackOff = t.switchTrackOff;
+        skinThumbOn = t.switchThumbOn;
+        skinThumbOff = t.switchThumbOff;
+        invalidate();
+    }
+
     public interface OnCheckedChangeListener {
         void onCheckedChanged(Switch view, boolean isChecked);
     }
@@ -261,6 +291,9 @@ public class Switch extends View {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         attachedToWindow = true;
+        if (skinned) {
+            applySkinTokens();
+        }
     }
 
     @Override
@@ -422,8 +455,8 @@ public class Switch extends View {
                 colorProgress = progress;
             }
 
-            color1 = processColor(Theme.getColor(trackColorKey, resourcesProvider));
-            color2 = processColor(Theme.getColor(trackCheckedColorKey, resourcesProvider));
+            color1 = processColor(skinned && skinTrackOff != 0 ? skinTrackOff : Theme.getColor(trackColorKey, resourcesProvider));
+            color2 = processColor(skinned && skinTrackOn != 0 ? skinTrackOn : Theme.getColor(trackCheckedColorKey, resourcesProvider));
             if (a == 0 && iconDrawable != null && lastIconColor != (isChecked ? color2 : color1)) {
                 iconDrawable.setColorFilter(new PorterDuffColorFilter(lastIconColor = (isChecked ? color2 : color1), PorterDuff.Mode.MULTIPLY));
             }
@@ -477,8 +510,8 @@ public class Switch extends View {
                 colorProgress = progress;
             }
 
-            color1 = Theme.getColor(thumbColorKey, resourcesProvider);
-            color2 = processColor(Theme.getColor(thumbCheckedColorKey, resourcesProvider));
+            color1 = skinned && skinThumbOff != 0 ? skinThumbOff : Theme.getColor(thumbColorKey, resourcesProvider);
+            color2 = processColor(skinned && skinThumbOn != 0 ? skinThumbOn : Theme.getColor(thumbCheckedColorKey, resourcesProvider));
             r1 = Color.red(color1);
             r2 = Color.red(color2);
             g1 = Color.green(color1);

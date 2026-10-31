@@ -207,6 +207,7 @@
  ],
  "implementedMinor1": [
   "components.cell.heightDp",
+  "components.cell.twoLineHeightDp",
   "components.cell.titleSizeSp",
   "components.cell.valueSizeSp",
   "components.cell.titleWeight",
@@ -215,6 +216,11 @@
   "components.cell.dividerColor",
   "components.section.headerSizeSp",
   "components.section.headerWeight",
-  "components.section.headerColor"
+  "components.section.headerColor",
+  "components.section.infoSizeSp",
+  "components.switch.trackOn",
+  "components.switch.trackOff",
+  "components.switch.thumbOn",
+  "components.switch.thumbOff"
  ]
 }

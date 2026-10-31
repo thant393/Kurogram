@@ -1057,7 +1057,7 @@ public class PrivacySettingsActivity extends BaseFragment implements Notificatio
                     view = new TextSettingsCell(mContext).useSkinTokens();
                     break;
                 case 1:
-                    view = new TextInfoPrivacyCell(mContext);
+                    view = new TextInfoPrivacyCell(mContext).useSkinTokens();
                     break;
                 case 2:
                     view = new HeaderCell(mContext).useSkinTokens();
@@ -1070,7 +1070,7 @@ public class PrivacySettingsActivity extends BaseFragment implements Notificatio
                     break;
                 case 3:
                 default:
-                    view = new TextCheckCell(mContext);
+                    view = new TextCheckCell(mContext).useSkinTokens();
                     break;
             }
             return new RecyclerListView.Holder(view);
