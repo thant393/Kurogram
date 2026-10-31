@@ -48,6 +48,8 @@ public final class SkinTokens {
     public final int cellDividerColor;
     public final int sectionHeaderSizeSp, sectionHeaderWeight, sectionHeaderColor;
     public final int cellTwoLineHeightDp, sectionInfoSizeSp;
+    /** components.section.style: -1 not set, 0 flat (full-width, square), 1 card. Radius/gap: -1 = Telegram's own (16 / 12 dp). */
+    public final int sectionStyle, sectionRadiusDp, sectionGapDp;
     /** components.switch.*; 0 = not set (the switch keeps the theme's own colours). */
     public final int switchTrackOn, switchTrackOff, switchThumbOn, switchThumbOff;
 
@@ -125,6 +127,10 @@ public final class SkinTokens {
         sectionHeaderColor = s.colorValue("components.section.headerColor");
         cellTwoLineHeightDp = s.intValue("components.cell.twoLineHeightDp", -1);
         sectionInfoSizeSp = s.intValue("components.section.infoSizeSp", -1);
+        String sectionStyleName = s.stringValue("components.section.style", null);
+        sectionStyle = "flat".equals(sectionStyleName) ? 0 : "card".equals(sectionStyleName) ? 1 : -1;
+        sectionRadiusDp = s.intValue("components.section.radiusDp", -1);
+        sectionGapDp = s.intValue("components.section.gapDp", -1);
         switchTrackOn = s.colorValue("components.switch.trackOn");
         switchTrackOff = s.colorValue("components.switch.trackOff");
         switchThumbOn = s.colorValue("components.switch.thumbOn");

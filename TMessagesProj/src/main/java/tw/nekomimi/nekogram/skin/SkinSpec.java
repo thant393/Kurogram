@@ -331,6 +331,7 @@ public final class SkinSpec {
             "components.cell.heightDp", "components.cell.twoLineHeightDp", "components.cell.titleSizeSp", "components.cell.valueSizeSp", "components.cell.titleWeight",
             "components.cell.dividerVisible", "components.cell.dividerInsetDp", "components.cell.dividerColor",
             "components.section.headerSizeSp", "components.section.headerWeight", "components.section.headerColor", "components.section.infoSizeSp",
+            "components.section.style", "components.section.radiusDp", "components.section.gapDp",
             "components.switch.trackOn", "components.switch.trackOff", "components.switch.thumbOn", "components.switch.thumbOff",
     };
 

@@ -3286,7 +3286,33 @@ public class RecyclerListView extends RecyclerView implements IBlur3Capture {
     public void setSections(boolean topPadding) {
         setSections(dp(12), dp(16), topPadding);
     }
+    private boolean skinSections;
+
+    /**
+     * Kuro skins: lets components.section.style / radiusDp / gapDp change the cards this list draws. Call before
+     * setSections(). Only for lists without a custom ResourcesProvider; a skin that sets none keeps Telegram's cards.
+     */
+    public RecyclerListView useSkinSections() {
+        if (resourcesProvider == null) {
+            skinSections = true;
+        }
+        return this;
+    }
+
     public void setSections(int padding, float roundRadius, boolean topPadding) {
+        if (skinSections) {
+            tw.nekomimi.nekogram.skin.SkinTokens t = tw.nekomimi.nekogram.skin.KuroUi.t();
+            if (t.sectionStyle == 0) {
+                padding = 0;
+                roundRadius = 0;
+            }
+            if (t.sectionStyle != 0 && t.sectionRadiusDp >= 0) {
+                roundRadius = dp(t.sectionRadiusDp);
+            }
+            if (t.sectionStyle != 0 && t.sectionGapDp >= 0) {
+                padding = dp(t.sectionGapDp);
+            }
+        }
         setSections(
             view -> !(view instanceof TextInfoPrivacyCell || view instanceof ShadowSectionCell || view instanceof FiltersSetupActivity.HintInnerCell || view instanceof GraySectionCell || view instanceof CollapseTextCell) && !Objects.equals(view.getTag(), TAG_NOT_SECTION),
             padding,

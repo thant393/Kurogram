@@ -304,7 +304,7 @@ public class PrivacySettingsActivity extends BaseFragment implements Notificatio
         frameLayout.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
 
         listView = new RecyclerListView(context);
-        listView.setSections();
+        listView.useSkinSections().setSections();
         actionBar.setAdaptiveBackground(listView);
         listView.setLayoutManager(layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false) {
             @Override
