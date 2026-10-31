@@ -72,6 +72,32 @@ public class SessionCell extends FrameLayout {
 
     private int currentAccount = UserConfig.selectedAccount;
 
+    // Kuro skins: components.session.* (opt-in by the Devices screen; see useSkinTokens). -1 = Telegram's own value.
+    private boolean skinned;
+    private int skinRadiusDp = -1;
+
+    public SessionCell useSkinTokens() {
+        skinned = true;
+        tw.nekomimi.nekogram.skin.SkinTokens t = tw.nekomimi.nekogram.skin.KuroUi.t();
+        skinRadiusDp = t.sessionAvatarRadiusDp;
+        if (skinRadiusDp >= 0) {
+            if (placeholderImageView != null) {
+                placeholderImageView.setRoundRadius(dp(skinRadiusDp));
+            }
+            if (imageView != null) {
+                imageView.setRoundRadius(dp(skinRadiusDp));
+            }
+        }
+        if (t.sessionNameSizeSp >= 0 && nameTextView != null) {
+            nameTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, t.sessionNameSizeSp);
+        }
+        return this;
+    }
+
+    private int avatarRadius(int def) {
+        return skinned && skinRadiusDp >= 0 ? dp(skinRadiusDp) : dp(def);
+    }
+
     public SessionCell(Context context, int type) {
         super(context);
 
@@ -190,14 +216,14 @@ public class SessionCell extends FrameLayout {
     public void setSession(TLObject object, boolean divider) {
         needDivider = divider;
 
-        imageView.setRoundRadius(dp(10));
+        imageView.setRoundRadius(avatarRadius(10));
 
         if (object instanceof TL_account.TL_connectedBot) {
             final TL_account.TL_connectedBot bot = (TL_account.TL_connectedBot) object;
             final TLRPC.User user = MessagesController.getInstance(currentAccount).getUser(bot.bot_id);
 
             avatarDrawable.setInfo(user);
-            imageView.setRoundRadius(dp(21));
+            imageView.setRoundRadius(avatarRadius(21));
             imageView.setForUserOrChat(user, avatarDrawable);
 
             nameTextView.setText(UserObject.getUserName(user));

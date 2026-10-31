@@ -44,3 +44,10 @@ Change order: Java rule -> `--update` -> copy manifest + vectors into the backen
 - Settings grid (layout doc, `settings.mode: grid`, `settings.grid.columns` 2..4, default 3): the Settings entries become icon tiles. Rows with a bot object and headers stay full width. Rules for `settings.*` are no longer "not yet supported".
 - Still native: Chats/Contacts/People/Unread component tokens, Profile and Theme Store slots, per-screen row maps, UX presets.
 - Known limit: tokens are read when a cell or list is created; changing the skin while a screen is open needs the screen reopened.
+
+## Row maps, screen backgrounds and session tokens (Phase 4/5)
+
+- `layout.privacy.hiddenRows` / `layout.dataStorage.hiddenRows` (layout rules, list, may be empty): ids of rows to drop. Allowed ids exclude every security row (Two-Step, passcode, sessions, blocked, login email, delete account) and, on Data and Storage, mobile/wifi/roaming (other code addresses them by position). Absent list = unchanged row ints. Hiding the last row of a card can leave its neighbour's divider showing.
+- `screens.privacy|notifications|dataStorage|devices.background` (minor 1, colour): the screen's background. Unset = the theme's own.
+- `components.session.avatarRadiusDp|nameSizeSp` (minor 1): Devices session rows.
+- Not wired yet, still reported as RECOGNIZED_NOT_YET_SUPPORTED: `components.cell.paddingStartDp|iconSizeDp|pressedColor`, `components.search.*`, `components.fab.*`, `ux.*`, Profile slots, Notifications/Devices row maps.

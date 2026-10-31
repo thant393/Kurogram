@@ -263,4 +263,14 @@ public final class KuroUi {
         d.setStroke(Math.max(1, AndroidUtilities.dp(0.5f)), t.cardBorderColor != 0 && hasGradient() ? t.cardBorderColor : hairline());
         return d;
     }
+
+    /** screens.<id>.background for the settings screens that read it (privacy, notifications, dataStorage, devices); {@code def} when unset. */
+    public static int screenBackground(String screenId, int def) {
+        SkinTokens t = t();
+        int c = "privacy".equals(screenId) ? t.screenBgPrivacy
+                : "notifications".equals(screenId) ? t.screenBgNotifications
+                : "dataStorage".equals(screenId) ? t.screenBgDataStorage
+                : "devices".equals(screenId) ? t.screenBgDevices : 0;
+        return c != 0 ? c : def;
+    }
 }

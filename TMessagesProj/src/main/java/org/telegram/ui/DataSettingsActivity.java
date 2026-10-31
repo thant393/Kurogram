@@ -290,7 +290,7 @@ public class DataSettingsActivity extends BaseFragment {
         listAdapter = new ListAdapter(context);
 
         fragmentView = new FrameLayout(context);
-        fragmentView.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
+        fragmentView.setBackgroundColor(tw.nekomimi.nekogram.skin.KuroUi.screenBackground("dataStorage", Theme.getColor(Theme.key_windowBackgroundGray)));
         FrameLayout frameLayout = (FrameLayout) fragmentView;
 
         listView = new RecyclerListView(context) {

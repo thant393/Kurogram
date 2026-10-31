@@ -50,6 +50,10 @@ public final class SkinTokens {
     public final int cellTwoLineHeightDp, sectionInfoSizeSp;
     /** components.section.style: -1 not set, 0 flat (full-width, square), 1 card. Radius/gap: -1 = Telegram's own (16 / 12 dp). */
     public final int sectionStyle, sectionRadiusDp, sectionGapDp;
+    /** screens.<id>.background for the row-list settings screens; 0 = not set (the screen keeps the theme's own background). */
+    public final int screenBgPrivacy, screenBgNotifications, screenBgDataStorage, screenBgDevices;
+    /** components.session.*; -1 = not set. */
+    public final int sessionAvatarRadiusDp, sessionNameSizeSp;
     /** components.switch.*; 0 = not set (the switch keeps the theme's own colours). */
     public final int switchTrackOn, switchTrackOff, switchThumbOn, switchThumbOff;
 
@@ -131,6 +135,12 @@ public final class SkinTokens {
         sectionStyle = "flat".equals(sectionStyleName) ? 0 : "card".equals(sectionStyleName) ? 1 : -1;
         sectionRadiusDp = s.intValue("components.section.radiusDp", -1);
         sectionGapDp = s.intValue("components.section.gapDp", -1);
+        screenBgPrivacy = s.colorValue("screens.privacy.background");
+        screenBgNotifications = s.colorValue("screens.notifications.background");
+        screenBgDataStorage = s.colorValue("screens.dataStorage.background");
+        screenBgDevices = s.colorValue("screens.devices.background");
+        sessionAvatarRadiusDp = s.intValue("components.session.avatarRadiusDp", -1);
+        sessionNameSizeSp = s.intValue("components.session.nameSizeSp", -1);
         switchTrackOn = s.colorValue("components.switch.trackOn");
         switchTrackOff = s.colorValue("components.switch.trackOff");
         switchThumbOn = s.colorValue("components.switch.thumbOn");

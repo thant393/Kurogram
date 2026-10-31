@@ -224,7 +224,7 @@ public class SessionsActivity extends BaseFragment implements NotificationCenter
 
         fragmentView = new FrameLayout(context);
         FrameLayout frameLayout = (FrameLayout) fragmentView;
-        frameLayout.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
+        frameLayout.setBackgroundColor(tw.nekomimi.nekogram.skin.KuroUi.screenBackground("devices", Theme.getColor(Theme.key_windowBackgroundGray)));
 
         emptyView = new EmptyTextProgressView(context);
         emptyView.showProgress();
@@ -876,7 +876,7 @@ public class SessionsActivity extends BaseFragment implements NotificationCenter
                     break;
                 case VIEW_TYPE_SESSION:
                 default:
-                    view = new SessionCell(mContext, currentType);
+                    view = new SessionCell(mContext, currentType).useSkinTokens();
                     break;
             }
             return new RecyclerListView.Holder(view);

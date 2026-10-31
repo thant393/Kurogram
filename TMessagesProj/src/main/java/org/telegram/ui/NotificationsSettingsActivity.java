@@ -493,7 +493,7 @@ public class NotificationsSettingsActivity extends BaseFragment implements Notif
 
         fragmentView = new FrameLayout(context);
         FrameLayout frameLayout = (FrameLayout) fragmentView;
-        frameLayout.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
+        frameLayout.setBackgroundColor(tw.nekomimi.nekogram.skin.KuroUi.screenBackground("notifications", Theme.getColor(Theme.key_windowBackgroundGray)));
 
         listView = new RecyclerListView(context);
         listView.useSkinSections().setSections();
