@@ -192,6 +192,11 @@ public class SessionsActivity extends BaseFragment implements NotificationCenter
     }
 
     @Override
+    public String screenId() {
+        return "devices";
+    }
+
+    @Override
     public View createView(Context context) {
         globalFlickerLoadingView = new FlickerLoadingView(context);
         globalFlickerLoadingView.setIsSingleCell(true);
@@ -234,7 +239,7 @@ public class SessionsActivity extends BaseFragment implements NotificationCenter
                 return getThemedColor(Theme.key_listSelector);
             }
         };
-        listView.setSections();
+        listView.useSkinSections().setSections();
         actionBar.setAdaptiveBackground(listView);
         listView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false) {
             @Override
@@ -855,19 +860,19 @@ public class SessionsActivity extends BaseFragment implements NotificationCenter
             View view;
             switch (viewType) {
                 case VIEW_TYPE_TEXT:
-                    view = new TextCell(mContext);
+                    view = new TextCell(mContext).useSkinTokens();
                     break;
                 case VIEW_TYPE_INFO:
-                    view = new TextInfoPrivacyCell(mContext);
+                    view = new TextInfoPrivacyCell(mContext).useSkinTokens();
                     break;
                 case VIEW_TYPE_HEADER:
-                    view = new HeaderCell(mContext);
+                    view = new HeaderCell(mContext).useSkinTokens();
                     break;
                 case VIEW_TYPE_SCANQR:
                     view = new ScanQRCodeView(mContext);
                     break;
                 case VIEW_TYPE_SETTINGS:
-                    view = new TextSettingsCell(mContext);
+                    view = new TextSettingsCell(mContext).useSkinTokens();
                     break;
                 case VIEW_TYPE_SESSION:
                 default:

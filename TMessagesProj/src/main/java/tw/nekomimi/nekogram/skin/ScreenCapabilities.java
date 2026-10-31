@@ -45,9 +45,9 @@ public final class ScreenCapabilities {
         TABLE.put("profile",       "PNNPNNNNNN"); // ProfileActivity (own ListAdapter)
         TABLE.put("themeStore",    "SPPSNPNNNN"); // stickerstore/*
         TABLE.put("privacy",       "SPPPNNNNNN"); // PrivacySettingsActivity (row ints); Phase 2: TextSettingsCell, TextCell, TextCheckCell, HeaderCell, TextInfoPrivacyCell, Switch tokens, section card style/radius/gap
-        TABLE.put("notifications", "SNNNNNNNNN"); // NotificationsSettingsActivity (row ints)
-        TABLE.put("dataStorage",   "SNNNNNNNNN"); // DataSettingsActivity (row ints)
-        TABLE.put("devices",       "SNNNNNNNNN"); // SessionsActivity (row ints)
+        TABLE.put("notifications", "SPPPNNNNNN"); // NotificationsSettingsActivity (row ints)
+        TABLE.put("dataStorage",   "SPPPNNNNNN"); // DataSettingsActivity (row ints)
+        TABLE.put("devices",       "SPPPNNNNNN"); // SessionsActivity (row ints)
         TABLE.put("chat",          "SPPPNXXXNX"); // ChatActivity: colours/bubbles only, structure stays native
 
         // Rows a skin may never hide or reorder (security). Verified names: SessionsActivity row fields.

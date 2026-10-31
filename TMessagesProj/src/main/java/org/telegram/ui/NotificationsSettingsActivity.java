@@ -470,6 +470,11 @@ public class NotificationsSettingsActivity extends BaseFragment implements Notif
     }
 
     @Override
+    public String screenId() {
+        return "notifications";
+    }
+
+    @Override
     public View createView(Context context) {
         actionBar.setBackButtonImage(R.drawable.ic_ab_back);
         actionBar.setAllowOverlayTitle(true);
@@ -491,7 +496,7 @@ public class NotificationsSettingsActivity extends BaseFragment implements Notif
         frameLayout.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
 
         listView = new RecyclerListView(context);
-        listView.setSections();
+        listView.useSkinSections().setSections();
         actionBar.setAdaptiveBackground(listView);
         listView.setItemAnimator(null);
         listView.setLayoutAnimation(null);
@@ -951,10 +956,10 @@ public class NotificationsSettingsActivity extends BaseFragment implements Notif
             View view;
             switch (viewType) {
                 case 0:
-                    view = new HeaderCell(mContext, resourceProvider);
+                    view = new HeaderCell(mContext, resourceProvider).useSkinTokens();
                     break;
                 case 1:
-                    view = new TextCheckCell(mContext, resourceProvider);
+                    view = new TextCheckCell(mContext, resourceProvider).useSkinTokens();
                     break;
                 case 2:
                     view = new TextDetailSettingsCell(mContext);
@@ -966,11 +971,11 @@ public class NotificationsSettingsActivity extends BaseFragment implements Notif
                     view = new ShadowSectionCell(mContext, resourceProvider);
                     break;
                 case 5:
-                    view = new TextSettingsCell(mContext, resourceProvider);
+                    view = new TextSettingsCell(mContext, resourceProvider).useSkinTokens();
                     break;
                 case 6:
                 default:
-                    view = new TextInfoPrivacyCell(mContext, resourceProvider);
+                    view = new TextInfoPrivacyCell(mContext, resourceProvider).useSkinTokens();
                     break;
             }
             return new RecyclerListView.Holder(view);

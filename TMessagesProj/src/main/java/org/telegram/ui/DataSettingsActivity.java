@@ -261,6 +261,11 @@ public class DataSettingsActivity extends BaseFragment {
     }
 
     @Override
+    public String screenId() {
+        return "dataStorage";
+    }
+
+    @Override
     public View createView(Context context) {
         actionBar.setBackButtonImage(R.drawable.ic_ab_back);
         actionBar.setTitle(LocaleController.getString(R.string.DataSettings));
@@ -292,7 +297,7 @@ public class DataSettingsActivity extends BaseFragment {
                 return getThemedColor(Theme.key_listSelector);
             }
         };
-        listView.setSections();
+        listView.useSkinSections().setSections();
         actionBar.setAdaptiveBackground(listView);
         listView.setVerticalScrollBarEnabled(false);
         listView.setLayoutManager(layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
@@ -901,23 +906,23 @@ public class DataSettingsActivity extends BaseFragment {
                     view = new ShadowSectionCell(mContext);
                     break;
                 case 1:
-                    view = new TextSettingsCell(mContext);
+                    view = new TextSettingsCell(mContext).useSkinTokens();
                     break;
                 case 2:
-                    view = new HeaderCell(mContext, 22);
+                    view = new HeaderCell(mContext, 22).useSkinTokens();
                     break;
                 case 3:
-                    view = new TextCheckCell(mContext);
+                    view = new TextCheckCell(mContext).useSkinTokens();
                     break;
                 case 4:
-                    view = new TextInfoPrivacyCell(mContext);
+                    view = new TextInfoPrivacyCell(mContext).useSkinTokens();
                     break;
                 case 5:
                     view = new NotificationsCheckCell(mContext);
                     break;
                 case 6:
                 default:
-                    view = new TextCell(mContext);
+                    view = new TextCell(mContext).useSkinTokens();
                     break;
             }
             view.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT));
