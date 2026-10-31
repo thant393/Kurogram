@@ -234,6 +234,11 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
     }
 
     @Override
+    public String screenId() {
+        return "settings";
+    }
+
+    @Override
     public View createView(Context context) {
         contentView = new SizeNotifierFrameLayout(context) {
             @Override
@@ -356,7 +361,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         };
         search.loadFaqWebPage();
 
-        listView = new UniversalRecyclerView(this, this::fillItems, this::onClick, this::onLongClick);
+        listView = new UniversalRecyclerView(this, this::fillItems, this::onClick, this::onLongClick).useSkin();
         listView.adapter.setApplyBackground(false);
         listView.setSections();
         listView.setPadding(0, coverHeader() ? 0 : AndroidUtilities.statusBarHeight + dp(12), 0, AndroidUtilities.navigationBarHeight + additionNavigationBarHeight);

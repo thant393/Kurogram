@@ -75,6 +75,9 @@ public class UniversalAdapter extends AdapterWithDiffUtils {
     public static final int VIEW_TYPE_CHECK = 4;
     public static final int VIEW_TYPE_TEXT_CHECK = 5;
     public static final int VIEW_TYPE_ICON_TEXT_CHECK = 6;
+    /** Kuro skins: set through UniversalRecyclerView.useSkin() before the first cell is created. */
+    public boolean skinCells;
+
     public static final int VIEW_TYPE_SHADOW = 7;
     public static final int VIEW_TYPE_LARGE_SHADOW = 8;
     public static final int VIEW_TYPE_CHECKRIPPLE = 9;
@@ -576,6 +579,20 @@ public class UniversalAdapter extends AdapterWithDiffUtils {
             case VIEW_TYPE_EXPANDABLE_SWITCH:
                 view = new TextCheckCell2(context);
                 break;
+        }
+        if (skinCells && !dialog) {
+            // Kuro skins: components.cell.* / components.section.* on the plain Telegram cells only
+            if (viewType == VIEW_TYPE_TEXT_SETTINGS && view instanceof TextSettingsCell) {
+                ((TextSettingsCell) view).useSkinTokens();
+            } else if (viewType == VIEW_TYPE_TEXT && view instanceof TextCell) {
+                ((TextCell) view).useSkinTokens();
+            } else if (viewType == VIEW_TYPE_CHECK && view instanceof TextCheckCell) {
+                ((TextCheckCell) view).useSkinTokens();
+            } else if (viewType == VIEW_TYPE_HEADER && view instanceof HeaderCell) {
+                ((HeaderCell) view).useSkinTokens();
+            } else if (viewType == VIEW_TYPE_SHADOW && view instanceof TextInfoPrivacyCell) {
+                ((TextInfoPrivacyCell) view).useSkinTokens();
+            }
         }
         if (shouldApplyBackground(viewType)) {
             view.setBackgroundColor(getThemedColor(key_background));

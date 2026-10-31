@@ -3299,20 +3299,25 @@ public class RecyclerListView extends RecyclerView implements IBlur3Capture {
         return this;
     }
 
-    public void setSections(int padding, float roundRadius, boolean topPadding) {
-        if (skinSections) {
-            tw.nekomimi.nekogram.skin.SkinTokens t = tw.nekomimi.nekogram.skin.KuroUi.t();
-            if (t.sectionStyle == 0) {
-                padding = 0;
-                roundRadius = 0;
-            }
-            if (t.sectionStyle != 0 && t.sectionRadiusDp >= 0) {
-                roundRadius = dp(t.sectionRadiusDp);
-            }
-            if (t.sectionStyle != 0 && t.sectionGapDp >= 0) {
-                padding = dp(t.sectionGapDp);
-            }
+    protected float skinSectionRadius(float radius) {
+        if (!skinSections) {
+            return radius;
         }
+        tw.nekomimi.nekogram.skin.SkinTokens t = tw.nekomimi.nekogram.skin.KuroUi.t();
+        return t.sectionStyle == 0 ? 0 : t.sectionRadiusDp >= 0 ? dp(t.sectionRadiusDp) : radius;
+    }
+
+    protected int skinSectionPadding(int padding) {
+        if (!skinSections) {
+            return padding;
+        }
+        tw.nekomimi.nekogram.skin.SkinTokens t = tw.nekomimi.nekogram.skin.KuroUi.t();
+        return t.sectionStyle == 0 ? 0 : t.sectionGapDp >= 0 ? dp(t.sectionGapDp) : padding;
+    }
+
+    public void setSections(int padding, float roundRadius, boolean topPadding) {
+        roundRadius = skinSectionRadius(roundRadius);
+        padding = skinSectionPadding(padding);
         setSections(
             view -> !(view instanceof TextInfoPrivacyCell || view instanceof ShadowSectionCell || view instanceof FiltersSetupActivity.HintInnerCell || view instanceof GraySectionCell || view instanceof CollapseTextCell) && !Objects.equals(view.getTag(), TAG_NOT_SECTION),
             padding,

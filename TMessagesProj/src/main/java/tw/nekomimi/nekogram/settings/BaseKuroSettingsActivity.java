@@ -103,6 +103,11 @@ public abstract class BaseKuroSettingsActivity extends BaseFragment {
     }
 
     @Override
+    public String screenId() {
+        return "kuroSettings";
+    }
+
+    @Override
     public View createView(Context context) {
         contentView = new FrameLayout(context) {
             @Override
@@ -163,7 +168,7 @@ public abstract class BaseKuroSettingsActivity extends BaseFragment {
         });
         iBlur3Capture = new ViewGroupPartRenderer(listView, contentView, listView::drawChild);
         listView.addEdgeEffectListener(() -> listView.postOnAnimation(this::blur3_InvalidateBlur));
-        listView.setSections();
+        listView.useSkin().setSections();
         listView.setPadding(0, needActionBarPadding() ? ActionBar.getCurrentActionBarHeight() : AndroidUtilities.dp(12), 0, 0);
         contentView.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.FILL));
 
@@ -442,7 +447,11 @@ public abstract class BaseKuroSettingsActivity extends BaseFragment {
         @Override
         public TextSettingsCell createView(Context context, RecyclerListView listView, int currentAccount, int classGuid, Theme.ResourcesProvider resourcesProvider) {
             this.resourcesProvider = resourcesProvider;
-            return new TextSettingsCell(context, resourcesProvider);
+            TextSettingsCell cell = new TextSettingsCell(context, resourcesProvider);
+            if (listView instanceof UniversalRecyclerView && ((UniversalRecyclerView) listView).adapter.skinCells) {
+                cell.useSkinTokens();
+            }
+            return cell;
         }
 
         @Override

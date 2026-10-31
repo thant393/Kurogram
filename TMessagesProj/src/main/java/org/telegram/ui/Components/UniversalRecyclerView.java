@@ -437,6 +437,13 @@ public class UniversalRecyclerView extends RecyclerListView {
         }
     }
 
+    /** Kuro skins: lets the skin's cell and section-card tokens apply to this list. Call right after construction. */
+    public UniversalRecyclerView useSkin() {
+        useSkinSections();
+        adapter.skinCells = true;
+        return this;
+    }
+
     public void setSections() {
         setSections(dp(12), dp(16), false);
     }
@@ -444,6 +451,8 @@ public class UniversalRecyclerView extends RecyclerListView {
         setSections(dp(12), dp(16), topPadding);
     }
     public void setSections(int padding, float roundRadius, boolean topPadding) {
+        roundRadius = skinSectionRadius(roundRadius);
+        padding = skinSectionPadding(padding);
         super.setSections(
             view -> {
                 if (view.getParent() != this) return false;
