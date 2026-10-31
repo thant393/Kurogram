@@ -31,6 +31,11 @@ public final class SkinSpec {
     public static final int SCHEMA_VERSION = 2;
     /** What this build of the app understands; a theme whose min_app_version is higher is refused. */
     public static final int ENGINE_LEVEL = 1;
+    /**
+     * Highest schemaMinor this build knows. Minor 1 only ADDS optional keys; an older app ignores them, so a
+     * document may carry them without raising min_app_version. A higher minor is applied anyway (NEWER_MINOR warning).
+     */
+    public static final int SCHEMA_MINOR = 1;
     public static final int MAX_JSON_BYTES = 64 * 1024;
 
     public static final String LIST_CARD = "card";
@@ -280,6 +285,120 @@ public final class SkinSpec {
             "effects.blur|bool", "effects.glass|bool", "effects.animations|bool", "effects.reducedMotion|bool",
     };
 
+    /**
+     * schemaMinor 1: optional keys added after RULES_V2. Never required, validated only when present, and kept
+     * in a separate list so documents published before them stay complete. Kept identical to RULES_V2_MINOR1 in
+     * the backend (app/schemas/theme.py) and to docs/skin-rules.manifest.json (Tools/check_rules.py checks all three).
+     * Phase 1 only recognises and validates them: no screen reads them yet, so they change nothing on screen.
+     */
+    private static final String[] RULES_V2_MINOR1 = {
+            "schemaMinor|int:0:99",
+            "components.cell.heightDp|int:40:80", "components.cell.twoLineHeightDp|int:56:96", "components.cell.paddingStartDp|int:8:32",
+            "components.cell.titleSizeSp|int:12:22", "components.cell.valueSizeSp|int:11:18",
+            "components.cell.titleWeight|enum:regular,medium,bold", "components.cell.iconSizeDp|int:16:32",
+            "components.cell.dividerVisible|bool", "components.cell.dividerInsetDp|int:0:96",
+            "components.cell.dividerColor|col", "components.cell.pressedColor|argb",
+            "components.section.style|enum:flat,card", "components.section.radiusDp|int:0:32", "components.section.gapDp|int:0:32",
+            "components.section.headerSizeSp|int:11:18", "components.section.headerWeight|enum:regular,medium,bold",
+            "components.section.headerColor|col", "components.section.infoSizeSp|int:11:16",
+            "components.switch.trackOn|col", "components.switch.trackOff|col", "components.switch.thumbOn|col", "components.switch.thumbOff|col",
+            "components.search.background|col", "components.search.radiusDp|int:0:32", "components.search.hintColor|col", "components.search.iconColor|col",
+            "components.fab.sizeDp|int:40:72", "components.fab.radiusDp|int:0:36",
+            "components.session.avatarRadiusDp|int:0:32", "components.session.nameSizeSp|int:12:20",
+            "screens.privacy.background|col", "screens.notifications.background|col",
+            "screens.dataStorage.background|col", "screens.devices.background|col",
+            "ux.transition|enum:default,fade,slide,none", "ux.ripple|bool", "ux.animationScale|float:0:2",
+    };
+
+    /**
+     * Top-level keys that are not rule paths. Kept identical to STRUCTURE in the backend and the manifest.
+     * leaf = a value checked elsewhere, open = anything below is allowed, overlay = same shape as the root,
+     * layout = checked against the layout rules (LayoutSpec).
+     */
+    private static final String[] STRUCTURE = {
+            "leaf:schemaVersion", "leaf:appearance", "open:meta", "overlay:night", "layout:layout",
+    };
+
+    /** Layout keys (inside a skin's "layout") that are valid but that no screen reads yet. */
+    private static final String[] LAYOUT_NOT_YET = {"settings.mode", "settings.grid.columns"};
+
+    /** Minor-1 paths a screen already reads. Empty in Phase 1: every minor-1 key present raises RECOGNIZED_NOT_YET_SUPPORTED. */
+    private static final java.util.Set<String> IMPLEMENTED_MINOR1 = new java.util.HashSet<>();
+
+    private static SkinGrammar grammar;
+
+    private static synchronized SkinGrammar grammar() {
+        if (grammar == null) {
+            SkinGrammar g = new SkinGrammar().addRules(RULES_V2).addRules(RULES_V2_MINOR1);
+            SkinGrammar layout = new SkinGrammar().addRules(tw.nekomimi.nekogram.layout.LayoutSpec.rules());
+            for (String entry : STRUCTURE) {
+                int colon = entry.indexOf(':');
+                String kind = entry.substring(0, colon);
+                String name = entry.substring(colon + 1);
+                switch (kind) {
+                    case "leaf":
+                        g.leaf(name);
+                        break;
+                    case "open":
+                        g.open(name);
+                        break;
+                    case "overlay":
+                        g.root.children.put(name, g.root);
+                        break;
+                    case "layout":
+                        layout.leaf("schemaVersion").open("meta");
+                        g.root.children.put(name, layout.root);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            grammar = g;
+        }
+        return grammar;
+    }
+
+    /** Non-fatal findings of this file (never null). Collected at parse time; does not affect how the skin is applied. */
+    public SkinWarnings warnings() {
+        return warnings;
+    }
+
+    private SkinWarnings warnings = SkinWarnings.NONE;
+
+    /** Never throws: a failure here must not stop a valid skin from being applied. */
+    private static SkinWarnings collectWarnings(JSONObject root) {
+        SkinWarnings w = new SkinWarnings();
+        try {
+            if (root.optInt("schemaMinor", 0) > SCHEMA_MINOR) {
+                w.add(SkinWarnings.NEWER_MINOR, "schemaMinor");
+            }
+            SkinGrammar.scan(root, grammar().root, "", w);
+            JSONObject night = root.optJSONObject("night");
+            for (String rule : RULES_V2_MINOR1) {
+                String path = rule.substring(0, rule.indexOf('|'));
+                if (path.equals("schemaMinor") || IMPLEMENTED_MINOR1.contains(path)) {
+                    continue;
+                }
+                if (get(root, path) != null) {
+                    w.add(SkinWarnings.RECOGNIZED_NOT_YET_SUPPORTED, path);
+                }
+                if (night != null && get(night, path) != null) {
+                    w.add(SkinWarnings.RECOGNIZED_NOT_YET_SUPPORTED, "night." + path);
+                }
+            }
+            JSONObject layout = root.optJSONObject("layout");
+            if (layout != null) {
+                for (String path : LAYOUT_NOT_YET) {
+                    if (get(layout, path) != null) {
+                        w.add(SkinWarnings.RECOGNIZED_NOT_YET_SUPPORTED, "layout." + path);
+                    }
+                }
+            }
+        } catch (Exception ignore) {
+        }
+        return w;
+    }
+
     /** Parses and validates; throws IllegalArgumentException with a readable reason on any problem. */
     // ---- day / night ----
     private static final SkinSpec NEUTRAL = defaults();
@@ -342,6 +461,7 @@ public final class SkinSpec {
                     throw new IllegalArgumentException("appearance must be auto, light or dark");
                 }
                 day.appearance = appearance;
+                day.warnings = collectWarnings(root);
                 JSONObject night = root.optJSONObject("night");
                 if (night != null && night.length() > 0) {
                     // The night section only lists what differs from day; everything else is inherited.
@@ -364,6 +484,10 @@ public final class SkinSpec {
 
     private static SkinSpec parseV2(JSONObject root) throws JSONException {
         for (String rule : RULES_V2) {
+            int bar = rule.indexOf('|');
+            check(root, rule.substring(0, bar), rule.substring(bar + 1));
+        }
+        for (String rule : RULES_V2_MINOR1) {
             int bar = rule.indexOf('|');
             check(root, rule.substring(0, bar), rule.substring(bar + 1));
         }
@@ -420,6 +544,13 @@ public final class SkinSpec {
         if (font == null) font = intOrNull(root, "tokens.typography.bodySizeSp");
         Map<String, Object> values = new HashMap<>();
         for (String rule : RULES_V2) {
+            String path = rule.substring(0, rule.indexOf('|'));
+            Object v = get(root, path);
+            if (v != null) {
+                values.put(path, v);
+            }
+        }
+        for (String rule : RULES_V2_MINOR1) {
             String path = rule.substring(0, rule.indexOf('|'));
             Object v = get(root, path);
             if (v != null) {

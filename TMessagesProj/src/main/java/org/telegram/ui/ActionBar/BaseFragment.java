@@ -1207,6 +1207,14 @@ public abstract class BaseFragment {
         return true;
     }
 
+    /**
+     * Kuro skins: the id this screen has in tw.nekomimi.nekogram.skin.ScreenCapabilities (e.g. "privacy"),
+     * or null when it has none. Information only; it does not change how the screen renders.
+     */
+    public String screenId() {
+        return null;
+    }
+
     public boolean isLightStatusBar() {
         if (getLastStoryViewer() != null && getLastStoryViewer().isShown()) {
             return false;

@@ -93,7 +93,13 @@ public final class LayoutSpec {
             "chat.header.avatarLeft|bool", "chat.header.actions|list:call,video,more,search:0:4",
             "chat.input.style|enum:classic,pill", "chat.input.leading|list:plus,attach,emoji:0:2",
             "chat.input.trailing|list:emoji,mic,attach:0:3",
+            "settings.mode|enum:list,grid", "settings.grid.columns|int:2:4",
     };
+
+    /** The rule list ("path|kind"), for tools that derive the document shape from it. */
+    public static String[] rules() {
+        return RULES.clone();
+    }
 
     /**
      * A skin may carry its own "layout" section (same keys as a layout pack, without schemaVersion/meta).

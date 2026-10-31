@@ -1,0 +1,420 @@
+{
+ "vectorsVersion": 1,
+ "note": "Each entry: apply the rule to a document holding `value` at the rule's path. Both validators (app SkinSpec/LayoutSpec, backend theme.py/layout_rules.py) must agree with `valid`.",
+ "vectors": [
+  {
+   "checker": "skin",
+   "rule": "tokens.colors.accent|col",
+   "value": "#FFFFFF",
+   "valid": true
+  },
+  {
+   "checker": "skin",
+   "rule": "tokens.colors.accent|col",
+   "value": "#ffffff80",
+   "valid": true
+  },
+  {
+   "checker": "skin",
+   "rule": "tokens.colors.accent|col",
+   "value": "#FFF",
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "tokens.colors.accent|col",
+   "value": "FFFFFF",
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "tokens.colors.accent|col",
+   "value": 5,
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "tokens.colors.accent|col",
+   "value": true,
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "tokens.colors.accent|col",
+   "value": "#GGGGGG",
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "tokens.colors.overlay|argb",
+   "value": "#80FFFFFF",
+   "valid": true
+  },
+  {
+   "checker": "skin",
+   "rule": "tokens.colors.overlay|argb",
+   "value": "#FFFFFF",
+   "valid": true
+  },
+  {
+   "checker": "skin",
+   "rule": "tokens.colors.overlay|argb",
+   "value": "80FFFFFF",
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "effects.blur|bool",
+   "value": true,
+   "valid": true
+  },
+  {
+   "checker": "skin",
+   "rule": "effects.blur|bool",
+   "value": false,
+   "valid": true
+  },
+  {
+   "checker": "skin",
+   "rule": "effects.blur|bool",
+   "value": "true",
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "effects.blur|bool",
+   "value": 1,
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "tokens.shapes.cardRadiusDp|int:0:32",
+   "value": 0,
+   "valid": true
+  },
+  {
+   "checker": "skin",
+   "rule": "tokens.shapes.cardRadiusDp|int:0:32",
+   "value": 32,
+   "valid": true
+  },
+  {
+   "checker": "skin",
+   "rule": "tokens.shapes.cardRadiusDp|int:0:32",
+   "value": 33,
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "tokens.shapes.cardRadiusDp|int:0:32",
+   "value": -1,
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "tokens.shapes.cardRadiusDp|int:0:32",
+   "value": 5.0,
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "tokens.shapes.cardRadiusDp|int:0:32",
+   "value": true,
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "tokens.shapes.cardRadiusDp|int:0:32",
+   "value": "5",
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "tokens.typography.lineHeightMultiplier|float:1:2",
+   "value": 1,
+   "valid": true
+  },
+  {
+   "checker": "skin",
+   "rule": "tokens.typography.lineHeightMultiplier|float:1:2",
+   "value": 2,
+   "valid": true
+  },
+  {
+   "checker": "skin",
+   "rule": "tokens.typography.lineHeightMultiplier|float:1:2",
+   "value": 1.5,
+   "valid": true
+  },
+  {
+   "checker": "skin",
+   "rule": "tokens.typography.lineHeightMultiplier|float:1:2",
+   "value": 2.1,
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "tokens.typography.lineHeightMultiplier|float:1:2",
+   "value": 0.9,
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "tokens.typography.lineHeightMultiplier|float:1:2",
+   "value": true,
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "tokens.typography.lineHeightMultiplier|float:1:2",
+   "value": "1.5",
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "tokens.gradient.direction|enum:vertical,diagonal,horizontal",
+   "value": "vertical",
+   "valid": true
+  },
+  {
+   "checker": "skin",
+   "rule": "tokens.gradient.direction|enum:vertical,diagonal,horizontal",
+   "value": "circular",
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "tokens.gradient.direction|enum:vertical,diagonal,horizontal",
+   "value": 1,
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "tokens.gradient.direction|enum:vertical,diagonal,horizontal",
+   "value": true,
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "assets.wallpaper|null",
+   "value": null,
+   "valid": true
+  },
+  {
+   "checker": "skin",
+   "rule": "assets.wallpaper|null",
+   "value": "x",
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "assets.wallpaper|null",
+   "value": 0,
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "assets.wallpaper|null",
+   "value": false,
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "components.cell.heightDp|int:40:80",
+   "value": 40,
+   "valid": true
+  },
+  {
+   "checker": "skin",
+   "rule": "components.cell.heightDp|int:40:80",
+   "value": 80,
+   "valid": true
+  },
+  {
+   "checker": "skin",
+   "rule": "components.cell.heightDp|int:40:80",
+   "value": 39,
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "components.cell.heightDp|int:40:80",
+   "value": 56.0,
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "schemaMinor|int:0:99",
+   "value": 0,
+   "valid": true
+  },
+  {
+   "checker": "skin",
+   "rule": "schemaMinor|int:0:99",
+   "value": 1,
+   "valid": true
+  },
+  {
+   "checker": "skin",
+   "rule": "schemaMinor|int:0:99",
+   "value": 99,
+   "valid": true
+  },
+  {
+   "checker": "skin",
+   "rule": "schemaMinor|int:0:99",
+   "value": 100,
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "schemaMinor|int:0:99",
+   "value": "1",
+   "valid": false
+  },
+  {
+   "checker": "layout",
+   "rule": "chatList.searchBar|bool",
+   "value": true,
+   "valid": true
+  },
+  {
+   "checker": "layout",
+   "rule": "chatList.searchBar|bool",
+   "value": "yes",
+   "valid": false
+  },
+  {
+   "checker": "layout",
+   "rule": "chatList.searchBar|bool",
+   "value": 0,
+   "valid": false
+  },
+  {
+   "checker": "layout",
+   "rule": "contacts.grid.columns|int:2:5",
+   "value": 2,
+   "valid": true
+  },
+  {
+   "checker": "layout",
+   "rule": "contacts.grid.columns|int:2:5",
+   "value": 5,
+   "valid": true
+  },
+  {
+   "checker": "layout",
+   "rule": "contacts.grid.columns|int:2:5",
+   "value": 1,
+   "valid": false
+  },
+  {
+   "checker": "layout",
+   "rule": "contacts.grid.columns|int:2:5",
+   "value": 6,
+   "valid": false
+  },
+  {
+   "checker": "layout",
+   "rule": "contacts.grid.columns|int:2:5",
+   "value": 3.0,
+   "valid": false
+  },
+  {
+   "checker": "layout",
+   "rule": "contacts.grid.columns|int:2:5",
+   "value": true,
+   "valid": false
+  },
+  {
+   "checker": "layout",
+   "rule": "settings.mode|enum:list,grid",
+   "value": "grid",
+   "valid": true
+  },
+  {
+   "checker": "layout",
+   "rule": "settings.mode|enum:list,grid",
+   "value": "carousel",
+   "valid": false
+  },
+  {
+   "checker": "layout",
+   "rule": "settings.mode|enum:list,grid",
+   "value": 1,
+   "valid": false
+  },
+  {
+   "checker": "layout",
+   "rule": "settings.grid.columns|int:2:4",
+   "value": 2,
+   "valid": true
+  },
+  {
+   "checker": "layout",
+   "rule": "settings.grid.columns|int:2:4",
+   "value": 4,
+   "valid": true
+  },
+  {
+   "checker": "layout",
+   "rule": "settings.grid.columns|int:2:4",
+   "value": 5,
+   "valid": false
+  },
+  {
+   "checker": "layout",
+   "rule": "bottomTabs.items|list:chats,people,settings,profile,unread:2:5",
+   "value": [
+    "chats",
+    "settings"
+   ],
+   "valid": true
+  },
+  {
+   "checker": "layout",
+   "rule": "bottomTabs.items|list:chats,people,settings,profile,unread:2:5",
+   "value": [
+    "chats"
+   ],
+   "valid": false
+  },
+  {
+   "checker": "layout",
+   "rule": "bottomTabs.items|list:chats,people,settings,profile,unread:2:5",
+   "value": [
+    "chats",
+    "chats"
+   ],
+   "valid": false
+  },
+  {
+   "checker": "layout",
+   "rule": "bottomTabs.items|list:chats,people,settings,profile,unread:2:5",
+   "value": [
+    "chats",
+    "bogus"
+   ],
+   "valid": false
+  },
+  {
+   "checker": "layout",
+   "rule": "bottomTabs.items|list:chats,people,settings,profile,unread:2:5",
+   "value": "chats",
+   "valid": false
+  },
+  {
+   "checker": "layout",
+   "rule": "bottomTabs.items|list:chats,people,settings,profile,unread:2:5",
+   "value": [
+    "chats",
+    "people",
+    "settings",
+    "profile",
+    "unread",
+    "chats"
+   ],
+   "valid": false
+  }
+ ]
+}
