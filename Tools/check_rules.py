@@ -93,7 +93,7 @@ def diff(label, a_name, a, b_name, b):
 def check_shape(label, entries, key=None):
     key = key or label
     problems = []
-    if not entries and key not in ("implementedMinor1",):
+    if not entries and key not in ("implementedMinor1", "layoutNotYetSupported"):
         problems.append(f"{label}: empty")
     seen = set()
     for e in entries:

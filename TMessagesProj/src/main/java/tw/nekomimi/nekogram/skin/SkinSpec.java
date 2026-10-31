@@ -320,7 +320,7 @@ public final class SkinSpec {
     };
 
     /** Layout keys (inside a skin's "layout") that are valid but that no screen reads yet. */
-    private static final String[] LAYOUT_NOT_YET = {"settings.mode", "settings.grid.columns"};
+    private static final String[] LAYOUT_NOT_YET = {};
 
     /**
      * Minor-1 paths that at least one screen already reads (Phase 2: TextSettingsCell, TextCheckCell, HeaderCell,

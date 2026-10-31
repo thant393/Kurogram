@@ -201,10 +201,7 @@
   "overlay:night",
   "layout:layout"
  ],
- "layoutNotYetSupported": [
-  "settings.mode",
-  "settings.grid.columns"
- ],
+ "layoutNotYetSupported": [],
  "implementedMinor1": [
   "components.cell.heightDp",
   "components.cell.twoLineHeightDp",

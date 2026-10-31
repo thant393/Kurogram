@@ -161,6 +161,8 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
 
     private SizeNotifierFrameLayout contentView;
     private UniversalRecyclerView listView;
+    /** settings.mode = grid: number of tile columns (2..4); 0 = the normal list. */
+    private int gridColumns;
     private View actionBarBackground;
 
     private ActionBarMenuItem searchItem, otherItem;
@@ -361,7 +363,13 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         };
         search.loadFaqWebPage();
 
-        listView = new UniversalRecyclerView(this, this::fillItems, this::onClick, this::onLongClick).useSkin();
+        final tw.nekomimi.nekogram.layout.LayoutSpec settingsSpec = tw.nekomimi.nekogram.layout.LayoutManager.get().spec();
+        gridColumns = "grid".equals(settingsSpec.stringValue("settings.mode", "list")) ? Math.max(2, Math.min(4, settingsSpec.intValue("settings.grid.columns", 3))) : 0;
+        if (gridColumns > 0) {
+            listView = new UniversalRecyclerView(context, currentAccount, classGuid, false, this::fillItems, this::onClick, this::onLongClick, getResourceProvider(), gridColumns, androidx.recyclerview.widget.LinearLayoutManager.VERTICAL).useSkin();
+        } else {
+            listView = new UniversalRecyclerView(this, this::fillItems, this::onClick, this::onLongClick).useSkin();
+        }
         listView.adapter.setApplyBackground(false);
         listView.setSections();
         listView.setPadding(0, coverHeader() ? 0 : AndroidUtilities.statusBarHeight + dp(12), 0, AndroidUtilities.navigationBarHeight + additionNavigationBarHeight);
@@ -887,6 +895,13 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         }
 
         applyLayoutItems(items);
+        if (gridColumns > 0) {
+            for (UItem item : items) {
+                if (item.instanceOf(SettingCell.Factory.class) && item.object == null) {
+                    item.setSpanCount(1);
+                }
+            }
+        }
         items.add(UItem.asCustomShadow(versionView));
     }
 
@@ -1401,6 +1416,34 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
 
             valueView = new TextView(context);
             valueView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+            buildLayout();
+            updateColors();
+        }
+
+        private boolean grid;
+
+        /** Row layout (icon, text, value) or, in the Settings grid, a vertical tile (icon over a short title). */
+        private void buildLayout() {
+            removeAllViews();
+            if (grid) {
+                setOrientation(VERTICAL);
+                setGravity(Gravity.CENTER_HORIZONTAL);
+                addView(iconLayout, LayoutHelper.createLinear(28, 28, Gravity.CENTER_HORIZONTAL, 0, 16, 0, 0));
+                addView(textLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, Gravity.CENTER_HORIZONTAL, 4, 8, 4, 0));
+                titleView.setGravity(Gravity.CENTER_HORIZONTAL);
+                titleView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 13);
+                titleView.setMaxLines(2);
+                titleView.setEllipsize(TextUtils.TruncateAt.END);
+                subtitleView.setVisibility(View.GONE);
+                valueView.setVisibility(View.GONE);
+                return;
+            }
+            setOrientation(HORIZONTAL);
+            setGravity(Gravity.NO_GRAVITY);
+            titleView.setGravity(Gravity.NO_GRAVITY);
+            titleView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+            titleView.setMaxLines(Integer.MAX_VALUE);
+            titleView.setEllipsize(null);
             if (LocaleController.isRTL) {
                 addView(valueView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_VERTICAL, 20, 0, 0, 0));
                 addView(textLayout, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 1, Gravity.CENTER_VERTICAL | Gravity.FILL_HORIZONTAL, 20, 0, mini ? 12 : 18, 0));
@@ -1410,7 +1453,14 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                 addView(textLayout, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 1, Gravity.CENTER_VERTICAL | Gravity.FILL_HORIZONTAL,  mini ? 12 : 18, 0, 20, 0));
                 addView(valueView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_VERTICAL, 0, 0, 20, 0));
             }
-            updateColors();
+        }
+
+        public void setGrid(boolean grid) {
+            if (this.grid == grid) {
+                return;
+            }
+            this.grid = grid;
+            buildLayout();
         }
 
         @Override
@@ -1436,13 +1486,13 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
             iconBackground.setColor(iconColorTop, iconColorBottom);
             iconView.setImageResource(icon);
             titleView.setText(title);
-            subtitleView.setVisibility((twoLines = !TextUtils.isEmpty(subtitle)) ? View.VISIBLE : View.GONE);
+            subtitleView.setVisibility((twoLines = !TextUtils.isEmpty(subtitle)) && !grid ? View.VISIBLE : View.GONE);
             subtitleView.setText(subtitle);
             setValue(value);
         }
 
         public void setValue(CharSequence value) {
-            valueView.setVisibility(!TextUtils.isEmpty(value) ? View.VISIBLE : View.GONE);
+            valueView.setVisibility(!TextUtils.isEmpty(value) && !grid ? View.VISIBLE : View.GONE);
             valueView.setText(value);
         }
 
@@ -1450,7 +1500,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
             super.onMeasure(
                 MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.EXACTLY),
-                MeasureSpec.makeMeasureSpec(dp(mini ? 44 : twoLines ? 60 : 50), MeasureSpec.EXACTLY)
+                MeasureSpec.makeMeasureSpec(dp(grid ? 92 : mini ? 44 : twoLines ? 60 : 50), MeasureSpec.EXACTLY)
             );
         }
 
@@ -1516,6 +1566,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
             public void bindView(View view, UItem item, boolean divider, UniversalAdapter adapter, UniversalRecyclerView listView) {
                 int iconColorTop    = (int) item.longValue;
                 int iconColorBottom = (int) (item.longValue >>> 32);
+                ((SettingCell) view).setGrid(item.spanCount != UItem.MAX_SPAN_COUNT);
                 ((SettingCell) view).set(
                     iconColorTop, iconColorBottom, item.iconResId,
                     item.text,

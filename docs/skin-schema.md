@@ -36,3 +36,11 @@ Change order: Java rule -> `--update` -> copy manifest + vectors into the backen
 ## Screen capabilities
 `tw.nekomimi.nekogram.skin.ScreenCapabilities` records what a skin can customise on each screen (S/P/N/X). Information only.
 `BaseFragment.screenId()` (default null) lets a screen declare its id.
+
+## Screens that read the minor-1 tokens (Phase 2/3)
+
+- Cells (`components.cell.*`, `components.section.header*`/`infoSizeSp`, `components.switch.*`): Privacy, Notifications, Data and Storage, Devices (styling only; rows, order and the locked Devices rows are untouched), Settings and every Kuro Settings screen (plain Telegram cells only).
+- Section cards (`components.section.style|radiusDp|gapDp`): the same screens. `gapDp` is the card's side inset (Telegram's 12 dp). `style: flat` = full-width square sections.
+- Settings grid (layout doc, `settings.mode: grid`, `settings.grid.columns` 2..4, default 3): the Settings entries become icon tiles. Rows with a bot object and headers stay full width. Rules for `settings.*` are no longer "not yet supported".
+- Still native: Chats/Contacts/People/Unread component tokens, Profile and Theme Store slots, per-screen row maps, UX presets.
+- Known limit: tokens are read when a cell or list is created; changing the skin while a screen is open needs the screen reopened.
