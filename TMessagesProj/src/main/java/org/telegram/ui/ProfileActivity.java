@@ -10616,6 +10616,16 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         return chatId != 0;
     }
 
+    /** Kuro skins: next row index, or -1 when the active layout hides this info row (layout.profile.hiddenRows). */
+    private int skinRow(String id) {
+        return tw.nekomimi.nekogram.skin.RowMap.hidden("profile", id) ? -1 : rowCount++;
+    }
+
+    @Override
+    public String screenId() {
+        return "profile";
+    }
+
     private void updateRowsIds() {
         updateNotifications(false);
 
@@ -10880,29 +10890,29 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 }
                 infoStartRow = rowCount;
                 if (!isBot && (hasPhone || !hasInfo)) {
-                    phoneRow = hidePhone ? -1 : rowCount++;
+                    phoneRow = hidePhone ? -1 : skinRow("phone");
                 }
                 if (userInfo != null && !TextUtils.isEmpty(userInfo.about)) {
-                    userInfoRow = rowCount++;
+                    userInfoRow = skinRow("bio");
                 }
                 if (user != null && username != null) {
-                    usernameRow = rowCount++;
+                    usernameRow = skinRow("username");
                 }
                 if (user != null && !user.restriction_reason.isEmpty()) {
                     restrictionReasonRow = rowCount++;
                 }
                 if (userInfo != null) {
                     if (userInfo.birthday != null) {
-                        birthdayRow = rowCount++;
+                        birthdayRow = skinRow("birthday");
                     }
                     if (userInfo.business_work_hours != null) {
-                        bizHoursRow = rowCount++;
+                        bizHoursRow = skinRow("bizHours");
                     }
                     if (userInfo.business_location != null) {
-                        bizLocationRow = rowCount++;
+                        bizLocationRow = skinRow("bizLocation");
                     }
                     if (userInfo.note != null) {
-                        noteRow = rowCount++;
+                        noteRow = skinRow("note");
                     }
                 }
                 if (actionsView == null && userId != getUserConfig().getClientUserId()) {

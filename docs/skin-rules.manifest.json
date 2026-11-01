@@ -193,6 +193,7 @@
   "chat.input.trailing|list:emoji,mic,attach:0:3",
   "settings.mode|enum:list,grid",
   "settings.grid.columns|int:2:4",
+  "profile.hiddenRows|list:phone,bio,username,birthday,bizHours,bizLocation,note:0:7",
   "privacy.hiddenRows|list:phoneNumber,lastSeen,profilePhoto,forwards,calls,voices,noncontacts,birthday,gifts,bio,music,groups,paymentsClear,contactsDelete,contactsSync,contactsSuggest,secretMap,secretWebpage:0:18",
   "dataStorage.hiddenRows|list:storageUsage,dataUsage,saveToGalleryPeer,saveToGalleryGroups,saveToGalleryChannels,useLessDataForCalls,proxy,clearDrafts:0:8"
  ],

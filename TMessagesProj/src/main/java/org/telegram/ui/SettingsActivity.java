@@ -1433,8 +1433,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                 titleView.setGravity(Gravity.CENTER_HORIZONTAL);
                 titleView.setMaxLines(2);
                 titleView.setEllipsize(TextUtils.TruncateAt.END);
-                // long words ("Notifications") shrink to fit the tile instead of breaking in the middle
-                androidx.core.widget.TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(titleView, 9, 13, 1, TypedValue.COMPLEX_UNIT_SP);
+                // the size is fitted in onMeasure so that the longest word is never broken in the middle
                 subtitleView.setVisibility(View.GONE);
                 valueView.setVisibility(View.GONE);
                 return;
@@ -1442,7 +1441,6 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
             setOrientation(HORIZONTAL);
             setGravity(Gravity.NO_GRAVITY);
             titleView.setGravity(Gravity.NO_GRAVITY);
-            androidx.core.widget.TextViewCompat.setAutoSizeTextTypeWithDefaults(titleView, androidx.core.widget.TextViewCompat.AUTO_SIZE_TEXT_TYPE_NONE);
             titleView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
             titleView.setMaxLines(Integer.MAX_VALUE);
             titleView.setEllipsize(null);
@@ -1498,8 +1496,37 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
             valueView.setText(value);
         }
 
+        /** Grid tile: the largest size (13 down to 9 sp) at which the longest word of the title fits the tile width. */
+        private void fitGridTitle(int widthPx) {
+            final CharSequence text = titleView.getText();
+            if (TextUtils.isEmpty(text)) {
+                return;
+            }
+            final float available = widthPx - dp(6);
+            final android.text.TextPaint probe = new android.text.TextPaint(titleView.getPaint());
+            final String[] words = text.toString().split("\\s+");
+            float sizePx = 0;
+            for (float sp = 13; sp >= 9; sp -= 0.5f) {
+                sizePx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, getResources().getDisplayMetrics());
+                probe.setTextSize(sizePx);
+                float widest = 0;
+                for (String word : words) {
+                    widest = Math.max(widest, probe.measureText(word));
+                }
+                if (widest <= available) {
+                    break;
+                }
+            }
+            if (Math.abs(titleView.getTextSize() - sizePx) > 0.5f) {
+                titleView.setTextSize(TypedValue.COMPLEX_UNIT_PX, sizePx);
+            }
+        }
+
         @Override
         protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+            if (grid) {
+                fitGridTitle(MeasureSpec.getSize(widthMeasureSpec));
+            }
             super.onMeasure(
                 MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(dp(grid ? 92 : mini ? 44 : twoLines ? 60 : 50), MeasureSpec.EXACTLY)

@@ -447,6 +447,32 @@
     "bio"
    ],
    "valid": false
+  },
+  {
+   "checker": "layout",
+   "rule": "profile.hiddenRows|list:phone,bio,username,birthday,bizHours,bizLocation,note:0:7",
+   "value": [
+    "bio",
+    "username"
+   ],
+   "valid": true
+  },
+  {
+   "checker": "layout",
+   "rule": "profile.hiddenRows|list:phone,bio,username,birthday,bizHours,bizLocation,note:0:7",
+   "value": [
+    "notifications"
+   ],
+   "valid": false
+  },
+  {
+   "checker": "layout",
+   "rule": "profile.hiddenRows|list:phone,bio,username,birthday,bizHours,bizLocation,note:0:7",
+   "value": [
+    "bio",
+    "bio"
+   ],
+   "valid": false
   }
  ]
 }

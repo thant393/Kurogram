@@ -42,7 +42,7 @@ public final class ScreenCapabilities {
         TABLE.put("unread",        "SNNNNNNNSN"); // UnreadChatsActivity
         TABLE.put("settings",      "SNNPSPPNSS"); // SettingsActivity (UniversalRecyclerView)
         TABLE.put("kuroSettings",  "SNNPNNNNNN"); // BaseKuroSettingsActivity screens
-        TABLE.put("profile",       "PNNPNNNNNN"); // ProfileActivity (own ListAdapter)
+        TABLE.put("profile",       "PNNPPNNNNN"); // ProfileActivity (own ListAdapter)
         TABLE.put("themeStore",    "SPPSNPNNNN"); // stickerstore/*
         TABLE.put("privacy",       "SPPPPNNNNN"); // PrivacySettingsActivity (row ints); Phase 2: TextSettingsCell, TextCell, TextCheckCell, HeaderCell, TextInfoPrivacyCell, Switch tokens, section card style/radius/gap
         TABLE.put("notifications", "SPPPNNNNNN"); // NotificationsSettingsActivity (row ints)
