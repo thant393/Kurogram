@@ -3423,6 +3423,15 @@ public class RecyclerListView extends RecyclerView implements IBlur3Capture {
         ) {
             if (isSectionItem.run(view)) {
                 outRect.left = outRect.right = padding;
+                if (parent.getLayoutManager() instanceof androidx.recyclerview.widget.GridLayoutManager && view.getLayoutParams() instanceof androidx.recyclerview.widget.GridLayoutManager.LayoutParams) {
+                    // Grid tiles: only the outer edges of the row keep the card padding.
+                    final androidx.recyclerview.widget.GridLayoutManager.LayoutParams glp = (androidx.recyclerview.widget.GridLayoutManager.LayoutParams) view.getLayoutParams();
+                    final int spans = ((androidx.recyclerview.widget.GridLayoutManager) parent.getLayoutManager()).getSpanCount();
+                    if (glp.getSpanSize() < spans) {
+                        outRect.left = glp.getSpanIndex() == 0 ? padding : 0;
+                        outRect.right = glp.getSpanIndex() + glp.getSpanSize() >= spans ? padding : 0;
+                    }
+                }
 
                 final ViewHolder viewHolder = parent.getChildViewHolder(view);
                 final Adapter adapter = parent.getAdapter();
@@ -3467,10 +3476,16 @@ public class RecyclerListView extends RecyclerView implements IBlur3Capture {
             bottomMargin = ((JoinToSendSettingsView) to).getBottomInfoMargin();
         }
 
+        float cardLeft = from.getLeft(), cardRight = from.getRight();
+        if (sectionsItemDecoration != null && getLayoutManager() instanceof androidx.recyclerview.widget.GridLayoutManager) {
+            // Grid tiles (Settings grid): the card spans the whole row, not just the first tile.
+            cardLeft = getPaddingLeft() + sectionsItemDecoration.padding;
+            cardRight = getWidth() - sectionsItemDecoration.padding - getPaddingRight();
+        }
         AndroidUtilities.rectTmp.set(
-            from.getLeft(),
+            cardLeft,
             Math.max(applyPaddingToSections ? getPaddingTop() : -sectionRadius, top(from) - (hasAbove ? sectionRadius : 0)),
-            from.getRight(),
+            cardRight,
             Math.min(getHeight() - (applyPaddingToSections ? getPaddingBottom() : -sectionRadius), bottom(to) + (hasBelow ? sectionRadius : 0) - bottomMargin)
         );
         if (AndroidUtilities.rectTmp.bottom < AndroidUtilities.rectTmp.top) return;

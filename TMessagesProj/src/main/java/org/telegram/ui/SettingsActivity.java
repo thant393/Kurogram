@@ -1429,11 +1429,12 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                 setOrientation(VERTICAL);
                 setGravity(Gravity.CENTER_HORIZONTAL);
                 addView(iconLayout, LayoutHelper.createLinear(28, 28, Gravity.CENTER_HORIZONTAL, 0, 16, 0, 0));
-                addView(textLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, Gravity.CENTER_HORIZONTAL, 4, 8, 4, 0));
+                addView(textLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, Gravity.CENTER_HORIZONTAL, 2, 8, 2, 0));
                 titleView.setGravity(Gravity.CENTER_HORIZONTAL);
-                titleView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 13);
                 titleView.setMaxLines(2);
                 titleView.setEllipsize(TextUtils.TruncateAt.END);
+                // long words ("Notifications") shrink to fit the tile instead of breaking in the middle
+                androidx.core.widget.TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(titleView, 9, 13, 1, TypedValue.COMPLEX_UNIT_SP);
                 subtitleView.setVisibility(View.GONE);
                 valueView.setVisibility(View.GONE);
                 return;
@@ -1441,6 +1442,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
             setOrientation(HORIZONTAL);
             setGravity(Gravity.NO_GRAVITY);
             titleView.setGravity(Gravity.NO_GRAVITY);
+            androidx.core.widget.TextViewCompat.setAutoSizeTextTypeWithDefaults(titleView, androidx.core.widget.TextViewCompat.AUTO_SIZE_TEXT_TYPE_NONE);
             titleView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
             titleView.setMaxLines(Integer.MAX_VALUE);
             titleView.setEllipsize(null);
