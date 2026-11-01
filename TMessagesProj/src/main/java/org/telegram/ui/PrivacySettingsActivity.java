@@ -304,7 +304,7 @@ public class PrivacySettingsActivity extends BaseFragment implements Notificatio
         frameLayout.setBackgroundColor(tw.nekomimi.nekogram.skin.KuroUi.screenBackground("privacy", Theme.getColor(Theme.key_windowBackgroundGray)));
 
         listView = new RecyclerListView(context);
-        listView.useSkinSections().setSections();
+        listView.useSkinSections().trimLastDividers(tw.nekomimi.nekogram.skin.RowMap.anyHidden("privacy")).setSections();
         actionBar.setAdaptiveBackground(listView);
         listView.setLayoutManager(layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false) {
             @Override

@@ -501,7 +501,7 @@ public class NotificationsSettingsActivity extends BaseFragment implements Notif
         frameLayout.setBackgroundColor(tw.nekomimi.nekogram.skin.KuroUi.screenBackground("notifications", Theme.getColor(Theme.key_windowBackgroundGray)));
 
         listView = new RecyclerListView(context);
-        listView.useSkinSections().setSections();
+        listView.useSkinSections().trimLastDividers(tw.nekomimi.nekogram.skin.RowMap.anyHidden("notifications")).setSections();
         actionBar.setAdaptiveBackground(listView);
         listView.setItemAnimator(null);
         listView.setLayoutAnimation(null);
@@ -970,7 +970,7 @@ public class NotificationsSettingsActivity extends BaseFragment implements Notif
                     view = new TextDetailSettingsCell(mContext);
                     break;
                 case 3:
-                    view = new NotificationsCheckCell(mContext, 21, 64, true, resourceProvider);
+                    view = new NotificationsCheckCell(mContext, 21, 64, true, resourceProvider).useSkinTokens();
                     break;
                 case 4:
                     view = new ShadowSectionCell(mContext, resourceProvider);

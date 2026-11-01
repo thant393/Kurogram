@@ -33,7 +33,7 @@ import org.telegram.ui.Components.CubicBezierInterpolator;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.Switch;
 
-public class NotificationsCheckCell extends FrameLayout {
+public class NotificationsCheckCell extends FrameLayout implements tw.nekomimi.nekogram.skin.LastInCard {
 
     private TextView textView;
     private AnimatedTextView valueTextView;
@@ -42,6 +42,59 @@ public class NotificationsCheckCell extends FrameLayout {
     private ImageView imageView;
     private Switch checkBox;
     private boolean needDivider;
+
+    // Kuro skins: components.cell.* title/value size, title weight and divider, plus components.switch.* (opt-in; see useSkinTokens).
+    private boolean skinned;
+    private boolean skinTouched;
+    private boolean skinLast;
+    private int skinVersion = -1;
+    private int skinDividerInsetDp = -1, skinDividerVisible = -1, skinDividerColor;
+    private android.graphics.Paint skinDividerPaint;
+
+    public NotificationsCheckCell useSkinTokens() {
+        if (resourcesProvider == null) {
+            skinned = true;
+            checkBox.useSkinTokens();
+            applySkinTokens();
+        }
+        return this;
+    }
+
+    private void applySkinTokens() {
+        tw.nekomimi.nekogram.skin.SkinTokens t = tw.nekomimi.nekogram.skin.KuroUi.t();
+        if (t.version == skinVersion) {
+            return;
+        }
+        skinVersion = t.version;
+        skinDividerInsetDp = t.cellDividerInsetDp;
+        skinDividerVisible = t.cellDividerVisible;
+        skinDividerColor = t.cellDividerColor;
+        boolean any = t.cellTitleSizeSp >= 0 || t.cellValueSizeSp >= 0 || t.cellTitleWeight >= 0;
+        if (any || skinTouched) {
+            skinTouched = true; // after the first change, an unset token puts Telegram's value back
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, t.cellTitleSizeSp >= 0 ? t.cellTitleSizeSp : 16);
+            valueTextView.setTextSize(dp(t.cellValueSizeSp >= 0 ? t.cellValueSizeSp : 13));
+            multilineValueTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, t.cellValueSizeSp >= 0 ? t.cellValueSizeSp : 13);
+            textView.setTypeface(tw.nekomimi.nekogram.skin.KuroUi.weightTypeface(t.cellTitleWeight));
+        }
+        invalidate();
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if (skinned) {
+            applySkinTokens();
+        }
+    }
+
+    @Override
+    public void setLastInCard(boolean last) {
+        if (skinLast != last) {
+            skinLast = last;
+            invalidate();
+        }
+    }
     private boolean drawLine = true;
     private boolean isMultiline;
     private int currentHeight;
@@ -206,13 +259,28 @@ public class NotificationsCheckCell extends FrameLayout {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (needDivider) {
+        if (needDivider && !skinLast && !(skinned && skinDividerVisible == 0)) {
+            int inset = dp(imageView != null ? 64 : 20);
+            android.graphics.Paint dividerPaint = Theme.dividerPaint;
+            if (skinned) {
+                if (skinDividerInsetDp >= 0) {
+                    inset = dp(skinDividerInsetDp);
+                }
+                if (skinDividerColor != 0) {
+                    if (skinDividerPaint == null) {
+                        skinDividerPaint = new android.graphics.Paint();
+                    }
+                    skinDividerPaint.setColor(skinDividerColor);
+                    skinDividerPaint.setStrokeWidth(Theme.dividerPaint.getStrokeWidth());
+                    dividerPaint = skinDividerPaint;
+                }
+            }
             canvas.drawLine(
-                LocaleController.isRTL ? 0 : dp(imageView != null ? 64 : 20),
+                LocaleController.isRTL ? 0 : inset,
                 getMeasuredHeight() - 1,
-                getMeasuredWidth() - (LocaleController.isRTL ? dp(imageView != null ? 64 : 20) : 0),
+                getMeasuredWidth() - (LocaleController.isRTL ? inset : 0),
                 getMeasuredHeight() - 1,
-                Theme.dividerPaint
+                dividerPaint
             );
         }
         if (drawLine) {

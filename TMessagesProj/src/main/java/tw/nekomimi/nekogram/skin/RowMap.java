@@ -15,6 +15,16 @@ public final class RowMap {
     private RowMap() {
     }
 
+    /** True when the active layout hides at least one row of this screen. */
+    public static boolean anyHidden(String screenId) {
+        try {
+            List<String> hidden = LayoutManager.get().spec().listValue(screenId + ".hiddenRows", null);
+            return hidden != null && !hidden.isEmpty();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public static boolean hidden(String screenId, String rowId) {
         try {
             if (ScreenCapabilities.isLockedRow(screenId, rowId)) {

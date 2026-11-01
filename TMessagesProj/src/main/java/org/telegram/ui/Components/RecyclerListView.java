@@ -2476,6 +2476,34 @@ public class RecyclerListView extends RecyclerView implements IBlur3Capture {
         super.onChildAttachedToWindow(child);
     }
 
+    private boolean trimLastDividers;
+
+    /** The row that ends a card (next item is not a card member, or none) drops its divider; done at draw time, when the view types are known. */
+    private void trimLastDividersPass() {
+        final Adapter adapter = getAdapter();
+        if (adapter == null || isViewTypeSection == null) {
+            return;
+        }
+        for (int i = 0; i < getChildCount(); ++i) {
+            final View child = getChildAt(i);
+            if (!(child instanceof tw.nekomimi.nekogram.skin.LastInCard)) {
+                continue;
+            }
+            final int position = getChildAdapterPosition(child);
+            if (position == NO_POSITION) {
+                continue;
+            }
+            final boolean hasNext = position + 1 < adapter.getItemCount() && isViewTypeSection.run(adapter.getItemViewType(position + 1));
+            ((tw.nekomimi.nekogram.skin.LastInCard) child).setLastInCard(!hasNext);
+        }
+    }
+
+    /** Kuro skins: when rows were hidden, the row that ends a card drops its divider. Call before setSections(). */
+    public RecyclerListView trimLastDividers(boolean on) {
+        trimLastDividers = on && skinSections;
+        return this;
+    }
+
     @Override
     protected void drawableStateChanged() {
         super.drawableStateChanged();
@@ -3521,6 +3549,9 @@ public class RecyclerListView extends RecyclerView implements IBlur3Capture {
     }
     public void drawSectionsBackgrounds(Canvas canvas) {
         if (drawSectionBackground == null) return;
+        if (trimLastDividers) {
+            trimLastDividersPass();
+        }
 
         if (isAnimating()) {
             if (sections == null) {

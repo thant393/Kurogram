@@ -302,7 +302,7 @@ public class DataSettingsActivity extends BaseFragment {
                 return getThemedColor(Theme.key_listSelector);
             }
         };
-        listView.useSkinSections().setSections();
+        listView.useSkinSections().trimLastDividers(tw.nekomimi.nekogram.skin.RowMap.anyHidden("dataStorage")).setSections();
         actionBar.setAdaptiveBackground(listView);
         listView.setVerticalScrollBarEnabled(false);
         listView.setLayoutManager(layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
@@ -923,7 +923,7 @@ public class DataSettingsActivity extends BaseFragment {
                     view = new TextInfoPrivacyCell(mContext).useSkinTokens();
                     break;
                 case 5:
-                    view = new NotificationsCheckCell(mContext);
+                    view = new NotificationsCheckCell(mContext).useSkinTokens();
                     break;
                 case 6:
                 default:

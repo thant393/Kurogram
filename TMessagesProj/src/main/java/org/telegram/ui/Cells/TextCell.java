@@ -47,7 +47,7 @@ import org.telegram.ui.PeerColorActivity;
 import org.telegram.ui.SettingsActivity;
 import org.telegram.ui.Stories.recorder.HintView2;
 
-public class TextCell extends FrameLayout {
+public class TextCell extends FrameLayout implements tw.nekomimi.nekogram.skin.LastInCard {
 
     public final SimpleTextView textView;
     private final SimpleTextView subtitleView;
@@ -74,6 +74,15 @@ public class TextCell extends FrameLayout {
     // Kuro skins: components.cell.* (opt-in per screen; see useSkinTokens). All -1 / 0 = Telegram's own values.
     private boolean skinned;
     private boolean skinTouched;
+    private boolean skinLast;
+
+    /** Kuro skins: the last row of a card has no divider (see tw.nekomimi.nekogram.skin.LastInCard). */
+    public void setLastInCard(boolean last) {
+        if (skinLast != last) {
+            skinLast = last;
+            invalidate();
+        }
+    }
     private int skinVersion = -1;
     private int skinHeightDp = -1, skinDividerInsetDp = -1, skinDividerVisible = -1, skinDividerColor;
     private Paint skinDividerPaint;
@@ -875,7 +884,7 @@ public class TextCell extends FrameLayout {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (needDivider && !(skinned && skinDividerVisible == 0)) {
+        if (needDivider && !skinLast && !(skinned && skinDividerVisible == 0)) {
             Paint paint = resourcesProvider != null ? resourcesProvider.getPaint(Theme.key_paint_divider) : null;
             if (paint == null) {
                 paint = Theme.dividerPaint;

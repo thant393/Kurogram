@@ -43,7 +43,7 @@ import org.telegram.ui.Components.Switch;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class TextCheckCell extends FrameLayout {
+public class TextCheckCell extends FrameLayout implements tw.nekomimi.nekogram.skin.LastInCard {
     private boolean isAnimatingToThumbInsteadOfTouch;
 
     public int itemId;
@@ -81,6 +81,15 @@ public class TextCheckCell extends FrameLayout {
     // Kuro skins: components.cell.* / components.switch.* (opt-in per screen; see useSkinTokens).
     private boolean skinned;
     private boolean skinTouched;
+    private boolean skinLast;
+
+    /** Kuro skins: the last row of a card has no divider (see tw.nekomimi.nekogram.skin.LastInCard). */
+    public void setLastInCard(boolean last) {
+        if (skinLast != last) {
+            skinLast = last;
+            invalidate();
+        }
+    }
     private int skinVersion = -1;
     private int skinHeightDp = -1, skinTwoLineHeightDp = -1, skinDividerInsetDp = -1, skinDividerVisible = -1, skinDividerColor;
     private Paint skinDividerPaint;
@@ -434,7 +443,7 @@ public class TextCheckCell extends FrameLayout {
             float animatedRad = rad * animationProgress;
             canvas.drawCircle(cx, cy, animatedRad, animationPaint);
         }
-        if (needDivider && !(skinned && skinDividerVisible == 0)) {
+        if (needDivider && !skinLast && !(skinned && skinDividerVisible == 0)) {
             Paint dividerPaint = resourcesProvider != null ? resourcesProvider.getPaint(Theme.key_paint_divider) : Theme.dividerPaint;
             int inset = -1;
             if (skinned) {
