@@ -3395,7 +3395,9 @@ public class RecyclerListView extends RecyclerView implements IBlur3Capture {
         Utilities.Callback5<Canvas, RectF, Float, Float, Float> drawSectionBackground,
         boolean topPadding
     ) {
-        setSelectorDrawableColor(getThemedColor(Theme.key_settings_listSelector));
+        int skinPressed = skinSections ? tw.nekomimi.nekogram.skin.KuroUi.t().cellPressedColor : 0;
+        boolean skinNoRipple = skinSections && tw.nekomimi.nekogram.skin.KuroUi.t().uxRipple == 0;
+        setSelectorDrawableColor(skinNoRipple ? 0 : skinPressed != 0 ? skinPressed : getThemedColor(Theme.key_settings_listSelector));
         this.isViewTypeSection = isViewTypeSection;
         this.sectionRadius = roundRadius;
         this.sectionRadiusTop = new float[] {

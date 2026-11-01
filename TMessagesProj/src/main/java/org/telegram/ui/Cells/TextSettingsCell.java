@@ -141,12 +141,35 @@ public class TextSettingsCell extends FrameLayout implements tw.nekomimi.nekogra
         return this;
     }
 
+
+    private boolean skinPadApplied;
+
+    private void applySkinPadStart(int ps) {
+        if (ps < 0 && !skinPadApplied) {
+            return;
+        }
+        skinPadApplied = ps >= 0;
+        int start = AndroidUtilities.dp(ps >= 0 ? ps : padding);
+        for (android.view.View v : new android.view.View[]{textView}) {
+            if (v != null && v.getLayoutParams() instanceof android.view.ViewGroup.MarginLayoutParams) {
+                android.view.ViewGroup.MarginLayoutParams lp = (android.view.ViewGroup.MarginLayoutParams) v.getLayoutParams();
+                if (LocaleController.isRTL) {
+                    lp.rightMargin = start;
+                } else {
+                    lp.leftMargin = start;
+                }
+                v.setLayoutParams(lp);
+            }
+        }
+    }
+
     private void applySkinTokens() {
         tw.nekomimi.nekogram.skin.SkinTokens t = tw.nekomimi.nekogram.skin.KuroUi.t();
         if (t.version == skinVersion) {
             return;
         }
         skinVersion = t.version;
+        applySkinPadStart(t.cellPaddingStartDp);
         skinHeightDp = t.cellHeightDp;
         skinDividerInsetDp = t.cellDividerInsetDp;
         skinDividerVisible = t.cellDividerVisible;

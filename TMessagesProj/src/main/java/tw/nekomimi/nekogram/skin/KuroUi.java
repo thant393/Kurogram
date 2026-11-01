@@ -201,7 +201,10 @@ public final class KuroUi {
     /** An animation length in ms; 0 (instant) when the skin turns animations off or asks for reduced motion. */
     public static int anim(int ms) {
         SkinTokens t = t();
-        return (!t.animations || t.reducedMotion) ? 0 : ms;
+        if (!t.animations || t.reducedMotion) {
+            return 0;
+        }
+        return t.uxAnimationScale >= 0 ? Math.round(ms * t.uxAnimationScale) : ms;
     }
 
     /** Primary button height in dp: the skin's, kept within what the floating bar can hold. */

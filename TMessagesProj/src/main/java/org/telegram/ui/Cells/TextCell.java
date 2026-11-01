@@ -199,6 +199,8 @@ public class TextCell extends FrameLayout implements tw.nekomimi.nekogram.skin.L
      * divider) apply to this cell. Only for cells without a custom ResourcesProvider; a skin that sets none of
      * the tokens leaves the cell exactly as Telegram draws it.
      */
+    private int skinPadStartDp = -1, skinIconDp = -1;
+
     public TextCell useSkinTokens() {
         if (resourcesProvider == null) {
             skinned = true;
@@ -217,6 +219,12 @@ public class TextCell extends FrameLayout implements tw.nekomimi.nekogram.skin.L
         }
         skinVersion = t.version;
         skinHeightDp = t.cellHeightDp;
+        skinPadStartDp = t.cellPaddingStartDp;
+        int prevIcon = skinIconDp;
+        skinIconDp = t.cellIconSizeDp;
+        if (skinIconDp >= 0 || prevIcon >= 0) {
+            imageView.setScaleType(skinIconDp >= 0 ? ImageView.ScaleType.FIT_CENTER : ImageView.ScaleType.CENTER);
+        }
         skinDividerInsetDp = t.cellDividerInsetDp;
         skinDividerVisible = t.cellDividerVisible;
         skinDividerColor = t.cellDividerColor;
@@ -256,7 +264,11 @@ public class TextCell extends FrameLayout implements tw.nekomimi.nekogram.skin.L
             subtitleView.measure(MeasureSpec.makeMeasureSpec(width - dp(71 + leftPadding) - valueWidth, MeasureSpec.AT_MOST), MeasureSpec.makeMeasureSpec(dp(20), MeasureSpec.EXACTLY));
         }
         if (imageView.getVisibility() == VISIBLE) {
-            imageView.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.AT_MOST), MeasureSpec.makeMeasureSpec(height, MeasureSpec.AT_MOST));
+            if (skinned && skinIconDp >= 0) {
+                imageView.measure(MeasureSpec.makeMeasureSpec(dp(skinIconDp), MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(dp(skinIconDp), MeasureSpec.EXACTLY));
+            } else {
+                imageView.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.AT_MOST), MeasureSpec.makeMeasureSpec(height, MeasureSpec.AT_MOST));
+            }
         }
         if (valueImageView.getVisibility() == VISIBLE) {
             valueImageView.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.AT_MOST), MeasureSpec.makeMeasureSpec(height, MeasureSpec.AT_MOST));
@@ -314,10 +326,14 @@ public class TextCell extends FrameLayout implements tw.nekomimi.nekogram.skin.L
         viewLeft = LocaleController.isRTL ? dp(leftPadding - 6) : width - valueSpoilersTextView.getMeasuredWidth() - dp(leftPadding - 6);
         valueSpoilersTextView.layout(viewLeft, viewTop, viewLeft + valueSpoilersTextView.getMeasuredWidth(), viewTop + valueSpoilersTextView.getMeasuredHeight());
 
+        boolean skinPad = skinned && skinPadStartDp >= 0;
+        int textStart = skinPad
+                ? (imageView.getVisibility() == VISIBLE ? skinPadStartDp + (offsetFromImage - imageLeft) : skinPadStartDp)
+                : (imageView.getVisibility() == VISIBLE ? offsetFromImage : leftPadding);
         if (LocaleController.isRTL) {
-            viewLeft = getMeasuredWidth() - textView.getMeasuredWidth() - dp(imageView.getVisibility() == VISIBLE ? offsetFromImage : leftPadding);
+            viewLeft = getMeasuredWidth() - textView.getMeasuredWidth() - dp(textStart);
         } else {
-            viewLeft = dp(imageView.getVisibility() == VISIBLE ? offsetFromImage : leftPadding);
+            viewLeft = dp(textStart);
         }
         if (subtitleView.getVisibility() == View.VISIBLE) {
             int margin = heightDp > 50 ? 4 : 2;
@@ -331,7 +347,8 @@ public class TextCell extends FrameLayout implements tw.nekomimi.nekogram.skin.L
         }
         if (imageView.getVisibility() == VISIBLE) {
             viewTop = dp(heightDp > 50 ? 4 : 2) + (height - imageView.getMeasuredHeight()) / 2 - imageView.getPaddingTop() + dp(1);
-            viewLeft = !LocaleController.isRTL ? dp(imageLeft) : width - imageView.getMeasuredWidth() - dp(imageLeft);
+            int imageStart = skinned && skinPadStartDp >= 0 ? skinPadStartDp : imageLeft;
+            viewLeft = !LocaleController.isRTL ? dp(imageStart) : width - imageView.getMeasuredWidth() - dp(imageStart);
             imageView.layout(viewLeft, viewTop, viewLeft + imageView.getMeasuredWidth(), viewTop + imageView.getMeasuredHeight());
         }
 

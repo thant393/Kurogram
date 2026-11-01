@@ -48,6 +48,15 @@ public final class SkinTokens {
     public final int cellDividerColor;
     public final int sectionHeaderSizeSp, sectionHeaderWeight, sectionHeaderColor;
     public final int cellTwoLineHeightDp, sectionInfoSizeSp;
+    /** components.cell.paddingStartDp / iconSizeDp: -1 = not set. pressedColor: 0 = not set (the list keeps Telegram's own selector). */
+    /** components.fab.sizeDp / radiusDp for the Chats compose button; -1 = not set. */
+    public final int fabSizeDp, fabRadiusDp;
+    /** ux.animationScale: -1 = not set. ux.ripple: -1 not set, 0 off, 1 on. */
+    public final float uxAnimationScale;
+    public final int uxRipple;
+    /** components.search.*: 0 / -1 = not set. Only SearchField instances that opted in read these. */
+    public final int searchBackground, searchHintColor, searchIconColor, searchRadiusDp;
+    public final int cellPaddingStartDp, cellIconSizeDp, cellPressedColor;
     /** components.section.style: -1 not set, 0 flat (full-width, square), 1 card. Radius/gap: -1 = Telegram's own (16 / 12 dp). */
     public final int sectionStyle, sectionRadiusDp, sectionGapDp;
     /** screens.<id>.background for the row-list settings screens; 0 = not set (the screen keeps the theme's own background). */
@@ -131,6 +140,17 @@ public final class SkinTokens {
         sectionHeaderColor = s.colorValue("components.section.headerColor");
         cellTwoLineHeightDp = s.intValue("components.cell.twoLineHeightDp", -1);
         sectionInfoSizeSp = s.intValue("components.section.infoSizeSp", -1);
+        searchBackground = s.colorValue("components.search.background");
+        searchHintColor = s.colorValue("components.search.hintColor");
+        searchIconColor = s.colorValue("components.search.iconColor");
+        searchRadiusDp = s.intValue("components.search.radiusDp", -1);
+        uxAnimationScale = s.has("ux.animationScale") ? Math.max(0f, s.floatValue("ux.animationScale", 1f)) : -1f;
+        uxRipple = s.has("ux.ripple") ? (s.boolValue("ux.ripple", true) ? 1 : 0) : -1;
+        fabSizeDp = s.intValue("components.fab.sizeDp", -1);
+        fabRadiusDp = s.intValue("components.fab.radiusDp", -1);
+        cellPaddingStartDp = s.intValue("components.cell.paddingStartDp", -1);
+        cellIconSizeDp = s.intValue("components.cell.iconSizeDp", -1);
+        cellPressedColor = s.colorValue("components.cell.pressedColor");
         String sectionStyleName = s.stringValue("components.section.style", null);
         sectionStyle = "flat".equals(sectionStyleName) ? 0 : "card".equals(sectionStyleName) ? 1 : -1;
         sectionRadiusDp = s.intValue("components.section.radiusDp", -1);

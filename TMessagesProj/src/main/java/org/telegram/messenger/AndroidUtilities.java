@@ -4644,15 +4644,19 @@ public class AndroidUtilities {
     }
 
     public static float getAnimatorDurationScale() {
+        float scale;
         try {
-            return Settings.Global.getFloat(
+            scale = Settings.Global.getFloat(
                     ApplicationLoader.applicationContext.getContentResolver(),
                     Settings.Global.ANIMATOR_DURATION_SCALE,
                     1.0f
             );
         } catch (Exception e) {
-            return 1.0f;
+            scale = 1.0f;
         }
+        // Kuro skins: ux.animationScale multiplies the system scale; absent = unchanged
+        float skinScale = tw.nekomimi.nekogram.skin.KuroUi.t().uxAnimationScale;
+        return skinScale >= 0 ? scale * skinScale : scale;
     }
 
     public static boolean shouldEnableAnimation() {

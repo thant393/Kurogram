@@ -147,6 +147,36 @@ public class FragmentFloatingButton extends FrameLayout implements FactorAnimato
     private BlurredBackgroundDrawable iBlur3Background;
     private BlurredBackgroundColorProviderThemed iBlur3ColorProviderTabs;
 
+    private int skinRadiusDp = -1;
+
+    /**
+     * Kuro skins: components.fab.sizeDp / radiusDp for the main button (the Chats compose button). Sub buttons and
+     * every other screen's button are untouched; with neither token set nothing changes.
+     */
+    public FragmentFloatingButton useSkinTokens() {
+        if (isSubButton) {
+            return this;
+        }
+        tw.nekomimi.nekogram.skin.SkinTokens t = tw.nekomimi.nekogram.skin.KuroUi.t();
+        if (t.fabSizeDp >= 0 && getLayoutParams() != null) {
+            getLayoutParams().width = dp(t.fabSizeDp);
+            getLayoutParams().height = dp(t.fabSizeDp);
+            requestLayout();
+        }
+        if (t.fabRadiusDp >= 0) {
+            skinRadiusDp = t.fabRadiusDp;
+            final float r = dp(skinRadiusDp);
+            setOutlineProvider(new android.view.ViewOutlineProvider() {
+                @Override
+                public void getOutline(View view, android.graphics.Outline outline) {
+                    outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), r);
+                }
+            });
+            updateColors();
+        }
+        return this;
+    }
+
     public void updateColors() {
         if (isSubButton) {
             imageView.setColorFilter(Theme.getColor(Theme.key_actionBarDefaultIcon, resourcesProvider), PorterDuff.Mode.SRC_IN);
@@ -163,10 +193,17 @@ public class FragmentFloatingButton extends FrameLayout implements FactorAnimato
         } else {
             imageView.setColorFilter(Theme.getColor(Theme.key_chats_actionIcon, resourcesProvider), PorterDuff.Mode.SRC_IN);
             progressView.setProgressColor(Theme.getColor(Theme.key_chats_actionIcon, resourcesProvider));
-            setBackground(Theme.createSimpleSelectorCircleDrawable(dp(48),
-                Theme.getColor(Theme.key_featuredStickers_addButton, resourcesProvider),
-                Theme.getColor(Theme.key_featuredStickers_addButtonPressed, resourcesProvider)
-            ));
+            if (skinRadiusDp >= 0) {
+                setBackground(Theme.createSimpleSelectorRoundRectDrawable(dp(skinRadiusDp),
+                    Theme.getColor(Theme.key_featuredStickers_addButton, resourcesProvider),
+                    Theme.getColor(Theme.key_featuredStickers_addButtonPressed, resourcesProvider)
+                ));
+            } else {
+                setBackground(Theme.createSimpleSelectorCircleDrawable(dp(48),
+                    Theme.getColor(Theme.key_featuredStickers_addButton, resourcesProvider),
+                    Theme.getColor(Theme.key_featuredStickers_addButtonPressed, resourcesProvider)
+                ));
+            }
         }
     }
 

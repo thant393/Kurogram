@@ -475,6 +475,7 @@ public class SelfStoryViewsPage extends FrameLayout implements NotificationCente
                 }
             }
         };
+        searchField.useSkinTokens();
         searchField.setHint(LocaleController.getString(R.string.Search));
         topViewsContainer.addView(searchField, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.TOP | Gravity.LEFT, 0, 36, 0, 0));
 

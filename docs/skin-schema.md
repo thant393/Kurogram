@@ -53,4 +53,14 @@ Change order: Java rule -> `--update` -> copy manifest + vectors into the backen
 - When rows are hidden the row that ends a card drops its divider (LastInCard on TextSettingsCell/TextCheckCell/TextCell/NotificationsCheckCell, applied by RecyclerListView.trimLastDividers). NotificationsCheckCell (Notifications, Data and Storage) now reads the cell title/value size, title weight, divider and switch tokens too.
 - `layout.notifications.hiddenRows` (reactions, call vibrate/ringtone, in-app sound/vibrate/preview, in-chat sound, priority, contact joined, pinned message, background service rows, repeat): independent rows only; private/group/channel/stories and the account rows stay.
 - `layout.profile.hiddenRows` (phone, bio, username, birthday, bizHours, bizLocation, note): info rows of a user profile (ProfileActivity). The notifications row, restriction notice and every action stay.
-- Not wired yet, still reported as RECOGNIZED_NOT_YET_SUPPORTED: `components.cell.paddingStartDp|iconSizeDp|pressedColor`, `components.search.*`, `components.fab.*`, `ux.*`, Profile slots, Notifications/Devices row maps.
+- Not wired yet, still reported as RECOGNIZED_NOT_YET_SUPPORTED: `ux.transition` (needs custom fragment animations), Profile slots, Theme Store slots. The Devices screen has no hideable rows (its three row groups are locked or hold the session list).
+
+## Wired in the last Phase 2 batch (schemaMinor 1)
+
+- `components.cell.paddingStartDp` - start inset of TextCell, TextSettingsCell and TextCheckCell (text and icon). Absent = Telegram's own.
+- `components.cell.iconSizeDp` - icon box of TextCell (scaled to fit).
+- `components.cell.pressedColor` - selector colour of lists that use sections (`#AARRGGBB`).
+- `components.fab.sizeDp|radiusDp` - the Chats compose button only. Sub buttons and other screens are untouched.
+- `components.search.background|radiusDp|hintColor|iconColor` - `SearchField` (story viewers and trending stickers). The Chats search field stays hidden and is not touched.
+- `ux.ripple` - false removes the press highlight on section lists.
+- `ux.animationScale` (0..2) - multiplies the system animator scale and `KuroUi.anim` durations.

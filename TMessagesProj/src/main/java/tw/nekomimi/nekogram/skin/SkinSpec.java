@@ -89,6 +89,11 @@ public final class SkinSpec {
         return v instanceof Integer ? (Integer) v : def;
     }
 
+    public float floatValue(String path, float def) {
+        Object v = values.get(path);
+        return v instanceof Number ? ((Number) v).floatValue() : def;
+    }
+
     public boolean boolValue(String path, boolean def) {
         Object v = values.get(path);
         return v instanceof Boolean ? (Boolean) v : def;
@@ -106,7 +111,7 @@ public final class SkinSpec {
             return 0;
         }
         // overlay and scrim are Android-style #AARRGGBB; every other colour is CSS-style #RRGGBBAA
-        return (path.endsWith(".scrim") || path.endsWith(".overlay")) ? parseArgb((String) v) : parseRgba((String) v);
+        return (path.endsWith(".scrim") || path.endsWith(".overlay") || path.endsWith(".pressedColor")) ? parseArgb((String) v) : parseRgba((String) v);
     }
 
     /** #RRGGBB (opaque) or #RRGGBBAA to an Android ARGB int. */
@@ -335,6 +340,9 @@ public final class SkinSpec {
             "components.session.avatarRadiusDp", "components.session.nameSizeSp",
             "screens.privacy.background", "screens.notifications.background", "screens.dataStorage.background", "screens.devices.background",
             "components.switch.trackOn", "components.switch.trackOff", "components.switch.thumbOn", "components.switch.thumbOff",
+            "components.cell.paddingStartDp", "components.cell.iconSizeDp", "components.cell.pressedColor",
+            "components.search.background", "components.search.radiusDp", "components.search.hintColor", "components.search.iconColor",
+            "components.fab.sizeDp", "components.fab.radiusDp", "ux.ripple", "ux.animationScale",
     };
 
     private static SkinGrammar grammar;

@@ -194,6 +194,7 @@ public class TrendingStickersLayout extends FrameLayout implements NotificationC
                 searchAdapter.search(text);
             }
         };
+        searchView.useSkinTokens();
         searchView.setHint(LocaleController.getString(R.string.SearchTrendingStickersHint));
         searchLayout.addView(searchView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.TOP));
 

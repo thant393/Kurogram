@@ -31,6 +31,29 @@ public class SearchField extends FrameLayout {
     private EditTextBoldCursor searchEditText;
     private final Theme.ResourcesProvider resourcesProvider;
 
+    /**
+     * Kuro skins: components.search.* (background, radius, hint and icon colour) for this field. Without tokens the
+     * field keeps Telegram's own look.
+     */
+    public SearchField useSkinTokens() {
+        if (resourcesProvider != null) {
+            return this;
+        }
+        tw.nekomimi.nekogram.skin.SkinTokens t = tw.nekomimi.nekogram.skin.KuroUi.t();
+        if (t.searchBackground != 0 || t.searchRadiusDp >= 0) {
+            searchBackground.setBackgroundDrawable(Theme.createRoundRectDrawable(
+                AndroidUtilities.dp(t.searchRadiusDp >= 0 ? t.searchRadiusDp : 18),
+                t.searchBackground != 0 ? t.searchBackground : getThemedColor(Theme.key_dialogSearchBackground)));
+        }
+        if (t.searchHintColor != 0) {
+            searchEditText.setHintTextColor(t.searchHintColor);
+        }
+        if (t.searchIconColor != 0) {
+            searchIconImageView.setColorFilter(new PorterDuffColorFilter(t.searchIconColor, PorterDuff.Mode.MULTIPLY));
+        }
+        return this;
+    }
+
     public SearchField(Context context, boolean supportRtl, Theme.ResourcesProvider resourcesProvider) {
         this(context, supportRtl, 14, resourcesProvider);
     }
