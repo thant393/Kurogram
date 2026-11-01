@@ -473,6 +473,40 @@
     "bio"
    ],
    "valid": false
+  },
+  {
+   "checker": "layout",
+   "rule": "notifications.hiddenRows|list:reactions,callsVibrate,callsRingtone,inappSound,inappVibrate,inappPreview,inchatSound,inappPriority,contactJoined,pinnedMessage,notificationsService,notificationsServiceConnection,repeat:0:13",
+   "value": [
+    "reactions",
+    "repeat"
+   ],
+   "valid": true
+  },
+  {
+   "checker": "layout",
+   "rule": "notifications.hiddenRows|list:reactions,callsVibrate,callsRingtone,inappSound,inappVibrate,inappPreview,inchatSound,inappPriority,contactJoined,pinnedMessage,notificationsService,notificationsServiceConnection,repeat:0:13",
+   "value": [
+    "private"
+   ],
+   "valid": false
+  },
+  {
+   "checker": "layout",
+   "rule": "notifications.hiddenRows|list:reactions,callsVibrate,callsRingtone,inappSound,inappVibrate,inappPreview,inchatSound,inappPriority,contactJoined,pinnedMessage,notificationsService,notificationsServiceConnection,repeat:0:13",
+   "value": [
+    "stories"
+   ],
+   "valid": false
+  },
+  {
+   "checker": "layout",
+   "rule": "notifications.hiddenRows|list:reactions,callsVibrate,callsRingtone,inappSound,inappVibrate,inappPreview,inchatSound,inappPriority,contactJoined,pinnedMessage,notificationsService,notificationsServiceConnection,repeat:0:13",
+   "value": [
+    "repeat",
+    "repeat"
+   ],
+   "valid": false
   }
  ]
 }

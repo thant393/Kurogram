@@ -161,6 +161,11 @@ public class NotificationsSettingsActivity extends BaseFragment implements Notif
     private boolean updateRingtone;
     private boolean updateRepeatNotifications;
 
+    /** Kuro skins: next row index, or -1 when the active layout hides this row (layout.notifications.hiddenRows). */
+    private int skinRow(String id) {
+        return tw.nekomimi.nekogram.skin.RowMap.hidden("notifications", id) ? -1 : rowCount++;
+    }
+
     @Override
     public boolean onFragmentCreate() {
         MessagesController.getInstance(currentAccount).loadSignUpNotificationsSettings();
@@ -181,12 +186,12 @@ public class NotificationsSettingsActivity extends BaseFragment implements Notif
         groupRow = rowCount++;
         channelsRow = rowCount++;
         storiesRow = rowCount++;
-        reactionsRow = rowCount++;
+        reactionsRow = skinRow("reactions");
         notificationsSection2Row = rowCount++;
 
         callsSectionRow = rowCount++;
-        callsVibrateRow = rowCount++;
-        callsRingtoneRow = rowCount++;
+        callsVibrateRow = skinRow("callsVibrate");
+        callsRingtoneRow = skinRow("callsRingtone");
         eventsSection2Row = rowCount++;
 
         badgeNumberSection = rowCount++;
@@ -196,27 +201,27 @@ public class NotificationsSettingsActivity extends BaseFragment implements Notif
         badgeNumberSection2Row = rowCount++;
 
         inappSectionRow = rowCount++;
-        inappSoundRow = rowCount++;
-        inappVibrateRow = rowCount++;
-        inappPreviewRow = rowCount++;
-        inchatSoundRow = rowCount++;
+        inappSoundRow = skinRow("inappSound");
+        inappVibrateRow = skinRow("inappVibrate");
+        inappPreviewRow = skinRow("inappPreview");
+        inchatSoundRow = skinRow("inchatSound");
         if (Build.VERSION.SDK_INT >= 21) {
-            inappPriorityRow = rowCount++;
+            inappPriorityRow = skinRow("inappPriority");
         } else {
             inappPriorityRow = -1;
         }
         callsSection2Row = rowCount++;
 
         eventsSectionRow = rowCount++;
-        contactJoinedRow = rowCount++;
-        pinnedMessageRow = rowCount++;
+        contactJoinedRow = skinRow("contactJoined");
+        pinnedMessageRow = skinRow("pinnedMessage");
         otherSection2Row = rowCount++;
 
         otherSectionRow = rowCount++;
-        notificationsServiceRow = rowCount++;
-        notificationsServiceConnectionRow = rowCount++;
+        notificationsServiceRow = skinRow("notificationsService");
+        notificationsServiceConnectionRow = skinRow("notificationsServiceConnection");
         androidAutoAlertRow = -1;
-        repeatRow = rowCount++;
+        repeatRow = skinRow("repeat");
         resetSection2Row = rowCount++;
         resetSectionRow = rowCount++;
         resetNotificationsRow = rowCount++;

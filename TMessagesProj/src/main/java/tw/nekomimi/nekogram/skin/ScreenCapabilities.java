@@ -45,7 +45,7 @@ public final class ScreenCapabilities {
         TABLE.put("profile",       "PNNPPNNNNN"); // ProfileActivity (own ListAdapter)
         TABLE.put("themeStore",    "SPPSNPNNNN"); // stickerstore/*
         TABLE.put("privacy",       "SPPPPNNNNN"); // PrivacySettingsActivity (row ints); Phase 2: TextSettingsCell, TextCell, TextCheckCell, HeaderCell, TextInfoPrivacyCell, Switch tokens, section card style/radius/gap
-        TABLE.put("notifications", "SPPPNNNNNN"); // NotificationsSettingsActivity (row ints)
+        TABLE.put("notifications", "SPPPPNNNNN"); // NotificationsSettingsActivity (row ints)
         TABLE.put("dataStorage",   "SPPPPNNNNN"); // DataSettingsActivity (row ints)
         TABLE.put("devices",       "SPPPNNNNNN"); // SessionsActivity (row ints)
         TABLE.put("chat",          "SPPPNXXXNX"); // ChatActivity: colours/bubbles only, structure stays native
