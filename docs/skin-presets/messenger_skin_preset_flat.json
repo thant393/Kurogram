@@ -1,0 +1,334 @@
+{
+  "_id": {
+    "$oid": "6b0000000000000000000071"
+  },
+  "theme_id": "messenger-inspired",
+  "theme_pack_id": {
+    "$oid": "6b0000000000000000000070"
+  },
+  "version": 1,
+  "status": "published",
+  "is_current": true,
+  "schema_version": 2,
+  "min_app_version": 1,
+  "changelog": "UX preset: flat",
+  "content": {
+    "schemaVersion": 2,
+    "meta": {
+      "id": "messenger-inspired-flat",
+      "name": "Messenger Flat",
+      "author": "Kurogram",
+      "license": "custom",
+      "tags": [
+        "messenger",
+        "light",
+        "layout"
+      ]
+    },
+    "tokens": {
+      "colors": {
+        "accent": "#0866FF",
+        "onAccent": "#FFFFFF",
+        "background": "#ECE6EA",
+        "surface": "#FFFFFF",
+        "surfaceElevated": "#FFFFFF",
+        "textPrimary": "#080809",
+        "textSecondary": "#65676B",
+        "divider": "#E4E6EB",
+        "icon": "#606770",
+        "error": "#FA383E",
+        "success": "#31A24C",
+        "overlay": "#66000000"
+      },
+      "shapes": {
+        "cardRadiusDp": 12,
+        "buttonRadiusDp": 24,
+        "inputRadiusDp": 24,
+        "dialogRadiusDp": 16,
+        "bubbleRadiusDp": 17
+      },
+      "elevation": {
+        "cardDp": 0,
+        "dialogDp": 12
+      },
+      "gradient": {
+        "top": "#FFE1D7",
+        "middle": "#ECE6EA",
+        "bottom": "#BDE6FF",
+        "direction": "vertical"
+      },
+      "typography": {
+        "fontFamily": "default",
+        "bodySizeSp": 16,
+        "titleSizeSp": 20,
+        "captionSizeSp": 12,
+        "fontWeight": "normal",
+        "lineHeightMultiplier": 1.2
+      },
+      "spacing": {
+        "xs": 4,
+        "sm": 8,
+        "md": 12,
+        "lg": 16,
+        "xl": 24
+      }
+    },
+    "components": {
+      "appBar": {
+        "background": "#FFFFFF",
+        "foreground": "#080809",
+        "heightDp": 56
+      },
+      "navigationBar": {
+        "background": "#FFFFFF",
+        "selected": "#0866FF",
+        "unselected": "#65676B"
+      },
+      "bottomNavigation": {
+        "background": "#FFFFFF",
+        "selectedBackground": "#E7F3FF",
+        "iconSizeDp": 24
+      },
+      "card": {
+        "background": "#FFFFFF",
+        "borderColor": "#00000000",
+        "borderWidthDp": 0
+      },
+      "button": {
+        "background": "#0866FF",
+        "foreground": "#FFFFFF",
+        "heightDp": 48
+      },
+      "input": {
+        "background": "#F0F2F5",
+        "foreground": "#080809",
+        "hint": "#65676B"
+      },
+      "dialog": {
+        "background": "#FFFFFF",
+        "scrim": "#66000000"
+      },
+      "cell": {
+        "heightDp": 52,
+        "paddingStartDp": 20,
+        "titleSizeSp": 16,
+        "dividerVisible": true,
+        "dividerInsetDp": 0
+      },
+      "section": {
+        "style": "flat",
+        "headerSizeSp": 13,
+        "headerWeight": "medium"
+      },
+      "fab": {
+        "sizeDp": 56,
+        "radiusDp": 12
+      }
+    },
+    "screens": {
+      "chats": {
+        "background": "#FFFFFF",
+        "layout": "classic",
+        "listStyle": "flat",
+        "avatarSizeDp": 56,
+        "showDividers": false,
+        "threeLines": false
+      },
+      "contacts": {
+        "background": "#FFFFFF",
+        "sectionStyle": "flat",
+        "avatarSizeDp": 48
+      },
+      "profile": {
+        "background": "#ECE6EA",
+        "cardRadiusDp": 16,
+        "headerStyle": "centered",
+        "avatarSizeDp": 96
+      },
+      "settings": {
+        "background": "#ECE6EA",
+        "groupStyle": "flat",
+        "iconStyle": "rounded",
+        "showDescriptions": true
+      },
+      "themeStore": {
+        "background": "#ECE6EA",
+        "gridColumns": 2,
+        "previewRadiusDp": 16
+      }
+    },
+    "chat": {
+      "bubbleIn": "#E4E6EB",
+      "bubbleOut": "#0866FF",
+      "bubbleInText": "#080809",
+      "bubbleOutText": "#FFFFFF",
+      "bubbleRadiusDp": 17,
+      "fontSizeSp": 16
+    },
+    "layout": {
+      "chatList": {
+        "row": {
+          "heightDp": 72,
+          "avatar": {
+            "sizeDp": 56,
+            "shape": "circle",
+            "onlineDot": {
+              "sizeDp": 14,
+              "color": "success"
+            }
+          },
+          "title": {
+            "weight": "medium",
+            "sizeSp": 16,
+            "unreadWeight": "bold"
+          },
+          "preview": {
+            "lines": 1,
+            "sizeSp": 14,
+            "color": "textSecondary",
+            "unreadColor": "textPrimary"
+          },
+          "meta": {
+            "time": "top-right",
+            "unreadDot": "right"
+          },
+          "pinned": "icon-left-of-time",
+          "dividers": false
+        },
+        "header": {
+          "left": [
+            "menu"
+          ],
+          "right": [
+            "search"
+          ],
+          "collapse": "pinned"
+        },
+        "searchBar": false,
+        "storyRail": {
+          "enabled": true,
+          "avatarSizeDp": 64,
+          "showCreate": true
+        },
+        "folders": {
+          "style": "chips",
+          "position": "below-rail"
+        },
+        "specialRows": {
+          "archive": "row"
+        }
+      },
+      "drawer": {
+        "content": "settings"
+      },
+      "bottomTabs": {
+        "items": [
+          "chats",
+          "people",
+          "unread"
+        ],
+        "peopleSource": "online",
+        "labels": true,
+        "style": "flat"
+      },
+      "settings": {
+        "accounts": "collapsible"
+      },
+      "people": {
+        "storyRail": "on",
+        "chips": "on"
+      }
+    },
+    "effects": {
+      "blur": false,
+      "glass": false,
+      "animations": true,
+      "reducedMotion": false
+    },
+    "night": {
+      "tokens": {
+        "colors": {
+          "background": "#18191A",
+          "surface": "#242526",
+          "surfaceElevated": "#303031",
+          "textPrimary": "#E4E6EB",
+          "textSecondary": "#B0B3B8",
+          "divider": "#3E4042",
+          "icon": "#B0B3B8",
+          "accent": "#2D88FF",
+          "overlay": "#99000000"
+        },
+        "gradient": {
+          "top": "#18191A",
+          "middle": "#18191A",
+          "bottom": "#18191A"
+        }
+      },
+      "components": {
+        "appBar": {
+          "background": "#242526",
+          "foreground": "#E4E6EB"
+        },
+        "navigationBar": {
+          "background": "#242526",
+          "selected": "#2D88FF",
+          "unselected": "#B0B3B8"
+        },
+        "bottomNavigation": {
+          "background": "#242526",
+          "selectedBackground": "#263951"
+        },
+        "card": {
+          "background": "#242526"
+        },
+        "input": {
+          "background": "#3A3B3C",
+          "foreground": "#E4E6EB",
+          "hint": "#B0B3B8"
+        },
+        "dialog": {
+          "background": "#242526",
+          "scrim": "#99000000"
+        },
+        "button": {
+          "background": "#2D88FF"
+        }
+      },
+      "screens": {
+        "chats": {
+          "background": "#18191A"
+        },
+        "contacts": {
+          "background": "#18191A"
+        },
+        "profile": {
+          "background": "#18191A"
+        },
+        "settings": {
+          "background": "#18191A"
+        },
+        "themeStore": {
+          "background": "#18191A"
+        }
+      },
+      "chat": {
+        "bubbleIn": "#303030",
+        "bubbleOut": "#0866FF",
+        "bubbleInText": "#E4E6EB",
+        "bubbleOutText": "#FFFFFF"
+      }
+    },
+    "schemaMinor": 1,
+    "ux": {
+      "transition": "slide",
+      "ripple": true,
+      "animationScale": 0.85
+    }
+  },
+  "content_size": 4230,
+  "content_sha256": "4af432991e7014110f5e35fb03b49d366e9e7aa0b6ef8f5b20b77ae2653bf10d",
+  "created_by": "713858560",
+  "created_at": {
+    "$date": "2026-10-25T00:00:00Z"
+  }
+}
