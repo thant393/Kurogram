@@ -1889,7 +1889,7 @@ public class ActionBarLayout extends FrameLayout implements INavigationLayout, F
                 }
                 if (open) {
                     float clampedInterpolated = MathUtils.clamp(interpolated, 0, 1);
-                    containerView.setAlpha(skinTransition == 2 ? 1f : clampedInterpolated);
+                    containerView.setAlpha(skinTransition == 2 ? Math.min(1f, clampedInterpolated * 2f) : clampedInterpolated);
                     if (preview) {
                         containerView.setScaleX(0.7f + 0.3f * interpolated);
                         containerView.setScaleY(0.7f + 0.3f * interpolated);
@@ -1904,11 +1904,11 @@ public class ActionBarLayout extends FrameLayout implements INavigationLayout, F
                         containerView.invalidate();
                         invalidate();
                     } else {
-                        containerView.setTranslationX(skinTransition == 1 || skinTransition == 3 ? 0 : dp(skinTransition == 2 ? 96 : 48) * (1.0f - interpolated));
+                        containerView.setTranslationX(skinTransition == 1 || skinTransition == 3 ? 0 : dp(skinTransition == 2 ? 72 : 48) * (1.0f - interpolated));
                     }
                 } else {
                     float clampedReverseInterpolated = MathUtils.clamp(1f - interpolated, 0, 1);
-                    containerViewBack.setAlpha(skinTransition == 2 ? 1f : clampedReverseInterpolated);
+                    containerViewBack.setAlpha(skinTransition == 2 ? Math.min(1f, clampedReverseInterpolated * 2f) : clampedReverseInterpolated);
                     if (preview) {
                         containerViewBack.setScaleX(0.9f + 0.1f * (1.0f - interpolated));
                         containerViewBack.setScaleY(0.9f + 0.1f * (1.0f - interpolated));
@@ -1919,7 +1919,7 @@ public class ActionBarLayout extends FrameLayout implements INavigationLayout, F
                         containerView.invalidate();
                         invalidate();
                     } else {
-                        containerViewBack.setTranslationX(skinTransition == 1 || skinTransition == 3 ? 0 : dp(skinTransition == 2 ? 96 : 48) * interpolated);
+                        containerViewBack.setTranslationX(skinTransition == 1 || skinTransition == 3 ? 0 : dp(skinTransition == 2 ? 72 : 48) * interpolated);
                     }
                 }
                 if (animationProgress < 1) {

@@ -540,6 +540,7 @@ public class ContactsActivity extends BaseFragment implements FactorAnimator.Tar
         listView.addEdgeEffectListener(() -> listView.postOnAnimation(() -> {
             blur3_InvalidateBlur();
         }));
+        listView.useSkinSections();
         listView.setSections(true);
         contentView.setBackgroundColor(tw.nekomimi.nekogram.skin.KuroSkinManager.get().colorOr("screens.contacts.background", getThemedColor(Theme.key_windowBackgroundGray)));
 

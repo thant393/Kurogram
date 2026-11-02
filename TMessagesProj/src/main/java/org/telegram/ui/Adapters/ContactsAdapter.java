@@ -460,7 +460,7 @@ public class ContactsAdapter extends RecyclerListView.SectionsAdapter {
                 break;
             }
             case TEXT_CELL: {
-                view = new TextCell(mContext);
+                view = new TextCell(mContext).useSkinTokens();
                 break;
             }
             case GRAY_CELL:

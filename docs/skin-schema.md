@@ -72,3 +72,5 @@ Change order: Java rule -> `--update` -> copy manifest + vectors into the backen
 ## ux.transition
 
 Screen open/close animation: `default` (fade + 48 dp slide, Telegram's own), `fade` (fade only), `slide` (96 dp slide, no fade), `none` (instant). Swipe-back and message-preview animations are not affected. With the token absent the animation is exactly Telegram's.
+
+The Contacts list (New Message) also takes the section tokens (`components.section.style|radiusDp|gapDp`, `cell.pressedColor`, `ux.ripple`), and its New Group / New Channel rows read the `components.cell.*` tokens. Row height and start padding of the contact rows themselves are not wired (the avatar is placed at a fixed offset).
