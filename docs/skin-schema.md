@@ -64,3 +64,7 @@ Change order: Java rule -> `--update` -> copy manifest + vectors into the backen
 - `components.search.background|radiusDp|hintColor|iconColor` - `SearchField` (story viewers and trending stickers). The Chats search field stays hidden and is not touched.
 - `ux.ripple` - false removes the press highlight on section lists.
 - `ux.animationScale` (0..2) - multiplies the system animator scale and `KuroUi.anim` durations.
+
+## Contacts rows
+
+`UserCell` (the Contacts list rows) reads `components.cell.titleSizeSp|titleWeight|dividerVisible|dividerInsetDp|dividerColor`. Only the Contacts list opts in; other lists that use UserCell (member pickers, admin lists) are unchanged. The Chats list rows (`DialogCell`) are not styled: their text paints are shared across the app, so a per-skin size would leak into other screens.

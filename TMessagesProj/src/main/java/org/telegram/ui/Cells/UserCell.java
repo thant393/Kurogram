@@ -859,8 +859,48 @@ public class UserCell extends FrameLayout implements NotificationCenter.Notifica
     @Override
     protected void onDraw(Canvas canvas) {
         if (needDivider && !layoutTile) {
-            canvas.drawLine(LocaleController.isRTL ? 0 : dp(68), getMeasuredHeight() - 1, getMeasuredWidth() - (LocaleController.isRTL ? dp(68) : 0), getMeasuredHeight() - 1, Theme.dividerPaint);
+            if (skinned && skinDividerVisible == 0) {
+                return;
+            }
+            int inset = dp(skinned && skinDividerInsetDp >= 0 ? skinDividerInsetDp : 68);
+            android.graphics.Paint paint = Theme.dividerPaint;
+            if (skinned && skinDividerColor != 0) {
+                if (skinDividerPaint == null) {
+                    skinDividerPaint = new android.graphics.Paint();
+                    skinDividerPaint.setStrokeWidth(1);
+                }
+                skinDividerPaint.setColor(skinDividerColor);
+                paint = skinDividerPaint;
+            }
+            canvas.drawLine(LocaleController.isRTL ? 0 : inset, getMeasuredHeight() - 1, getMeasuredWidth() - (LocaleController.isRTL ? inset : 0), getMeasuredHeight() - 1, paint);
         }
+    }
+
+    private boolean skinned;
+    private int skinDividerVisible = -1, skinDividerInsetDp = -1, skinDividerColor;
+    private android.graphics.Paint skinDividerPaint;
+
+    /**
+     * Kuro skins: components.cell.titleSizeSp / titleWeight and the divider tokens for this row (used by the
+     * Contacts list). Only for cells without a custom ResourcesProvider; no tokens means Telegram's own look.
+     */
+    public UserCell useSkinTokens() {
+        if (resourcesProvider != null) {
+            return this;
+        }
+        tw.nekomimi.nekogram.skin.SkinTokens t = tw.nekomimi.nekogram.skin.KuroUi.t();
+        skinned = true;
+        skinDividerVisible = t.cellDividerVisible;
+        skinDividerInsetDp = t.cellDividerInsetDp;
+        skinDividerColor = t.cellDividerColor;
+        if (t.cellTitleSizeSp >= 0) {
+            nameTextView.setTextSize(t.cellTitleSizeSp);
+        }
+        if (t.cellTitleWeight >= 0) {
+            nameTextView.setTypeface(tw.nekomimi.nekogram.skin.KuroUi.weightTypeface(t.cellTitleWeight));
+        }
+        invalidate();
+        return this;
     }
 
     @Override
