@@ -265,7 +265,7 @@ public class TextCell extends FrameLayout implements tw.nekomimi.nekogram.skin.L
         }
         if (imageView.getVisibility() == VISIBLE) {
             if (skinned && skinIconDp >= 0) {
-                imageView.measure(MeasureSpec.makeMeasureSpec(dp(skinIconDp), MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(dp(skinIconDp), MeasureSpec.EXACTLY));
+                imageView.measure(MeasureSpec.makeMeasureSpec(dp(skinIconDp), MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(dp(skinIconDp) + imageView.getPaddingTop(), MeasureSpec.EXACTLY)); // Telegram pads the icon's top, so add it back
             } else {
                 imageView.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.AT_MOST), MeasureSpec.makeMeasureSpec(height, MeasureSpec.AT_MOST));
             }
