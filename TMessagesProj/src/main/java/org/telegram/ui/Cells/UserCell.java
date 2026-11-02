@@ -884,23 +884,40 @@ public class UserCell extends FrameLayout implements NotificationCenter.Notifica
      * Kuro skins: components.cell.titleSizeSp / titleWeight and the divider tokens for this row (used by the
      * Contacts list). Only for cells without a custom ResourcesProvider; no tokens means Telegram's own look.
      */
+    private int skinVersion = -1;
+    private boolean skinTouched;
+    private android.graphics.Typeface skinOrigTypeface;
+    private float skinOrigSizeDp = -1;
+
     public UserCell useSkinTokens() {
         if (resourcesProvider != null) {
             return this;
         }
-        tw.nekomimi.nekogram.skin.SkinTokens t = tw.nekomimi.nekogram.skin.KuroUi.t();
         skinned = true;
+        skinOrigSizeDp = callCellStyle ? 15 : 16;
+        applySkinTokens();
+        return this;
+    }
+
+    /** Re-reads the tokens when the skin changed since this cell last looked (tabs are built before a skin arrives). */
+    private void applySkinTokens() {
+        tw.nekomimi.nekogram.skin.SkinTokens t = tw.nekomimi.nekogram.skin.KuroUi.t();
+        if (t.version == skinVersion) {
+            return;
+        }
+        skinVersion = t.version;
         skinDividerVisible = t.cellDividerVisible;
         skinDividerInsetDp = t.cellDividerInsetDp;
         skinDividerColor = t.cellDividerColor;
-        if (t.cellTitleSizeSp >= 0) {
-            nameTextView.setTextSize(t.cellTitleSizeSp);
+        if (skinOrigTypeface == null) {
+            skinOrigTypeface = nameTextView.getPaint().getTypeface();
         }
-        if (t.cellTitleWeight >= 0) {
-            nameTextView.setTypeface(tw.nekomimi.nekogram.skin.KuroUi.weightTypeface(t.cellTitleWeight));
+        if (t.cellTitleSizeSp >= 0 || t.cellTitleWeight >= 0 || skinTouched) {
+            skinTouched = true; // after the first change, an unset token puts Telegram's value back
+            nameTextView.setTextSize(t.cellTitleSizeSp >= 0 ? t.cellTitleSizeSp : (int) skinOrigSizeDp);
+            nameTextView.setTypeface(t.cellTitleWeight >= 0 ? tw.nekomimi.nekogram.skin.KuroUi.weightTypeface(t.cellTitleWeight) : skinOrigTypeface);
         }
         invalidate();
-        return this;
     }
 
     @Override
@@ -951,6 +968,9 @@ public class UserCell extends FrameLayout implements NotificationCenter.Notifica
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        if (skinned) {
+            applySkinTokens();
+        }
         NotificationCenter.getGlobalInstance().addObserver(this, NotificationCenter.emojiLoaded);
         emojiStatus.attach();
         botVerification.attach();

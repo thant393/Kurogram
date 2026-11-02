@@ -542,6 +542,7 @@ public class ContactsActivity extends BaseFragment implements FactorAnimator.Tar
         }));
         listView.useSkinSections();
         listView.setSections(true);
+        skinSectionsVersion = tw.nekomimi.nekogram.skin.KuroUi.t().version;
         contentView.setBackgroundColor(tw.nekomimi.nekogram.skin.KuroSkinManager.get().colorOr("screens.contacts.background", getThemedColor(Theme.key_windowBackgroundGray)));
 
         FlickerLoadingView flickerLoadingView = new FlickerLoadingView(context);
@@ -1255,10 +1256,20 @@ public class ContactsActivity extends BaseFragment implements FactorAnimator.Tar
     @Override
     public void onResume() {
         super.onResume();
+        // Kuro skins: this screen can be built (as a tab) before the skin arrives, so re-read the section tokens when it changed
+        int skinVersion = tw.nekomimi.nekogram.skin.KuroUi.t().version;
+        if (listView != null && skinSectionsVersion != skinVersion) {
+            skinSectionsVersion = skinVersion;
+            listView.setSections(true);
+            listView.invalidateItemDecorations();
+            listView.invalidate();
+        }
         if (listViewAdapter != null) {
             listViewAdapter.notifyDataSetChanged();
         }
     }
+
+    private int skinSectionsVersion = -1;
 
     @Override
     public void onBecomeFullyVisible() {
