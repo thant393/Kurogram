@@ -17,6 +17,14 @@ jobs:
       - uses: actions/checkout@v7
         with:
           submodules: recursive
+      - name: Free runner disk space
+        # The debug build plus NDK/CMake output can fill the default runner disk (a run failed with "No space left on device").
+        # Remove large toolchains this job does not use. The Android SDK and Java stay untouched.
+        run: |
+          df -h / | tail -1
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android/sdk/ndk /opt/ghc /usr/local/.ghcup /usr/local/share/boost /opt/hostedtoolcache/CodeQL /usr/share/swift || true
+          sudo docker image prune --all --force >/dev/null 2>&1 || true
+          df -h / | tail -1
       - name: Check skin rule lists
         # Java rule lists must equal docs/skin-rules.manifest.json (the backend repo checks its own copy against this one)
         run: python3 Tools/check_rules.py
