@@ -9032,9 +9032,11 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             floatingButton3.setTranslationY(baseTranslationY);
         }
         if (floatingButtonStories != null) {
-            floatingButtonStories.setTranslationY(baseTranslationY - dp(52));
+            // Kuro skins: a taller compose button (components.fab.sizeDp) pushes the story button up by the extra height
+            int fabExtra = Math.max(0, tw.nekomimi.nekogram.skin.KuroUi.t().fabSizeDp - 48);
+            floatingButtonStories.setTranslationY(baseTranslationY - dp(52 + fabExtra));
             if (storyHint != null) {
-                storyHint.setTranslationY(baseTranslationY - dp(52));
+                storyHint.setTranslationY(baseTranslationY - dp(52 + fabExtra));
             }
         }
     }
