@@ -136,7 +136,17 @@ class PhoneScene extends View {
     @Override
     protected void onMeasure(int w, int h) {
         int width = MeasureSpec.getSize(w);
-        setMeasuredDimension(width, (int) (width * 1.9f));
+        setMeasuredDimension(width, (int) (width * heightRatio));
+    }
+
+    private float heightRatio = 1.9f;
+
+    /** Height as a multiple of the width (default 1.9). Only the store cards change it. */
+    void setHeightRatio(float ratio) {
+        if (ratio != heightRatio) {
+            heightRatio = ratio;
+            requestLayout();
+        }
     }
 
     private boolean hasGradient() {

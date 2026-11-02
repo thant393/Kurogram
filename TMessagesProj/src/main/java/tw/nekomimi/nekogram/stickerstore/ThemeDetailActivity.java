@@ -464,8 +464,24 @@ public class ThemeDetailActivity extends BaseFragment {
         if (applied) {
             applyBg.setColor(tw.nekomimi.nekogram.skin.KuroUi.error());
         }
-        applyButton.setBackground(applyBg);
-        applyButton.setTextColor(applied ? 0xFFFFFFFF : tw.nekomimi.nekogram.skin.KuroUi.primaryButtonText(false));
+        int fill = applied ? tw.nekomimi.nekogram.skin.KuroUi.error()
+                : (tw.nekomimi.nekogram.skin.KuroUi.t().buttonBackground != 0 ? tw.nekomimi.nekogram.skin.KuroUi.t().buttonBackground : accent);
+        int style = StoreLook.buttonStyle();
+        if (style == 1 || style == 2) {
+            // components.button.style outlined / text: this screen's Apply button only (filled or absent = unchanged)
+            GradientDrawable plain = new GradientDrawable();
+            plain.setShape(GradientDrawable.RECTANGLE);
+            plain.setCornerRadius(AndroidUtilities.dp(buttonRadius));
+            plain.setColor(0x00000000);
+            if (style == 1) {
+                plain.setStroke(AndroidUtilities.dp(1.5f), fill);
+            }
+            applyButton.setBackground(plain);
+            applyButton.setTextColor(fill);
+        } else {
+            applyButton.setBackground(applyBg);
+            applyButton.setTextColor(applied ? 0xFFFFFFFF : tw.nekomimi.nekogram.skin.KuroUi.primaryButtonText(false));
+        }
         boolean needsNewerApp = info.minAppVersion > SkinSpec.ENGINE_LEVEL || info.schemaVersion > SkinSpec.SCHEMA_VERSION;
         boolean updatable = !applied && info.id != null && info.id.equals(ThemeStoreApi.appliedId());
         applyButton.setText(busy ? "Working…" : needsNewerApp ? "Needs a newer Kurogram" : applied ? "Reset to default" : updatable ? "Update" : "Download & Apply");

@@ -216,14 +216,7 @@
   "overlay:night",
   "layout:layout"
  ],
- "layoutNotYetSupported": [
-  "themeStore.mode",
-  "themeStore.meta.creator",
-  "themeStore.meta.downloads",
-  "themeStore.meta.position",
-  "themeStore.chips",
-  "themeStore.search"
- ],
+ "layoutNotYetSupported": [],
  "implementedMinor1": [
   "components.cell.heightDp",
   "components.cell.twoLineHeightDp",
@@ -261,6 +254,11 @@
   "components.fab.radiusDp",
   "ux.ripple",
   "ux.animationScale",
-  "ux.transition"
+  "ux.transition",
+  "screens.themeStore.previewAspect",
+  "screens.themeStore.cardRadiusDp",
+  "screens.themeStore.cardGapDp",
+  "screens.themeStore.titleSizeSp",
+  "components.button.style"
  ]
 }

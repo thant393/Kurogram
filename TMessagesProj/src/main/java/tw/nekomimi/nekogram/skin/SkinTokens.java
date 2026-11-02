@@ -51,6 +51,10 @@ public final class SkinTokens {
     /** components.cell.paddingStartDp / iconSizeDp: -1 = not set. pressedColor: 0 = not set (the list keeps Telegram's own selector). */
     /** components.fab.sizeDp / radiusDp for the Chats compose button; -1 = not set. */
     public final int fabSizeDp, fabRadiusDp;
+    /** Theme Store: screens.themeStore.previewAspect (-1 not set, 0 square, 1 portrait, 2 tall), cardRadiusDp / cardGapDp / titleSizeSp (-1 = not set). */
+    public final int storePreviewAspect, storeCardRadiusDp, storeCardGapDp, storeTitleSizeSp;
+    /** components.button.style: -1 not set, 0 filled, 1 outlined, 2 text. Only the Theme Store buttons read it. */
+    public final int buttonStyle;
     /** ux.animationScale: -1 = not set. ux.ripple: -1 not set, 0 off, 1 on. */
     public final float uxAnimationScale;
     public final int uxRipple;
@@ -150,6 +154,13 @@ public final class SkinTokens {
         String uxTransitionName = s.stringValue("ux.transition", null);
         uxTransition = "default".equals(uxTransitionName) ? 0 : "fade".equals(uxTransitionName) ? 1 : "slide".equals(uxTransitionName) ? 2 : "none".equals(uxTransitionName) ? 3 : -1;
         uxRipple = s.has("ux.ripple") ? (s.boolValue("ux.ripple", true) ? 1 : 0) : -1;
+        String aspectName = s.stringValue("screens.themeStore.previewAspect", null);
+        storePreviewAspect = "square".equals(aspectName) ? 0 : "portrait".equals(aspectName) ? 1 : "tall".equals(aspectName) ? 2 : -1;
+        storeCardRadiusDp = s.intValue("screens.themeStore.cardRadiusDp", -1);
+        storeCardGapDp = s.intValue("screens.themeStore.cardGapDp", -1);
+        storeTitleSizeSp = s.intValue("screens.themeStore.titleSizeSp", -1);
+        String buttonStyleName = s.stringValue("components.button.style", null);
+        buttonStyle = "filled".equals(buttonStyleName) ? 0 : "outlined".equals(buttonStyleName) ? 1 : "text".equals(buttonStyleName) ? 2 : -1;
         fabSizeDp = s.intValue("components.fab.sizeDp", -1);
         fabRadiusDp = s.intValue("components.fab.radiusDp", -1);
         cellPaddingStartDp = s.intValue("components.cell.paddingStartDp", -1);

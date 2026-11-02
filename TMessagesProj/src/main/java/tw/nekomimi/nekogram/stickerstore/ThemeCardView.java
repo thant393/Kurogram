@@ -29,23 +29,23 @@ public class ThemeCardView extends FrameLayout {
     /** Use the inset fill when this card sits on the profile's surface card. */
     public ThemeCardView setInset(boolean inset) {
         this.inset = inset;
-        int radius = StickerPackGridCell.cellRadiusDp();
+        int radius = StoreLook.cardRadiusDp();
         GradientDrawable mask = new GradientDrawable();
         mask.setCornerRadius(AndroidUtilities.dp(radius));
         mask.setColor(0xFFFFFFFF);
         setBackground(new RippleDrawable(ColorStateList.valueOf(Theme.getColor(Theme.key_listSelector)),
-                StickerPackGridCell.cardBackground(inset), mask));
+                tw.nekomimi.nekogram.skin.KuroUi.card(inset, radius), mask));
         return this;
     }
 
     public ThemeCardView(Context context) {
         super(context);
-        int radius = StickerPackGridCell.cellRadiusDp();
+        int radius = StoreLook.cardRadiusDp();
         GradientDrawable mask = new GradientDrawable();
         mask.setCornerRadius(AndroidUtilities.dp(radius));
         mask.setColor(0xFFFFFFFF);
         setBackground(new RippleDrawable(ColorStateList.valueOf(Theme.getColor(Theme.key_listSelector)),
-                StickerPackGridCell.cardBackground(), mask));
+                tw.nekomimi.nekogram.skin.KuroUi.card(false, radius), mask));
         int pad = AndroidUtilities.dp(12);
         setPadding(pad, pad, pad, pad);
 
@@ -53,18 +53,21 @@ public class ThemeCardView extends FrameLayout {
         column.setOrientation(LinearLayout.VERTICAL);
         addView(column, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
 
+        final boolean overlay = StoreLook.overlayMeta();
         phone = new PhoneScene(context, PhoneScene.CHATS);
-        column.addView(phone, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 0, 0, 10));
+        phone.setHeightRatio(StoreLook.previewAspect());
+        if (!overlay) {
+            column.addView(phone, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 0, 0, 10));
+        }
 
         titleView = new TextView(context);
-        titleView.setTextSize(tw.nekomimi.nekogram.skin.KuroUi.title(15));
+        titleView.setTextSize(StoreLook.titleSizeSp(15));
         titleView.setTypeface(AndroidUtilities.bold());
         titleView.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
         titleView.setGravity(Gravity.CENTER);
         titleView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         titleView.setSingleLine(true);
         titleView.setEllipsize(TextUtils.TruncateAt.END);
-        column.addView(titleView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
 
         ownerView = new TextView(context);
         ownerView.setTextSize(12);
@@ -73,7 +76,6 @@ public class ThemeCardView extends FrameLayout {
         ownerView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         ownerView.setSingleLine(true);
         ownerView.setEllipsize(TextUtils.TruncateAt.END);
-        column.addView(ownerView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 3, 0, 8));
 
         statsView = new TextView(context);
         statsView.setTextSize(12);
@@ -81,7 +83,32 @@ public class ThemeCardView extends FrameLayout {
         statsView.setGravity(Gravity.CENTER);
         statsView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         statsView.setSingleLine(true);
-        column.addView(statsView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+
+        if (!overlay) {
+            // unchanged: preview, then title / owner / counters below it
+            column.addView(titleView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+            column.addView(ownerView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 3, 0, 8));
+            column.addView(statsView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+        } else {
+            // layout themeStore.meta.position = overlay: the same three lines on a scrim at the bottom of the preview
+            FrameLayout frame = new FrameLayout(context);
+            frame.addView(phone, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+            LinearLayout meta = new LinearLayout(context);
+            meta.setOrientation(LinearLayout.VERTICAL);
+            int r = AndroidUtilities.dp(tw.nekomimi.nekogram.skin.KuroUi.t().previewRadiusDp);
+            GradientDrawable scrim = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, new int[]{0x00000000, 0xB3000000});
+            scrim.setCornerRadii(new float[]{0, 0, 0, 0, r, r, r, r});
+            meta.setBackground(scrim);
+            meta.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(28), AndroidUtilities.dp(8), AndroidUtilities.dp(8));
+            titleView.setTextColor(0xFFFFFFFF);
+            ownerView.setTextColor(0xCCFFFFFF);
+            statsView.setTextColor(0xCCFFFFFF);
+            meta.addView(titleView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+            meta.addView(ownerView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 2, 0, 2));
+            meta.addView(statsView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+            frame.addView(meta, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM));
+            column.addView(frame, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+        }
     }
 
     public void setTheme(ThemeInfo t) {
@@ -109,8 +136,10 @@ public class ThemeCardView extends FrameLayout {
         String owner = t.ownerName != null && !t.ownerName.isEmpty() ? t.ownerName
                 : t.ownerUsername != null && !t.ownerUsername.isEmpty() ? "@" + t.ownerUsername : "";
         ownerView.setText(owner);
-        ownerView.setVisibility(owner.isEmpty() ? GONE : VISIBLE);
-        statsView.setText(t.category + " · ↓ " + CountFormat.format(t.downloads) + " · ♥ " + CountFormat.format(t.likes));
+        ownerView.setVisibility(owner.isEmpty() || !StoreLook.showCreator() ? GONE : VISIBLE);
+        statsView.setText(StoreLook.showDownloads()
+                ? t.category + " · ↓ " + CountFormat.format(t.downloads) + " · ♥ " + CountFormat.format(t.likes)
+                : t.category + " · ♥ " + CountFormat.format(t.likes));
     }
 
     static GradientDrawable rounded(int color, int radiusDp, boolean border) {

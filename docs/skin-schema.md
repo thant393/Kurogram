@@ -75,14 +75,21 @@ Screen open/close animation: `default` (fade + 48 dp slide, Telegram's own), `fa
 
 The Contacts list (New Message) also takes the section tokens (`components.section.style|radiusDp|gapDp`, `cell.pressedColor`, `ux.ripple`), and its New Group / New Channel rows read the `components.cell.*` tokens. Row height and start padding of the contact rows themselves are not wired (the avatar is placed at a fixed offset).
 
-## Theme Store keys (rules only, Phase 1 — no screen reads them yet)
-All optional; absent = today's behaviour. Added to `RULES_V2_MINOR1` (skin) and `LayoutSpec.RULES` (layout); `schemaMinor`, `schemaVersion` and `min_app_version` are unchanged. A released app ignores them (at most an `UNKNOWN_FIELD` warning); this build reports them as `RECOGNIZED_NOT_YET_SUPPORTED` until a screen reads them.
+## Theme Store keys (Phase 1 rules, Phase 2 read by the Theme Store)
+All optional; absent = today's behaviour. Added to `RULES_V2_MINOR1` (skin) and `LayoutSpec.RULES` (layout); `schemaMinor`, `schemaVersion` and `min_app_version` are unchanged. A released app ignores them (at most an `UNKNOWN_FIELD` warning). From Phase 2 the Theme Store reads all eleven (`IMPLEMENTED_MINOR1` lists the five skin keys, `LAYOUT_NOT_YET` is empty again).
 
 Skin: `screens.themeStore.previewAspect` (square, portrait, tall), `screens.themeStore.cardRadiusDp` (0–32), `screens.themeStore.cardGapDp` (4–20), `screens.themeStore.titleSizeSp` (12–20), `components.button.style` (filled, outlined, text).
 Layout (inside `layout`): `themeStore.mode` (grid, list), `themeStore.meta.creator` (bool), `themeStore.meta.downloads` (bool), `themeStore.meta.position` (below, overlay), `themeStore.chips` (on, off), `themeStore.search` (on, off).
 
-Behaviour that Phase 2 must keep (decided, not implemented):
+Behaviour (implemented in Phase 2, `stickerstore/StoreLook.java`; every key absent = the previous code path):
 - `themeStore.mode = "list"` → one column. `"grid"` → the existing `screens.themeStore.gridColumns` (2–3, unchanged) sets the columns. Absent → exactly today's layout.
 - `components.button.style` may only be read by the Theme Store buttons (card actions and ThemeDetailActivity Apply / Preview / Download). Every other button in the app keeps its current look; a consumer is added only by naming it here first.
 - The Theme Store (`ownerId == 0`) and the creator page (`ProfileTabView` → the same `ThemesTabView` with an owner) must both be in the device checklist. `chips` and `search` exist only on the store.
 - Existing rules are frozen: `docs/skin-rules.released.json` lists the rules shipped in a released build; `Tools/check_rules.py` fails if one is widened, narrowed, re-typed, moved or removed (e.g. `screens.themeStore.gridColumns` stays `int:2:3`). New meaning = a new key.
+
+Phase 2 details:
+- Columns: `themeStore.mode` absent → 2 columns exactly as before (an old skin's `gridColumns: 3` still does nothing, as before). `"list"` → 1. `"grid"` → `screens.themeStore.gridColumns` (2–3).
+- `previewAspect`: card preview height / width = square 1.0, portrait 1.4, tall 1.9 (the original). `cardRadiusDp` replaces the default (card radius − 2). `cardGapDp` is the space between two cards (each card gets half as margin; default 12). `titleSizeSp` is the card title size (default 15).
+- `meta.creator` / `meta.downloads` = `false` hide the owner line / the "↓ n" counter; `true` or absent = as before. `meta.position = "overlay"`: title, owner and counters sit on a dark scrim at the bottom of the preview.
+- `chips = "off"` removes the whole header row of the store page (sort buttons and category chips); the sort stays "popular". `search = "off"` hides the search action on the store's Themes tab only (the Stickers tab keeps its search). A creator's page has neither, so both keys do nothing there.
+- `components.button.style`: only the Apply / Update / Reset button of `ThemeDetailActivity`. `outlined` = transparent with a border in the button colour; `text` = no fill and no border; `filled`/absent = the existing button. No other button reads it.

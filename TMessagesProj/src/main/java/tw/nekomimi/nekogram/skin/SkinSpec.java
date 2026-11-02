@@ -327,9 +327,7 @@ public final class SkinSpec {
     };
 
     /** Layout keys (inside a skin's "layout") that are valid but that no screen reads yet. */
-    private static final String[] LAYOUT_NOT_YET = {
-            "themeStore.mode", "themeStore.meta.creator", "themeStore.meta.downloads", "themeStore.meta.position", "themeStore.chips", "themeStore.search",
-    };
+    private static final String[] LAYOUT_NOT_YET = {};
 
     /**
      * Minor-1 paths that at least one screen already reads (Phase 2: TextSettingsCell, TextCheckCell, HeaderCell,
@@ -347,6 +345,7 @@ public final class SkinSpec {
             "components.cell.paddingStartDp", "components.cell.iconSizeDp", "components.cell.pressedColor",
             "components.search.background", "components.search.radiusDp", "components.search.hintColor", "components.search.iconColor",
             "components.fab.sizeDp", "components.fab.radiusDp", "ux.ripple", "ux.animationScale", "ux.transition",
+            "screens.themeStore.previewAspect", "screens.themeStore.cardRadiusDp", "screens.themeStore.cardGapDp", "screens.themeStore.titleSizeSp", "components.button.style",
     };
 
     private static SkinGrammar grammar;

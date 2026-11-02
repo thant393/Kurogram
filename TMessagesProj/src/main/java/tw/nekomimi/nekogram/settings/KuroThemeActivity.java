@@ -23,6 +23,7 @@ import org.telegram.ui.Components.LayoutHelper;
 
 import tw.nekomimi.nekogram.stickerstore.KuroBarStyle;
 import tw.nekomimi.nekogram.stickerstore.ProfileTabView;
+import tw.nekomimi.nekogram.stickerstore.StoreLook;
 import tw.nekomimi.nekogram.stickerstore.StickersTabView;
 import tw.nekomimi.nekogram.stickerstore.ThemesTabView;
 
@@ -202,6 +203,9 @@ public class KuroThemeActivity extends BaseFragment implements tw.nekomimi.nekog
         if (tabContents[TAB_THEMES] instanceof ThemesTabView) {
             ((ThemesTabView) tabContents[TAB_THEMES]).applySkin();
         }
+        if (searchItem != null && selectedTab == TAB_THEMES) {
+            searchItem.setVisibility(StoreLook.searchOn() ? View.VISIBLE : View.GONE);
+        }
         if (tabContents[TAB_STICKERS] instanceof StickersTabView) {
             ((StickersTabView) tabContents[TAB_STICKERS]).applySkin();
         }
@@ -242,7 +246,7 @@ public class KuroThemeActivity extends BaseFragment implements tw.nekomimi.nekog
         }
         if (searchItem != null) {
             // The Profile tab has nothing to search, so the search action is hidden there.
-            searchItem.setVisibility(index == TAB_PROFILE ? View.GONE : View.VISIBLE);
+            searchItem.setVisibility(index == TAB_PROFILE || (index == TAB_THEMES && !StoreLook.searchOn()) ? View.GONE : View.VISIBLE);
         }
         if (selectedTab != index || tabContents[index] == null) {
             selectedTab = index;

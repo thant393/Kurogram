@@ -102,8 +102,33 @@ public class ThemesTabView extends FrameLayout {
         listView.setAdapter(adapter);
     }
 
+    /** The store page keeps room for its chip row (layout themeStore.chips = off removes it); a creator's page never has one. */
+    private int topPaddingDp() {
+        return ownerId == 0 && StoreLook.chipsOn() ? HEADER_DP : 6;
+    }
+
+    /** Re-reads the layout keys that change the frame of the grid (columns, chip row). */
+    private void applyStoreLayout() {
+        int columns = StoreLook.columns();
+        if (layoutManager.getSpanCount() != columns) {
+            layoutManager.setSpanCount(columns);
+        }
+        boolean wantHeader = ownerId == 0 && StoreLook.chipsOn();
+        if (wantHeader && header == null) {
+            buildHeader(getContext());
+        } else if (!wantHeader && header != null) {
+            removeView(header);
+            header = null;
+            categoryRow = null;
+            sortPopular = null;
+            sortNewest = null;
+        }
+        listView.setPadding(listView.getPaddingLeft(), AndroidUtilities.dp(topPaddingDp()), listView.getPaddingRight(), listView.getPaddingBottom());
+    }
+
     /** Rebuilds the cards with the active skin's colours and radii (data is kept). */
     public void applySkin() {
+        applyStoreLayout();
         if (header != null) {
             header.setBackground(KuroBarStyle.headerFade());
             updateChips();
@@ -120,10 +145,10 @@ public class ThemesTabView extends FrameLayout {
         this.ownerId = ownerId;
         this.emptyText = emptyText;
 
-        layoutManager = new GridLayoutManager(context, 2);
+        layoutManager = new GridLayoutManager(context, StoreLook.columns());
         listView = new RecyclerListView(context);
         listView.setLayoutManager(layoutManager);
-        listView.setPadding(AndroidUtilities.dp(10), AndroidUtilities.dp(ownerId == 0 ? HEADER_DP : 6), AndroidUtilities.dp(10), AndroidUtilities.dp(16));
+        listView.setPadding(AndroidUtilities.dp(10), AndroidUtilities.dp(topPaddingDp()), AndroidUtilities.dp(10), AndroidUtilities.dp(16));
         listView.setClipToPadding(false);
         listView.setSelectorDrawableColor(0);
         adapter = new RecyclerListView.SelectionAdapter() {
@@ -141,7 +166,8 @@ public class ThemesTabView extends FrameLayout {
             public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
                 ThemeCardView card = new ThemeCardView(parent.getContext()).setInset(inset);
                 RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT);
-                lp.setMargins(AndroidUtilities.dp(6), AndroidUtilities.dp(6), AndroidUtilities.dp(6), AndroidUtilities.dp(6));
+                int m = AndroidUtilities.dp(StoreLook.cardGapDp() / 2f);
+                lp.setMargins(m, m, m, m);
                 card.setLayoutParams(lp);
                 return new RecyclerListView.Holder(card);
             }
@@ -167,7 +193,7 @@ public class ThemesTabView extends FrameLayout {
             }
         });
 
-        if (ownerId == 0) {
+        if (ownerId == 0 && StoreLook.chipsOn()) {
             buildHeader(context);
         }
 
