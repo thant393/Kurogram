@@ -313,6 +313,8 @@ public final class SkinSpec {
             "screens.privacy.background|col", "screens.notifications.background|col",
             "screens.dataStorage.background|col", "screens.devices.background|col",
             "ux.transition|enum:default,fade,slide,none", "ux.ripple|bool", "ux.animationScale|float:0:2",
+            "screens.themeStore.previewAspect|enum:square,portrait,tall", "screens.themeStore.cardRadiusDp|int:0:32",
+            "screens.themeStore.cardGapDp|int:4:20", "screens.themeStore.titleSizeSp|int:12:20", "components.button.style|enum:filled,outlined,text",
     };
 
     /**
@@ -325,7 +327,9 @@ public final class SkinSpec {
     };
 
     /** Layout keys (inside a skin's "layout") that are valid but that no screen reads yet. */
-    private static final String[] LAYOUT_NOT_YET = {};
+    private static final String[] LAYOUT_NOT_YET = {
+            "themeStore.mode", "themeStore.meta.creator", "themeStore.meta.downloads", "themeStore.meta.position", "themeStore.chips", "themeStore.search",
+    };
 
     /**
      * Minor-1 paths that at least one screen already reads (Phase 2: TextSettingsCell, TextCheckCell, HeaderCell,

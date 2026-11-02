@@ -25,6 +25,7 @@ SKIN_JAVA = os.path.join(JAVA, "skin/SkinSpec.java")
 LAYOUT_JAVA = os.path.join(JAVA, "layout/LayoutSpec.java")
 MANIFEST = os.path.join(ROOT, "docs/skin-rules.manifest.json")
 VECTORS = os.path.join(ROOT, "docs/skin-rules.vectors.json")
+RELEASED = os.path.join(ROOT, "docs/skin-rules.released.json")
 
 KIND = re.compile(r"^(col|argb|bool|null|int:-?\d+:-?\d+|float:-?[\d.]+:-?[\d.]+|enum:[\w,.\-]+|list:[\w,.\-]+:\d+:\d+)$")
 STRINGS = re.compile(r'"((?:[^"\\]|\\.)*)"')
@@ -112,6 +113,30 @@ def check_shape(label, entries, key=None):
     return problems
 
 
+def check_released(manifest):
+    """Rules shipped in a released app are frozen: same text, same list, never removed (installed apps validate against them)."""
+    if not os.path.exists(RELEASED):
+        return ["docs/skin-rules.released.json is missing"]
+    with open(RELEASED, encoding="utf-8") as f:
+        released = json.load(f)
+    problems = []
+    for key in ("skin", "skinMinor1", "layout", "structure"):
+        current = manifest.get(key, [])
+        for rule in released.get(key, []):
+            if rule in current:
+                continue
+            path = rule.split("|")[0]
+            changed = [c for c in current if c.split("|")[0] == path]
+            elsewhere = [k for k in ("skin", "skinMinor1", "layout") if k != key and any(c.split("|")[0] == path for c in manifest.get(k, []))]
+            if changed:
+                problems.append(f"released rule changed in {key}: {rule!r} is now {changed[0]!r} (add a NEW key instead)")
+            elif elsewhere:
+                problems.append(f"released rule moved from {key} to {elsewhere[0]}: {rule!r}")
+            else:
+                problems.append(f"released rule removed from {key}: {rule!r}")
+    return problems
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--backend", help="path of a backend-api checkout to compare as well")
@@ -148,6 +173,7 @@ def main():
         manifest = json.load(f)
     for k in java:
         problems += diff(k, "Java", java[k], "manifest", manifest.get(k, []))
+    problems += check_released(manifest)
 
     if args.backend:
         for k, (rel, name) in PY_LISTS.items():
@@ -155,7 +181,8 @@ def main():
             problems += check_shape("backend " + k, py, k)
             problems += diff(k, "backend", py, "manifest", manifest.get(k, []))
         for rel_app, rel_backend in (("docs/skin-rules.manifest.json", "app/schemas/skin_rules.manifest.json"),
-                                     ("docs/skin-rules.vectors.json", "tests/skin_rules.vectors.json")):
+                                     ("docs/skin-rules.vectors.json", "tests/skin_rules.vectors.json"),
+                                     ("docs/skin-rules.released.json", "tests/skin_rules.released.json")):
             a, b = os.path.join(ROOT, rel_app), os.path.join(args.backend, rel_backend)
             if not os.path.exists(b):
                 problems.append(f"backend copy missing: {rel_backend}")

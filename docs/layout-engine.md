@@ -138,3 +138,6 @@ one palette whatever Telegram does; default is `"auto"`.
 - `settings.accounts`: `list` (default) or `collapsible` (an "Accounts N ⌄" row that expands the signed-in accounts).
 - `people.storyRail`: `on|off` and `people.chips`: `on|off` — People tab (bottomTabs.peopleSource=online): story-card rail ("Add to story" first; people with stories, else recently active contacts), chips "N active / All", rows with green dot + status. When nobody is online the list falls back to recently active contacts.
 - Profile now honours `screens.profile.background` (use a light gray so white cards stay visible).
+
+## Theme Store keys (added, rules only)
+`themeStore.mode` (grid|list), `themeStore.meta.creator`, `themeStore.meta.downloads` (bool), `themeStore.meta.position` (below|overlay), `themeStore.chips`, `themeStore.search` (on|off). Recognised and validated; no screen reads them yet (listed in `LAYOUT_NOT_YET`). Details and the Phase 2 rules: see `skin-schema.md`.

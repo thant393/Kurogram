@@ -74,3 +74,15 @@ Change order: Java rule -> `--update` -> copy manifest + vectors into the backen
 Screen open/close animation: `default` (fade + 48 dp slide, Telegram's own), `fade` (fade only), `slide` (96 dp slide, no fade), `none` (instant). Swipe-back and message-preview animations are not affected. With the token absent the animation is exactly Telegram's.
 
 The Contacts list (New Message) also takes the section tokens (`components.section.style|radiusDp|gapDp`, `cell.pressedColor`, `ux.ripple`), and its New Group / New Channel rows read the `components.cell.*` tokens. Row height and start padding of the contact rows themselves are not wired (the avatar is placed at a fixed offset).
+
+## Theme Store keys (rules only, Phase 1 — no screen reads them yet)
+All optional; absent = today's behaviour. Added to `RULES_V2_MINOR1` (skin) and `LayoutSpec.RULES` (layout); `schemaMinor`, `schemaVersion` and `min_app_version` are unchanged. A released app ignores them (at most an `UNKNOWN_FIELD` warning); this build reports them as `RECOGNIZED_NOT_YET_SUPPORTED` until a screen reads them.
+
+Skin: `screens.themeStore.previewAspect` (square, portrait, tall), `screens.themeStore.cardRadiusDp` (0–32), `screens.themeStore.cardGapDp` (4–20), `screens.themeStore.titleSizeSp` (12–20), `components.button.style` (filled, outlined, text).
+Layout (inside `layout`): `themeStore.mode` (grid, list), `themeStore.meta.creator` (bool), `themeStore.meta.downloads` (bool), `themeStore.meta.position` (below, overlay), `themeStore.chips` (on, off), `themeStore.search` (on, off).
+
+Behaviour that Phase 2 must keep (decided, not implemented):
+- `themeStore.mode = "list"` → one column. `"grid"` → the existing `screens.themeStore.gridColumns` (2–3, unchanged) sets the columns. Absent → exactly today's layout.
+- `components.button.style` may only be read by the Theme Store buttons (card actions and ThemeDetailActivity Apply / Preview / Download). Every other button in the app keeps its current look; a consumer is added only by naming it here first.
+- The Theme Store (`ownerId == 0`) and the creator page (`ProfileTabView` → the same `ThemesTabView` with an owner) must both be in the device checklist. `chips` and `search` exist only on the store.
+- Existing rules are frozen: `docs/skin-rules.released.json` lists the rules shipped in a released build; `Tools/check_rules.py` fails if one is widened, narrowed, re-typed, moved or removed (e.g. `screens.themeStore.gridColumns` stays `int:2:3`). New meaning = a new key.

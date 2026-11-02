@@ -94,6 +94,8 @@ public final class LayoutSpec {
             "chat.input.style|enum:classic,pill", "chat.input.leading|list:plus,attach,emoji:0:2",
             "chat.input.trailing|list:emoji,mic,attach:0:3",
             "settings.mode|enum:list,grid", "settings.grid.columns|int:2:4",
+            "themeStore.mode|enum:grid,list", "themeStore.meta.creator|bool", "themeStore.meta.downloads|bool", "themeStore.meta.position|enum:below,overlay",
+            "themeStore.chips|enum:on,off", "themeStore.search|enum:on,off",
             "notifications.hiddenRows|list:reactions,callsVibrate,callsRingtone,inappSound,inappVibrate,inappPreview,inchatSound,inappPriority,contactJoined,pinnedMessage,notificationsService,notificationsServiceConnection,repeat:0:13", "profile.hiddenRows|list:phone,bio,username,birthday,bizHours,bizLocation,note:0:7", "privacy.hiddenRows|list:phoneNumber,lastSeen,profilePhoto,forwards,calls,voices,noncontacts,birthday,gifts,bio,music,groups,paymentsClear,contactsDelete,contactsSync,contactsSuggest,secretMap,secretWebpage:0:18", "dataStorage.hiddenRows|list:storageUsage,dataUsage,saveToGalleryPeer,saveToGalleryGroups,saveToGalleryChannels,useLessDataForCalls,proxy,clearDrafts:0:8",
     };
 

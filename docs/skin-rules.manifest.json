@@ -127,7 +127,12 @@
   "screens.devices.background|col",
   "ux.transition|enum:default,fade,slide,none",
   "ux.ripple|bool",
-  "ux.animationScale|float:0:2"
+  "ux.animationScale|float:0:2",
+  "screens.themeStore.previewAspect|enum:square,portrait,tall",
+  "screens.themeStore.cardRadiusDp|int:0:32",
+  "screens.themeStore.cardGapDp|int:4:20",
+  "screens.themeStore.titleSizeSp|int:12:20",
+  "components.button.style|enum:filled,outlined,text"
  ],
  "layout": [
   "settings.header|enum:centered,cover",
@@ -193,6 +198,12 @@
   "chat.input.trailing|list:emoji,mic,attach:0:3",
   "settings.mode|enum:list,grid",
   "settings.grid.columns|int:2:4",
+  "themeStore.mode|enum:grid,list",
+  "themeStore.meta.creator|bool",
+  "themeStore.meta.downloads|bool",
+  "themeStore.meta.position|enum:below,overlay",
+  "themeStore.chips|enum:on,off",
+  "themeStore.search|enum:on,off",
   "notifications.hiddenRows|list:reactions,callsVibrate,callsRingtone,inappSound,inappVibrate,inappPreview,inchatSound,inappPriority,contactJoined,pinnedMessage,notificationsService,notificationsServiceConnection,repeat:0:13",
   "profile.hiddenRows|list:phone,bio,username,birthday,bizHours,bizLocation,note:0:7",
   "privacy.hiddenRows|list:phoneNumber,lastSeen,profilePhoto,forwards,calls,voices,noncontacts,birthday,gifts,bio,music,groups,paymentsClear,contactsDelete,contactsSync,contactsSuggest,secretMap,secretWebpage:0:18",
@@ -205,7 +216,14 @@
   "overlay:night",
   "layout:layout"
  ],
- "layoutNotYetSupported": [],
+ "layoutNotYetSupported": [
+  "themeStore.mode",
+  "themeStore.meta.creator",
+  "themeStore.meta.downloads",
+  "themeStore.meta.position",
+  "themeStore.chips",
+  "themeStore.search"
+ ],
  "implementedMinor1": [
   "components.cell.heightDp",
   "components.cell.twoLineHeightDp",

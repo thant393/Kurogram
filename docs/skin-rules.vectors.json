@@ -507,6 +507,240 @@
     "repeat"
    ],
    "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "screens.themeStore.previewAspect|enum:square,portrait,tall",
+   "value": "square",
+   "valid": true
+  },
+  {
+   "checker": "skin",
+   "rule": "screens.themeStore.previewAspect|enum:square,portrait,tall",
+   "value": "tall",
+   "valid": true
+  },
+  {
+   "checker": "skin",
+   "rule": "screens.themeStore.previewAspect|enum:square,portrait,tall",
+   "value": "wide",
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "screens.themeStore.previewAspect|enum:square,portrait,tall",
+   "value": 1,
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "screens.themeStore.cardRadiusDp|int:0:32",
+   "value": 0,
+   "valid": true
+  },
+  {
+   "checker": "skin",
+   "rule": "screens.themeStore.cardRadiusDp|int:0:32",
+   "value": 32,
+   "valid": true
+  },
+  {
+   "checker": "skin",
+   "rule": "screens.themeStore.cardRadiusDp|int:0:32",
+   "value": 33,
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "screens.themeStore.cardRadiusDp|int:0:32",
+   "value": "8",
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "screens.themeStore.cardGapDp|int:4:20",
+   "value": 4,
+   "valid": true
+  },
+  {
+   "checker": "skin",
+   "rule": "screens.themeStore.cardGapDp|int:4:20",
+   "value": 20,
+   "valid": true
+  },
+  {
+   "checker": "skin",
+   "rule": "screens.themeStore.cardGapDp|int:4:20",
+   "value": 3,
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "screens.themeStore.cardGapDp|int:4:20",
+   "value": 21,
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "screens.themeStore.titleSizeSp|int:12:20",
+   "value": 12,
+   "valid": true
+  },
+  {
+   "checker": "skin",
+   "rule": "screens.themeStore.titleSizeSp|int:12:20",
+   "value": 20,
+   "valid": true
+  },
+  {
+   "checker": "skin",
+   "rule": "screens.themeStore.titleSizeSp|int:12:20",
+   "value": 11,
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "screens.themeStore.titleSizeSp|int:12:20",
+   "value": 21,
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "components.button.style|enum:filled,outlined,text",
+   "value": "filled",
+   "valid": true
+  },
+  {
+   "checker": "skin",
+   "rule": "components.button.style|enum:filled,outlined,text",
+   "value": "text",
+   "valid": true
+  },
+  {
+   "checker": "skin",
+   "rule": "components.button.style|enum:filled,outlined,text",
+   "value": "ghost",
+   "valid": false
+  },
+  {
+   "checker": "skin",
+   "rule": "components.button.style|enum:filled,outlined,text",
+   "value": true,
+   "valid": false
+  },
+  {
+   "checker": "layout",
+   "rule": "themeStore.mode|enum:grid,list",
+   "value": "grid",
+   "valid": true
+  },
+  {
+   "checker": "layout",
+   "rule": "themeStore.mode|enum:grid,list",
+   "value": "list",
+   "valid": true
+  },
+  {
+   "checker": "layout",
+   "rule": "themeStore.mode|enum:grid,list",
+   "value": "table",
+   "valid": false
+  },
+  {
+   "checker": "layout",
+   "rule": "themeStore.mode|enum:grid,list",
+   "value": 1,
+   "valid": false
+  },
+  {
+   "checker": "layout",
+   "rule": "themeStore.meta.creator|bool",
+   "value": true,
+   "valid": true
+  },
+  {
+   "checker": "layout",
+   "rule": "themeStore.meta.creator|bool",
+   "value": false,
+   "valid": true
+  },
+  {
+   "checker": "layout",
+   "rule": "themeStore.meta.creator|bool",
+   "value": "yes",
+   "valid": false
+  },
+  {
+   "checker": "layout",
+   "rule": "themeStore.meta.downloads|bool",
+   "value": true,
+   "valid": true
+  },
+  {
+   "checker": "layout",
+   "rule": "themeStore.meta.downloads|bool",
+   "value": false,
+   "valid": true
+  },
+  {
+   "checker": "layout",
+   "rule": "themeStore.meta.downloads|bool",
+   "value": 0,
+   "valid": false
+  },
+  {
+   "checker": "layout",
+   "rule": "themeStore.meta.position|enum:below,overlay",
+   "value": "below",
+   "valid": true
+  },
+  {
+   "checker": "layout",
+   "rule": "themeStore.meta.position|enum:below,overlay",
+   "value": "overlay",
+   "valid": true
+  },
+  {
+   "checker": "layout",
+   "rule": "themeStore.meta.position|enum:below,overlay",
+   "value": "above",
+   "valid": false
+  },
+  {
+   "checker": "layout",
+   "rule": "themeStore.chips|enum:on,off",
+   "value": "on",
+   "valid": true
+  },
+  {
+   "checker": "layout",
+   "rule": "themeStore.chips|enum:on,off",
+   "value": "off",
+   "valid": true
+  },
+  {
+   "checker": "layout",
+   "rule": "themeStore.chips|enum:on,off",
+   "value": true,
+   "valid": false
+  },
+  {
+   "checker": "layout",
+   "rule": "themeStore.search|enum:on,off",
+   "value": "on",
+   "valid": true
+  },
+  {
+   "checker": "layout",
+   "rule": "themeStore.search|enum:on,off",
+   "value": "off",
+   "valid": true
+  },
+  {
+   "checker": "layout",
+   "rule": "themeStore.search|enum:on,off",
+   "value": "hidden",
+   "valid": false
   }
  ]
 }
