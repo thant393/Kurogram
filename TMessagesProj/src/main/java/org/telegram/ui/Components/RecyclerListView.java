@@ -1938,6 +1938,13 @@ public class RecyclerListView extends RecyclerView implements IBlur3Capture {
     }
 
     public void setListSelectorColor(Integer color) {
+        if (color == null && skinSections && hasSections()) {
+            // Kuro skins: components.cell.pressedColor wins over Telegram's default each time a row is pressed
+            int skinPressed = tw.nekomimi.nekogram.skin.KuroUi.t().cellPressedColor;
+            if (skinPressed != 0) {
+                color = skinPressed;
+            }
+        }
         Theme.setSelectorDrawableColor(selectorDrawable, color == null ? getThemedColor(hasSections() ? Theme.key_settings_listSelector : Theme.key_listSelector) : color, true);
     }
 
