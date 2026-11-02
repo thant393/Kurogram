@@ -53,7 +53,7 @@ Change order: Java rule -> `--update` -> copy manifest + vectors into the backen
 - When rows are hidden the row that ends a card drops its divider (LastInCard on TextSettingsCell/TextCheckCell/TextCell/NotificationsCheckCell, applied by RecyclerListView.trimLastDividers). NotificationsCheckCell (Notifications, Data and Storage) now reads the cell title/value size, title weight, divider and switch tokens too.
 - `layout.notifications.hiddenRows` (reactions, call vibrate/ringtone, in-app sound/vibrate/preview, in-chat sound, priority, contact joined, pinned message, background service rows, repeat): independent rows only; private/group/channel/stories and the account rows stay.
 - `layout.profile.hiddenRows` (phone, bio, username, birthday, bizHours, bizLocation, note): info rows of a user profile (ProfileActivity). The notifications row, restriction notice and every action stay.
-- Not wired yet, still reported as RECOGNIZED_NOT_YET_SUPPORTED: `ux.transition` (needs custom fragment animations), Profile slots, Theme Store slots. The Devices screen has no hideable rows (its three row groups are locked or hold the session list).
+- Not wired yet, still reported as RECOGNIZED_NOT_YET_SUPPORTED: Profile slots, Theme Store slots. The Devices screen has no hideable rows (its three row groups are locked or hold the session list).
 
 ## Wired in the last Phase 2 batch (schemaMinor 1)
 
@@ -68,3 +68,7 @@ Change order: Java rule -> `--update` -> copy manifest + vectors into the backen
 ## Contacts rows
 
 `UserCell` (the Contacts list rows) reads `components.cell.titleSizeSp|titleWeight|dividerVisible|dividerInsetDp|dividerColor`. Only the Contacts list opts in; other lists that use UserCell (member pickers, admin lists) are unchanged. The Chats list rows (`DialogCell`) are not styled: their text paints are shared across the app, so a per-skin size would leak into other screens.
+
+## ux.transition
+
+Screen open/close animation: `default` (fade + 48 dp slide, Telegram's own), `fade` (fade only), `slide` (96 dp slide, no fade), `none` (instant). Swipe-back and message-preview animations are not affected. With the token absent the animation is exactly Telegram's.

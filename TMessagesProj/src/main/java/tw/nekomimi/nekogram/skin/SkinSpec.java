@@ -342,7 +342,7 @@ public final class SkinSpec {
             "components.switch.trackOn", "components.switch.trackOff", "components.switch.thumbOn", "components.switch.thumbOff",
             "components.cell.paddingStartDp", "components.cell.iconSizeDp", "components.cell.pressedColor",
             "components.search.background", "components.search.radiusDp", "components.search.hintColor", "components.search.iconColor",
-            "components.fab.sizeDp", "components.fab.radiusDp", "ux.ripple", "ux.animationScale",
+            "components.fab.sizeDp", "components.fab.radiusDp", "ux.ripple", "ux.animationScale", "ux.transition",
     };
 
     private static SkinGrammar grammar;

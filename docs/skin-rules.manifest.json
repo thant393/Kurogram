@@ -242,6 +242,7 @@
   "components.fab.sizeDp",
   "components.fab.radiusDp",
   "ux.ripple",
-  "ux.animationScale"
+  "ux.animationScale",
+  "ux.transition"
  ]
 }

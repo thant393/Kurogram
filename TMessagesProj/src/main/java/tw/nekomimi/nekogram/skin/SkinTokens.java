@@ -54,6 +54,8 @@ public final class SkinTokens {
     /** ux.animationScale: -1 = not set. ux.ripple: -1 not set, 0 off, 1 on. */
     public final float uxAnimationScale;
     public final int uxRipple;
+    /** ux.transition: -1 not set, 0 default, 1 fade, 2 slide, 3 none. */
+    public final int uxTransition;
     /** components.search.*: 0 / -1 = not set. Only SearchField instances that opted in read these. */
     public final int searchBackground, searchHintColor, searchIconColor, searchRadiusDp;
     public final int cellPaddingStartDp, cellIconSizeDp, cellPressedColor;
@@ -145,6 +147,8 @@ public final class SkinTokens {
         searchIconColor = s.colorValue("components.search.iconColor");
         searchRadiusDp = s.intValue("components.search.radiusDp", -1);
         uxAnimationScale = s.has("ux.animationScale") ? Math.max(0f, s.floatValue("ux.animationScale", 1f)) : -1f;
+        String uxTransitionName = s.stringValue("ux.transition", null);
+        uxTransition = "default".equals(uxTransitionName) ? 0 : "fade".equals(uxTransitionName) ? 1 : "slide".equals(uxTransitionName) ? 2 : "none".equals(uxTransitionName) ? 3 : -1;
         uxRipple = s.has("ux.ripple") ? (s.boolValue("ux.ripple", true) ? 1 : 0) : -1;
         fabSizeDp = s.intValue("components.fab.sizeDp", -1);
         fabRadiusDp = s.intValue("components.fab.radiusDp", -1);
