@@ -4237,6 +4237,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 updateBottomButtonY();
             }
         };
+        listView.useSkinSectionRadius(tw.nekomimi.nekogram.skin.KuroUi.t().profileSectionRadiusDp); // screens.profile.cardRadiusDp; -1 = Telegram's own
         listView.setSections();
         listView.applyPaddingToSections = false;
         listView.setBackgroundColor(profileBg());

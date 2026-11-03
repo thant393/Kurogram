@@ -3334,7 +3334,22 @@ public class RecyclerListView extends RecyclerView implements IBlur3Capture {
         return this;
     }
 
+    private int sectionRadiusOverrideDp = -1;
+
+    /**
+     * Kuro skins: a screen-specific card radius (e.g. screens.profile.cardRadiusDp) for this list's section cards;
+     * -1 (or a call that never happens) keeps Telegram's radius. Does not turn on the other skin-section behaviour.
+     * Call before setSections().
+     */
+    public RecyclerListView useSkinSectionRadius(int radiusDp) {
+        sectionRadiusOverrideDp = radiusDp;
+        return this;
+    }
+
     protected float skinSectionRadius(float radius) {
+        if (sectionRadiusOverrideDp >= 0) {
+            return dp(sectionRadiusOverrideDp);
+        }
         if (!skinSections) {
             return radius;
         }

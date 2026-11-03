@@ -52,6 +52,8 @@ public final class SkinTokens {
     /** components.fab.sizeDp / radiusDp for the Chats compose button; -1 = not set. */
     public final int fabSizeDp, fabRadiusDp;
     /** Theme Store: screens.themeStore.previewAspect (-1 not set, 0 square, 1 portrait, 2 tall), cardRadiusDp / cardGapDp / titleSizeSp (-1 = not set). */
+    /** screens.profile.cardRadiusDp when the skin sets it, else -1 (ProfileActivity then keeps Telegram's own card radius). */
+    public final int profileSectionRadiusDp;
     public final int storePreviewAspect, storeCardRadiusDp, storeCardGapDp, storeTitleSizeSp;
     /** components.button.style: -1 not set, 0 filled, 1 outlined, 2 text. Only the Theme Store buttons read it. */
     public final int buttonStyle;
@@ -154,6 +156,7 @@ public final class SkinTokens {
         String uxTransitionName = s.stringValue("ux.transition", null);
         uxTransition = "default".equals(uxTransitionName) ? 0 : "fade".equals(uxTransitionName) ? 1 : "slide".equals(uxTransitionName) ? 2 : "none".equals(uxTransitionName) ? 3 : -1;
         uxRipple = s.has("ux.ripple") ? (s.boolValue("ux.ripple", true) ? 1 : 0) : -1;
+        profileSectionRadiusDp = s.intValue("screens.profile.cardRadiusDp", -1);
         String aspectName = s.stringValue("screens.themeStore.previewAspect", null);
         storePreviewAspect = "square".equals(aspectName) ? 0 : "portrait".equals(aspectName) ? 1 : "tall".equals(aspectName) ? 2 : -1;
         storeCardRadiusDp = s.intValue("screens.themeStore.cardRadiusDp", -1);
