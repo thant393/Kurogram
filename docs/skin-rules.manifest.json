@@ -216,7 +216,13 @@
   "overlay:night",
   "layout:layout"
  ],
- "layoutNotYetSupported": [],
+ "layoutNotYetSupported": [
+  "chat.header.avatarLeft",
+  "chat.header.actions",
+  "chat.input.style",
+  "chat.input.leading",
+  "chat.input.trailing"
+ ],
  "implementedMinor1": [
   "components.cell.heightDp",
   "components.cell.twoLineHeightDp",

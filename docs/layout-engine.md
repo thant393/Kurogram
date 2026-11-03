@@ -141,3 +141,6 @@ one palette whatever Telegram does; default is `"auto"`.
 
 ## Theme Store keys (added; read by the Theme Store since Phase 2)
 `themeStore.mode` (grid|list), `themeStore.meta.creator`, `themeStore.meta.downloads` (bool), `themeStore.meta.position` (below|overlay), `themeStore.chips`, `themeStore.search` (on|off). Details: see `skin-schema.md`.
+
+## Chat header / input keys: honest status
+`chat.header.avatarLeft`, `chat.header.actions`, `chat.input.style`, `chat.input.leading`, `chat.input.trailing` are valid rules and the Theme Store preview (`PhoneScene`) draws them, but `ChatActivity` does not read them. They are listed in `LAYOUT_NOT_YET`, so a theme that sets them gets a `RECOGNIZED_NOT_YET_SUPPORTED` warning instead of a silent no-op. They apply to private, group and channel chats alike (one `ChatActivity`). Making `ChatActivity` read them is a separate, explicitly approved task.

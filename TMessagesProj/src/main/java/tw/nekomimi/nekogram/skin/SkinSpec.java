@@ -327,7 +327,10 @@ public final class SkinSpec {
     };
 
     /** Layout keys (inside a skin's "layout") that are valid but that no screen reads yet. */
-    private static final String[] LAYOUT_NOT_YET = {};
+    private static final String[] LAYOUT_NOT_YET = {
+            // Rules exist (and the Theme Store preview draws them), but ChatActivity does not read them yet.
+            "chat.header.avatarLeft", "chat.header.actions", "chat.input.style", "chat.input.leading", "chat.input.trailing",
+    };
 
     /**
      * Minor-1 paths that at least one screen already reads (Phase 2: TextSettingsCell, TextCheckCell, HeaderCell,
