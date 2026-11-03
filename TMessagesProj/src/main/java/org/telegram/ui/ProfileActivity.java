@@ -13434,7 +13434,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     break;
                 }
                 case VIEW_TYPE_USER: {
-                    view = new UserCell(mContext, addMemberRow == -1 ? 9 : 6, 0, true, resourcesProvider);
+                    view = new UserCell(mContext, addMemberRow == -1 ? 9 : 6, 0, true, resourcesProvider).useSkinTokens(); // members: components.cell title size/weight + divider (only without a ResourcesProvider)
                     break;
                 }
                 case VIEW_TYPE_EMPTY:
