@@ -132,7 +132,10 @@
   "screens.themeStore.cardRadiusDp|int:0:32",
   "screens.themeStore.cardGapDp|int:4:20",
   "screens.themeStore.titleSizeSp|int:12:20",
-  "components.button.style|enum:filled,outlined,text"
+  "components.button.style|enum:filled,outlined,text",
+  "chat.sendButton|col",
+  "chat.dateBackground|col",
+  "chat.dateText|col"
  ],
  "layout": [
   "settings.header|enum:centered,cover",
@@ -265,6 +268,9 @@
   "screens.themeStore.cardRadiusDp",
   "screens.themeStore.cardGapDp",
   "screens.themeStore.titleSizeSp",
-  "components.button.style"
+  "components.button.style",
+  "chat.sendButton",
+  "chat.dateBackground",
+  "chat.dateText"
  ]
 }

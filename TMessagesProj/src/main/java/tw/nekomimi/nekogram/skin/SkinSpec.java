@@ -195,6 +195,9 @@ public final class SkinSpec {
             put(o, "bubbleOut", Theme.key_chat_outBubble);
             put(o, "bubbleInText", Theme.key_chat_messageTextIn);
             put(o, "bubbleOutText", Theme.key_chat_messageTextOut);
+            put(o, "sendButton", Theme.key_chat_messagePanelSend);
+            put(o, "dateBackground", Theme.key_chat_serviceBackground);
+            put(o, "dateText", Theme.key_chat_serviceText);
             // The page colour every ordinary screen paints behind its white cards. screens.settings.background,
             // when the skin gives one, wins so all screens share the Settings page colour.
             int pageBg = colorValue("screens.settings.background");
@@ -315,6 +318,7 @@ public final class SkinSpec {
             "ux.transition|enum:default,fade,slide,none", "ux.ripple|bool", "ux.animationScale|float:0:2",
             "screens.themeStore.previewAspect|enum:square,portrait,tall", "screens.themeStore.cardRadiusDp|int:0:32",
             "screens.themeStore.cardGapDp|int:4:20", "screens.themeStore.titleSizeSp|int:12:20", "components.button.style|enum:filled,outlined,text",
+            "chat.sendButton|col", "chat.dateBackground|col", "chat.dateText|col",
     };
 
     /**
@@ -349,6 +353,7 @@ public final class SkinSpec {
             "components.search.background", "components.search.radiusDp", "components.search.hintColor", "components.search.iconColor",
             "components.fab.sizeDp", "components.fab.radiusDp", "ux.ripple", "ux.animationScale", "ux.transition",
             "screens.themeStore.previewAspect", "screens.themeStore.cardRadiusDp", "screens.themeStore.cardGapDp", "screens.themeStore.titleSizeSp", "components.button.style",
+            "chat.sendButton", "chat.dateBackground", "chat.dateText",
     };
 
     private static SkinGrammar grammar;
@@ -551,6 +556,7 @@ public final class SkinSpec {
                 {"inputHint", "components.input.hint"}, {"dialog", "components.dialog.background"},
                 {"bubbleIn", "chat.bubbleIn"}, {"bubbleOut", "chat.bubbleOut"},
                 {"bubbleInText", "chat.bubbleInText"}, {"bubbleOutText", "chat.bubbleOutText"},
+                {"sendButton", "chat.sendButton"}, {"dateBackground", "chat.dateBackground"}, {"dateText", "chat.dateText"},
                 {"navSelected", "components.navigationBar.selected"}, {"navUnselected", "components.navigationBar.unselected"},
                 {"navBackground", "components.bottomNavigation.background"}, {"inputText", "components.input.foreground"},
         };
