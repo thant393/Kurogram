@@ -319,6 +319,8 @@ public final class SkinSpec {
             "screens.themeStore.previewAspect|enum:square,portrait,tall", "screens.themeStore.cardRadiusDp|int:0:32",
             "screens.themeStore.cardGapDp|int:4:20", "screens.themeStore.titleSizeSp|int:12:20", "components.button.style|enum:filled,outlined,text",
             "chat.sendButton|col", "chat.dateBackground|col", "chat.dateText|col",
+            "chat.headerRadiusDp|int:0:30", "chat.inputRadiusDp|int:0:30", "chat.panelRadiusDp|int:0:30", "chat.buttonRadiusDp|int:0:30", "chat.dateRadiusDp|int:0:30",
+            "chat.wallpaperColor|col", "chat.wallpaperColor2|col", "chat.wallpaperAngle|int:0:359",
     };
 
     /**
@@ -354,6 +356,8 @@ public final class SkinSpec {
             "components.fab.sizeDp", "components.fab.radiusDp", "ux.ripple", "ux.animationScale", "ux.transition",
             "screens.themeStore.previewAspect", "screens.themeStore.cardRadiusDp", "screens.themeStore.cardGapDp", "screens.themeStore.titleSizeSp", "components.button.style",
             "chat.sendButton", "chat.dateBackground", "chat.dateText",
+            "chat.headerRadiusDp", "chat.inputRadiusDp", "chat.panelRadiusDp", "chat.buttonRadiusDp", "chat.dateRadiusDp",
+            "chat.wallpaperColor", "chat.wallpaperColor2", "chat.wallpaperAngle",
     };
 
     private static SkinGrammar grammar;

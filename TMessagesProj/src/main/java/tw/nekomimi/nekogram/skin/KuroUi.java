@@ -20,6 +20,36 @@ public final class KuroUi {
     private KuroUi() {
     }
 
+    /** Chat shape radius in px: the skin value (dp) when the skin gives one, otherwise Telegram's own default (dp). */
+    public static float chatRadius(int skinDp, float defaultDp) {
+        return org.telegram.messenger.AndroidUtilities.dpf2(skinDp >= 0 ? skinDp : defaultDp);
+    }
+
+    private static int wallpaperVersion = -1;
+    private static android.graphics.drawable.Drawable wallpaperDrawable;
+
+    /** The chat background a skin asks for (one colour or a two-colour gradient), or null to keep Telegram's wallpaper. */
+    public static synchronized android.graphics.drawable.Drawable chatWallpaper() {
+        SkinTokens t = t();
+        if (t.chatWallpaperColor == 0) {
+            return null;
+        }
+        if (wallpaperVersion != t.version || wallpaperDrawable == null) {
+            wallpaperVersion = t.version;
+            int c1 = t.chatWallpaperColor;
+            int c2 = t.chatWallpaperColor2 != 0 ? t.chatWallpaperColor2 : c1;
+            android.graphics.Bitmap bmp = android.graphics.Bitmap.createBitmap(160, 320, android.graphics.Bitmap.Config.ARGB_8888);
+            double a = Math.toRadians(t.chatWallpaperAngle);
+            float cx = 80, cy = 160, dx = (float) Math.sin(a) * 160, dy = -(float) Math.cos(a) * 320;
+            android.graphics.Paint p = new android.graphics.Paint();
+            p.setShader(new android.graphics.LinearGradient(cx - dx / 2, cy - dy / 2, cx + dx / 2, cy + dy / 2, c1, c2, android.graphics.Shader.TileMode.CLAMP));
+            new android.graphics.Canvas(bmp).drawRect(0, 0, 160, 320, p);
+            wallpaperDrawable = new android.graphics.drawable.BitmapDrawable(
+                    org.telegram.messenger.ApplicationLoader.applicationContext.getResources(), bmp);
+        }
+        return wallpaperDrawable;
+    }
+
     public static SkinTokens t() {
         return KuroSkinManager.get().tokens();
     }

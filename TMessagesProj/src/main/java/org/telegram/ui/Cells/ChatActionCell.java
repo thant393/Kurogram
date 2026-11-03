@@ -3470,6 +3470,19 @@ public class ChatActionCell extends BaseCell implements DownloadController.FileD
             }
             backgroundPath.close();
 
+            final int skinDateRadius = tw.nekomimi.nekogram.skin.KuroUi.t().chatDateRadiusDp;
+            if (skinDateRadius >= 0 && count > 0) {
+                // The skin wants its own corner radius: draw the pill as one rounded box per text line.
+                backgroundPath.reset();
+                final float rr = dp(skinDateRadius);
+                for (int a = 0; a < count; a++) {
+                    final float half = lineWidths.get(a) / 2f + dp(8);
+                    final float top = dp(4) + (a == 0 ? 0 : textLayout.getLineTop(a) + dp(3));
+                    final float bottom = dp(4) + textLayout.getLineBottom(a) + dp(3) + (a == count - 1 ? dp(3) : 0);
+                    backgroundPath.addRoundRect(x - half, top, x + half, bottom, rr, rr, Path.Direction.CW);
+                }
+            }
+
             if (isMessageActionSuggestedPostApproval() && !isNewStyleButtonLayout()) {
                 rect.left = x - textWidth / 2f - dp(17);
                 rect.top = y;

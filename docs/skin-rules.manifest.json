@@ -135,7 +135,15 @@
   "components.button.style|enum:filled,outlined,text",
   "chat.sendButton|col",
   "chat.dateBackground|col",
-  "chat.dateText|col"
+  "chat.dateText|col",
+  "chat.headerRadiusDp|int:0:30",
+  "chat.inputRadiusDp|int:0:30",
+  "chat.panelRadiusDp|int:0:30",
+  "chat.buttonRadiusDp|int:0:30",
+  "chat.dateRadiusDp|int:0:30",
+  "chat.wallpaperColor|col",
+  "chat.wallpaperColor2|col",
+  "chat.wallpaperAngle|int:0:359"
  ],
  "layout": [
   "settings.header|enum:centered,cover",
@@ -271,6 +279,14 @@
   "components.button.style",
   "chat.sendButton",
   "chat.dateBackground",
-  "chat.dateText"
+  "chat.dateText",
+  "chat.headerRadiusDp",
+  "chat.inputRadiusDp",
+  "chat.panelRadiusDp",
+  "chat.buttonRadiusDp",
+  "chat.dateRadiusDp",
+  "chat.wallpaperColor",
+  "chat.wallpaperColor2",
+  "chat.wallpaperAngle"
  ]
 }

@@ -231,18 +231,18 @@ public class ActionBar extends FrameLayout implements FactorAnimator.Target, The
         if (isForum) {
             glassDrawable.setRadius(dp(18.33f), dp(23), dp(23), dp(18.33f));
         } else {
-            glassDrawable.setRadius(dp(23));
+            glassDrawable.setRadius(tw.nekomimi.nekogram.skin.KuroUi.chatRadius(tw.nekomimi.nekogram.skin.KuroUi.t().chatHeaderRadiusDp, 23));
         }
 
 
         glassDrawableBack = factory.create(this)
             .setColorProvider(colorProvider)
-            .setRadius(dp(23))
+            .setRadius(tw.nekomimi.nekogram.skin.KuroUi.chatRadius(tw.nekomimi.nekogram.skin.KuroUi.t().chatHeaderRadiusDp, 23))
             .setPadding(dp(6));
 
         glassDrawableMenu = factory.create(this)
             .setColorProvider(colorProvider)
-            .setRadius(dp(23))
+            .setRadius(tw.nekomimi.nekogram.skin.KuroUi.chatRadius(tw.nekomimi.nekogram.skin.KuroUi.t().chatHeaderRadiusDp, 23))
             .setPadding(dp(6));
 
         if (menu != null) {

@@ -9934,6 +9934,10 @@ public class Theme {
     }
 
     public static Drawable getCachedWallpaperNonBlocking() {
+        Drawable skinWallpaper = tw.nekomimi.nekogram.skin.KuroUi.chatWallpaper();
+        if (skinWallpaper != null) {
+            return skinWallpaper;
+        }
         if (themedWallpaper != null) {
             return themedWallpaper;
         } else {
