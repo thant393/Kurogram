@@ -533,7 +533,9 @@ public class ProfileActionsView extends View {
     }
 
     public float getRoundRadius() {
-        return dp(16);
+        // screens.profile.cardRadiusDp: the action buttons (Set Photo / Edit Info / Settings, Message / Mute ...) share the card radius; -1 = Telegram's 16
+        int skin = tw.nekomimi.nekogram.skin.KuroUi.t().profileSectionRadiusDp;
+        return dp(skin >= 0 ? skin : 16);
     }
 
     private Action hit = null;

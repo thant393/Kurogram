@@ -98,3 +98,5 @@ Phase 3 (device-checked on a phone with two test documents, then the original re
 
 ## Profile, step 1: screens.profile.cardRadiusDp (ProfileActivity info cards)
 `ProfileActivity` passes `screens.profile.cardRadiusDp` to its list (`RecyclerListView.useSkinSectionRadius`), so the white cards around the info rows use that radius. Telegram's own radius is 16, so a skin that already says 16 (the Messenger skin) looks the same; absent = Telegram's radius. Nothing else in ProfileActivity changed (no header, avatar, animation or row-number change). `headerStyle` and `avatarSizeDp` stay inert: the avatar is one 100dp view scaled by literals (42, 96, 138) in about ten animation branches, and is only worth touching after this step is device-checked.
+
+Step 1b (after the first device check): the same key also sets the radius of the profile action buttons (Set Photo / Edit Info / Settings, or Message / Mute …) through `ProfileActionsView.getRoundRadius()` (Telegram's 16 when absent). The Posts / Archived Posts selector is a pill-shaped glass control with no radius key, so it is not changed; its colours follow the glass tokens.
