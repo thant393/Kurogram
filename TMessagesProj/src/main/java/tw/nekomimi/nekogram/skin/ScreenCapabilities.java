@@ -43,7 +43,7 @@ public final class ScreenCapabilities {
         TABLE.put("settings",      "SNNPSPPNSS"); // SettingsActivity (UniversalRecyclerView)
         TABLE.put("kuroSettings",  "SNNPNNNNNN"); // BaseKuroSettingsActivity screens
         TABLE.put("profile",       "PNNPPNNNNN"); // ProfileActivity (own ListAdapter)
-        TABLE.put("themeStore",    "SPPSNPNNNN"); // stickerstore/*
+        TABLE.put("themeStore",    "SPPSPSNNNN"); // stickerstore/* (Phase 2 device-checked: mode, columns, card look, meta, chips/search, Apply button style)
         TABLE.put("privacy",       "SPPPPNNNNN"); // PrivacySettingsActivity (row ints); Phase 2: TextSettingsCell, TextCell, TextCheckCell, HeaderCell, TextInfoPrivacyCell, Switch tokens, section card style/radius/gap
         TABLE.put("notifications", "SPPPPNNNNN"); // NotificationsSettingsActivity (row ints)
         TABLE.put("dataStorage",   "SPPPPNNNNN"); // DataSettingsActivity (row ints)
