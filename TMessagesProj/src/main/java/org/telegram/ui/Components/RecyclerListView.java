@@ -78,6 +78,12 @@ import org.telegram.ui.Cells.CollapseTextCell;
 import org.telegram.ui.Cells.GraySectionCell;
 import org.telegram.ui.Cells.ShadowSectionCell;
 import org.telegram.ui.Cells.TextInfoPrivacyCell;
+import org.telegram.ui.Cells.HeaderCell;
+import org.telegram.ui.Cells.NotificationsCheckCell;
+import org.telegram.ui.Cells.TextCell;
+import org.telegram.ui.Cells.TextCheckCell;
+import org.telegram.ui.Cells.TextSettingsCell;
+import org.telegram.ui.Cells.UserCell;
 import org.telegram.ui.Components.blur3.BlurredBackgroundDrawableViewFactory;
 import org.telegram.ui.Components.blur3.capture.IBlur3Capture;
 import org.telegram.ui.Components.blur3.capture.IBlur3Hash;
@@ -1938,7 +1944,7 @@ public class RecyclerListView extends RecyclerView implements IBlur3Capture {
     }
 
     public void setListSelectorColor(Integer color) {
-        if (color == null && skinSections && hasSections()) {
+        if (color == null && skinList() && hasSections()) {
             // Kuro skins: components.cell.pressedColor wins over Telegram's default each time a row is pressed
             int skinPressed = tw.nekomimi.nekogram.skin.KuroUi.t().cellPressedColor;
             if (skinPressed != 0) {
@@ -2468,6 +2474,24 @@ public class RecyclerListView extends RecyclerView implements IBlur3Capture {
 
     @Override
     public void onChildAttachedToWindow(View child) {
+        if (resourcesProvider == null) {
+            // Kuro skins: components.cell.* on the plain Telegram cells of every screen (a skin that sets none keeps Telegram's look)
+            if (child instanceof TextSettingsCell) {
+                ((TextSettingsCell) child).useSkinTokens();
+            } else if (child instanceof TextCell) {
+                ((TextCell) child).useSkinTokens();
+            } else if (child instanceof TextCheckCell) {
+                ((TextCheckCell) child).useSkinTokens();
+            } else if (child instanceof HeaderCell) {
+                ((HeaderCell) child).useSkinTokens();
+            } else if (child instanceof TextInfoPrivacyCell) {
+                ((TextInfoPrivacyCell) child).useSkinTokens();
+            } else if (child instanceof NotificationsCheckCell) {
+                ((NotificationsCheckCell) child).useSkinTokens();
+            } else if (child instanceof UserCell) {
+                ((UserCell) child).useSkinTokens();
+            }
+        }
         if (getAdapter() instanceof SelectionAdapter) {
             ViewHolder holder = findContainingViewHolder(child);
             if (holder != null) {
@@ -3323,6 +3347,12 @@ public class RecyclerListView extends RecyclerView implements IBlur3Capture {
     }
     private boolean skinSections;
 
+    /** Kuro skins: lists that opted in, plus every list without a custom ResourcesProvider. */
+    private boolean skinList() {
+        return skinSections || resourcesProvider == null;
+    }
+
+
     /**
      * Kuro skins: lets components.section.style / radiusDp / gapDp change the cards this list draws. Call before
      * setSections(). Only for lists without a custom ResourcesProvider; a skin that sets none keeps Telegram's cards.
@@ -3431,8 +3461,8 @@ public class RecyclerListView extends RecyclerView implements IBlur3Capture {
         Utilities.Callback5<Canvas, RectF, Float, Float, Float> drawSectionBackground,
         boolean topPadding
     ) {
-        int skinPressed = skinSections ? tw.nekomimi.nekogram.skin.KuroUi.t().cellPressedColor : 0;
-        boolean skinNoRipple = skinSections && tw.nekomimi.nekogram.skin.KuroUi.t().uxRipple == 0;
+        int skinPressed = skinList() ? tw.nekomimi.nekogram.skin.KuroUi.t().cellPressedColor : 0;
+        boolean skinNoRipple = skinList() && tw.nekomimi.nekogram.skin.KuroUi.t().uxRipple == 0;
         setSelectorDrawableColor(skinNoRipple ? 0 : skinPressed != 0 ? skinPressed : getThemedColor(Theme.key_settings_listSelector));
         this.isViewTypeSection = isViewTypeSection;
         this.sectionRadius = roundRadius;
