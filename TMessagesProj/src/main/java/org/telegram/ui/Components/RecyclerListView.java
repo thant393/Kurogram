@@ -3334,6 +3334,15 @@ public class RecyclerListView extends RecyclerView implements IBlur3Capture {
         return this;
     }
 
+    /**
+     * Same as useSkinSections() but also for a screen opened over a chat, which inherits the chat's ResourcesProvider
+     * even though the screen itself is painted with the skin (Kuro settings screens, Message details).
+     */
+    public RecyclerListView useSkinSectionsForced() {
+        skinSections = true;
+        return this;
+    }
+
     private int sectionRadiusOverrideDp = -1;
 
     /**

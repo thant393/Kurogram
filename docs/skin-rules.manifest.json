@@ -143,7 +143,9 @@
   "chat.dateRadiusDp|int:0:30",
   "chat.wallpaperColor|col",
   "chat.wallpaperColor2|col",
-  "chat.wallpaperAngle|int:0:359"
+  "chat.wallpaperAngle|int:0:359",
+  "chat.menuRadiusDp|int:0:30",
+  "chat.reactionRadiusDp|int:0:30"
  ],
  "layout": [
   "settings.header|enum:centered,cover",
@@ -287,6 +289,8 @@
   "chat.dateRadiusDp",
   "chat.wallpaperColor",
   "chat.wallpaperColor2",
-  "chat.wallpaperAngle"
+  "chat.wallpaperAngle",
+  "chat.menuRadiusDp",
+  "chat.reactionRadiusDp"
  ]
 }

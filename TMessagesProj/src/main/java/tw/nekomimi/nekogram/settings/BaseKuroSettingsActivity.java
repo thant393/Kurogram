@@ -168,7 +168,7 @@ public abstract class BaseKuroSettingsActivity extends BaseFragment {
         });
         iBlur3Capture = new ViewGroupPartRenderer(listView, contentView, listView::drawChild);
         listView.addEdgeEffectListener(() -> listView.postOnAnimation(this::blur3_InvalidateBlur));
-        listView.useSkin().setSections();
+        listView.useSkinForced().setSections();
         listView.setPadding(0, needActionBarPadding() ? ActionBar.getCurrentActionBarHeight() : AndroidUtilities.dp(12), 0, 0);
         contentView.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.FILL));
 

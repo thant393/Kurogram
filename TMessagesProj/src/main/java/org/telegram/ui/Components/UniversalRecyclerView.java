@@ -438,6 +438,12 @@ public class UniversalRecyclerView extends RecyclerListView {
     }
 
     /** Kuro skins: lets the skin's cell and section-card tokens apply to this list. Call right after construction. */
+    public UniversalRecyclerView useSkinForced() {
+        useSkinSectionsForced();
+        adapter.skinCells = true;
+        return this;
+    }
+
     public UniversalRecyclerView useSkin() {
         useSkinSections();
         adapter.skinCells = true;
