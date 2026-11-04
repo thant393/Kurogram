@@ -153,10 +153,10 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
         root.addView(header, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
 
         iconView = new BackupImageView(context);
-        iconView.setRoundRadius(AndroidUtilities.dp(20));
+        iconView.setRoundRadius(AndroidUtilities.dp(Math.min(20, tw.nekomimi.nekogram.skin.KuroUi.t().cardRadiusDp)));
         GradientDrawable iconBg = new GradientDrawable();
         iconBg.setShape(GradientDrawable.RECTANGLE);
-        iconBg.setCornerRadius(AndroidUtilities.dp(20));
+        iconBg.setCornerRadius(AndroidUtilities.dp(Math.min(20, tw.nekomimi.nekogram.skin.KuroUi.t().cardRadiusDp)));
         iconBg.setColor(Theme.getColor(Theme.key_windowBackgroundGray));
         iconView.setBackground(iconBg);
         header.addView(iconView, LayoutHelper.createLinear(96, 96, Gravity.CENTER_HORIZONTAL, 0, 0, 0, 12));
@@ -376,7 +376,8 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
     /** Solid circle for the standalone star / heart buttons. */
     private android.graphics.drawable.Drawable circleBackground() {
         android.graphics.drawable.GradientDrawable d = new android.graphics.drawable.GradientDrawable();
-        d.setShape(android.graphics.drawable.GradientDrawable.OVAL);
+        d.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+        d.setCornerRadius(AndroidUtilities.dp(tw.nekomimi.nekogram.skin.KuroUi.floatingRadiusDp(26)));
         d.setColor(tw.nekomimi.nekogram.skin.KuroUi.barFill());
         d.setStroke(Math.max(1, AndroidUtilities.dp(0.5f)), androidx.core.graphics.ColorUtils.setAlphaComponent(Theme.getColor(Theme.key_divider), 0x90));
         return d;
@@ -881,7 +882,7 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
     }
 
     private void styleActionButton(boolean installed, boolean ready) {
-        int radius = AndroidUtilities.dp(22);
+        int radius = AndroidUtilities.dp(tw.nekomimi.nekogram.skin.KuroUi.floatingRadiusDp(22));
         if (!ready) {
             actionButton.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGrayText));
             actionButton.setBackground(pillBackground(radius, Theme.getColor(Theme.key_windowBackgroundWhite),

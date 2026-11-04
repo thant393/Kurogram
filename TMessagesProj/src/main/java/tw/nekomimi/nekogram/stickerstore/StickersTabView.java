@@ -174,7 +174,7 @@ public class StickersTabView extends FrameLayout {
     private void styleChip(TextView chip, boolean selected) {
         GradientDrawable bg = new GradientDrawable();
         bg.setShape(GradientDrawable.RECTANGLE);
-        bg.setCornerRadius(AndroidUtilities.dp(18));
+        bg.setCornerRadius(AndroidUtilities.dp(tw.nekomimi.nekogram.skin.KuroUi.floatingRadiusDp(18)));
         if (selected) {
             bg.setColor(tw.nekomimi.nekogram.skin.KuroSkinManager.get().accent());
             chip.setTextColor(Theme.getColor(Theme.key_featuredStickers_buttonText));

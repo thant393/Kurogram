@@ -255,7 +255,7 @@ public class ThemesTabView extends FrameLayout {
 
     private void styleChip(TextView chip, boolean selected) {
         android.graphics.drawable.GradientDrawable bg = new android.graphics.drawable.GradientDrawable();
-        bg.setCornerRadius(AndroidUtilities.dp(18));
+        bg.setCornerRadius(AndroidUtilities.dp(tw.nekomimi.nekogram.skin.KuroUi.floatingRadiusDp(18)));
         if (selected) {
             bg.setColor(tw.nekomimi.nekogram.skin.KuroUi.accent());
             chip.setTextColor(tw.nekomimi.nekogram.skin.KuroUi.onAccent());

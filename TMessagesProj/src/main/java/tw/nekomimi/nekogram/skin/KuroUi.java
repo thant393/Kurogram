@@ -20,6 +20,14 @@ public final class KuroUi {
     private KuroUi() {
     }
 
+    /**
+     * Radius (dp) for floating bars, round icon buttons, chips and pill buttons: Kurogram's own default, capped by the
+     * skin's tokens.shapes.buttonRadiusDp so a boxy skin gets square buttons (a skin that sets none keeps the default).
+     */
+    public static int floatingRadiusDp(int defaultDp) {
+        return Math.min(defaultDp, t().buttonRadiusDp);
+    }
+
     /** Chat shape radius in px: the skin value (dp) when the skin gives one, otherwise Telegram's own default (dp). */
     public static float chatRadius(int skinDp, float defaultDp) {
         return org.telegram.messenger.AndroidUtilities.dpf2(skinDp >= 0 ? skinDp : defaultDp);

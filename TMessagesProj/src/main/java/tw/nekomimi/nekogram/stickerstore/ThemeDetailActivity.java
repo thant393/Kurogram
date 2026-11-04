@@ -320,7 +320,8 @@ public class ThemeDetailActivity extends BaseFragment {
 
     private android.graphics.drawable.Drawable circleBackground() {
         GradientDrawable d = new GradientDrawable();
-        d.setShape(GradientDrawable.OVAL);
+        d.setShape(GradientDrawable.RECTANGLE);
+        d.setCornerRadius(AndroidUtilities.dp(tw.nekomimi.nekogram.skin.KuroUi.floatingRadiusDp(26)));
         d.setColor(tw.nekomimi.nekogram.skin.KuroUi.barFill());
         d.setStroke(Math.max(1, AndroidUtilities.dp(0.5f)), androidx.core.graphics.ColorUtils.setAlphaComponent(Theme.getColor(Theme.key_divider), 0x90));
         return d;

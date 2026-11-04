@@ -39,7 +39,7 @@ public final class KuroBarStyle {
 
     /** The pill: 100% solid fill (no alpha), hairline border. */
     public static Drawable background() {
-        return tw.nekomimi.nekogram.skin.KuroUi.pill(CORNER_RADIUS_DP);
+        return tw.nekomimi.nekogram.skin.KuroUi.pill(tw.nekomimi.nekogram.skin.KuroUi.floatingRadiusDp(CORNER_RADIUS_DP));
     }
 
     /** Full-width translucent layer for behind the bottom pill; fades to nothing at its top

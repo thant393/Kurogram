@@ -196,7 +196,8 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
         fab.setScaleType(ImageView.ScaleType.CENTER);
         fab.setColorFilter(0xFFFFFFFF);
         GradientDrawable fabBg = new GradientDrawable();
-        fabBg.setShape(GradientDrawable.OVAL);
+        fabBg.setShape(GradientDrawable.RECTANGLE);
+        fabBg.setCornerRadius(AndroidUtilities.dp(tw.nekomimi.nekogram.skin.KuroUi.floatingRadiusDp(28)));
         fabBgDrawable = fabBg;
         fabBg.setColor(tw.nekomimi.nekogram.skin.KuroSkinManager.get().accent());
         fab.setBackground(fabBg);
