@@ -1,5 +1,6 @@
 package tw.kurocore.kurogram.stickerstore;
 
+import tw.kurocore.kurogram.feature.KuroFeatures;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.text.TextUtils;
@@ -194,7 +195,7 @@ public class ThemeDetailActivity extends BaseFragment {
         if (info.id == null || !"skin".equals(info.type)) {
             return;
         }
-        ThemeStoreApi.fetchVersionContent(info.id, info.version, content -> {
+        KuroFeatures.themes().fetchVersionContent(info.id, info.version, content -> {
             if (content == null || fragmentView == null) {
                 return;
             }
@@ -242,10 +243,10 @@ public class ThemeDetailActivity extends BaseFragment {
         if (starButton == null || likeView == null) return;
         int on = KuroSkinManager.get().accent();
         int off = Theme.getColor(Theme.key_windowBackgroundWhiteGrayText);
-        boolean rated = ThemeStoreApi.myRating(info.id) > 0;
+        boolean rated = KuroFeatures.themes().myRating(info.id) > 0;
         starButton.setImageResource(rated ? R.drawable.kuro_star_filled : R.drawable.kuro_star_outline);
         starButton.setColorFilter(rated ? on : off);
-        boolean liked = ThemeStoreApi.isLiked(info.id);
+        boolean liked = KuroFeatures.themes().isLiked(info.id);
         likeView.setImageResource(liked ? R.drawable.kuro_heart_filled : R.drawable.kuro_heart_outline);
         likeView.setColorFilter(liked ? Theme.getColor(Theme.key_text_RedBold) : off);
     }
@@ -342,7 +343,7 @@ public class ThemeDetailActivity extends BaseFragment {
         if (ratingMode == show || normalBar == null) return;
         ratingMode = show;
         if (show) {
-            pendingStars = ThemeStoreApi.myRating(info.id);
+            pendingStars = KuroFeatures.themes().myRating(info.id);
             refreshPickStars();
         }
         final View in = show ? ratingBar : normalBar;
@@ -370,11 +371,11 @@ public class ThemeDetailActivity extends BaseFragment {
 
     private void rateTheme(int stars) {
         final long me = UserConfig.getInstance(currentAccount).getClientUserId();
-        ThemeStoreApi.rate(info.id, me, stars, new StickerStoreApi.ResultCallback() {
+        KuroFeatures.themes().rate(info.id, me, stars, new StickerStoreApi.ResultCallback() {
             @Override
             public void onSuccess(JSONObject response) {
                 if (fragmentView == null) return;
-                ThemeStoreApi.setMyRating(info.id, stars);
+                KuroFeatures.themes().setMyRating(info.id, stars);
                 refreshReactions();
             }
 
@@ -387,10 +388,10 @@ public class ThemeDetailActivity extends BaseFragment {
     }
 
     private void toggleLike() {
-        final boolean want = !ThemeStoreApi.isLiked(info.id);
+        final boolean want = !KuroFeatures.themes().isLiked(info.id);
         final long me = UserConfig.getInstance(currentAccount).getClientUserId();
         // Optimistic: flip now, undo if the server refuses.
-        ThemeStoreApi.setLikedLocal(info.id, want);
+        KuroFeatures.themes().setLikedLocal(info.id, want);
         likes = Math.max(0, likes + (want ? 1 : -1));
         updateStats();
         refreshReactions();
@@ -402,7 +403,7 @@ public class ThemeDetailActivity extends BaseFragment {
                     .setInterpolator(new android.view.animation.OvershootInterpolator(2f))
                     .withEndAction(() -> likeView.animate().scaleX(1f).scaleY(1f).setDuration(tw.kurocore.kurogram.skin.KuroUi.anim(110)).start()).start();
         }
-        ThemeStoreApi.setLike(info.id, me, want, new StickerStoreApi.ResultCallback() {
+        KuroFeatures.themes().setLike(info.id, me, want, new StickerStoreApi.ResultCallback() {
             @Override
             public void onSuccess(JSONObject response) {
                 if (fragmentView == null || response == null || !response.has("total_likes")) return;
@@ -413,7 +414,7 @@ public class ThemeDetailActivity extends BaseFragment {
             @Override
             public void onError(String message) {
                 if (fragmentView == null) return;
-                ThemeStoreApi.setLikedLocal(info.id, !want);
+                KuroFeatures.themes().setLikedLocal(info.id, !want);
                 likes = Math.max(0, likes + (want ? -1 : 1));
                 updateStats();
                 refreshReactions();
@@ -429,7 +430,7 @@ public class ThemeDetailActivity extends BaseFragment {
             return;
         }
         ReportDialog.show(getParentActivity(), "Report this theme", reason ->
-                ThemeStoreApi.report(info.id, UserConfig.getInstance(currentAccount).getClientUserId(), reason, new StickerStoreApi.ResultCallback() {
+                KuroFeatures.themes().report(info.id, UserConfig.getInstance(currentAccount).getClientUserId(), reason, new StickerStoreApi.ResultCallback() {
                     @Override
                     public void onSuccess(JSONObject response) {
                         ReportDialog.markReported("theme", info.id);
@@ -453,7 +454,7 @@ public class ThemeDetailActivity extends BaseFragment {
     }
 
     private boolean isApplied() {
-        return info.id != null && info.id.equals(ThemeStoreApi.appliedId()) && ThemeStoreApi.appliedVersion() >= info.version;
+        return info.id != null && info.id.equals(KuroFeatures.themes().appliedId()) && KuroFeatures.themes().appliedVersion() >= info.version;
     }
 
     private void refreshButtons() {
@@ -484,7 +485,7 @@ public class ThemeDetailActivity extends BaseFragment {
             applyButton.setTextColor(applied ? 0xFFFFFFFF : tw.kurocore.kurogram.skin.KuroUi.primaryButtonText(false));
         }
         boolean needsNewerApp = info.minAppVersion > SkinSpec.ENGINE_LEVEL || info.schemaVersion > SkinSpec.SCHEMA_VERSION;
-        boolean updatable = !applied && info.id != null && info.id.equals(ThemeStoreApi.appliedId());
+        boolean updatable = !applied && info.id != null && info.id.equals(KuroFeatures.themes().appliedId());
         applyButton.setText(busy ? "Working…" : needsNewerApp ? "Needs a newer Kurogram" : applied ? "Reset to default" : updatable ? "Update" : "Download & Apply");
         applyButton.setAlpha(busy ? 0.6f : 1f);
     }
@@ -540,7 +541,7 @@ public class ThemeDetailActivity extends BaseFragment {
         setStatus("Downloading…", false);
         refreshButtons();
         final long me = UserConfig.getInstance(currentAccount).getClientUserId();
-        ThemeStoreApi.download(info.id, me, new StickerStoreApi.ResultCallback() {
+        KuroFeatures.themes().download(info.id, me, new StickerStoreApi.ResultCallback() {
             @Override
             public void onSuccess(JSONObject response) {
                 if (fragmentView == null) return;
@@ -551,7 +552,7 @@ public class ThemeDetailActivity extends BaseFragment {
             public void onError(String message) {
                 if (fragmentView == null) return;
                 // Offline? Use the copy saved the last time this version was downloaded.
-                JSONObject cached = ThemeStoreApi.cachedDownload(info.id, info.version);
+                JSONObject cached = KuroFeatures.themes().cachedDownload(info.id, info.version);
                 if (cached != null) {
                     handle(cached, previewOnly, true);
                     return;
@@ -570,7 +571,7 @@ public class ThemeDetailActivity extends BaseFragment {
             String type = response.getString("type");
             verifyHash(content, response.optString("sha256", ""));
             if (!fromCache) {
-                ThemeStoreApi.cacheContent(info.id, response.optInt("version", info.version), type, response.optString("sha256", ""), content);
+                KuroFeatures.themes().cacheContent(info.id, response.optInt("version", info.version), type, response.optString("sha256", ""), content);
             }
             if (previewOnly) {
                 if (!"skin".equals(type)) {
@@ -592,7 +593,7 @@ public class ThemeDetailActivity extends BaseFragment {
                 } else {
                     throw new IllegalArgumentException("unsupported theme type");
                 }
-                ThemeStoreApi.setApplied(info.id, response.optInt("version", info.version));
+                KuroFeatures.themes().setApplied(info.id, response.optInt("version", info.version));
                 setStatus(fromCache ? "Applied (offline copy)" : "Applied", false);
             }
         } catch (IllegalArgumentException e) {
@@ -632,7 +633,7 @@ public class ThemeDetailActivity extends BaseFragment {
                 return;
             }
         }
-        ThemeStoreApi.clearApplied();
+        KuroFeatures.themes().clearApplied();
         setStatus("Back to the default", false);
         refreshButtons();
     }

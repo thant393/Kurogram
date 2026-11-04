@@ -1,5 +1,6 @@
 package tw.kurocore.kurogram.stickerstore;
 
+import tw.kurocore.kurogram.feature.KuroFeatures;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.GradientDrawable;
@@ -119,7 +120,7 @@ public class ThemeCardView extends FrameLayout {
         shown = t;
         if (t.id != null && "skin".equals(t.type)) {
             final int fbg = bg, facc = accent;
-            ThemeStoreApi.fetchVersionContent(t.id, t.version, content -> {
+            KuroFeatures.themes().fetchVersionContent(t.id, t.version, content -> {
                 if (content == null || shown != t) return;
                 try {
                     PhoneScene.Style style = PhoneScene.Style.palette(fbg, facc, t.dark, t.gradientTop, t.gradientMiddle, t.gradientBottom);

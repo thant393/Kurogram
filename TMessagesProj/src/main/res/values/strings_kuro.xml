@@ -350,4 +350,5 @@
 
     <!-- Accessibility -->
     <string name="AccessibilitySettings">Accessibility settings</string>
+    <string name="KuroFeatureUnavailable">Available in the official Kurogram version</string>
 </resources>

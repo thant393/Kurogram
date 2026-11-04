@@ -1,5 +1,6 @@
 package tw.kurocore.kurogram.stickerstore;
 
+import tw.kurocore.kurogram.feature.KuroFeatures;
 import android.content.Context;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -388,7 +389,7 @@ public class UploadHubActivity extends BaseFragment {
         themeUploadButton.setAlpha(0.6f);
         themeUploadButton.setText("Uploading…");
         setThemeStatus("Uploading…", false);
-        ThemeStoreApi.submitTheme(me.id, title, description, THEME_CATEGORIES[themeCategoryIndex], type, content, me, new StickerStoreApi.ResultCallback() {
+        KuroFeatures.themes().submitTheme(me.id, title, description, THEME_CATEGORIES[themeCategoryIndex], type, content, me, new StickerStoreApi.ResultCallback() {
             @Override
             public void onSuccess(JSONObject response) {
                 if (fragmentView == null) return;

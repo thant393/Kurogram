@@ -278,7 +278,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         blur3_updateColors();
         checkContactsTabBadge();
         checkUnreadCount(true);
-        tw.kurocore.kurogram.stickerstore.ThemeStoreApi.refreshApplied();
+        tw.kurocore.kurogram.feature.KuroFeatures.themes().refreshApplied();
 
         showAccountChangeHint();
     }

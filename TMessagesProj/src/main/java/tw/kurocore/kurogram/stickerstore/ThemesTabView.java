@@ -1,5 +1,8 @@
 package tw.kurocore.kurogram.stickerstore;
 
+import tw.kurocore.kurogram.feature.FeatureUnavailableView;
+import tw.kurocore.kurogram.feature.KuroFeatures;
+import tw.kurocore.kurogram.feature.ThemeStore;
 import android.content.Context;
 import android.view.Gravity;
 import android.view.View;
@@ -34,6 +37,7 @@ public class ThemesTabView extends FrameLayout {
     private final RecyclerListView.SelectionAdapter adapter;
     private final RadialProgressView progressView;
     private final TextView infoView;
+    private FeatureUnavailableView unavailableView;
     private final ArrayList<ThemeInfo> themes = new ArrayList<>();
     private final HashSet<String> seen = new HashSet<>();
     private String query = "";
@@ -234,7 +238,7 @@ public class ThemesTabView extends FrameLayout {
             categoryNames.addAll(cachedCategories);
             rebuildCategoryChips();
         } else {
-            ThemeStoreApi.fetchCategories(names -> {
+            KuroFeatures.themes().fetchCategories(names -> {
                 cachedCategories = names;
                 categoryNames.clear();
                 categoryNames.addAll(names);
@@ -335,6 +339,14 @@ public class ThemesTabView extends FrameLayout {
         loading = false;
         adapter.notifyDataSetChanged();
         infoView.setVisibility(GONE);
+        if (!KuroFeatures.themes().isAvailable()) {
+            progressView.setVisibility(GONE);
+            if (unavailableView == null) {
+                unavailableView = new FeatureUnavailableView(getContext());
+                addView(unavailableView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+            }
+            return;
+        }
         progressView.setVisibility(VISIBLE);
         loadNextPage();
     }
@@ -351,7 +363,7 @@ public class ThemesTabView extends FrameLayout {
         }
         loading = true;
         final int gen = generation;
-        ThemeStoreApi.fetchThemes(ownerId == 0 ? sort : ThemeStoreApiSort.NEWEST, nextPage, PAGE_SIZE, ownerId > 0 ? String.valueOf(ownerId) : null, query, category, new ThemeStoreApi.ListCallback() {
+        KuroFeatures.themes().fetchThemes(ownerId == 0 ? sort : ThemeStoreApiSort.NEWEST, nextPage, PAGE_SIZE, ownerId > 0 ? String.valueOf(ownerId) : null, query, category, new ThemeStore.ListCallback() {
             @Override
             public void onSuccess(ArrayList<ThemeInfo> result) {
                 if (gen != generation) return;

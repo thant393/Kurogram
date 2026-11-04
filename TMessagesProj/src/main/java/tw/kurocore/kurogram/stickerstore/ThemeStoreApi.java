@@ -7,23 +7,15 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.telegram.messenger.ApplicationLoader;
 
+import tw.kurocore.kurogram.feature.ThemeStore;
+
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
 /** Client for the backend's /api/v1/themes endpoints. */
 public final class ThemeStoreApi {
 
-    public interface ListCallback {
-        void onSuccess(ArrayList<ThemeInfo> themes);
-
-        void onError(String message);
-    }
-
     private ThemeStoreApi() {
-    }
-
-    public interface ContentCallback {
-        void onContent(String content);
     }
 
     private static final java.util.HashMap<String, String> VERSION_CONTENT = new java.util.HashMap<>();
@@ -32,7 +24,7 @@ public final class ThemeStoreApi {
      * The theme file of one version, without counting a download (used to draw previews from the
      * theme's real data). Calls back with null when it can't be read.
      */
-    public static void fetchVersionContent(String id, int version, ContentCallback callback) {
+    public static void fetchVersionContent(String id, int version, ThemeStore.ContentCallback callback) {
         final String key = id + "@" + version;
         String cached = VERSION_CONTENT.get(key);
         if (cached != null) {
@@ -56,12 +48,8 @@ public final class ThemeStoreApi {
         });
     }
 
-    public interface CategoriesCallback {
-        void onSuccess(ArrayList<String> names);
-    }
-
     /** Category names for the filter chips (empty on any failure: the chips just don't show). */
-    public static void fetchCategories(CategoriesCallback callback) {
+    public static void fetchCategories(ThemeStore.CategoriesCallback callback) {
         StickerStoreApi.getJson("api/v1/categories/", new StickerStoreApi.JsonCallback() {
             @Override
             public void onSuccess(Object root) {
@@ -86,11 +74,11 @@ public final class ThemeStoreApi {
         });
     }
 
-    public static void fetchThemes(String sort, int page, int limit, String ownerId, String query, ListCallback callback) {
+    public static void fetchThemes(String sort, int page, int limit, String ownerId, String query, ThemeStore.ListCallback callback) {
         fetchThemes(sort, page, limit, ownerId, query, null, callback);
     }
 
-    public static void fetchThemes(String sort, int page, int limit, String ownerId, String query, String category, ListCallback callback) {
+    public static void fetchThemes(String sort, int page, int limit, String ownerId, String query, String category, ThemeStore.ListCallback callback) {
         int pageSize = limit <= 0 ? 20 : Math.min(limit, 50);
         StringBuilder path = new StringBuilder("api/v1/themes/?sort_by=").append(sort == null ? "newest" : sort)
                 .append("&skip=").append((Math.max(1, page) - 1) * pageSize)
