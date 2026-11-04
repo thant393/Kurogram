@@ -49,7 +49,7 @@ import org.telegram.ui.Stories.recorder.ButtonWithCounterView;
 
 import java.util.ArrayList;
 
-import tw.nekomimi.nekogram.passkey.PasskeyQr;
+import tw.kurocore.kurogram.passkey.PasskeyQr;
 
 public class PasskeysActivity extends BaseFragment {
 

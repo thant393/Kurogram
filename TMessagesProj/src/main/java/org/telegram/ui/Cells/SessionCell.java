@@ -78,7 +78,7 @@ public class SessionCell extends FrameLayout {
 
     public SessionCell useSkinTokens() {
         skinned = true;
-        tw.nekomimi.nekogram.skin.SkinTokens t = tw.nekomimi.nekogram.skin.KuroUi.t();
+        tw.kurocore.kurogram.skin.SkinTokens t = tw.kurocore.kurogram.skin.KuroUi.t();
         skinRadiusDp = t.sessionAvatarRadiusDp;
         if (skinRadiusDp >= 0) {
             if (placeholderImageView != null) {

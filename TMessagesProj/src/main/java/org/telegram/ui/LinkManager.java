@@ -58,9 +58,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Matcher;
 
-import tw.nekomimi.nekogram.helpers.SettingsHelper;
-import tw.nekomimi.nekogram.helpers.UserHelper;
-import tw.nekomimi.nekogram.settings.KuroLanguagesSelectActivity;
+import tw.kurocore.kurogram.helpers.SettingsHelper;
+import tw.kurocore.kurogram.helpers.UserHelper;
+import tw.kurocore.kurogram.settings.KuroLanguagesSelectActivity;
 
 public class LinkManager {
 

@@ -91,8 +91,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import tw.nekomimi.nekogram.KuroConfig;
-import tw.nekomimi.nekogram.location.KuroLocationSource;
+import tw.kurocore.kurogram.KuroConfig;
+import tw.kurocore.kurogram.location.KuroLocationSource;
 
 public class ChatAttachAlertLocationLayout extends ChatAttachAlert.AttachAlertLayout implements NotificationCenter.NotificationCenterDelegate {
 

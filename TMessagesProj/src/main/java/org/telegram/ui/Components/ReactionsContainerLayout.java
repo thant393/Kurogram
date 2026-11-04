@@ -628,7 +628,7 @@ public class ReactionsContainerLayout extends FrameLayout implements Notificatio
         this.backgroundColorProvider = backgroundColorProvider;
         this.blurredBackgroundDrawable = backgroundFactory.create(this, true)
             .setColorProvider(backgroundColorProvider)
-            .setRadius(tw.nekomimi.nekogram.skin.KuroUi.chatRadius(tw.nekomimi.nekogram.skin.KuroUi.t().chatReactionRadiusDp, 24))
+            .setRadius(tw.kurocore.kurogram.skin.KuroUi.chatRadius(tw.kurocore.kurogram.skin.KuroUi.t().chatReactionRadiusDp, 24))
             .setPadding(dp(8));
         this.blurredBackgroundDrawable1 = backgroundFactory.create(this, true)
             .setColorProvider(backgroundColorProvider)

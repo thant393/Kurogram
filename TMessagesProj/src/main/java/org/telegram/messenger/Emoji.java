@@ -45,8 +45,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Objects;
 
-import tw.nekomimi.nekogram.KuroConfig;
-import tw.nekomimi.nekogram.helpers.EmojiHelper;
+import tw.kurocore.kurogram.KuroConfig;
+import tw.kurocore.kurogram.helpers.EmojiHelper;
 
 public class Emoji {
 

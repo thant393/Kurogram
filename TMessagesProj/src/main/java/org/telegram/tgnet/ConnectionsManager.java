@@ -46,8 +46,8 @@ import org.telegram.utils.proxy.ProxySettings;
 import org.telegram.ui.Components.VideoPlayer;
 import org.telegram.ui.LoginActivity;
 
-import tw.nekomimi.nekogram.ErrorDatabase;
-import tw.nekomimi.nekogram.KuroConfig;
+import tw.kurocore.kurogram.ErrorDatabase;
+import tw.kurocore.kurogram.KuroConfig;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

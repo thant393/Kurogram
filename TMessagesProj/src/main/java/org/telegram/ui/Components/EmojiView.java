@@ -164,11 +164,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import tw.nekomimi.nekogram.KuroConfig;
+import tw.kurocore.kurogram.KuroConfig;
 
 import me.vkryl.android.animator.BoolAnimator;
 import me.vkryl.android.animator.FactorAnimator;
-import tw.nekomimi.nekogram.helpers.MessageHelper;
+import tw.kurocore.kurogram.helpers.MessageHelper;
 
 @SuppressLint("ViewConstructor")
 public class EmojiView extends FrameLayout implements

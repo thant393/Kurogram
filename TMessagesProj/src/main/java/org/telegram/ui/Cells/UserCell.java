@@ -264,7 +264,7 @@ public class UserCell extends FrameLayout implements NotificationCenter.Notifica
 
     /** Reads contacts.mode / contacts.grid.* / contacts.row.* from the active layout; call after setAvatarPadding + setData. */
     public void applyContactsLayout() {
-        tw.nekomimi.nekogram.layout.LayoutSpec spec = tw.nekomimi.nekogram.layout.LayoutManager.get().spec();
+        tw.kurocore.kurogram.layout.LayoutSpec spec = tw.kurocore.kurogram.layout.LayoutManager.get().spec();
         final boolean tile = "grid".equals(spec.stringValue("contacts.mode", "list"));
         final int avatar = spec.intValue("contacts.row.avatarSizeDp", 0);
         final int rowH = spec.intValue("contacts.row.heightDp", 0);
@@ -901,7 +901,7 @@ public class UserCell extends FrameLayout implements NotificationCenter.Notifica
 
     /** Re-reads the tokens when the skin changed since this cell last looked (tabs are built before a skin arrives). */
     private void applySkinTokens() {
-        tw.nekomimi.nekogram.skin.SkinTokens t = tw.nekomimi.nekogram.skin.KuroUi.t();
+        tw.kurocore.kurogram.skin.SkinTokens t = tw.kurocore.kurogram.skin.KuroUi.t();
         if (t.version == skinVersion) {
             return;
         }
@@ -915,7 +915,7 @@ public class UserCell extends FrameLayout implements NotificationCenter.Notifica
         if (t.cellTitleSizeSp >= 0 || t.cellTitleWeight >= 0 || skinTouched) {
             skinTouched = true; // after the first change, an unset token puts Telegram's value back
             nameTextView.setTextSize(t.cellTitleSizeSp >= 0 ? t.cellTitleSizeSp : (int) skinOrigSizeDp);
-            nameTextView.setTypeface(t.cellTitleWeight >= 0 ? tw.nekomimi.nekogram.skin.KuroUi.weightTypeface(t.cellTitleWeight) : skinOrigTypeface);
+            nameTextView.setTypeface(t.cellTitleWeight >= 0 ? tw.kurocore.kurogram.skin.KuroUi.weightTypeface(t.cellTitleWeight) : skinOrigTypeface);
         }
         invalidate();
     }

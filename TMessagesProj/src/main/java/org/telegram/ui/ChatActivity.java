@@ -331,20 +331,20 @@ import org.telegram.ui.iv.RichEditor;
 import org.telegram.ui.iv.RichEditorListView;
 import org.telegram.ui.iv.RichHtml;
 
-import tw.nekomimi.nekogram.BackButtonMenuRecent;
-import tw.nekomimi.nekogram.forward.ForwardContext;
-import tw.nekomimi.nekogram.forward.ForwardDrawable;
-import tw.nekomimi.nekogram.forward.ForwardItem;
-import tw.nekomimi.nekogram.forward.ForwardPopupWrapper;
-import tw.nekomimi.nekogram.MessageDetailsActivity;
-import tw.nekomimi.nekogram.KuroConfig;
-import tw.nekomimi.nekogram.helpers.MessageHelper;
-import tw.nekomimi.nekogram.helpers.QrHelper;
-import tw.nekomimi.nekogram.helpers.EmojiHelper;
-import tw.nekomimi.nekogram.streaming.MediaStreamingProvider;
-import tw.nekomimi.nekogram.tlv.TlViewer;
-import tw.nekomimi.nekogram.translator.Translator;
-import tw.nekomimi.nekogram.translator.TranslatorSettingsPopupWrapper;
+import tw.kurocore.kurogram.BackButtonMenuRecent;
+import tw.kurocore.kurogram.forward.ForwardContext;
+import tw.kurocore.kurogram.forward.ForwardDrawable;
+import tw.kurocore.kurogram.forward.ForwardItem;
+import tw.kurocore.kurogram.forward.ForwardPopupWrapper;
+import tw.kurocore.kurogram.MessageDetailsActivity;
+import tw.kurocore.kurogram.KuroConfig;
+import tw.kurocore.kurogram.helpers.MessageHelper;
+import tw.kurocore.kurogram.helpers.QrHelper;
+import tw.kurocore.kurogram.helpers.EmojiHelper;
+import tw.kurocore.kurogram.streaming.MediaStreamingProvider;
+import tw.kurocore.kurogram.tlv.TlViewer;
+import tw.kurocore.kurogram.translator.Translator;
+import tw.kurocore.kurogram.translator.TranslatorSettingsPopupWrapper;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -9214,7 +9214,7 @@ public class ChatActivity extends BaseFragment implements
         checkUi_topPanelLayoutWidth();
         topPanelLayout.setBlurredBackground(glassBackgroundDrawableFactory.create(topPanelLayout)
             .setColorProvider(BlurredBackgroundProviderImpl.topPanelChatActivity(themeDelegate))
-            .setRadius(tw.nekomimi.nekogram.skin.KuroUi.chatRadius(tw.nekomimi.nekogram.skin.KuroUi.t().chatPanelRadiusDp, 18))
+            .setRadius(tw.kurocore.kurogram.skin.KuroUi.chatRadius(tw.kurocore.kurogram.skin.KuroUi.t().chatPanelRadiusDp, 18))
             .setPadding(dp(7)));
 
         if (chatMode == MODE_SEARCH) {
@@ -31610,7 +31610,7 @@ public class ChatActivity extends BaseFragment implements
 
             popupLayout.setBackground(scrimBlur3Factory.create(popupLayout, true)
                 .setColorProvider(BlurredBackgroundProviderImpl.messageMenuBackground(resourceProvider))
-                .setRadius(tw.nekomimi.nekogram.skin.KuroUi.chatRadius(tw.nekomimi.nekogram.skin.KuroUi.t().chatMenuRadiusDp, 12))
+                .setRadius(tw.kurocore.kurogram.skin.KuroUi.chatRadius(tw.kurocore.kurogram.skin.KuroUi.t().chatMenuRadiusDp, 12))
                 .setPadding(dp(8)));
 
             boolean addGap = false;
@@ -46311,7 +46311,7 @@ public class ChatActivity extends BaseFragment implements
             scrimPopupContainerLayout.setOutlineProvider(ViewOutlineProviderImpl.boundsWithPaddingRoundRect(dp(8), dp(12)));
             scrimPopupContainerLayout.setBackground(scrimBlur3Factory.create(scrimPopupContainerLayout, true)
                 .setColorProvider(BlurredBackgroundProviderImpl.scrimMenuBackground(resourceProvider))
-                .setRadius(tw.nekomimi.nekogram.skin.KuroUi.chatRadius(tw.nekomimi.nekogram.skin.KuroUi.t().chatMenuRadiusDp, 12))
+                .setRadius(tw.kurocore.kurogram.skin.KuroUi.chatRadius(tw.kurocore.kurogram.skin.KuroUi.t().chatMenuRadiusDp, 12))
                 .setPadding(dp(8))
                 .setHasPadding(true));
 

@@ -113,10 +113,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import tw.nekomimi.nekogram.KuroConfig;
-import tw.nekomimi.nekogram.helpers.EntitiesHelper;
-import tw.nekomimi.nekogram.helpers.MessageFilterHelper;
-import tw.nekomimi.nekogram.helpers.MessageHelper;
+import tw.kurocore.kurogram.KuroConfig;
+import tw.kurocore.kurogram.helpers.EntitiesHelper;
+import tw.kurocore.kurogram.helpers.MessageFilterHelper;
+import tw.kurocore.kurogram.helpers.MessageHelper;
 
 @SuppressWarnings("unchecked")
 public class MediaDataController extends BaseController {

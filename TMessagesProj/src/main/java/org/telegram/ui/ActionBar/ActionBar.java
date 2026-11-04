@@ -83,7 +83,7 @@ public class ActionBar extends FrameLayout implements FactorAnimator.Target, The
 
     /** Portrait action-bar title size: 20sp, or the skin's tokens.typography.titleSizeSp. */
     private static int kuroTitleSizeSp() {
-        return tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec().intValue("tokens.typography.titleSizeSp", 20);
+        return tw.kurocore.kurogram.skin.KuroSkinManager.get().spec().intValue("tokens.typography.titleSizeSp", 20);
     }
 
 
@@ -231,18 +231,18 @@ public class ActionBar extends FrameLayout implements FactorAnimator.Target, The
         if (isForum) {
             glassDrawable.setRadius(dp(18.33f), dp(23), dp(23), dp(18.33f));
         } else {
-            glassDrawable.setRadius(tw.nekomimi.nekogram.skin.KuroUi.chatRadius(tw.nekomimi.nekogram.skin.KuroUi.t().chatHeaderRadiusDp, 23));
+            glassDrawable.setRadius(tw.kurocore.kurogram.skin.KuroUi.chatRadius(tw.kurocore.kurogram.skin.KuroUi.t().chatHeaderRadiusDp, 23));
         }
 
 
         glassDrawableBack = factory.create(this)
             .setColorProvider(colorProvider)
-            .setRadius(tw.nekomimi.nekogram.skin.KuroUi.chatRadius(tw.nekomimi.nekogram.skin.KuroUi.t().chatHeaderRadiusDp, 23))
+            .setRadius(tw.kurocore.kurogram.skin.KuroUi.chatRadius(tw.kurocore.kurogram.skin.KuroUi.t().chatHeaderRadiusDp, 23))
             .setPadding(dp(6));
 
         glassDrawableMenu = factory.create(this)
             .setColorProvider(colorProvider)
-            .setRadius(tw.nekomimi.nekogram.skin.KuroUi.chatRadius(tw.nekomimi.nekogram.skin.KuroUi.t().chatHeaderRadiusDp, 23))
+            .setRadius(tw.kurocore.kurogram.skin.KuroUi.chatRadius(tw.kurocore.kurogram.skin.KuroUi.t().chatHeaderRadiusDp, 23))
             .setPadding(dp(6));
 
         if (menu != null) {

@@ -49,7 +49,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import tw.nekomimi.nekogram.helpers.MessageHelper;
+import tw.kurocore.kurogram.helpers.MessageHelper;
 
 public class SuggestEmojiView extends FrameLayout implements NotificationCenter.NotificationCenterDelegate {
 

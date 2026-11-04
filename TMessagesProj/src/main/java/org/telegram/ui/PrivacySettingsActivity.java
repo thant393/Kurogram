@@ -301,10 +301,10 @@ public class PrivacySettingsActivity extends BaseFragment implements Notificatio
 
         fragmentView = new FrameLayout(context);
         FrameLayout frameLayout = (FrameLayout) fragmentView;
-        frameLayout.setBackgroundColor(tw.nekomimi.nekogram.skin.KuroUi.screenBackground("privacy", Theme.getColor(Theme.key_windowBackgroundGray)));
+        frameLayout.setBackgroundColor(tw.kurocore.kurogram.skin.KuroUi.screenBackground("privacy", Theme.getColor(Theme.key_windowBackgroundGray)));
 
         listView = new RecyclerListView(context);
-        listView.useSkinSections().trimLastDividers(tw.nekomimi.nekogram.skin.RowMap.anyHidden("privacy")).setSections();
+        listView.useSkinSections().trimLastDividers(tw.kurocore.kurogram.skin.RowMap.anyHidden("privacy")).setSections();
         actionBar.setAdaptiveBackground(listView);
         listView.setLayoutManager(layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false) {
             @Override
@@ -707,7 +707,7 @@ public class PrivacySettingsActivity extends BaseFragment implements Notificatio
 
     /** Kuro skins: next row index, or -1 when the active layout hides this row (layout.privacy.hiddenRows). */
     private int skinRow(String id) {
-        return tw.nekomimi.nekogram.skin.RowMap.hidden("privacy", id) ? -1 : rowCount++;
+        return tw.kurocore.kurogram.skin.RowMap.hidden("privacy", id) ? -1 : rowCount++;
     }
 
     private void updateRows() {

@@ -50,9 +50,9 @@ import java.io.File;
 import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
 
-import tw.nekomimi.nekogram.FirebaseFix;
-import tw.nekomimi.nekogram.helpers.AnalyticsHelper;
-import tw.nekomimi.nekogram.helpers.CronetHelper;
+import tw.kurocore.kurogram.FirebaseFix;
+import tw.kurocore.kurogram.helpers.AnalyticsHelper;
+import tw.kurocore.kurogram.helpers.CronetHelper;
 
 public class ApplicationLoader extends Application {
 
@@ -196,7 +196,7 @@ public class ApplicationLoader extends Application {
     }
 
     public static void postInitApplication() {
-        tw.nekomimi.nekogram.settings.SpecialContactsMonitor.init();
+        tw.kurocore.kurogram.settings.SpecialContactsMonitor.init();
         if (applicationInited || applicationContext == null) {
             return;
         }

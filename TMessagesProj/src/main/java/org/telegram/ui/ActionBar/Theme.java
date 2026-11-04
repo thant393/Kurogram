@@ -147,7 +147,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 
-import tw.nekomimi.nekogram.helpers.MonetHelper;
+import tw.kurocore.kurogram.helpers.MonetHelper;
 
 public class Theme {
 
@@ -9075,7 +9075,7 @@ public class Theme {
     // Kuro skin: colours the active skin overrides (accent, surfaces, text, bars, bubbles...)
     // apply on every screen and dialog; a key the skin doesn't set keeps the theme's own colour.
     public static int getColor(int key, boolean[] isDefault, boolean ignoreAnimation) {
-        int override = tw.nekomimi.nekogram.skin.KuroSkinManager.get().colorOverride(key);
+        int override = tw.kurocore.kurogram.skin.KuroSkinManager.get().colorOverride(key);
         if (override != 0) {
             if (isDefault != null) {
                 isDefault[0] = false;
@@ -9934,7 +9934,7 @@ public class Theme {
     }
 
     public static Drawable getCachedWallpaperNonBlocking() {
-        Drawable skinWallpaper = tw.nekomimi.nekogram.skin.KuroUi.chatWallpaper();
+        Drawable skinWallpaper = tw.kurocore.kurogram.skin.KuroUi.chatWallpaper();
         if (skinWallpaper != null) {
             return skinWallpaper;
         }

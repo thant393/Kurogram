@@ -86,10 +86,10 @@ import java.util.Collections;
 
 import me.vkryl.android.animator.BoolAnimator;
 import me.vkryl.android.animator.FactorAnimator;
-import tw.nekomimi.nekogram.BackButtonMenuRecent;
-import tw.nekomimi.nekogram.KuroConfig;
-import tw.nekomimi.nekogram.folder.FolderIconHelper;
-import tw.nekomimi.nekogram.helpers.AccountsHelper;
+import tw.kurocore.kurogram.BackButtonMenuRecent;
+import tw.kurocore.kurogram.KuroConfig;
+import tw.kurocore.kurogram.folder.FolderIconHelper;
+import tw.kurocore.kurogram.helpers.AccountsHelper;
 
 public class MainTabsActivity extends ViewPagerActivity implements NotificationCenter.NotificationCenterDelegate, FactorAnimator.Target {
 
@@ -278,7 +278,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         blur3_updateColors();
         checkContactsTabBadge();
         checkUnreadCount(true);
-        tw.nekomimi.nekogram.stickerstore.ThemeStoreApi.refreshApplied();
+        tw.kurocore.kurogram.stickerstore.ThemeStoreApi.refreshApplied();
 
         showAccountChangeHint();
     }
@@ -313,7 +313,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
 
         tabsView = new MainTabsLayout(context, resourceProvider);
         tabsView.setClipChildren(false);
-        final boolean flatTabs = "flat".equals(tw.nekomimi.nekogram.layout.LayoutManager.get().spec().stringValue("bottomTabs.style", "glass"));
+        final boolean flatTabs = "flat".equals(tw.kurocore.kurogram.layout.LayoutManager.get().spec().stringValue("bottomTabs.style", "glass"));
         final int tabPad = dp(DialogsActivity.MAIN_TABS_MARGIN + 4);
         tabsView.setPadding(flatTabs ? dp(4) : tabPad, flatTabs ? dp(2) : tabPad, flatTabs ? dp(4) : tabPad, flatTabs ? dp(2) : tabPad);
         tabsView.setFillWidth(flatTabs);
@@ -322,7 +322,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         tabs = new GlassTabView[5];
         tabs[INDEX_CHATS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.CHATS, R.string.MainTabsChats);
         tabs[INDEX_CONTACTS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.CONTACTS, R.string.MainTabsContacts);
-        if ("online".equals(tw.nekomimi.nekogram.layout.LayoutManager.get().spec().stringValue("bottomTabs.peopleSource", "contacts"))) {
+        if ("online".equals(tw.kurocore.kurogram.layout.LayoutManager.get().spec().stringValue("bottomTabs.peopleSource", "contacts"))) {
             tabs[INDEX_CONTACTS].setLabel("People");
         }
         tabs[INDEX_SETTINGS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.SETTINGS, R.string.Settings);
@@ -389,7 +389,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         tabsView.setBackground(flatTabs ? null : tabsViewBackground);
         flatTabsMode = flatTabs;
         {
-            tw.nekomimi.nekogram.layout.LayoutSpec barSpec = tw.nekomimi.nekogram.layout.LayoutManager.get().spec();
+            tw.kurocore.kurogram.layout.LayoutSpec barSpec = tw.kurocore.kurogram.layout.LayoutManager.get().spec();
             final boolean pill = "pill".equals(barSpec.stringValue("bottomTabs.indicator", flatTabs ? "none" : "pill"));
             final boolean showLabels = barSpec.boolValue("bottomTabs.labels", true);
             final int labelSp = barSpec.intValue("bottomTabs.labelSizeSp", 0);
@@ -822,14 +822,14 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
 
     /** A layout change (apply or reset) can swap what People / the last tab show; cached pages of the old layout must go. */
     private void dropStaleLayoutTabs() {
-        final boolean wantsOnline = "online".equals(tw.nekomimi.nekogram.layout.LayoutManager.get().spec().stringValue("bottomTabs.peopleSource", "contacts"));
+        final boolean wantsOnline = "online".equals(tw.kurocore.kurogram.layout.LayoutManager.get().spec().stringValue("bottomTabs.peopleSource", "contacts"));
         final boolean wantsUnread = layoutWantsUnreadTab();
         final int[] positions = {POSITION_CONTACTS, POSITION_PROFILE};
         for (int position : positions) {
             final FragmentState state = fragmentsArr.get(position);
             if (state == null) continue;
-            final boolean isOnline = state.fragment instanceof tw.nekomimi.nekogram.settings.OnlineContactsActivity;
-            final boolean isUnread = state.fragment instanceof tw.nekomimi.nekogram.layout.UnreadChatsActivity;
+            final boolean isOnline = state.fragment instanceof tw.kurocore.kurogram.settings.OnlineContactsActivity;
+            final boolean isUnread = state.fragment instanceof tw.kurocore.kurogram.layout.UnreadChatsActivity;
             final boolean stale = position == POSITION_CONTACTS ? isOnline != wantsOnline : isUnread != wantsUnread;
             if (!stale) continue;
             try {
@@ -844,11 +844,11 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
 
     @Override
     protected BaseFragment createBaseFragmentAt(int position) {
-        if (position == POSITION_CONTACTS && "online".equals(tw.nekomimi.nekogram.layout.LayoutManager.get().spec().stringValue("bottomTabs.peopleSource", "contacts"))) {
+        if (position == POSITION_CONTACTS && "online".equals(tw.kurocore.kurogram.layout.LayoutManager.get().spec().stringValue("bottomTabs.peopleSource", "contacts"))) {
             // A layout pack may make People the "online now" list of the existing Online Contacts feature.
             Bundle online = new Bundle();
             online.putBoolean("hasMainTabs", true);
-            return new tw.nekomimi.nekogram.settings.OnlineContactsActivity(online);
+            return new tw.kurocore.kurogram.settings.OnlineContactsActivity(online);
         }
         if (position == POSITION_CONTACTS) {
             Bundle args = new Bundle();
@@ -875,7 +875,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         } else if (position == POSITION_PROFILE && layoutWantsUnreadTab()) {
             Bundle unread = new Bundle();
             unread.putBoolean("hasMainTabs", true);
-            return new tw.nekomimi.nekogram.layout.UnreadChatsActivity(unread);
+            return new tw.kurocore.kurogram.layout.UnreadChatsActivity(unread);
         } else if (position == POSITION_PROFILE) {
             Bundle args = new Bundle();
             args.putLong("user_id", UserConfig.getInstance(currentAccount).getClientUserId());
@@ -1149,13 +1149,13 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
     }
 
     private boolean layoutWantsUnreadTab() {
-        java.util.List<String> items = tw.nekomimi.nekogram.layout.LayoutManager.get().spec().listValue("bottomTabs.items", null);
+        java.util.List<String> items = tw.kurocore.kurogram.layout.LayoutManager.get().spec().listValue("bottomTabs.items", null);
         return items != null && items.contains("unread") && !items.contains("profile");
     }
 
     /** The active layout pack may limit the bottom tabs (bottomTabs.items); no list = all tabs as usual. */
     private boolean layoutTabAllowed(int index) {
-        java.util.List<String> items = tw.nekomimi.nekogram.layout.LayoutManager.get().spec().listValue("bottomTabs.items", null);
+        java.util.List<String> items = tw.kurocore.kurogram.layout.LayoutManager.get().spec().listValue("bottomTabs.items", null);
         if (items == null || items.isEmpty()) return true;
         switch (index) {
             case INDEX_CONTACTS: return items.contains("people");

@@ -178,8 +178,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import tw.nekomimi.nekogram.Extra;
-import tw.nekomimi.nekogram.helpers.WebAppHelper;
+import tw.kurocore.kurogram.Extra;
+import tw.kurocore.kurogram.helpers.WebAppHelper;
 
 public abstract class BotWebViewContainer extends FrameLayout implements NotificationCenter.NotificationCenterDelegate {
     private final static String DURGER_KING_USERNAME = "DurgerKingBot";

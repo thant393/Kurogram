@@ -20,7 +20,7 @@ import re
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-JAVA = os.path.join(ROOT, "TMessagesProj/src/main/java/tw/nekomimi/nekogram")
+JAVA = os.path.join(ROOT, "TMessagesProj/src/main/java/tw/kurocore/kurogram")
 SKIN_JAVA = os.path.join(JAVA, "skin/SkinSpec.java")
 LAYOUT_JAVA = os.path.join(JAVA, "layout/LayoutSpec.java")
 MANIFEST = os.path.join(ROOT, "docs/skin-rules.manifest.json")

@@ -55,7 +55,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
-import tw.nekomimi.nekogram.tlv.TlViewer;
+import tw.kurocore.kurogram.tlv.TlViewer;
 
 public class TLRPC {
 

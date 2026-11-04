@@ -224,7 +224,7 @@ public class SessionsActivity extends BaseFragment implements NotificationCenter
 
         fragmentView = new FrameLayout(context);
         FrameLayout frameLayout = (FrameLayout) fragmentView;
-        frameLayout.setBackgroundColor(tw.nekomimi.nekogram.skin.KuroUi.screenBackground("devices", Theme.getColor(Theme.key_windowBackgroundGray)));
+        frameLayout.setBackgroundColor(tw.kurocore.kurogram.skin.KuroUi.screenBackground("devices", Theme.getColor(Theme.key_windowBackgroundGray)));
 
         emptyView = new EmptyTextProgressView(context);
         emptyView.showProgress();

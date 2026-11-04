@@ -125,12 +125,12 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import tw.nekomimi.nekogram.KuroConfig;
-import tw.nekomimi.nekogram.helpers.MessageFilterHelper;
-import tw.nekomimi.nekogram.helpers.MessageHelper;
-import tw.nekomimi.nekogram.helpers.WebpageHelper;
-import tw.nekomimi.nekogram.syntaxhighlight.SyntaxHighlight;
-import tw.nekomimi.nekogram.translator.Translator;
+import tw.kurocore.kurogram.KuroConfig;
+import tw.kurocore.kurogram.helpers.MessageFilterHelper;
+import tw.kurocore.kurogram.helpers.MessageHelper;
+import tw.kurocore.kurogram.helpers.WebpageHelper;
+import tw.kurocore.kurogram.syntaxhighlight.SyntaxHighlight;
+import tw.kurocore.kurogram.translator.Translator;
 
 import me.vkryl.core.BitwiseUtils;
 

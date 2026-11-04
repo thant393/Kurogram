@@ -27,22 +27,22 @@ class TelegramBuildAppPlugin : Plugin<Project> {
                 stringsXml.from(
                     telegramModule.fileTree("src/main/res/values") {
                         include("strings.xml")
-                        include("strings_neko.xml")
+                        include("strings_kuro.xml")
                     },
                     project.fileTree("src/main/res/values") {
                         include("strings.xml")
-                        include("strings_neko.xml")
+                        include("strings_kuro.xml")
                     }
                 )
 
                 localizationFiles.from(
                     telegramModule.fileTree("src/main/res") {
                         include("values-*/strings.xml")
-                        include("values-*/strings_neko.xml")
+                        include("values-*/strings_kuro.xml")
                     },
                     project.fileTree("src/main/res") {
                         include("values-*/strings.xml")
-                        include("values-*/strings_neko.xml")
+                        include("values-*/strings_kuro.xml")
                     }
                 )
 

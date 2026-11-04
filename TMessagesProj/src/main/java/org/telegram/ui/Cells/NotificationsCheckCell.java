@@ -33,7 +33,7 @@ import org.telegram.ui.Components.CubicBezierInterpolator;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.Switch;
 
-public class NotificationsCheckCell extends FrameLayout implements tw.nekomimi.nekogram.skin.LastInCard {
+public class NotificationsCheckCell extends FrameLayout implements tw.kurocore.kurogram.skin.LastInCard {
 
     private TextView textView;
     private AnimatedTextView valueTextView;
@@ -61,7 +61,7 @@ public class NotificationsCheckCell extends FrameLayout implements tw.nekomimi.n
     }
 
     private void applySkinTokens() {
-        tw.nekomimi.nekogram.skin.SkinTokens t = tw.nekomimi.nekogram.skin.KuroUi.t();
+        tw.kurocore.kurogram.skin.SkinTokens t = tw.kurocore.kurogram.skin.KuroUi.t();
         if (t.version == skinVersion) {
             return;
         }
@@ -75,7 +75,7 @@ public class NotificationsCheckCell extends FrameLayout implements tw.nekomimi.n
             textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, t.cellTitleSizeSp >= 0 ? t.cellTitleSizeSp : 16);
             valueTextView.setTextSize(dp(t.cellValueSizeSp >= 0 ? t.cellValueSizeSp : 13));
             multilineValueTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, t.cellValueSizeSp >= 0 ? t.cellValueSizeSp : 13);
-            textView.setTypeface(tw.nekomimi.nekogram.skin.KuroUi.weightTypeface(t.cellTitleWeight));
+            textView.setTypeface(tw.kurocore.kurogram.skin.KuroUi.weightTypeface(t.cellTitleWeight));
         }
         invalidate();
     }

@@ -39,7 +39,7 @@ public class SearchField extends FrameLayout {
         if (resourcesProvider != null) {
             return this;
         }
-        tw.nekomimi.nekogram.skin.SkinTokens t = tw.nekomimi.nekogram.skin.KuroUi.t();
+        tw.kurocore.kurogram.skin.SkinTokens t = tw.kurocore.kurogram.skin.KuroUi.t();
         if (t.searchBackground != 0 || t.searchRadiusDp >= 0) {
             searchBackground.setBackgroundDrawable(Theme.createRoundRectDrawable(
                 AndroidUtilities.dp(t.searchRadiusDp >= 0 ? t.searchRadiusDp : 18),

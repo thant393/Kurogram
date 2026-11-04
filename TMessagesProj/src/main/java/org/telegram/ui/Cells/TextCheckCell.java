@@ -43,7 +43,7 @@ import org.telegram.ui.Components.Switch;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class TextCheckCell extends FrameLayout implements tw.nekomimi.nekogram.skin.LastInCard {
+public class TextCheckCell extends FrameLayout implements tw.kurocore.kurogram.skin.LastInCard {
     private boolean isAnimatingToThumbInsteadOfTouch;
 
     public int itemId;
@@ -83,7 +83,7 @@ public class TextCheckCell extends FrameLayout implements tw.nekomimi.nekogram.s
     private boolean skinTouched;
     private boolean skinLast;
 
-    /** Kuro skins: the last row of a card has no divider (see tw.nekomimi.nekogram.skin.LastInCard). */
+    /** Kuro skins: the last row of a card has no divider (see tw.kurocore.kurogram.skin.LastInCard). */
     public void setLastInCard(boolean last) {
         if (skinLast != last) {
             skinLast = last;
@@ -131,7 +131,7 @@ public class TextCheckCell extends FrameLayout implements tw.nekomimi.nekogram.s
     }
 
     private void applySkinTokens() {
-        tw.nekomimi.nekogram.skin.SkinTokens t = tw.nekomimi.nekogram.skin.KuroUi.t();
+        tw.kurocore.kurogram.skin.SkinTokens t = tw.kurocore.kurogram.skin.KuroUi.t();
         if (t.version == skinVersion) {
             return;
         }
@@ -149,7 +149,7 @@ public class TextCheckCell extends FrameLayout implements tw.nekomimi.nekogram.s
         skinTouched = true; // after the first change, an unset token puts Telegram's value back
         textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, t.cellTitleSizeSp >= 0 ? t.cellTitleSizeSp : 16);
         valueTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, t.cellValueSizeSp >= 0 ? t.cellValueSizeSp : 13);
-        textView.setTypeface(tw.nekomimi.nekogram.skin.KuroUi.weightTypeface(t.cellTitleWeight));
+        textView.setTypeface(tw.kurocore.kurogram.skin.KuroUi.weightTypeface(t.cellTitleWeight));
     }
 
     public TextCheckCell(Context context) {

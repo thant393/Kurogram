@@ -30,7 +30,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import tw.nekomimi.nekogram.KuroConfig;
+import tw.kurocore.kurogram.KuroConfig;
 
 public class FileLoader extends BaseController {
 

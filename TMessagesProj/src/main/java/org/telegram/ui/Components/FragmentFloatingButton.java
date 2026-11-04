@@ -157,7 +157,7 @@ public class FragmentFloatingButton extends FrameLayout implements FactorAnimato
         if (isSubButton) {
             return this;
         }
-        tw.nekomimi.nekogram.skin.SkinTokens t = tw.nekomimi.nekogram.skin.KuroUi.t();
+        tw.kurocore.kurogram.skin.SkinTokens t = tw.kurocore.kurogram.skin.KuroUi.t();
         if (t.fabSizeDp >= 0 && getLayoutParams() != null) {
             getLayoutParams().width = dp(t.fabSizeDp);
             getLayoutParams().height = dp(t.fabSizeDp);

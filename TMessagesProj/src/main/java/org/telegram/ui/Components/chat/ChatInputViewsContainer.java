@@ -80,7 +80,7 @@ public class ChatInputViewsContainer extends FrameLayout {
     public void setInputIslandBubbleDrawable(BlurredBackgroundDrawable drawable) {
         blurredBackgroundDrawable = drawable;
         blurredBackgroundDrawable.setPadding(dp(7));
-        blurredBackgroundDrawable.setRadius(tw.nekomimi.nekogram.skin.KuroUi.chatRadius(tw.nekomimi.nekogram.skin.KuroUi.t().chatInputRadiusDp, INPUT_BUBBLE_RADIUS));
+        blurredBackgroundDrawable.setRadius(tw.kurocore.kurogram.skin.KuroUi.chatRadius(tw.kurocore.kurogram.skin.KuroUi.t().chatInputRadiusDp, INPUT_BUBBLE_RADIUS));
     }
 
     public void setUnderKeyboardBackgroundDrawable(BlurredBackgroundDrawable drawable) {

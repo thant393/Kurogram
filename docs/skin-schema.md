@@ -34,7 +34,7 @@ intended change. `docs/skin-rules.vectors.json` holds shared value cases both va
 Change order: Java rule -> `--update` -> copy manifest + vectors into the backend repo -> backend rule -> redeploy backend -> app.
 
 ## Screen capabilities
-`tw.nekomimi.nekogram.skin.ScreenCapabilities` records what a skin can customise on each screen (S/P/N/X). Information only.
+`tw.kurocore.kurogram.skin.ScreenCapabilities` records what a skin can customise on each screen (S/P/N/X). Information only.
 `BaseFragment.screenId()` (default null) lets a screen declare its id.
 
 ## Screens that read the minor-1 tokens (Phase 2/3)

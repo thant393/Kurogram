@@ -28,15 +28,15 @@ abstract class TelegramStringsTask : DefaultTask() {
         private val GENERATED_EXCLUSIONS = setOf(
             "AppName",
             "AppNameBeta",
-            "Nekogram",
-            "NekogramBeta"
+            "Kurogram",
+            "KurogramBeta"
         )
 
         private val STABLE_IDS_EXCLUSIONS = setOf(
             "AppName",
             "AppNameBeta",
-            "Nekogram",
-            "NekogramBeta"
+            "Kurogram",
+            "KurogramBeta"
         )
 
         private const val STRING_RESOURCE_ID_BASE = 0x7F0FFFFE

@@ -43,7 +43,7 @@ import org.telegram.ui.Components.blur3.utils.NinePatchBuilder;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 
-import tw.nekomimi.nekogram.KuroConfig;
+import tw.kurocore.kurogram.KuroConfig;
 
 public abstract class BlurredBackgroundDrawable extends Drawable {
     public BlurredBackgroundDrawable() {

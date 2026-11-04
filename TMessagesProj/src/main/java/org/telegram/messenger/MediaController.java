@@ -136,9 +136,9 @@ import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 
-import tw.nekomimi.nekogram.SaveToDownloadReceiver;
-import tw.nekomimi.nekogram.KuroConfig;
-import tw.nekomimi.nekogram.helpers.VoiceEnhancementsHelper;
+import tw.kurocore.kurogram.SaveToDownloadReceiver;
+import tw.kurocore.kurogram.KuroConfig;
+import tw.kurocore.kurogram.helpers.VoiceEnhancementsHelper;
 
 public class MediaController implements AudioManager.OnAudioFocusChangeListener, NotificationCenter.NotificationCenterDelegate, SensorEventListener {
 

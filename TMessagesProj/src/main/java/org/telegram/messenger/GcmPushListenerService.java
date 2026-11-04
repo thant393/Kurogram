@@ -15,7 +15,7 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Map;
 
-import tw.nekomimi.nekogram.helpers.PushHelper;
+import tw.kurocore.kurogram.helpers.PushHelper;
 
 public class GcmPushListenerService extends FirebaseMessagingService {
 

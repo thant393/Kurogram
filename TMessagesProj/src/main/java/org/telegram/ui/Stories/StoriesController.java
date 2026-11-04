@@ -88,7 +88,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
-import tw.nekomimi.nekogram.KuroConfig;
+import tw.kurocore.kurogram.KuroConfig;
 
 public class StoriesController {
 

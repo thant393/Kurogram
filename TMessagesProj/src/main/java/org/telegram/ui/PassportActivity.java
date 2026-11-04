@@ -143,7 +143,7 @@ import java.util.TimerTask;
 
 import javax.crypto.Cipher;
 
-import tw.nekomimi.nekogram.EditTextAutoFill;
+import tw.kurocore.kurogram.EditTextAutoFill;
 
 public class PassportActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate {
 

@@ -17,7 +17,7 @@ Store features talk to a private backend, so a plain build runs without them.
 1. Fill out storeFile, storePassword, keyAlias, keyPassword in `local.properties` to use your release keystore.
 1. Create a Firebase project with Android apps for your application IDs, enable Firebase Messaging and put `google-services.json` in the `TMessagesProj` folder.
 1. Open the project in Android Studio (open it, don't import it).
-1. Fill out the values in `TMessagesProj/src/main/java/tw/nekomimi/nekogram/Extra.java`; each variable has a link showing where to get it.
+1. Fill out the values in `TMessagesProj/src/main/java/tw/kurocore/kurogram/Extra.java`; each variable has a link showing where to get it.
 1. Build.
 
 ## API, Protocol documentation

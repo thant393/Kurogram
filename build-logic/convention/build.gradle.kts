@@ -6,8 +6,8 @@ plugins {
 gradlePlugin {
     plugins {
         register("tlReaders") {
-            id = "tw.nekomimi.nekogram.tl-readers"
-            implementationClass = "tw.nekomimi.nekogram.tlv.GenerateTlReadersPlugin"
+            id = "tw.kurocore.kurogram.tl-readers"
+            implementationClass = "tw.kurocore.kurogram.tlv.GenerateTlReadersPlugin"
         }
         register("telegramBuildPlugin") {
             id = "org.telegram.build-plugin"

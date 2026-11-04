@@ -3,7 +3,7 @@ package org.telegram.ui.Components;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 
-import tw.nekomimi.nekogram.accessibility.AccConfig;
+import tw.kurocore.kurogram.accessibility.AccConfig;
 
 public abstract class IntSeekBarAccessibilityDelegate extends SeekBarAccessibilityDelegate {
 

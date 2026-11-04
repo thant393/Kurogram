@@ -245,12 +245,12 @@ import org.telegram.ui.Stories.StoryViewer;
 import org.telegram.ui.Stories.recorder.CaptionContainerView;
 import org.telegram.ui.Stories.recorder.DominantColors;
 
-import tw.nekomimi.nekogram.KuroConfig;
-import tw.nekomimi.nekogram.accessibility.AccConfig;
-import tw.nekomimi.nekogram.helpers.MessageFilterHelper;
-import tw.nekomimi.nekogram.helpers.MessageHelper;
-import tw.nekomimi.nekogram.helpers.WebpageHelper;
-import tw.nekomimi.nekogram.helpers.WhisperHelper;
+import tw.kurocore.kurogram.KuroConfig;
+import tw.kurocore.kurogram.accessibility.AccConfig;
+import tw.kurocore.kurogram.helpers.MessageFilterHelper;
+import tw.kurocore.kurogram.helpers.MessageHelper;
+import tw.kurocore.kurogram.helpers.WebpageHelper;
+import tw.kurocore.kurogram.helpers.WhisperHelper;
 
 import java.io.File;
 import java.util.ArrayList;

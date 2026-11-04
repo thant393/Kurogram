@@ -126,8 +126,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import tw.nekomimi.nekogram.KuroConfig;
-import tw.nekomimi.nekogram.location.KuroLocationSource;
+import tw.kurocore.kurogram.KuroConfig;
+import tw.kurocore.kurogram.location.KuroLocationSource;
 
 public class LocationActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate {
 

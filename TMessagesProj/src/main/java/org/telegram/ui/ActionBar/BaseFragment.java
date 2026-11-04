@@ -72,8 +72,8 @@ import org.telegram.utils.glass.GlassEngine;
 
 import java.util.ArrayList;
 
-import tw.nekomimi.nekogram.helpers.MessageHelper;
-import tw.nekomimi.nekogram.helpers.UserHelper;
+import tw.kurocore.kurogram.helpers.MessageHelper;
+import tw.kurocore.kurogram.helpers.UserHelper;
 
 public abstract class BaseFragment {
 
@@ -287,7 +287,7 @@ public abstract class BaseFragment {
     @CallSuper
     protected void onViewCreated(View view) {
         glassEngine.setRoot(view);
-        tw.nekomimi.nekogram.skin.KuroUi.paintFragmentRoot(view, this);
+        tw.kurocore.kurogram.skin.KuroUi.paintFragmentRoot(view, this);
     }
 
     protected View createView(Context context) {
@@ -548,7 +548,7 @@ public abstract class BaseFragment {
     @CallSuper
     public void onResume() {
         isPaused = false;
-        tw.nekomimi.nekogram.skin.KuroUi.paintFragmentRoot(fragmentView, this);
+        tw.kurocore.kurogram.skin.KuroUi.paintFragmentRoot(fragmentView, this);
         if (actionBar != null) {
             actionBar.onResume();
         }
@@ -1208,7 +1208,7 @@ public abstract class BaseFragment {
     }
 
     /**
-     * Kuro skins: the id this screen has in tw.nekomimi.nekogram.skin.ScreenCapabilities (e.g. "privacy"),
+     * Kuro skins: the id this screen has in tw.kurocore.kurogram.skin.ScreenCapabilities (e.g. "privacy"),
      * or null when it has none. Information only; it does not change how the screen renders.
      */
     public String screenId() {

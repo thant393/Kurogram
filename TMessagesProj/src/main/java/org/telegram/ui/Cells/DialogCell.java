@@ -148,9 +148,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Stack;
 
-import tw.nekomimi.nekogram.KuroConfig;
-import tw.nekomimi.nekogram.accessibility.AccConfig;
-import tw.nekomimi.nekogram.helpers.MessageFilterHelper;
+import tw.kurocore.kurogram.KuroConfig;
+import tw.kurocore.kurogram.accessibility.AccConfig;
+import tw.kurocore.kurogram.helpers.MessageFilterHelper;
 import me.vkryl.android.animator.BoolAnimator;
 
 public class DialogCell extends BaseCell implements StoriesListPlaceProvider.AvatarOverlaysView, Theme.Colorable {
@@ -700,7 +700,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
 
     /** Reads chatList.row.* / chatList.mode / chatList.grid.* from the active layout. */
     public void applyLayoutConfig() {
-        tw.nekomimi.nekogram.layout.LayoutSpec spec = tw.nekomimi.nekogram.layout.LayoutManager.get().spec();
+        tw.kurocore.kurogram.layout.LayoutSpec spec = tw.kurocore.kurogram.layout.LayoutManager.get().spec();
         lcOn = true;
         tile = "grid".equals(spec.stringValue("chatList.mode", "list"));
         tileAvatarDp = spec.intValue("chatList.grid.avatarDp", 64);
@@ -1071,7 +1071,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
     }
 
     private void applyLayoutNameWeight(int paintIndex) {
-        tw.nekomimi.nekogram.layout.LayoutSpec spec = tw.nekomimi.nekogram.layout.LayoutManager.get().spec();
+        tw.kurocore.kurogram.layout.LayoutSpec spec = tw.kurocore.kurogram.layout.LayoutManager.get().spec();
         String weight = spec.stringValue("chatList.row.title.weight", null);
         if (weight == null) {
             return; // Telegram's own look: leave the shared paint untouched
@@ -4941,8 +4941,8 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
             canvas.restore();
         }
 
-        if (useSeparator && tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec().boolValue("screens.chats.showDividers", true)
-                && tw.nekomimi.nekogram.layout.LayoutManager.get().spec().boolValue("chatList.row.dividers", true)) {
+        if (useSeparator && tw.kurocore.kurogram.skin.KuroSkinManager.get().spec().boolValue("screens.chats.showDividers", true)
+                && tw.kurocore.kurogram.layout.LayoutManager.get().spec().boolValue("chatList.row.dividers", true)) {
             int left;
             if (fullSeparator || currentDialogFolderId != 0 && archiveHidden && !fullSeparator2 || fullSeparator2 && !archiveHidden) {
                 left = 0;
@@ -5433,8 +5433,8 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
 
                 int x = countLeftLocal;
                 rect.set(x, countTop, x + countWidth + dp(BADGE_TEXT_PADDING * 2), countTop + dp(BADGE_SIZE));
-                if ("right".equals(tw.nekomimi.nekogram.layout.LayoutManager.get().spec().stringValue("chatList.row.meta.unreadDot", null)) && unreadCount != 0
-                        && !tw.nekomimi.nekogram.layout.LayoutManager.get().spec().boolValue("chatList.row.meta.unreadCount", true)) {
+                if ("right".equals(tw.kurocore.kurogram.layout.LayoutManager.get().spec().stringValue("chatList.row.meta.unreadDot", null)) && unreadCount != 0
+                        && !tw.kurocore.kurogram.layout.LayoutManager.get().spec().boolValue("chatList.row.meta.unreadCount", true)) {
                     // Layout pack: a plain dot instead of the numbered badge (the number stays in the chat itself).
                     final float dotRight = rect.right;
                     final float dotCy = rect.centerY();

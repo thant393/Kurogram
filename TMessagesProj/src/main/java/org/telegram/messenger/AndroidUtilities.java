@@ -241,8 +241,8 @@ import java.util.regex.Pattern;
 import java.util.zip.GZIPOutputStream;
 
 import me.vkryl.core.BitwiseUtils;
-import tw.nekomimi.nekogram.KuroConfig;
-import tw.nekomimi.nekogram.helpers.TypefaceHelper;
+import tw.kurocore.kurogram.KuroConfig;
+import tw.kurocore.kurogram.helpers.TypefaceHelper;
 
 public class AndroidUtilities {
     public final static int REPLACING_TAG_TYPE_LINK = 0;
@@ -4655,7 +4655,7 @@ public class AndroidUtilities {
             scale = 1.0f;
         }
         // Kuro skins: ux.animationScale multiplies the system scale; absent = unchanged
-        float skinScale = tw.nekomimi.nekogram.skin.KuroUi.t().uxAnimationScale;
+        float skinScale = tw.kurocore.kurogram.skin.KuroUi.t().uxAnimationScale;
         return skinScale >= 0 ? scale * skinScale : scale;
     }
 

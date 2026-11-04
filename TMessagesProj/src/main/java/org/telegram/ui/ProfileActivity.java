@@ -345,13 +345,13 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import tw.nekomimi.nekogram.BackButtonMenuRecent;
-import tw.nekomimi.nekogram.KuroConfig;
-import tw.nekomimi.nekogram.SimpleTextViewSwitcher;
-import tw.nekomimi.nekogram.helpers.PopupHelper;
-import tw.nekomimi.nekogram.helpers.remote.ConfigHelper;
-import tw.nekomimi.nekogram.settings.KuroSettingsActivity;
-import tw.nekomimi.nekogram.translator.Translator;
+import tw.kurocore.kurogram.BackButtonMenuRecent;
+import tw.kurocore.kurogram.KuroConfig;
+import tw.kurocore.kurogram.SimpleTextViewSwitcher;
+import tw.kurocore.kurogram.helpers.PopupHelper;
+import tw.kurocore.kurogram.helpers.remote.ConfigHelper;
+import tw.kurocore.kurogram.settings.KuroSettingsActivity;
+import tw.kurocore.kurogram.translator.Translator;
 import me.vkryl.android.animator.BoolAnimator;
 import me.vkryl.core.reference.ReferenceList;
 
@@ -1277,13 +1277,13 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 hasColorById = false;
                 if (AndroidUtilities.computePerceivedBrightness(getThemedColor(Theme.key_actionBarDefault)) > .8f) {
                     emojiColor = Color.WHITE; // getThemedColor(Theme.key_windowBackgroundWhiteBlueText);
-                    btnColor = tw.nekomimi.nekogram.skin.KuroUi.profileActionColor(Color.WHITE); // Theme.multAlpha(getThemedColor(Theme.key_windowBackgroundWhiteBlueText), .75f);
+                    btnColor = tw.kurocore.kurogram.skin.KuroUi.profileActionColor(Color.WHITE); // Theme.multAlpha(getThemedColor(Theme.key_windowBackgroundWhiteBlueText), .75f);
                 } else if (AndroidUtilities.computePerceivedBrightness(getThemedColor(Theme.key_actionBarDefault)) < .2f) {
                     emojiColor = Theme.multAlpha(Theme.adaptHSV(getThemedColor(Theme.key_actionBarDefault), +0.02f, +0.25f), .5f);
-                    btnColor = tw.nekomimi.nekogram.skin.KuroUi.profileActionColor(Theme.multAlpha(Theme.adaptHSV(getThemedColor(Theme.key_actionBarDefault), +0.02f, +0.25f), .35f));
+                    btnColor = tw.kurocore.kurogram.skin.KuroUi.profileActionColor(Theme.multAlpha(Theme.adaptHSV(getThemedColor(Theme.key_actionBarDefault), +0.02f, +0.25f), .35f));
                 } else {
                     emojiColor = PeerColorActivity.adaptProfileEmojiColor(getThemedColor(Theme.key_actionBarDefault));
-                    btnColor = tw.nekomimi.nekogram.skin.KuroUi.profileActionColor(Theme.multAlpha(PeerColorActivity.adaptProfileEmojiColor(getThemedColor(Theme.key_actionBarDefault)), .15f));
+                    btnColor = tw.kurocore.kurogram.skin.KuroUi.profileActionColor(Theme.multAlpha(PeerColorActivity.adaptProfileEmojiColor(getThemedColor(Theme.key_actionBarDefault)), .15f));
                 }
             }
             if (!animated) {
@@ -4237,7 +4237,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 updateBottomButtonY();
             }
         };
-        listView.useSkinSectionRadius(tw.nekomimi.nekogram.skin.KuroUi.t().profileSectionRadiusDp); // screens.profile.cardRadiusDp; -1 = Telegram's own
+        listView.useSkinSectionRadius(tw.kurocore.kurogram.skin.KuroUi.t().profileSectionRadiusDp); // screens.profile.cardRadiusDp; -1 = Telegram's own
         listView.setSections();
         listView.applyPaddingToSections = false;
         listView.setBackgroundColor(profileBg());
@@ -10619,7 +10619,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
 
     /** Kuro skins: next row index, or -1 when the active layout hides this info row (layout.profile.hiddenRows). */
     private int skinRow(String id) {
-        return tw.nekomimi.nekogram.skin.RowMap.hidden("profile", id) ? -1 : rowCount++;
+        return tw.kurocore.kurogram.skin.RowMap.hidden("profile", id) ? -1 : rowCount++;
     }
 
     @Override
@@ -12695,7 +12695,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
 
     /** Page background: the skin's screens.profile.background if set, else Telegram's gray. */
     private int profileBg() {
-        return tw.nekomimi.nekogram.skin.KuroSkinManager.get().colorOr("screens.profile.background", getThemedColor(Theme.key_windowBackgroundGray));
+        return tw.kurocore.kurogram.skin.KuroSkinManager.get().colorOr("screens.profile.background", getThemedColor(Theme.key_windowBackgroundGray));
     }
 
     public int getThemedColor(int key) {

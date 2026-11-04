@@ -229,9 +229,9 @@ import java.util.Locale;
 
 import me.vkryl.android.animator.BoolAnimator;
 import me.vkryl.android.animator.FactorAnimator;
-import tw.nekomimi.nekogram.KuroConfig;
-import tw.nekomimi.nekogram.helpers.ImeHelper;
-import tw.nekomimi.nekogram.helpers.MessageHelper;
+import tw.kurocore.kurogram.KuroConfig;
+import tw.kurocore.kurogram.helpers.ImeHelper;
+import tw.kurocore.kurogram.helpers.MessageHelper;
 
 public class ChatActivityEnterView extends FrameLayout implements
     NotificationCenter.NotificationCenterDelegate,
@@ -3308,7 +3308,7 @@ public class ChatActivityEnterView extends FrameLayout implements
                         }
                     }
 
-                    final float r = tw.nekomimi.nekogram.skin.KuroUi.chatRadius(tw.nekomimi.nekogram.skin.KuroUi.t().chatButtonRadiusDp, 19);
+                    final float r = tw.kurocore.kurogram.skin.KuroUi.chatRadius(tw.kurocore.kurogram.skin.KuroUi.t().chatButtonRadiusDp, 19);
                     paint.setColor(getThemedColor(Theme.key_chat_messagePanelSend));
                     final float margin = dpf2(3);
                     final float height = dpf2(38);

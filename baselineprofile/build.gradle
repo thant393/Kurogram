@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace 'app.nekogram.baselineprofile'
+    namespace 'app.kurogram.baselineprofile'
     buildToolsVersion "37.0.0"
     compileSdk {
         version = release(37)

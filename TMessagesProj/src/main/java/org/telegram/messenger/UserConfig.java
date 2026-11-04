@@ -21,7 +21,7 @@ import org.telegram.tgnet.tl.TL_account;
 
 import java.util.Arrays;
 
-import tw.nekomimi.nekogram.helpers.PasscodeHelper;
+import tw.kurocore.kurogram.helpers.PasscodeHelper;
 
 public class UserConfig extends BaseController {
 

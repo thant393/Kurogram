@@ -87,8 +87,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import tw.nekomimi.nekogram.KuroConfig;
-import tw.nekomimi.nekogram.translator.Translator;
+import tw.kurocore.kurogram.KuroConfig;
+import tw.kurocore.kurogram.translator.Translator;
 
 public class TranslateAlert2 extends BottomSheet implements NotificationCenter.NotificationCenterDelegate {
 

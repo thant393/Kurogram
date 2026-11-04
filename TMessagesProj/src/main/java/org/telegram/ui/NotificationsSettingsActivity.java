@@ -163,7 +163,7 @@ public class NotificationsSettingsActivity extends BaseFragment implements Notif
 
     /** Kuro skins: next row index, or -1 when the active layout hides this row (layout.notifications.hiddenRows). */
     private int skinRow(String id) {
-        return tw.nekomimi.nekogram.skin.RowMap.hidden("notifications", id) ? -1 : rowCount++;
+        return tw.kurocore.kurogram.skin.RowMap.hidden("notifications", id) ? -1 : rowCount++;
     }
 
     @Override
@@ -498,10 +498,10 @@ public class NotificationsSettingsActivity extends BaseFragment implements Notif
 
         fragmentView = new FrameLayout(context);
         FrameLayout frameLayout = (FrameLayout) fragmentView;
-        frameLayout.setBackgroundColor(tw.nekomimi.nekogram.skin.KuroUi.screenBackground("notifications", Theme.getColor(Theme.key_windowBackgroundGray)));
+        frameLayout.setBackgroundColor(tw.kurocore.kurogram.skin.KuroUi.screenBackground("notifications", Theme.getColor(Theme.key_windowBackgroundGray)));
 
         listView = new RecyclerListView(context);
-        listView.useSkinSections().trimLastDividers(tw.nekomimi.nekogram.skin.RowMap.anyHidden("notifications")).setSections();
+        listView.useSkinSections().trimLastDividers(tw.kurocore.kurogram.skin.RowMap.anyHidden("notifications")).setSections();
         actionBar.setAdaptiveBackground(listView);
         listView.setItemAnimator(null);
         listView.setLayoutAnimation(null);

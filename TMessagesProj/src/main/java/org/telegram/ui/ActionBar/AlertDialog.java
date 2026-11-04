@@ -574,7 +574,7 @@ public class AlertDialog extends Dialog implements Drawable.Callback, Notificati
                             (getHeight() + h) / 2f
                     );
                 } else {
-                    r = tw.nekomimi.nekogram.skin.KuroSkinManager.get().dialogRadiusPx(20);
+                    r = tw.kurocore.kurogram.skin.KuroSkinManager.get().dialogRadiusPx(20);
                     AndroidUtilities.rectTmp.set(getPaddingLeft(), getPaddingTop(), getMeasuredWidth() - getPaddingRight(), getMeasuredHeight() - getPaddingBottom());
                 }
 
@@ -662,7 +662,7 @@ public class AlertDialog extends Dialog implements Drawable.Callback, Notificati
                 containerView.setPadding(0, 0, 0, 0);
                 containerView.setBackground(shadowDrawable);
 
-                containerView.setOutlineProvider(ViewOutlineProviderImpl.boundsWithPaddingRoundRect(dp(8), tw.nekomimi.nekogram.skin.KuroSkinManager.get().dialogRadiusPx(20)));
+                containerView.setOutlineProvider(ViewOutlineProviderImpl.boundsWithPaddingRoundRect(dp(8), tw.kurocore.kurogram.skin.KuroSkinManager.get().dialogRadiusPx(20)));
                 containerView.setClipToOutline(true);
 
                 drawBackground = false;
@@ -1291,7 +1291,7 @@ public class AlertDialog extends Dialog implements Drawable.Callback, Notificati
             params.width = WindowManager.LayoutParams.MATCH_PARENT;
         } else {
             if (dimEnabled && !dimCustom) {
-                int kuroScrim = tw.nekomimi.nekogram.skin.KuroSkinManager.get().spec().colorValue("components.dialog.scrim");
+                int kuroScrim = tw.kurocore.kurogram.skin.KuroSkinManager.get().spec().colorValue("components.dialog.scrim");
                 params.dimAmount = kuroScrim != 0 ? ((kuroScrim >>> 24) / 255f) : dimAlpha;
                 params.flags |= WindowManager.LayoutParams.FLAG_DIM_BEHIND;
             } else {

@@ -248,7 +248,7 @@ public class ContactsActivity extends BaseFragment implements FactorAnimator.Tar
         if (!createSecretChat && !returnAsResult) {
             sortByName = SharedConfig.sortContactsByName;
             if (hasMainTabs) {
-                String layoutSort = tw.nekomimi.nekogram.layout.LayoutManager.get().spec().stringValue("contacts.sort", null);
+                String layoutSort = tw.kurocore.kurogram.layout.LayoutManager.get().spec().stringValue("contacts.sort", null);
                 if (layoutSort != null) {
                     sortByName = "name".equals(layoutSort);
                 }
@@ -542,8 +542,8 @@ public class ContactsActivity extends BaseFragment implements FactorAnimator.Tar
         }));
         listView.useSkinSections();
         listView.setSections(true);
-        skinSectionsVersion = tw.nekomimi.nekogram.skin.KuroUi.t().version;
-        contentView.setBackgroundColor(tw.nekomimi.nekogram.skin.KuroSkinManager.get().colorOr("screens.contacts.background", getThemedColor(Theme.key_windowBackgroundGray)));
+        skinSectionsVersion = tw.kurocore.kurogram.skin.KuroUi.t().version;
+        contentView.setBackgroundColor(tw.kurocore.kurogram.skin.KuroSkinManager.get().colorOr("screens.contacts.background", getThemedColor(Theme.key_windowBackgroundGray)));
 
         FlickerLoadingView flickerLoadingView = new FlickerLoadingView(context);
         flickerLoadingView.setViewType(FlickerLoadingView.PROFILE_SEARCH_CELL);
@@ -565,7 +565,7 @@ public class ContactsActivity extends BaseFragment implements FactorAnimator.Tar
         listView.setSectionsType(RecyclerListView.SECTIONS_TYPE_STICKY_HEADERS);
         listView.setVerticalScrollBarEnabled(false);
         listView.setFastScrollEnabled(RecyclerListView.FastScroll.LETTER_TYPE);
-        final tw.nekomimi.nekogram.layout.LayoutSpec contactsSpec = tw.nekomimi.nekogram.layout.LayoutManager.get().spec();
+        final tw.kurocore.kurogram.layout.LayoutSpec contactsSpec = tw.kurocore.kurogram.layout.LayoutManager.get().spec();
         final int contactsColumns = hasMainTabs && "grid".equals(contactsSpec.stringValue("contacts.mode", "list")) ? Math.max(2, contactsSpec.intValue("contacts.grid.columns", 3)) : 1;
         final androidx.recyclerview.widget.GridLayoutManager contactsLayoutManager = new androidx.recyclerview.widget.GridLayoutManager(context, contactsColumns, LinearLayoutManager.VERTICAL, false);
         if (contactsColumns > 1) {
@@ -1257,7 +1257,7 @@ public class ContactsActivity extends BaseFragment implements FactorAnimator.Tar
     public void onResume() {
         super.onResume();
         // Kuro skins: this screen can be built (as a tab) before the skin arrives, so re-read the section tokens when it changed
-        int skinVersion = tw.nekomimi.nekogram.skin.KuroUi.t().version;
+        int skinVersion = tw.kurocore.kurogram.skin.KuroUi.t().version;
         if (listView != null && skinSectionsVersion != skinVersion) {
             skinSectionsVersion = skinVersion;
             listView.setSections(true);
@@ -1482,7 +1482,7 @@ public class ContactsActivity extends BaseFragment implements FactorAnimator.Tar
                 actionBar.updateColors();
             }
             if (contentView != null) {
-                contentView.setBackgroundColor(tw.nekomimi.nekogram.skin.KuroSkinManager.get().colorOr("screens.contacts.background", getThemedColor(Theme.key_windowBackgroundGray)));
+                contentView.setBackgroundColor(tw.kurocore.kurogram.skin.KuroSkinManager.get().colorOr("screens.contacts.background", getThemedColor(Theme.key_windowBackgroundGray)));
             }
         };
 

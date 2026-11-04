@@ -175,9 +175,9 @@ import java.util.List;
 import me.vkryl.core.BitwiseUtils;
 import me.vkryl.core.reference.ReferenceList;
 
-import tw.nekomimi.nekogram.MessageDetailsActivity;
-import tw.nekomimi.nekogram.KuroConfig;
-import tw.nekomimi.nekogram.tlv.TlViewer;
+import tw.kurocore.kurogram.MessageDetailsActivity;
+import tw.kurocore.kurogram.KuroConfig;
+import tw.kurocore.kurogram.tlv.TlViewer;
 
 public class ChannelAdminLogActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate {
 

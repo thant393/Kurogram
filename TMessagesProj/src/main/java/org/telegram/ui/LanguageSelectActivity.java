@@ -64,7 +64,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Timer;
 
-import tw.nekomimi.nekogram.settings.KuroGeneralSettingsActivity;
+import tw.kurocore.kurogram.settings.KuroGeneralSettingsActivity;
 
 public class LanguageSelectActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate {
 

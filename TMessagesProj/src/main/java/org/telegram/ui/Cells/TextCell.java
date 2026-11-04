@@ -47,7 +47,7 @@ import org.telegram.ui.PeerColorActivity;
 import org.telegram.ui.SettingsActivity;
 import org.telegram.ui.Stories.recorder.HintView2;
 
-public class TextCell extends FrameLayout implements tw.nekomimi.nekogram.skin.LastInCard {
+public class TextCell extends FrameLayout implements tw.kurocore.kurogram.skin.LastInCard {
 
     public final SimpleTextView textView;
     private final SimpleTextView subtitleView;
@@ -76,7 +76,7 @@ public class TextCell extends FrameLayout implements tw.nekomimi.nekogram.skin.L
     private boolean skinTouched;
     private boolean skinLast;
 
-    /** Kuro skins: the last row of a card has no divider (see tw.nekomimi.nekogram.skin.LastInCard). */
+    /** Kuro skins: the last row of a card has no divider (see tw.kurocore.kurogram.skin.LastInCard). */
     public void setLastInCard(boolean last) {
         if (skinLast != last) {
             skinLast = last;
@@ -213,7 +213,7 @@ public class TextCell extends FrameLayout implements tw.nekomimi.nekogram.skin.L
     }
 
     private void applySkinTokens() {
-        tw.nekomimi.nekogram.skin.SkinTokens t = tw.nekomimi.nekogram.skin.KuroUi.t();
+        tw.kurocore.kurogram.skin.SkinTokens t = tw.kurocore.kurogram.skin.KuroUi.t();
         if (t.version == skinVersion) {
             return;
         }
@@ -234,7 +234,7 @@ public class TextCell extends FrameLayout implements tw.nekomimi.nekogram.skin.L
             textView.setTextSize(t.cellTitleSizeSp >= 0 ? t.cellTitleSizeSp : 16);
             valueTextView.setTextSize(dp(t.cellValueSizeSp >= 0 ? t.cellValueSizeSp : 16));
             valueSpoilersTextView.setTextSize(t.cellValueSizeSp >= 0 ? t.cellValueSizeSp : 16);
-            textView.setTypeface(tw.nekomimi.nekogram.skin.KuroUi.weightTypeface(t.cellTitleWeight));
+            textView.setTypeface(tw.kurocore.kurogram.skin.KuroUi.weightTypeface(t.cellTitleWeight));
         }
         requestLayout();
         invalidate();

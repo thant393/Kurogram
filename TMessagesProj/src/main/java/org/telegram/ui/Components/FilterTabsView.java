@@ -72,8 +72,8 @@ import org.telegram.ui.Stories.recorder.HintView2;
 import java.util.ArrayList;
 import java.util.Map;
 
-import tw.nekomimi.nekogram.KuroConfig;
-import tw.nekomimi.nekogram.folder.FolderIconHelper;
+import tw.kurocore.kurogram.KuroConfig;
+import tw.kurocore.kurogram.folder.FolderIconHelper;
 
 @SuppressLint("ViewConstructor")
 public class FilterTabsView extends FrameLayout {
@@ -1269,7 +1269,7 @@ public class FilterTabsView extends FrameLayout {
 
     /** A layout pack can ask for plain filled chips instead of the glass strip with folder icons. */
     public static boolean chipsStyle() {
-        return "chips".equals(tw.nekomimi.nekogram.layout.LayoutManager.get().spec().stringValue("chatList.folders.style", null));
+        return "chips".equals(tw.kurocore.kurogram.layout.LayoutManager.get().spec().stringValue("chatList.folders.style", null));
     }
 
     private static final Paint CHIP_PAINT = new Paint(Paint.ANTI_ALIAS_FLAG);

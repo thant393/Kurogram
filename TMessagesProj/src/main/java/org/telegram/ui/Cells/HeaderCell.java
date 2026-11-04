@@ -132,7 +132,7 @@ public class HeaderCell extends FrameLayout {
     }
 
     private void applySkinTokens() {
-        tw.nekomimi.nekogram.skin.SkinTokens t = tw.nekomimi.nekogram.skin.KuroUi.t();
+        tw.kurocore.kurogram.skin.SkinTokens t = tw.kurocore.kurogram.skin.KuroUi.t();
         if (t.version == skinVersion) {
             return;
         }
@@ -144,7 +144,7 @@ public class HeaderCell extends FrameLayout {
         }
         skinTouched = true; // after the first change, an unset token puts Telegram's value back
         int size = t.sectionHeaderSizeSp >= 0 ? t.sectionHeaderSizeSp : 14;
-        android.graphics.Typeface face = t.sectionHeaderWeight >= 0 ? tw.nekomimi.nekogram.skin.KuroUi.weightTypeface(t.sectionHeaderWeight) : AndroidUtilities.bold();
+        android.graphics.Typeface face = t.sectionHeaderWeight >= 0 ? tw.kurocore.kurogram.skin.KuroUi.weightTypeface(t.sectionHeaderWeight) : AndroidUtilities.bold();
         int color = colorToken ? t.sectionHeaderColor : getThemedColor(skinColorKey);
         if (animated) {
             animatedTextView.setTextSize(AndroidUtilities.dp(size));

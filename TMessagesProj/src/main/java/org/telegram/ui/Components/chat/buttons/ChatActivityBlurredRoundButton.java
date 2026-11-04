@@ -122,7 +122,7 @@ public class ChatActivityBlurredRoundButton extends FrameLayout implements Facto
     public void setBlurredBackgroundDrawable(BlurredBackgroundDrawable drawable) {
         backgroundDrawable = drawable;
         backgroundDrawable.setPadding(dp(CLICK_ZONE_MARGIN));
-        backgroundDrawable.setRadius(tw.nekomimi.nekogram.skin.KuroUi.chatRadius(tw.nekomimi.nekogram.skin.KuroUi.t().chatButtonRadiusDp, BUTTON_SIZE / 2f));
+        backgroundDrawable.setRadius(tw.kurocore.kurogram.skin.KuroUi.chatRadius(tw.kurocore.kurogram.skin.KuroUi.t().chatButtonRadiusDp, BUTTON_SIZE / 2f));
     }
 
     public void showLoading(boolean loading, boolean animated) {

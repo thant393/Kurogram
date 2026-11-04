@@ -125,7 +125,7 @@ import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 
-import tw.nekomimi.nekogram.KuroConfig;
+import tw.kurocore.kurogram.KuroConfig;
 
 @SuppressLint("ViewConstructor")
 public class InstantCameraView extends InstantCameraViewBase implements NotificationCenter.NotificationCenterDelegate {

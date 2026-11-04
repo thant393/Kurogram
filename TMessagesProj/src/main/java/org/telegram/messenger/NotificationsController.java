@@ -99,9 +99,9 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Consumer;
 
-import tw.nekomimi.nekogram.KuroConfig;
-import tw.nekomimi.nekogram.helpers.MessageFilterHelper;
-import tw.nekomimi.nekogram.helpers.PasscodeHelper;
+import tw.kurocore.kurogram.KuroConfig;
+import tw.kurocore.kurogram.helpers.MessageFilterHelper;
+import tw.kurocore.kurogram.helpers.PasscodeHelper;
 
 public class NotificationsController extends BaseController implements NotificationCenter.NotificationCenterDelegate {
 

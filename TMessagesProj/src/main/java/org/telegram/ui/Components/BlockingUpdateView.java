@@ -39,7 +39,7 @@ import org.telegram.ui.Components.voip.CellFlickerDrawable;
 
 import java.util.Locale;
 
-import tw.nekomimi.nekogram.helpers.remote.UpdateHelper;
+import tw.kurocore.kurogram.helpers.remote.UpdateHelper;
 
 public class BlockingUpdateView extends FrameLayout implements NotificationCenter.NotificationCenterDelegate {
 

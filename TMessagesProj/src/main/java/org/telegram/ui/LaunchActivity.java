@@ -258,12 +258,12 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import tw.nekomimi.nekogram.Extra;
-import tw.nekomimi.nekogram.FragmentPreviewWindow;
-import tw.nekomimi.nekogram.forward.ForwardContext;
-import tw.nekomimi.nekogram.KuroConfig;
-import tw.nekomimi.nekogram.helpers.MonetHelper;
-import tw.nekomimi.nekogram.helpers.remote.UpdateHelper;
+import tw.kurocore.kurogram.Extra;
+import tw.kurocore.kurogram.FragmentPreviewWindow;
+import tw.kurocore.kurogram.forward.ForwardContext;
+import tw.kurocore.kurogram.KuroConfig;
+import tw.kurocore.kurogram.helpers.MonetHelper;
+import tw.kurocore.kurogram.helpers.remote.UpdateHelper;
 
 public class LaunchActivity extends BasePermissionsActivity implements INavigationLayout.INavigationLayoutDelegate, NotificationCenter.NotificationCenterDelegate, DialogsActivity.DialogsActivityDelegate, IPipActivity {
     public final static String EXTRA_FORCE_NOT_INTERNAL_APPS = "force_not_internal_apps";
@@ -2861,9 +2861,9 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                                             NotificationCenter.getInstance(intentAccount[0]).postNotificationName(NotificationCenter.closeChats);
                                             push_user_id = userId;
                                             String mimeType = cursor.getString(cursor.getColumnIndex(ContactsContract.Data.MIMETYPE));
-                                            if (TextUtils.equals(mimeType, "vnd.android.cursor.item/vnd.tw.nekomimi.nekogram.android.call")) {
+                                            if (TextUtils.equals(mimeType, "vnd.android.cursor.item/vnd.tw.kurocore.kurogram.android.call")) {
                                                 audioCallUser = true;
-                                            } else if (TextUtils.equals(mimeType, "vnd.android.cursor.item/vnd.tw.nekomimi.nekogram.android.call.video")) {
+                                            } else if (TextUtils.equals(mimeType, "vnd.android.cursor.item/vnd.tw.kurocore.kurogram.android.call.video")) {
                                                 videoCallUser = true;
                                             }
                                         }

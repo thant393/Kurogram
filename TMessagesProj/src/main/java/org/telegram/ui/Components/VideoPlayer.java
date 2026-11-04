@@ -109,7 +109,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import tw.nekomimi.nekogram.KuroConfig;
+import tw.kurocore.kurogram.KuroConfig;
 
 @SuppressLint("NewApi")
 @OptIn(markerClass = UnstableApi.class)

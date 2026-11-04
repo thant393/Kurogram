@@ -148,9 +148,9 @@ import java.util.Set;
 
 import me.vkryl.android.animator.BoolAnimator;
 import me.vkryl.android.animator.FactorAnimator;
-import tw.nekomimi.nekogram.helpers.PasscodeHelper;
-import tw.nekomimi.nekogram.session.SessionQr;
-import tw.nekomimi.nekogram.settings.KuroSettingsActivity;
+import tw.kurocore.kurogram.helpers.PasscodeHelper;
+import tw.kurocore.kurogram.session.SessionQr;
+import tw.kurocore.kurogram.settings.KuroSettingsActivity;
 
 public class SettingsActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate, ImageUpdater.ImageUpdaterDelegate, MainTabsActivity.TabFragmentDelegate, FactorAnimator.Target {
 
@@ -363,7 +363,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         };
         search.loadFaqWebPage();
 
-        final tw.nekomimi.nekogram.layout.LayoutSpec settingsSpec = tw.nekomimi.nekogram.layout.LayoutManager.get().spec();
+        final tw.kurocore.kurogram.layout.LayoutSpec settingsSpec = tw.kurocore.kurogram.layout.LayoutManager.get().spec();
         gridColumns = "grid".equals(settingsSpec.stringValue("settings.mode", "list")) ? Math.max(2, Math.min(4, settingsSpec.intValue("settings.grid.columns", 3))) : 0;
         if (gridColumns > 0) {
             listView = new UniversalRecyclerView(context, currentAccount, classGuid, false, this::fillItems, this::onClick, this::onLongClick, getResourceProvider(), gridColumns, androidx.recyclerview.widget.LinearLayoutManager.VERTICAL).useSkin();
@@ -555,7 +555,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
 
     /** settings.header = "cover" (or the drawer): the photo header instead of the centred avatar. */
     private boolean coverHeader() {
-        return drawerMode || "cover".equals(tw.nekomimi.nekogram.layout.LayoutManager.get().spec().stringValue("settings.header", "centered"));
+        return drawerMode || "cover".equals(tw.kurocore.kurogram.layout.LayoutManager.get().spec().stringValue("settings.header", "centered"));
     }
 
     private static final java.util.Map<Integer, String> LAYOUT_IDS = new java.util.HashMap<>();
@@ -569,7 +569,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
 
     /** settings.items: only the listed rows stay; shadows and headers left empty by that are removed. */
     private void applyLayoutItems(ArrayList<UItem> items) {
-        final java.util.List<String> wanted = tw.nekomimi.nekogram.layout.LayoutManager.get().spec().listValue("settings.items", null);
+        final java.util.List<String> wanted = tw.kurocore.kurogram.layout.LayoutManager.get().spec().listValue("settings.items", null);
         if (wanted == null) return;
         final ArrayList<UItem> kept = new ArrayList<>();
         for (UItem item : items) {
@@ -664,7 +664,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
     public void updateColors() {
         actionBar.setTitleColor(getThemedColor(Theme.key_windowBackgroundWhiteBlackText));
         actionBar.setItemsColor(getThemedColor(Theme.key_windowBackgroundWhiteBlackText), false);
-        contentView.setBackgroundColor(tw.nekomimi.nekogram.skin.KuroSkinManager.get().colorOr("screens.settings.background", getThemedColor(Theme.key_windowBackgroundGray)));
+        contentView.setBackgroundColor(tw.kurocore.kurogram.skin.KuroSkinManager.get().colorOr("screens.settings.background", getThemedColor(Theme.key_windowBackgroundGray)));
         titleView.setTextColor(getThemedColor(Theme.key_windowBackgroundWhiteBlackText));
         subtitleView.setTextColor(getThemedColor(Theme.key_windowBackgroundWhiteGrayText));
         if (coverHeader()) {
@@ -804,7 +804,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         }
 
         if (accountNumbers.size() > 0) {
-            final boolean collapsible = "collapsible".equals(tw.nekomimi.nekogram.layout.LayoutManager.get().spec().stringValue("settings.accounts", "list"));
+            final boolean collapsible = "collapsible".equals(tw.kurocore.kurogram.layout.LayoutManager.get().spec().stringValue("settings.accounts", "list"));
             if (collapsible) {
                 items.add(AccountsHeaderCell.Factory.of(accountNumbers.size(), accountsExpanded));
             } else {
@@ -1046,27 +1046,27 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                 break;
             }
             case 60: {
-            	presentFragment(new tw.nekomimi.nekogram.settings.KuroThemeActivity());
+            	presentFragment(new tw.kurocore.kurogram.settings.KuroThemeActivity());
             	break;
             }
             case 61: {
-            	presentFragment(new tw.nekomimi.nekogram.settings.KuroSettingsActivity());
+            	presentFragment(new tw.kurocore.kurogram.settings.KuroSettingsActivity());
             	break;
             }
             case 62: {
-            	presentFragment(new tw.nekomimi.nekogram.settings.NumberFinderActivity());
+            	presentFragment(new tw.kurocore.kurogram.settings.NumberFinderActivity());
             	break;
             }
             case 63: {
-            	presentFragment(new tw.nekomimi.nekogram.settings.SpecialContactsActivity());
+            	presentFragment(new tw.kurocore.kurogram.settings.SpecialContactsActivity());
             	break;
             }
             case 64: {
-            	presentFragment(new tw.nekomimi.nekogram.settings.OnlineContactsActivity());
+            	presentFragment(new tw.kurocore.kurogram.settings.OnlineContactsActivity());
             	break;
             }
             case 65: {
-            	presentFragment(new tw.nekomimi.nekogram.settings.ContactChangesActivity());
+            	presentFragment(new tw.kurocore.kurogram.settings.ContactChangesActivity());
             	break;
             }
         }

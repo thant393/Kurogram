@@ -133,7 +133,7 @@ public class DataSettingsActivity extends BaseFragment {
 
     /** Kuro skins: next row index, or -1 when the active layout hides this row (layout.dataStorage.hiddenRows). */
     private int skinRow(String id) {
-        return tw.nekomimi.nekogram.skin.RowMap.hidden("dataStorage", id) ? -1 : rowCount++;
+        return tw.kurocore.kurogram.skin.RowMap.hidden("dataStorage", id) ? -1 : rowCount++;
     }
 
     private void updateRows(boolean fullNotify) {
@@ -290,7 +290,7 @@ public class DataSettingsActivity extends BaseFragment {
         listAdapter = new ListAdapter(context);
 
         fragmentView = new FrameLayout(context);
-        fragmentView.setBackgroundColor(tw.nekomimi.nekogram.skin.KuroUi.screenBackground("dataStorage", Theme.getColor(Theme.key_windowBackgroundGray)));
+        fragmentView.setBackgroundColor(tw.kurocore.kurogram.skin.KuroUi.screenBackground("dataStorage", Theme.getColor(Theme.key_windowBackgroundGray)));
         FrameLayout frameLayout = (FrameLayout) fragmentView;
 
         listView = new RecyclerListView(context) {
@@ -302,7 +302,7 @@ public class DataSettingsActivity extends BaseFragment {
                 return getThemedColor(Theme.key_listSelector);
             }
         };
-        listView.useSkinSections().trimLastDividers(tw.nekomimi.nekogram.skin.RowMap.anyHidden("dataStorage")).setSections();
+        listView.useSkinSections().trimLastDividers(tw.kurocore.kurogram.skin.RowMap.anyHidden("dataStorage")).setSections();
         actionBar.setAdaptiveBackground(listView);
         listView.setVerticalScrollBarEnabled(false);
         listView.setLayoutManager(layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));

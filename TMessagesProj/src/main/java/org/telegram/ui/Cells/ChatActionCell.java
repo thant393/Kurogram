@@ -3470,7 +3470,7 @@ public class ChatActionCell extends BaseCell implements DownloadController.FileD
             }
             backgroundPath.close();
 
-            final int skinDateRadius = tw.nekomimi.nekogram.skin.KuroUi.t().chatDateRadiusDp;
+            final int skinDateRadius = tw.kurocore.kurogram.skin.KuroUi.t().chatDateRadiusDp;
             if (skinDateRadius >= 0 && count > 0) {
                 // The skin wants its own corner radius: draw the pill as one rounded box per text line.
                 backgroundPath.reset();

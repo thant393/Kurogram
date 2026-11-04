@@ -92,9 +92,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import tw.nekomimi.nekogram.FragmentPreviewWindow;
-import tw.nekomimi.nekogram.KuroConfig;
-import tw.nekomimi.nekogram.helpers.AnalyticsHelper;
+import tw.kurocore.kurogram.FragmentPreviewWindow;
+import tw.kurocore.kurogram.KuroConfig;
+import tw.kurocore.kurogram.helpers.AnalyticsHelper;
 
 public class ActionBarLayout extends FrameLayout implements INavigationLayout, FloatingDebugProvider {
 
@@ -1841,7 +1841,7 @@ public class ActionBarLayout extends FrameLayout implements INavigationLayout, F
                 }
                 lastFrameTime = newTime;
                 // Kuro skins: ux.transition (-1 default, 0 default, 1 fade, 2 slide, 3 none); previews are left alone
-                final int skinTransition = preview ? -1 : tw.nekomimi.nekogram.skin.KuroUi.t().uxTransition;
+                final int skinTransition = preview ? -1 : tw.kurocore.kurogram.skin.KuroUi.t().uxTransition;
                 float duration = preview && open ? 190.0f : skinTransition == 3 ? 1.0f : 150.0f;
                 animationProgress += dt / duration;
                 if (animationProgress > 1.0f) {

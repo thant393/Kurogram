@@ -1946,7 +1946,7 @@ public class RecyclerListView extends RecyclerView implements IBlur3Capture {
     public void setListSelectorColor(Integer color) {
         if (color == null && skinList() && hasSections()) {
             // Kuro skins: components.cell.pressedColor wins over Telegram's default each time a row is pressed
-            int skinPressed = tw.nekomimi.nekogram.skin.KuroUi.t().cellPressedColor;
+            int skinPressed = tw.kurocore.kurogram.skin.KuroUi.t().cellPressedColor;
             if (skinPressed != 0) {
                 color = skinPressed;
             }
@@ -2517,7 +2517,7 @@ public class RecyclerListView extends RecyclerView implements IBlur3Capture {
         }
         for (int i = 0; i < getChildCount(); ++i) {
             final View child = getChildAt(i);
-            if (!(child instanceof tw.nekomimi.nekogram.skin.LastInCard)) {
+            if (!(child instanceof tw.kurocore.kurogram.skin.LastInCard)) {
                 continue;
             }
             final int position = getChildAdapterPosition(child);
@@ -2525,7 +2525,7 @@ public class RecyclerListView extends RecyclerView implements IBlur3Capture {
                 continue;
             }
             final boolean hasNext = position + 1 < adapter.getItemCount() && isViewTypeSection.run(adapter.getItemViewType(position + 1));
-            ((tw.nekomimi.nekogram.skin.LastInCard) child).setLastInCard(!hasNext);
+            ((tw.kurocore.kurogram.skin.LastInCard) child).setLastInCard(!hasNext);
         }
     }
 
@@ -3397,7 +3397,7 @@ public class RecyclerListView extends RecyclerView implements IBlur3Capture {
         if (!skinSections && resourcesProvider != null) {
             return radius;
         }
-        tw.nekomimi.nekogram.skin.SkinTokens t = tw.nekomimi.nekogram.skin.KuroUi.t();
+        tw.kurocore.kurogram.skin.SkinTokens t = tw.kurocore.kurogram.skin.KuroUi.t();
         return t.sectionStyle == 0 ? 0 : t.sectionRadiusDp >= 0 ? dp(t.sectionRadiusDp) : radius;
     }
 
@@ -3405,7 +3405,7 @@ public class RecyclerListView extends RecyclerView implements IBlur3Capture {
         if (!skinSections && resourcesProvider != null) {
             return padding;
         }
-        tw.nekomimi.nekogram.skin.SkinTokens t = tw.nekomimi.nekogram.skin.KuroUi.t();
+        tw.kurocore.kurogram.skin.SkinTokens t = tw.kurocore.kurogram.skin.KuroUi.t();
         return t.sectionStyle == 0 ? 0 : t.sectionGapDp >= 0 ? dp(t.sectionGapDp) : padding;
     }
 
@@ -3461,8 +3461,8 @@ public class RecyclerListView extends RecyclerView implements IBlur3Capture {
         Utilities.Callback5<Canvas, RectF, Float, Float, Float> drawSectionBackground,
         boolean topPadding
     ) {
-        int skinPressed = skinList() ? tw.nekomimi.nekogram.skin.KuroUi.t().cellPressedColor : 0;
-        boolean skinNoRipple = skinList() && tw.nekomimi.nekogram.skin.KuroUi.t().uxRipple == 0;
+        int skinPressed = skinList() ? tw.kurocore.kurogram.skin.KuroUi.t().cellPressedColor : 0;
+        boolean skinNoRipple = skinList() && tw.kurocore.kurogram.skin.KuroUi.t().uxRipple == 0;
         setSelectorDrawableColor(skinNoRipple ? 0 : skinPressed != 0 ? skinPressed : getThemedColor(Theme.key_settings_listSelector));
         this.isViewTypeSection = isViewTypeSection;
         this.sectionRadius = roundRadius;

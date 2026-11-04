@@ -279,17 +279,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-import tw.nekomimi.nekogram.BackButtonMenuRecent;
-import tw.nekomimi.nekogram.folder.FolderIconHelper;
-import tw.nekomimi.nekogram.forward.ForwardContext;
-import tw.nekomimi.nekogram.KuroConfig;
-import tw.nekomimi.nekogram.forward.SendItemOptions;
-import tw.nekomimi.nekogram.helpers.AccountsHelper;
-import tw.nekomimi.nekogram.helpers.PasscodeHelper;
+import tw.kurocore.kurogram.BackButtonMenuRecent;
+import tw.kurocore.kurogram.folder.FolderIconHelper;
+import tw.kurocore.kurogram.forward.ForwardContext;
+import tw.kurocore.kurogram.KuroConfig;
+import tw.kurocore.kurogram.forward.SendItemOptions;
+import tw.kurocore.kurogram.helpers.AccountsHelper;
+import tw.kurocore.kurogram.helpers.PasscodeHelper;
 import me.vkryl.android.animator.BoolAnimator;
 import me.vkryl.android.animator.FactorAnimator;
-import tw.nekomimi.nekogram.helpers.TypefaceHelper;
-import tw.nekomimi.nekogram.helpers.remote.ConfigHelper;
+import tw.kurocore.kurogram.helpers.TypefaceHelper;
+import tw.kurocore.kurogram.helpers.remote.ConfigHelper;
 import me.vkryl.android.util.ClickHelper;
 
 public class DialogsActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate, FloatingDebugProvider, FactorAnimator.Target, MainTabsActivity.TabFragmentDelegate {
@@ -312,7 +312,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
 
     /** A layout pack can drop the always-visible "Search chats" field; search then lives behind the header icon. */
     private boolean searchFieldHidden() {
-        return !tw.nekomimi.nekogram.layout.LayoutManager.get().spec().boolValue("chatList.searchBar", true) && hasMainTabs;
+        return !tw.kurocore.kurogram.layout.LayoutManager.get().spec().boolValue("chatList.searchBar", true) && hasMainTabs;
     }
 
     private int searchFieldHeightDp() {
@@ -3499,7 +3499,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         fragmentSearchFieldWatcher.setDoNotCloseAfterFieldEmpty();
 
         if (initialDialogsType == DIALOGS_TYPE_DEFAULT && hasMainTabs && folderId == 0 && communityId == 0) {
-            java.util.List<String> right = tw.nekomimi.nekogram.layout.LayoutManager.get().spec().listValue("chatList.header.right", null);
+            java.util.List<String> right = tw.kurocore.kurogram.layout.LayoutManager.get().spec().listValue("chatList.header.right", null);
             if (right != null && right.contains("compose")) {
                 // The layout pack asked for a compose button: it opens Telegram's own "new message" picker.
                 ActionBarMenuItem compose = menu.addItem(105, R.drawable.msg_edit);
@@ -3568,7 +3568,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         } else {
             if (searchString != null || folderId != 0 || communityId != 0) {
                 actionBar.setBackButtonDrawable(backDrawable = new BackDrawable(false));
-            } else if (hasMainTabs && initialDialogsType == DIALOGS_TYPE_DEFAULT && tw.nekomimi.nekogram.layout.KuroDrawer.wantsMenuButton()) {
+            } else if (hasMainTabs && initialDialogsType == DIALOGS_TYPE_DEFAULT && tw.kurocore.kurogram.layout.KuroDrawer.wantsMenuButton()) {
                 // The active layout pack asked for a hamburger that opens its drawer.
                 layoutMenuButton = true;
                 actionBar.setBackButtonDrawable(new MenuDrawable());
@@ -3941,7 +3941,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                     return;
                 }
                 if (id == -1 && layoutMenuButton && !actionBar.isActionModeShowed() && !searchIsShowed) {
-                    tw.nekomimi.nekogram.layout.KuroDrawer.show(DialogsActivity.this);
+                    tw.kurocore.kurogram.layout.KuroDrawer.show(DialogsActivity.this);
                     return;
                 }
                 if (id == -1) {
@@ -4169,7 +4169,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             };
             viewPage.listView.setVerticalScrollBarEnabled(true);
             viewPage.listView.setInstantClick(true);
-            final tw.nekomimi.nekogram.layout.LayoutSpec gridSpec = tw.nekomimi.nekogram.layout.LayoutManager.get().spec();
+            final tw.kurocore.kurogram.layout.LayoutSpec gridSpec = tw.kurocore.kurogram.layout.LayoutManager.get().spec();
             final int gridColumns = "grid".equals(gridSpec.stringValue("chatList.mode", "list")) ? Math.max(2, gridSpec.intValue("chatList.grid.columns", 3)) : 1;
             viewPage.layoutManager = new androidx.recyclerview.widget.GridLayoutManager(context, gridColumns) {
 
@@ -9033,7 +9033,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         }
         if (floatingButtonStories != null) {
             // Kuro skins: a taller compose button (components.fab.sizeDp) pushes the story button up by the extra height
-            int fabExtra = Math.max(0, tw.nekomimi.nekogram.skin.KuroUi.t().fabSizeDp - 48);
+            int fabExtra = Math.max(0, tw.kurocore.kurogram.skin.KuroUi.t().fabSizeDp - 48);
             floatingButtonStories.setTranslationY(baseTranslationY - dp(52 + fabExtra));
             if (storyHint != null) {
                 storyHint.setTranslationY(baseTranslationY - dp(52 + fabExtra));
@@ -9090,7 +9090,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     /** chatList.header.collapse = pinned: the stories tray and folder bar never scroll away (Messenger-style). */
     private boolean headerPinned() {
         // While search is open Telegram collapses the header itself; pinning only applies to the plain list.
-        return hasMainTabs && !searchIsShowed && !searching && "pinned".equals(tw.nekomimi.nekogram.layout.LayoutManager.get().spec().stringValue("chatList.header.collapse", "scroll"));
+        return hasMainTabs && !searchIsShowed && !searching && "pinned".equals(tw.kurocore.kurogram.layout.LayoutManager.get().spec().stringValue("chatList.header.collapse", "scroll"));
     }
 
     private void setScrollY(float value) {
