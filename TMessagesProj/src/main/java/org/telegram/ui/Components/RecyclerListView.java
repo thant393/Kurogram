@@ -3355,11 +3355,16 @@ public class RecyclerListView extends RecyclerView implements IBlur3Capture {
         return this;
     }
 
+    /**
+     * Section card shape (radius and side gap) follows components.section.* on every list without a custom
+     * ResourcesProvider, not only on the screens that opted in with useSkinSections(); a skin that sets none keeps
+     * Telegram's own values. Cell colours, ripples and dividers still change only on the opted-in screens.
+     */
     protected float skinSectionRadius(float radius) {
         if (sectionRadiusOverrideDp >= 0) {
             return dp(sectionRadiusOverrideDp);
         }
-        if (!skinSections) {
+        if (!skinSections && resourcesProvider != null) {
             return radius;
         }
         tw.nekomimi.nekogram.skin.SkinTokens t = tw.nekomimi.nekogram.skin.KuroUi.t();
@@ -3367,7 +3372,7 @@ public class RecyclerListView extends RecyclerView implements IBlur3Capture {
     }
 
     protected int skinSectionPadding(int padding) {
-        if (!skinSections) {
+        if (!skinSections && resourcesProvider != null) {
             return padding;
         }
         tw.nekomimi.nekogram.skin.SkinTokens t = tw.nekomimi.nekogram.skin.KuroUi.t();
