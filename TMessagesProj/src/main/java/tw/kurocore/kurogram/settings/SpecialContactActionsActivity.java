@@ -1,5 +1,7 @@
 package tw.kurocore.kurogram.settings;
 
+import tw.kurocore.kurogram.feature.KuroFeatures;
+import tw.kurocore.kurogram.feature.SpecialContacts;
 import android.content.Context;
 import android.view.Gravity;
 import android.view.View;
@@ -31,7 +33,7 @@ public class SpecialContactActionsActivity extends BaseFragment {
     private RecyclerListView listView;
     private ListAdapter listAdapter;
     private TextView emptyView;
-    private ArrayList<SpecialContactsMonitor.Action> actions = new ArrayList<>();
+    private ArrayList<SpecialContacts.Action> actions = new ArrayList<>();
 
     public SpecialContactActionsActivity(long userId) {
         super();
@@ -40,14 +42,14 @@ public class SpecialContactActionsActivity extends BaseFragment {
 
     @Override
     public boolean onFragmentCreate() {
-        actions = SpecialContactsMonitor.loadActions(userId);
+        actions = KuroFeatures.specialContacts().actions(userId);
         return super.onFragmentCreate();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        actions = SpecialContactsMonitor.loadActions(userId);
+        actions = KuroFeatures.specialContacts().actions(userId);
         if (listAdapter != null) {
             listAdapter.notifyDataSetChanged();
         }
@@ -129,9 +131,9 @@ public class SpecialContactActionsActivity extends BaseFragment {
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            SpecialContactsMonitor.Action a = actions.get(position);
+            SpecialContacts.Action a = actions.get(position);
             TextInfoPrivacyCell cell = (TextInfoPrivacyCell) holder.itemView;
-            cell.setText(a.text + " \u2022 " + SpecialContactsMonitor.formatAgo(a.time));
+            cell.setText(a.text + " \u2022 " + SpecialContacts.formatAgo(a.time));
             int pos = GroupCardHelper.positionInGroup(position, actions.size());
             GroupCardHelper.applyCard(cell, pos);
         }

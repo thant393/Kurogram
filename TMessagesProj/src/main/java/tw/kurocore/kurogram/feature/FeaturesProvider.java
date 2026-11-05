@@ -13,5 +13,9 @@ public interface FeaturesProvider {
 
     interface Registrar {
         void themes(ThemeStore store);
+
+        void specialContacts(SpecialContacts feature);
+
+        void contactChanges(ContactChanges feature);
     }
 }

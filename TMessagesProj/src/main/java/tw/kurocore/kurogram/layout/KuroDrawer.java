@@ -405,9 +405,9 @@ public final class KuroDrawer {
             case "kuroTheme": from.presentFragment(new tw.kurocore.kurogram.settings.KuroThemeActivity()); break;
             case "kuroSettings": from.presentFragment(new tw.kurocore.kurogram.settings.KuroSettingsActivity()); break;
             case "numberFinder": from.presentFragment(new tw.kurocore.kurogram.settings.NumberFinderActivity()); break;
-            case "specialContacts": from.presentFragment(new tw.kurocore.kurogram.settings.SpecialContactsActivity()); break;
+            case "specialContacts": if (!tw.kurocore.kurogram.feature.KuroFeatures.toastIfUnavailable(tw.kurocore.kurogram.feature.KuroFeatures.specialContacts())) from.presentFragment(new tw.kurocore.kurogram.settings.SpecialContactsActivity()); break;
             case "onlineContacts": from.presentFragment(new tw.kurocore.kurogram.settings.OnlineContactsActivity()); break;
-            case "contactChanges": from.presentFragment(new tw.kurocore.kurogram.settings.ContactChangesActivity()); break;
+            case "contactChanges": if (!tw.kurocore.kurogram.feature.KuroFeatures.toastIfUnavailable(tw.kurocore.kurogram.feature.KuroFeatures.contactChanges())) from.presentFragment(new tw.kurocore.kurogram.settings.ContactChangesActivity()); break;
             case "account": from.presentFragment(new org.telegram.ui.UserInfoActivity()); break;
             case "chatSettings": from.presentFragment(new org.telegram.ui.ThemeActivity(org.telegram.ui.ThemeActivity.THEME_TYPE_BASIC)); break;
             case "privacy": from.presentFragment(new org.telegram.ui.PrivacySettingsActivity()); break;

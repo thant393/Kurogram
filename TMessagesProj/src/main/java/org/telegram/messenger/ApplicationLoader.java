@@ -196,7 +196,6 @@ public class ApplicationLoader extends Application {
     }
 
     public static void postInitApplication() {
-        tw.kurocore.kurogram.settings.SpecialContactsMonitor.init();
         tw.kurocore.kurogram.feature.KuroFeatures.init(applicationContext);
         if (applicationInited || applicationContext == null) {
             return;

@@ -1058,7 +1058,9 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
             	break;
             }
             case 63: {
-            	presentFragment(new tw.kurocore.kurogram.settings.SpecialContactsActivity());
+            	if (!tw.kurocore.kurogram.feature.KuroFeatures.toastIfUnavailable(tw.kurocore.kurogram.feature.KuroFeatures.specialContacts())) {
+            	    presentFragment(new tw.kurocore.kurogram.settings.SpecialContactsActivity());
+            	}
             	break;
             }
             case 64: {
@@ -1066,7 +1068,9 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
             	break;
             }
             case 65: {
-            	presentFragment(new tw.kurocore.kurogram.settings.ContactChangesActivity());
+            	if (!tw.kurocore.kurogram.feature.KuroFeatures.toastIfUnavailable(tw.kurocore.kurogram.feature.KuroFeatures.contactChanges())) {
+            	    presentFragment(new tw.kurocore.kurogram.settings.ContactChangesActivity());
+            	}
             	break;
             }
         }

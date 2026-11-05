@@ -1,5 +1,7 @@
 package tw.kurocore.kurogram.settings;
 
+import tw.kurocore.kurogram.feature.ContactChanges;
+import tw.kurocore.kurogram.feature.KuroFeatures;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
@@ -48,20 +50,7 @@ public class ContactChangesActivity extends BaseFragment implements Notification
     private ListAdapter listAdapter;
     private TextView emptyView;
 
-    private final ArrayList<LogEntry> logEntries = new ArrayList<>();
-
-    private static class LogEntry {
-        long userId;
-        String name;
-        String type; // "name" or "photo"
-        String oldValue;
-        String newValue;
-        long time;
-    }
-
-    private SharedPreferences prefs() {
-        return ApplicationLoader.applicationContext.getSharedPreferences("nk_contact_changes", Context.MODE_PRIVATE);
-    }
+    private final ArrayList<ContactChanges.Entry> logEntries = new ArrayList<>();
 
     @Override
     public boolean onFragmentCreate() {
@@ -126,8 +115,8 @@ public class ContactChangesActivity extends BaseFragment implements Notification
         builder.setTitle("Clear Log");
         builder.setMessage("Clear all recorded contact changes?");
         builder.setPositiveButton("Clear", (dialog, which) -> {
+            KuroFeatures.contactChanges().clearLog();
             logEntries.clear();
-            saveLog();
             if (listAdapter != null) {
                 listAdapter.notifyDataSetChanged();
             }
@@ -147,128 +136,17 @@ public class ContactChangesActivity extends BaseFragment implements Notification
 
     private void loadLog() {
         logEntries.clear();
-        String saved = prefs().getString("log", "[]");
-        try {
-            JSONArray arr = new JSONArray(saved);
-            for (int i = 0; i < arr.length(); i++) {
-                JSONObject obj = arr.getJSONObject(i);
-                LogEntry entry = new LogEntry();
-                entry.userId = obj.optLong("uid");
-                entry.name = obj.optString("name");
-                entry.type = obj.optString("type");
-                entry.oldValue = obj.optString("old");
-                entry.newValue = obj.optString("new");
-                entry.time = obj.optLong("time");
-                logEntries.add(entry);
-            }
-        } catch (JSONException ignored) {
-        }
-        Collections.reverse(logEntries);
-    }
-
-    private void saveLog() {
-        JSONArray arr = new JSONArray();
-        ArrayList<LogEntry> chronological = new ArrayList<>(logEntries);
-        Collections.reverse(chronological);
-        int start = Math.max(0, chronological.size() - 200);
-        for (int i = start; i < chronological.size(); i++) {
-            LogEntry entry = chronological.get(i);
-            JSONObject obj = new JSONObject();
-            try {
-                obj.put("uid", entry.userId);
-                obj.put("name", entry.name);
-                obj.put("type", entry.type);
-                obj.put("old", entry.oldValue);
-                obj.put("new", entry.newValue);
-                obj.put("time", entry.time);
-                arr.put(obj);
-            } catch (JSONException ignored) {
-            }
-        }
-        prefs().edit().putString("log", arr.toString()).apply();
-    }
-
-    private JSONObject loadSnapshot() {
-        String saved = prefs().getString("snapshot", "{}");
-        try {
-            return new JSONObject(saved);
-        } catch (JSONException e) {
-            return new JSONObject();
-        }
-    }
-
-    private void saveSnapshot(JSONObject snapshot) {
-        prefs().edit().putString("snapshot", snapshot.toString()).apply();
+        logEntries.addAll(KuroFeatures.contactChanges().log());
     }
 
     private void checkForChanges() {
-        JSONObject snapshot = loadSnapshot();
-        boolean changed = false;
-
-        for (TLRPC.TL_contact contact : ContactsController.getInstance(currentAccount).contacts) {
-            TLRPC.User user = MessagesController.getInstance(currentAccount).getUser(contact.user_id);
-            if (user == null || UserObject.isDeleted(user) || UserObject.isUserSelf(user)) {
-                continue;
-            }
-            String key = String.valueOf(user.id);
-            String currentName = ContactsController.formatName(user.first_name, user.last_name);
-            long photoId = (user.photo != null) ? user.photo.photo_id : 0;
-
-            JSONObject prevData = snapshot.optJSONObject(key);
-            if (prevData == null) {
-                JSONObject newData = new JSONObject();
-                try {
-                    newData.put("name", currentName);
-                    newData.put("photoId", photoId);
-                    snapshot.put(key, newData);
-                } catch (JSONException ignored) {
-                }
-                changed = true;
-                continue;
-            }
-
-            String prevName = prevData.optString("name");
-            long prevPhotoId = prevData.optLong("photoId");
-
-            if (!prevName.equals(currentName)) {
-                addLogEntry(user.id, currentName, "name", prevName, currentName);
-                try {
-                    prevData.put("name", currentName);
-                } catch (JSONException ignored) {
-                }
-                changed = true;
-            }
-
-            if (prevPhotoId != photoId) {
-                addLogEntry(user.id, currentName, "photo", null, null);
-                try {
-                    prevData.put("photoId", photoId);
-                } catch (JSONException ignored) {
-                }
-                changed = true;
-            }
-        }
-
-        if (changed) {
-            saveSnapshot(snapshot);
-            saveLog();
+        if (KuroFeatures.contactChanges().checkForChanges(currentAccount)) {
             loadLog();
             if (listAdapter != null) {
                 listAdapter.notifyDataSetChanged();
             }
             updateEmptyView();
         }
-    }
-
-    private void addLogEntry(long userId, String name, String type, String oldValue, String newValue) {
-        LogEntry entry = new LogEntry();
-        entry.userId = userId;
-        entry.name = name;
-        entry.type = type;
-        entry.oldValue = oldValue;
-        entry.newValue = newValue;
-        entry.time = System.currentTimeMillis();
-        logEntries.add(0, entry);
     }
 
     @Override
@@ -278,7 +156,7 @@ public class ContactChangesActivity extends BaseFragment implements Notification
         }
     }
 
-    private String formatEntryText(LogEntry entry) {
+    private String formatEntryText(ContactChanges.Entry entry) {
         if ("photo".equals(entry.type)) {
             return "changed his/her Profile Photo.";
         } else {
@@ -351,7 +229,7 @@ public class ContactChangesActivity extends BaseFragment implements Notification
             addView(descriptionTextView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT | Gravity.TOP, 75, 34, 13, 10));
         }
 
-        void bind(LogEntry entry, int groupPos) {
+        void bind(ContactChanges.Entry entry, int groupPos) {
             TLRPC.User user = MessagesController.getInstance(UserConfigHolder.currentAccount).getUser(entry.userId);
             avatarDrawable.setInfo(UserConfigHolder.currentAccount, user);
             avatarImageView.setForUserOrChat(user, avatarDrawable);
@@ -362,7 +240,7 @@ public class ContactChangesActivity extends BaseFragment implements Notification
             setWillNotDraw(!GroupCardHelper.needsDivider(groupPos));
         }
 
-        private static String formatEntryTextStatic(LogEntry entry) {
+        private static String formatEntryTextStatic(ContactChanges.Entry entry) {
             if ("photo".equals(entry.type)) {
                 return "changed his/her Profile Photo.";
             } else {
@@ -423,7 +301,7 @@ public class ContactChangesActivity extends BaseFragment implements Notification
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            LogEntry entry = logEntries.get(position);
+            ContactChanges.Entry entry = logEntries.get(position);
             int pos = GroupCardHelper.positionInGroup(position, logEntries.size());
             ((ChangeCell) holder.itemView).bind(entry, pos);
         }

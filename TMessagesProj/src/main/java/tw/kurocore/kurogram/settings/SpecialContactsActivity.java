@@ -1,5 +1,6 @@
 package tw.kurocore.kurogram.settings;
 
+import tw.kurocore.kurogram.feature.KuroFeatures;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.view.View;
@@ -47,36 +48,21 @@ public class SpecialContactsActivity extends BaseFragment implements ManageChatU
     private final ArrayList<Integer> items = new ArrayList<>();
     private final ArrayList<Long> contactIds = new ArrayList<>();
 
-    private SharedPreferences prefs() {
-        return ApplicationLoader.applicationContext.getSharedPreferences("kuro_special_contacts", Context.MODE_PRIVATE);
-    }
-
     private boolean isFeatureEnabled() {
-        return prefs().getBoolean("enabled", true);
+        return KuroFeatures.specialContacts().isEnabled();
     }
 
     private boolean isBackgroundEnabled() {
-        return prefs().getBoolean("background", false);
+        return KuroFeatures.specialContacts().isBackground();
     }
 
     private void loadContactIds() {
         contactIds.clear();
-        String saved = prefs().getString("contacts", "[]");
-        try {
-            JSONArray arr = new JSONArray(saved);
-            for (int i = 0; i < arr.length(); i++) {
-                contactIds.add(arr.getLong(i));
-            }
-        } catch (JSONException ignored) {
-        }
+        contactIds.addAll(KuroFeatures.specialContacts().contactIds());
     }
 
     private void saveContactIds() {
-        JSONArray arr = new JSONArray();
-        for (Long id : contactIds) {
-            arr.put((long) id);
-        }
-        prefs().edit().putString("contacts", arr.toString()).apply();
+        KuroFeatures.specialContacts().saveContactIds(contactIds);
     }
 
     private void addContact(long userId) {
@@ -89,7 +75,7 @@ public class SpecialContactsActivity extends BaseFragment implements ManageChatU
     private void removeContact(long userId) {
         contactIds.remove(userId);
         saveContactIds();
-        prefs().edit().remove("settings_" + userId).apply();
+        KuroFeatures.specialContacts().removeSettings(userId);
     }
 
     private void updateRows() {
@@ -148,13 +134,13 @@ public class SpecialContactsActivity extends BaseFragment implements ManageChatU
             int type = items.get(position);
             if (type == TYPE_ENABLE) {
                 boolean newVal = !isFeatureEnabled();
-                prefs().edit().putBoolean("enabled", newVal).apply();
+                KuroFeatures.specialContacts().setEnabled(newVal);
                 if (view instanceof TextCheckCell) {
                     ((TextCheckCell) view).setChecked(newVal);
                 }
             } else if (type == TYPE_BACKGROUND) {
                 boolean newVal = !isBackgroundEnabled();
-                prefs().edit().putBoolean("background", newVal).apply();
+                KuroFeatures.specialContacts().setBackground(newVal);
                 if (view instanceof TextCheckCell) {
                     ((TextCheckCell) view).setChecked(newVal);
                 }
@@ -328,7 +314,7 @@ public class SpecialContactsActivity extends BaseFragment implements ManageChatU
                         long userId = contactIds.get(contactIndex);
                         TLRPC.User user = MessagesController.getInstance(currentAccount).getUser(userId);
                         String name = user != null ? ContactsController.formatName(user.first_name, user.last_name) : "Unknown";
-                        String lastAction = SpecialContactsMonitor.lastActionText(userId);
+                        String lastAction = KuroFeatures.specialContacts().lastActionText(userId);
                         String status = lastAction != null ? lastAction : "No new action";
                         boolean isLast = contactIndex == contactIds.size() - 1;
                         int pos = isLast ? GroupCardHelper.POS_BOTTOM : GroupCardHelper.POS_MIDDLE;

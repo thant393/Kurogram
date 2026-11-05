@@ -1,11 +1,15 @@
 package tw.kurocore.kurogram.feature;
 
 import android.content.Context;
+import android.widget.Toast;
 
+import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.R;
 
+import tw.kurocore.kurogram.feature.stub.ContactChangesStub;
+import tw.kurocore.kurogram.feature.stub.SpecialContactsStub;
 import tw.kurocore.kurogram.feature.stub.ThemeStoreStub;
 
 /**
@@ -23,6 +27,8 @@ public final class KuroFeatures {
 
     // Safe stubs until a module registers the real implementations (see FeaturesProvider).
     private static volatile ThemeStore themes = new ThemeStoreStub();
+    private static volatile SpecialContacts specialContacts = new SpecialContactsStub();
+    private static volatile ContactChanges contactChanges = new ContactChangesStub();
     private static boolean initialised;
 
     private KuroFeatures() {
@@ -30,6 +36,27 @@ public final class KuroFeatures {
 
     public static ThemeStore themes() {
         return themes;
+    }
+
+    public static SpecialContacts specialContacts() {
+        return specialContacts;
+    }
+
+    public static ContactChanges contactChanges() {
+        return contactChanges;
+    }
+
+    /**
+     * For features that have no screen of their own to show an empty state in: shows a Toast and returns true
+     * when the feature is not part of this build. Use before opening such a feature.
+     */
+    public static boolean toastIfUnavailable(KuroFeature feature) {
+        if (feature.isAvailable()) {
+            return false;
+        }
+        AndroidUtilities.runOnUIThread(() -> Toast.makeText(org.telegram.messenger.ApplicationLoader.applicationContext,
+                unavailableMessage(), Toast.LENGTH_SHORT).show());
+        return true;
     }
 
     /** Used by the registrar handed to the private module. */
@@ -52,6 +79,16 @@ public final class KuroFeatures {
                     public void themes(ThemeStore store) {
                         setThemes(store);
                     }
+
+                    @Override
+                    public void specialContacts(SpecialContacts feature) {
+                        specialContacts = feature != null ? feature : new SpecialContactsStub();
+                    }
+
+                    @Override
+                    public void contactChanges(ContactChanges feature) {
+                        contactChanges = feature != null ? feature : new ContactChangesStub();
+                    }
                 });
             } else {
                 FileLog.e("kuro-features API " + provider.apiVersion() + " does not match core API " + API_VERSION);
@@ -61,10 +98,12 @@ public final class KuroFeatures {
         } catch (Throwable t) {
             FileLog.e(t);
         }
-        try {
-            themes.onAppStart(app);
-        } catch (Throwable t) {
-            FileLog.e(t);
+        for (KuroFeature f : new KuroFeature[]{themes, specialContacts, contactChanges}) {
+            try {
+                f.onAppStart(app);
+            } catch (Throwable t) {
+                FileLog.e(t);
+            }
         }
     }
 

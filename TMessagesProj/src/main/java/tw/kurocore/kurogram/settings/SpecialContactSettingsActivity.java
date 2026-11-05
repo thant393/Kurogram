@@ -1,5 +1,6 @@
 package tw.kurocore.kurogram.settings;
 
+import tw.kurocore.kurogram.feature.KuroFeatures;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -90,17 +91,10 @@ public class SpecialContactSettingsActivity extends BaseFragment {
         this.isNewContact = isNewContact;
     }
 
-    private SharedPreferences prefs() {
-        return ApplicationLoader.applicationContext.getSharedPreferences("kuro_special_contacts", Context.MODE_PRIVATE);
-    }
-
     private JSONObject loadSettings() {
-        String saved = prefs().getString("settings_" + userId, null);
+        JSONObject saved = KuroFeatures.specialContacts().settings(userId);
         if (saved != null) {
-            try {
-                return new JSONObject(saved);
-            } catch (JSONException ignored) {
-            }
+            return saved;
         }
         JSONObject obj = new JSONObject();
         for (int i = 0; i < CHECK_KEYS.length; i++) {
@@ -121,26 +115,14 @@ public class SpecialContactSettingsActivity extends BaseFragment {
     }
 
     private void saveSettings(JSONObject obj) {
-        prefs().edit().putString("settings_" + userId, obj.toString()).apply();
+        KuroFeatures.specialContacts().saveSettings(userId, obj);
     }
 
     private void commitAddContact() {
-        SharedPreferences p = prefs();
-        String saved = p.getString("contacts", "[]");
-        try {
-            org.json.JSONArray arr = new org.json.JSONArray(saved);
-            boolean exists = false;
-            for (int i = 0; i < arr.length(); i++) {
-                if (arr.getLong(i) == userId) {
-                    exists = true;
-                    break;
-                }
-            }
-            if (!exists) {
-                arr.put(userId);
-                p.edit().putString("contacts", arr.toString()).apply();
-            }
-        } catch (JSONException ignored) {
+        ArrayList<Long> ids = KuroFeatures.specialContacts().contactIds();
+        if (!ids.contains(userId)) {
+            ids.add(userId);
+            KuroFeatures.specialContacts().saveContactIds(ids);
         }
     }
 
