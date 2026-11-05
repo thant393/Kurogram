@@ -343,7 +343,7 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
             super(context);
             labels = new TextView[titles.length];
             GradientDrawable track = new GradientDrawable();
-            track.setCornerRadius(AndroidUtilities.dp(18));
+            track.setCornerRadius(AndroidUtilities.dp(tw.kurocore.kurogram.skin.KuroUi.floatingRadiusDp(18)));
             track.setColor(androidx.core.graphics.ColorUtils.setAlphaComponent(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText), 0x14));
             setBackground(track);
             int pad = AndroidUtilities.dp(2);
@@ -351,7 +351,7 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
 
             thumb = new View(context);
             GradientDrawable thumbBg = new GradientDrawable();
-            thumbBg.setCornerRadius(AndroidUtilities.dp(16));
+            thumbBg.setCornerRadius(AndroidUtilities.dp(tw.kurocore.kurogram.skin.KuroUi.floatingRadiusDp(16)));
             thumbBg.setColor(androidx.core.graphics.ColorUtils.setAlphaComponent(tw.kurocore.kurogram.skin.KuroUi.accent(), 0x2E));
             thumb.setBackground(thumbBg);
             thumbBg.setStroke(Math.max(1, AndroidUtilities.dp(1)), androidx.core.graphics.ColorUtils.setAlphaComponent(tw.kurocore.kurogram.skin.KuroUi.accent(), 0x66));

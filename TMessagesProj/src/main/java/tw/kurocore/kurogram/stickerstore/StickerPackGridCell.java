@@ -52,10 +52,10 @@ public class StickerPackGridCell extends FrameLayout {
         addView(column, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
 
         iconView = new BackupImageView(context);
-        iconView.setRoundRadius(AndroidUtilities.dp(16));
+        iconView.setRoundRadius(AndroidUtilities.dp(tw.kurocore.kurogram.skin.KuroUi.floatingRadiusDp(16)));
         GradientDrawable iconBg = new GradientDrawable();
         iconBg.setShape(GradientDrawable.RECTANGLE);
-        iconBg.setCornerRadius(AndroidUtilities.dp(16));
+        iconBg.setCornerRadius(AndroidUtilities.dp(tw.kurocore.kurogram.skin.KuroUi.floatingRadiusDp(16)));
         iconBg.setColor(Theme.getColor(Theme.key_windowBackgroundGray));
         iconView.setBackground(iconBg);
         column.addView(iconView, LayoutHelper.createLinear(64, 64, Gravity.CENTER_HORIZONTAL, 0, 4, 0, 12));

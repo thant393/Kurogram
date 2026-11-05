@@ -118,7 +118,7 @@ public class UploadHubActivity extends BaseFragment {
         uploadButton.setTextSize(15);
         uploadButton.setTypeface(AndroidUtilities.bold());
         uploadButton.setGravity(Gravity.CENTER);
-        uploadButton.setBackground(Theme.createSimpleSelectorRoundRectDrawable(AndroidUtilities.dp(8), tw.kurocore.kurogram.skin.KuroSkinManager.get().accent(), Theme.getColor(Theme.key_featuredStickers_addButtonPressed)));
+        uploadButton.setBackground(Theme.createSimpleSelectorRoundRectDrawable(AndroidUtilities.dp(tw.kurocore.kurogram.skin.KuroUi.floatingRadiusDp(8)), tw.kurocore.kurogram.skin.KuroSkinManager.get().accent(), Theme.getColor(Theme.key_featuredStickers_addButtonPressed)));
         uploadButton.setOnClickListener(v -> upload());
         stickerCard.addView(uploadButton, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 48, 0, 14, 0, 0));
 
@@ -164,7 +164,7 @@ public class UploadHubActivity extends BaseFragment {
         themeUploadButton.setTextSize(15);
         themeUploadButton.setTypeface(AndroidUtilities.bold());
         themeUploadButton.setGravity(Gravity.CENTER);
-        themeUploadButton.setBackground(Theme.createSimpleSelectorRoundRectDrawable(AndroidUtilities.dp(8), tw.kurocore.kurogram.skin.KuroSkinManager.get().accent(), Theme.getColor(Theme.key_featuredStickers_addButtonPressed)));
+        themeUploadButton.setBackground(Theme.createSimpleSelectorRoundRectDrawable(AndroidUtilities.dp(tw.kurocore.kurogram.skin.KuroUi.floatingRadiusDp(8)), tw.kurocore.kurogram.skin.KuroSkinManager.get().accent(), Theme.getColor(Theme.key_featuredStickers_addButtonPressed)));
         themeUploadButton.setOnClickListener(v -> uploadTheme());
         themeCard.addView(themeUploadButton, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 48, 0, 8, 0, 0));
 
