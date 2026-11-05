@@ -207,7 +207,7 @@ public class StickerStoreApi {
         }
     }
 
-    static void send(String method, String path, JSONObject body, ResultCallback callback) {
+    public static void send(String method, String path, JSONObject body, ResultCallback callback) {
         if (!isConfigured()) {
             postResultError(callback, "Sticker store is not configured");
             return;
@@ -261,7 +261,7 @@ public class StickerStoreApi {
         });
     }
 
-    interface JsonCallback {
+    public interface JsonCallback {
         /** root is a JSONObject or JSONArray. */
         void onSuccess(Object root);
 
@@ -269,7 +269,7 @@ public class StickerStoreApi {
     }
 
     /** GET path (relative to the API base) and hands back the parsed JSON on the UI thread. */
-    static void getJson(String path, JsonCallback callback) {
+    public static void getJson(String path, JsonCallback callback) {
         if (!isConfigured()) {
             org.telegram.messenger.AndroidUtilities.runOnUIThread(() -> callback.onError("Store is not configured"));
             return;

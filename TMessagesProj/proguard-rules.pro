@@ -73,3 +73,6 @@
 
 -dontwarn android.support.annotation.*
 -dontwarn androidx.compose.**
+
+# Optional feature module (kuro-features), found by name via Class.forName
+-keep class tw.kurocore.kurogram.features.impl.** { *; }

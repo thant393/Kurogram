@@ -43,3 +43,6 @@
 [submodule "TMessagesProj/jni/third_party/wamr"]
 	path = TMessagesProj/jni/third_party/wamr
 	url = https://github.com/wasm-micro-runtime/wasm-micro-runtime.git
+[submodule "kuro-features"]
+	path = kuro-features
+	url = https://github.com/thant393/kuro-features

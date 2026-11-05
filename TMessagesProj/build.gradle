@@ -135,6 +135,13 @@ dependencies {
 android {
     sourceSets.main.jniLibs.srcDirs = ['./jni/']
 
+    // Optional feature implementations (git submodule, see kuro-features/README.md). Without the folder the
+    // core builds with safe stubs.
+    def kuroFeaturesSrc = file("${rootDir}/kuro-features/src/main/java")
+    if (kuroFeaturesSrc.exists()) {
+        sourceSets.main.java.srcDir(kuroFeaturesSrc)
+    }
+
     externalNativeBuild {
         cmake {
             path 'jni/CMakeLists.txt'
