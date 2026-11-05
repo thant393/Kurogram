@@ -6,7 +6,6 @@ import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.R;
 
-import tw.kurocore.kurogram.feature.intree.InTreeThemeStore;
 import tw.kurocore.kurogram.feature.stub.ThemeStoreStub;
 
 /**
@@ -22,9 +21,8 @@ public final class KuroFeatures {
 
     private static final String BOOTSTRAP_CLASS = "tw.kurocore.kurogram.features.impl.FeaturesBootstrap";
 
-    // Step 1 of the modularisation: the in-tree implementation (the current code) is still the default.
-    // Step 3 replaces it with the stub and lets the private module register the real one.
-    private static volatile ThemeStore themes = new InTreeThemeStore();
+    // Safe stubs until a module registers the real implementations (see FeaturesProvider).
+    private static volatile ThemeStore themes = new ThemeStoreStub();
     private static boolean initialised;
 
     private KuroFeatures() {
