@@ -25,4 +25,9 @@ public interface ContactChanges extends KuroFeature {
 
     /** Compares the contacts of the account with the last snapshot and records differences. True if anything changed. */
     boolean checkForChanges(int account);
+
+    /** Called on the UI thread whenever the log changed (also when the app detected it in the background). */
+    void addListener(Runnable listener);
+
+    void removeListener(Runnable listener);
 }

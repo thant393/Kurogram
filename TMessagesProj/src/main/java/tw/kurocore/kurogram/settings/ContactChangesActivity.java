@@ -52,10 +52,18 @@ public class ContactChangesActivity extends BaseFragment implements Notification
 
     private final ArrayList<ContactChanges.Entry> logEntries = new ArrayList<>();
 
+    // The app-wide monitor records changes in the background; this refreshes the open screen.
+    private final Runnable logListener = () -> {
+        loadLog();
+        if (listAdapter != null) {
+            listAdapter.notifyDataSetChanged();
+        }
+        updateEmptyView();
+    };
+
     @Override
     public boolean onFragmentCreate() {
-        getNotificationCenter().addObserver(this, NotificationCenter.updateInterfaces);
-        getNotificationCenter().addObserver(this, NotificationCenter.contactsDidLoad);
+        KuroFeatures.contactChanges().addListener(logListener);
         loadLog();
         checkForChanges();
         return super.onFragmentCreate();
@@ -63,8 +71,7 @@ public class ContactChangesActivity extends BaseFragment implements Notification
 
     @Override
     public void onFragmentDestroy() {
-        getNotificationCenter().removeObserver(this, NotificationCenter.updateInterfaces);
-        getNotificationCenter().removeObserver(this, NotificationCenter.contactsDidLoad);
+        KuroFeatures.contactChanges().removeListener(logListener);
         super.onFragmentDestroy();
     }
 
@@ -151,9 +158,7 @@ public class ContactChangesActivity extends BaseFragment implements Notification
 
     @Override
     public void didReceivedNotification(int id, int account, Object... args) {
-        if (id == NotificationCenter.updateInterfaces || id == NotificationCenter.contactsDidLoad) {
-            checkForChanges();
-        }
+
     }
 
     private String formatEntryText(ContactChanges.Entry entry) {

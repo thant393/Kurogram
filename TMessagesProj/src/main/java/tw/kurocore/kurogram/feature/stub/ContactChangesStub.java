@@ -25,4 +25,12 @@ public final class ContactChangesStub implements ContactChanges {
     public boolean checkForChanges(int account) {
         return false;
     }
+
+    @Override
+    public void addListener(Runnable listener) {
+    }
+
+    @Override
+    public void removeListener(Runnable listener) {
+    }
 }
