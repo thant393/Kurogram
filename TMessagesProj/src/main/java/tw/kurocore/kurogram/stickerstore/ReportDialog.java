@@ -1,10 +1,10 @@
 package tw.kurocore.kurogram.stickerstore;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 
 import org.telegram.messenger.ApplicationLoader;
+import org.telegram.ui.ActionBar.AlertDialog;
 
 /** Shared "Report" flow for packs and themes: pick a reason, then send it. Remembers what was reported. */
 public final class ReportDialog {
