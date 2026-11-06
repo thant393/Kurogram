@@ -65,9 +65,7 @@ public class KuroSettingsActivity extends BaseKuroSettingsActivity implements Fa
 
     private final int channelRow = rowId++;
     private final int supportGroupRow = rowId++;
-    private final int websiteRow = rowId++;
     private final int sourceCodeRow = rowId++;
-    private final int translationRow = rowId++;
     private final int donateRow = rowId++;
 
     private final int sponsorRow = 100;
@@ -177,9 +175,7 @@ public class KuroSettingsActivity extends BaseKuroSettingsActivity implements Fa
 
         items.add(UItem.asButton(channelRow, R.drawable.msg_channel, LocaleController.getString(R.string.OfficialChannel), "@KuroUpdates").slug("channel"));
         items.add(UItem.asButton(supportGroupRow, R.drawable.msg_groups, "Support Group", "@SupportGroup").slug("supportGroup"));
-        items.add(UItem.asButton(websiteRow, R.drawable.msg_language, LocaleController.getString(R.string.OfficialSite), "nekogram.app").slug("website"));
         items.add(UItem.asButton(sourceCodeRow, R.drawable.msg_link, LocaleController.getString(R.string.ViewSourceCode), "GitHub").slug("sourceCode"));
-        items.add(UItem.asButtonSubtext(translationRow, R.drawable.msg_translate, LocaleController.getString(R.string.Translation), LocaleController.getString(R.string.TranslationAbout)).slug("translation"));
         items.add(UItem.asButtonSubtext(donateRow, R.drawable.msg_input_like, LocaleController.getString(R.string.Donate), LocaleController.getString(R.string.DonateAbout)).slug("donate"));
         items.add(UItem.asShadow(null));
 
@@ -221,12 +217,8 @@ public class KuroSettingsActivity extends BaseKuroSettingsActivity implements Fa
             Browser.openUrl(getParentActivity(), "https://t.me/tessssssssssh");
         } else if (id == donateRow) {
             presentFragment(new KuroDonateActivity());
-        } else if (id == translationRow) {
-            Browser.openUrl(getParentActivity(), "https://neko.crowdin.com/nekogram");
-        } else if (id == websiteRow) {
-            Browser.openUrl(getParentActivity(), "https://nekogram.app");
         } else if (id == sourceCodeRow) {
-            Browser.openUrl(getParentActivity(), "https://github.com/Kurogram/Kurogram");
+            Browser.openUrl(getParentActivity(), "https://github.com/thant393/Kurogram");
         } else if (id >= sponsorRow) {
             var news = newsList.get(id - sponsorRow);
             Browser.openUrl(getParentActivity(), news.url);
@@ -328,9 +320,7 @@ public class KuroSettingsActivity extends BaseKuroSettingsActivity implements Fa
 
         searchResultList.add(new SearchResult(20000, LocaleController.getString(R.string.OfficialChannel), "@KuroUpdates", R.drawable.msg2_help, () -> getMessagesController().openByUserName("kurogramoffical", this, 1)));
         searchResultList.add(new SearchResult(20005, "Support Group", "@SupportGroup", R.drawable.msg2_help, () -> Browser.openUrl(getParentActivity(), "https://t.me/tessssssssssh")));
-        searchResultList.add(new SearchResult(20001, LocaleController.getString(R.string.OfficialSite), "nekogram.app", R.drawable.msg2_help, () -> Browser.openUrl(getParentActivity(), "https://nekogram.app")));
-        searchResultList.add(new SearchResult(20002, LocaleController.getString(R.string.ViewSourceCode), "GitHub", R.drawable.msg2_help, () -> Browser.openUrl(getParentActivity(), "https://github.com/Kurogram/Kurogram")));
-        searchResultList.add(new SearchResult(20003, LocaleController.getString(R.string.Translation), LocaleController.getString(R.string.TranslationAbout), R.drawable.msg2_help, () -> Browser.openUrl(getParentActivity(), "https://neko.crowdin.com/nekogram")));
+        searchResultList.add(new SearchResult(20002, LocaleController.getString(R.string.ViewSourceCode), "GitHub", R.drawable.msg2_help, () -> Browser.openUrl(getParentActivity(), "https://github.com/thant393/Kurogram")));
         searchResultList.add(new SearchResult(20004, LocaleController.getString(R.string.Donate), LocaleController.getString(R.string.DonateAbout), R.drawable.msg2_help, () -> presentFragment(new KuroDonateActivity())));
 
         return searchResultList;
