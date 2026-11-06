@@ -1,5 +1,7 @@
 name: Kurogram Debug Build
 on:
+  push:
+    branches: [ "ci" ]
   workflow_dispatch:
     inputs:
       target:
@@ -83,7 +85,7 @@ jobs:
         # packaging only the chosen target(s) (see the comment there) instead of all four
         # ABIs plus the universal apk every run - this is what actually makes a
         # dev/testing run fast, not just which outputs get uploaded afterward.
-        run: ./gradlew assembleDebug -PbuildAbi=${{ inputs.target }}
+        run: ./gradlew assembleDebug -PbuildAbi=${{ inputs.target || 'armeabi-v7a' }}
       - name: Verify APKs are signed
         run: |
           for apk in TMessagesProj_App/build/outputs/apk/debug/*.apk; do
@@ -99,7 +101,7 @@ jobs:
           name: Kurogram-arm64-v8a
           path: TMessagesProj_App/build/outputs/apk/debug/*-arm64-v8a.apk
           archive: false
-      - if: ${{ inputs.target == 'armeabi-v7a' || inputs.target == 'all' }}
+      - if: ${{ inputs.target == '' || inputs.target == 'armeabi-v7a' || inputs.target == 'all' }}
         uses: actions/upload-artifact@v7
         with:
           name: Kurogram-armeabi-v7a
