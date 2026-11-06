@@ -12,7 +12,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
-import app.nekogram.gifski.Gifski;
+import tw.kurocore.kurogram.gifski.Gifski;
 
 public class StickerHelper {
     private static final Executor rendererExecutor = Executors.newSingleThreadExecutor();

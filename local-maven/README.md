@@ -4,6 +4,6 @@ Prebuilt libraries built from our own repositories, used as a Maven repository b
 
 | Artifact | Built from |
 |---|---|
-| `tw.kurocore.kurogram:gifski:1.0.2` | https://github.com/thant393/kuro-gif (workflow "Build AAR", branch `aar`), commit f12143d |
+| `tw.kurocore.kurogram:gifski:1.0.2` | https://github.com/thant393/kuro-gif (workflow "Build AAR", branch `aar`), commit 56ed73f (package tw.kurocore.kurogram.gifski) |
 
 To update: run the workflow, copy `gifski-release.aar` from the `aar` branch to `gifski/<version>/gifski-<version>.aar` and bump the version here and in `TMessagesProj/build.gradle`.
