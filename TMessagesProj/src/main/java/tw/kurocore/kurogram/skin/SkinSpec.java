@@ -322,6 +322,7 @@ public final class SkinSpec {
             "chat.headerRadiusDp|int:0:30", "chat.inputRadiusDp|int:0:30", "chat.panelRadiusDp|int:0:30", "chat.buttonRadiusDp|int:0:30", "chat.dateRadiusDp|int:0:30",
             "chat.wallpaperColor|col", "chat.wallpaperColor2|col", "chat.wallpaperAngle|int:0:359",
             "chat.menuRadiusDp|int:0:30", "chat.reactionRadiusDp|int:0:30",
+            "screens.chats.tabsRadiusDp|int:0:30",
     };
 
     /**
@@ -360,6 +361,7 @@ public final class SkinSpec {
             "chat.headerRadiusDp", "chat.inputRadiusDp", "chat.panelRadiusDp", "chat.buttonRadiusDp", "chat.dateRadiusDp",
             "chat.wallpaperColor", "chat.wallpaperColor2", "chat.wallpaperAngle",
             "chat.menuRadiusDp", "chat.reactionRadiusDp",
+            "screens.chats.tabsRadiusDp",
     };
 
     private static SkinGrammar grammar;

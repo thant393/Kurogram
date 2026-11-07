@@ -145,7 +145,8 @@
   "chat.wallpaperColor2|col",
   "chat.wallpaperAngle|int:0:359",
   "chat.menuRadiusDp|int:0:30",
-  "chat.reactionRadiusDp|int:0:30"
+  "chat.reactionRadiusDp|int:0:30",
+  "screens.chats.tabsRadiusDp|int:0:30"
  ],
  "layout": [
   "settings.header|enum:centered,cover",
@@ -291,6 +292,7 @@
   "chat.wallpaperColor2",
   "chat.wallpaperAngle",
   "chat.menuRadiusDp",
-  "chat.reactionRadiusDp"
+  "chat.reactionRadiusDp",
+  "screens.chats.tabsRadiusDp"
  ]
 }

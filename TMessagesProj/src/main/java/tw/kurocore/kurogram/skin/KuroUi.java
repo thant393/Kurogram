@@ -28,6 +28,18 @@ public final class KuroUi {
         return Math.min(defaultDp, t().buttonRadiusDp);
     }
 
+    /** Chats search pill radius in dp: skin's components.search.radiusDp when given, else the default. */
+    public static int searchPillDp(int defaultDp) {
+        int v = t().searchRadiusDp;
+        return v >= 0 ? v : defaultDp;
+    }
+
+    /** Chats folder-tabs bar radius in dp: skin's screens.chats.tabsRadiusDp when given, else the default. */
+    public static int tabsBarDp(int defaultDp) {
+        int v = t().chatsTabsRadiusDp;
+        return v >= 0 ? v : defaultDp;
+    }
+
     /** Chat shape radius in px: the skin value (dp) when the skin gives one, otherwise Telegram's own default (dp). */
     public static float chatRadius(int skinDp, float defaultDp) {
         return org.telegram.messenger.AndroidUtilities.dpf2(skinDp >= 0 ? skinDp : defaultDp);

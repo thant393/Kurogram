@@ -315,7 +315,7 @@ public class FilterTabsView extends FrameLayout {
             if (chipsStyle() && currentTab.id != selectedTabId) {
                 CHIP_PAINT.setColor(Theme.getColor(Theme.key_divider, resourcesProvider));
                 final float cy = getMeasuredHeight() / 2f;
-                canvas.drawRoundRect(dp(2), cy - dp(14), getMeasuredWidth() - dp(2), cy + dp(14), dp(14), dp(14), CHIP_PAINT);
+                canvas.drawRoundRect(dp(2), cy - dp(14), getMeasuredWidth() - dp(2), cy + dp(14), dp(tw.kurocore.kurogram.skin.KuroUi.tabsBarDp(14)), dp(tw.kurocore.kurogram.skin.KuroUi.tabsBarDp(14)), CHIP_PAINT);
             }
             int key;
             int animateToKey;
