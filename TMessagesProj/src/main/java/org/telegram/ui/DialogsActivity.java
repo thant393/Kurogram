@@ -4147,7 +4147,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             viewPage.listView.setClipToPadding(false);
             viewPage.listView.setPivotY(0);
             if (initialDialogsType == DIALOGS_TYPE_BOT_REQUEST_PEER) {
-                viewPage.listView.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundGray));
+                viewPage.listView.setBackgroundColor(tw.kurocore.kurogram.skin.KuroSkinManager.get().colorOr("screens.chats.background", getThemedColor(Theme.key_windowBackgroundGray)));
             }
             viewPage.dialogsItemAnimator = new DialogsItemAnimator(viewPage.listView) {
                 @Override
