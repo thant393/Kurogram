@@ -61,6 +61,12 @@ public class ProfileActionsView extends View {
 
     private final List<Action> actions = new ArrayList<>();
     private final Paint paint = new Paint();
+    private final Paint dividerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+    /** screens.profile.actionsStyle == "row": the actions share one card instead of separate buttons. */
+    private boolean isRowStyle() {
+        return tw.kurocore.kurogram.skin.KuroUi.t().profileActionsRow;
+    }
     private final Paint shaderPaint = new Paint();
     private float parentExpanded;
 
@@ -234,7 +240,7 @@ public class ProfileActionsView extends View {
 
     private float getItemWidth() {
         int w = getMeasuredWidth();
-        float betweenPadding = xpadding / 2f;
+        float betweenPadding = isRowStyle() ? 0f : xpadding / 2f;
         return (w - betweenPadding * (activeCount - 1) - xpadding * 2f) / activeCount;
     }
 
@@ -254,7 +260,8 @@ public class ProfileActionsView extends View {
             return;
         }
 
-        final float betweenPadding = xpadding / 2f;
+        final boolean rowStyle = isRowStyle();
+        final float betweenPadding = rowStyle ? 0f : xpadding / 2f;
         final float width = getItemWidth();
         float left = xpadding;
         float r = getRoundRadius();
@@ -299,7 +306,23 @@ public class ProfileActionsView extends View {
             return;
         }
 
-        if (!ignoreRect) {
+        if (!ignoreRect && rowStyle && firstAction != null && lastAction != null) {
+            // one card for all actions, with thin dividers (Rating | Earned | Rate look)
+            AndroidUtilities.rectTmp.set(firstAction.rect.left, firstAction.rect.top, lastAction.rect.right, lastAction.rect.bottom);
+            int wasAlpha = paint.getAlpha();
+            paint.setAlpha((int) (alphaFraction1 * wasAlpha));
+            paint.setShadowLayer(0, 0, 0, 0);
+            canvas.drawRoundRect(AndroidUtilities.rectTmp, r, r, paint);
+            paint.setAlpha(wasAlpha);
+            dividerPaint.setColor(Theme.multAlpha(Color.BLACK, 0.10f * alphaFraction1));
+            dividerPaint.setStrokeWidth(Math.max(1f, dpf2(1f)));
+            for (int i = 0; i < c; i++) {
+                Action action = actions.get(i);
+                if (action.isDeleted || action.isDeleting || action == lastAction) continue;
+                float x = action.rect.right;
+                canvas.drawLine(x, action.rect.top + action.rect.height() * 0.25f, x, action.rect.bottom - action.rect.height() * 0.25f, dividerPaint);
+            }
+        } else if (!ignoreRect) {
             for (int i = 0; i < c; i++) {
                 Action action = actions.get(i);
                 if (!action.isDeleted) {

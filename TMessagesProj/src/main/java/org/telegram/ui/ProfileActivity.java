@@ -6512,7 +6512,8 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 return dp(needInsetForStories() ? 24 : 38);
             }
         }
-        return dp(tw.kurocore.kurogram.skin.KuroUi.profileAvatarDp(50));
+        // skin radius at rest, easing back to a circle while the avatar melts into the toolbar (the gooey effect expects a circle)
+        return (int) AndroidUtilities.lerp(dp(tw.kurocore.kurogram.skin.KuroUi.profileAvatarDp(50)), dp(50), Math.max(0f, Math.min(1f, pullUpProgress)));
     }
 
     private void updateTtlIcon() {
@@ -8837,6 +8838,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     }
                     avatarScale = lerp(intoSize, tw.kurocore.kurogram.skin.KuroUi.profileSizeDp(), diff) / 100f;
                     pullUpProgress = 1.0f - diff;
+                    avatarImage.setRoundRadiusForExpand(getSmallAvatarRoundRadius());
                 }
 
                 if (actionsView != null) {
