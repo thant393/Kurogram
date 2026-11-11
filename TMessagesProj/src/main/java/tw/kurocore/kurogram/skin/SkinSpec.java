@@ -323,6 +323,7 @@ public final class SkinSpec {
             "chat.wallpaperColor|col", "chat.wallpaperColor2|col", "chat.wallpaperAngle|int:0:359",
             "chat.menuRadiusDp|int:0:30", "chat.reactionRadiusDp|int:0:30",
             "screens.chats.tabsRadiusDp|int:0:30",
+            "screens.profile.avatarRadiusDp|int:0:50",
     };
 
     /**
@@ -362,6 +363,7 @@ public final class SkinSpec {
             "chat.wallpaperColor", "chat.wallpaperColor2", "chat.wallpaperAngle",
             "chat.menuRadiusDp", "chat.reactionRadiusDp",
             "screens.chats.tabsRadiusDp",
+            "screens.profile.avatarRadiusDp",
     };
 
     private static SkinGrammar grammar;

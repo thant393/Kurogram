@@ -6511,7 +6511,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 return dp(needInsetForStories() ? 24 : 38);
             }
         }
-        return dp(50);
+        return dp(tw.kurocore.kurogram.skin.KuroUi.profileAvatarDp(50));
     }
 
     private void updateTtlIcon() {

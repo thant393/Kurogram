@@ -40,6 +40,12 @@ public final class KuroUi {
         return v >= 0 ? v : defaultDp;
     }
 
+    /** Profile avatar corner radius in dp (at the 100dp base size; 50 = circle): skin value or the default. */
+    public static int profileAvatarDp(int defaultDp) {
+        int v = t().profileAvatarRadiusDp;
+        return v >= 0 ? v : defaultDp;
+    }
+
     /** Chat shape radius in px: the skin value (dp) when the skin gives one, otherwise Telegram's own default (dp). */
     public static float chatRadius(int skinDp, float defaultDp) {
         return org.telegram.messenger.AndroidUtilities.dpf2(skinDp >= 0 ? skinDp : defaultDp);
