@@ -6100,7 +6100,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
     }
 
     private int getHeaderOnlyExtraHeight() {
-        final int kuroExtra = dp(tw.kurocore.kurogram.skin.KuroUi.profileSizeDp() - 96);
+        final int kuroExtra = dp(kuroSizeDp() - 96);
         if (getActionsExtraHeight() == 0) {
             return dp(168f) + kuroExtra;
         }
@@ -6473,7 +6473,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         avatarImage.setForegroundAlpha(value);
 
         final FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) avatarContainer.getLayoutParams();
-        params.width = (int) lerp(dpf2(100), listView.getMeasuredWidth() / avatarScale, value);
+        params.width = (int) lerp(kuroBaseWidth(pullUpProgress), listView.getMeasuredWidth() / avatarScale, value);
         params.height = (int) lerp(dpf2(100), (extraHeight + newTop) / avatarScale, value);
         fixAvatarImageInCenter();
         avatarContainer.requestLayout();
@@ -6502,6 +6502,33 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         avatarContainer.setTranslationX(avatarX);
     }
 
+    /** screens.profile.photoStyle == "card": the header photo is a wide rounded card and the texts are left-aligned. */
+    private boolean kuroCard() {
+        return tw.kurocore.kurogram.skin.KuroUi.t().profilePhotoCard && !isTopic;
+    }
+
+    private float kuroCardWidthPx() {
+        int w = listView != null && listView.getMeasuredWidth() > 0 ? listView.getMeasuredWidth() : AndroidUtilities.displaySize.x;
+        return w - dp(32);
+    }
+
+    /** Header photo height in dp: the skin's avatar size, or in card mode 85% of the card width. */
+    private int kuroSizeDp() {
+        if (kuroCard()) {
+            return Math.max(96, (int) (kuroCardWidthPx() / AndroidUtilities.density * 0.85f));
+        }
+        return tw.kurocore.kurogram.skin.KuroUi.profileSizeDp();
+    }
+
+    /** Width of the avatar container in its own (100dp-high) coordinates; wider than 100 in card mode, melting back to 100 while collapsing. */
+    private float kuroBaseWidth(float collapse) {
+        if (!kuroCard()) {
+            return dpf2(100);
+        }
+        float wide = 100f * (kuroCardWidthPx() / AndroidUtilities.density) / kuroSizeDp();
+        return dpf2(AndroidUtilities.lerp(wide, 100f, Math.max(0f, Math.min(1f, collapse))));
+    }
+
     private int getSmallAvatarRoundRadius() {
         if (isTopic) {
             return 0;
@@ -6513,6 +6540,11 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             }
         }
         // skin radius at rest, easing back to a circle while the avatar melts into the toolbar (the gooey effect expects a circle)
+        if (kuroCard()) {
+            // card mode: the skin radius is the visual corner radius in dp (default 24); convert to the 100dp-high base space
+            int visual = tw.kurocore.kurogram.skin.KuroUi.profileAvatarDp(24);
+            return (int) AndroidUtilities.lerp(dp(visual) * 100f / kuroSizeDp(), dp(50), Math.max(0f, Math.min(1f, pullUpProgress)));
+        }
         return (int) AndroidUtilities.lerp(dp(tw.kurocore.kurogram.skin.KuroUi.profileAvatarDp(50)), dp(50), Math.max(0f, Math.min(1f, pullUpProgress)));
     }
 
@@ -8558,7 +8590,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             float h = openAnimationInProgress ? initialAnimationExtraHeight : extraHeight;
             if (h > headerExtraHeight || isPulledDown) {
                 expandProgress = Math.max(0f, Math.min(1f, (h - headerExtraHeight) / (listView.getMeasuredWidth() - newTop - getHeaderOnlyExtraHeight())));
-                avatarScale = lerp(tw.kurocore.kurogram.skin.KuroUi.profileSizeDp() / 42f, Math.max(138, tw.kurocore.kurogram.skin.KuroUi.profileSizeDp()) / 42f, Math.min(1f, expandProgress * 3f)) / 100f * 42f;
+                avatarScale = lerp(kuroSizeDp() / 42f, Math.max(138, kuroSizeDp()) / 42f, Math.min(1f, expandProgress * 3f)) / 100f * 42f;
                 pullUpProgress = 0.0f;
 
                 if (storyView != null) {
@@ -8822,21 +8854,21 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 updateEmojiStatusDrawableColor(avatarAnimationProgress);
 
                 final FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) avatarContainer.getLayoutParams();
-                params.width = (int) AndroidUtilities.lerp(AndroidUtilities.dpf2(100), listView.getMeasuredWidth() / avatarScale, avatarAnimationProgress);
+                params.width = (int) AndroidUtilities.lerp(kuroBaseWidth(pullUpProgress), listView.getMeasuredWidth() / avatarScale, avatarAnimationProgress);
                 params.height = (int) AndroidUtilities.lerp(AndroidUtilities.dpf2(100), (extraHeight + newTop) / avatarScale, avatarAnimationProgress);
                 avatarContainer.requestLayout();
 
                 updateCollectibleHint();
             } else if (h <= headerExtraHeight) {
                 if (openAnimationInProgress) {
-                    avatarScale = lerp(42, tw.kurocore.kurogram.skin.KuroUi.profileSizeDp(), diff) / 100f;
+                    avatarScale = lerp(42, kuroSizeDp(), diff) / 100f;
                     pullUpProgress = 0.0f;
                 } else {
                     float intoSize = 24f;
                     if (avatarGooey != null && avatarGooey.notchInfo != null && avatarGooey.notchInfo.isLikelyCircle) {
                         intoSize = 0.5f * avatarGooey.notchInfo.bounds.width() / AndroidUtilities.density;
                     }
-                    avatarScale = lerp(intoSize, tw.kurocore.kurogram.skin.KuroUi.profileSizeDp(), diff) / 100f;
+                    avatarScale = lerp(intoSize, kuroSizeDp(), diff) / 100f;
                     pullUpProgress = 1.0f - diff;
                     avatarImage.setRoundRadiusForExpand(getSmallAvatarRoundRadius());
                 }
@@ -8857,6 +8889,14 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 }
                 final float nameScale = 1.0f + 0.12f * diff;
                 if (expandAnimator == null || !expandAnimator.isRunning()) {
+                    if (kuroCard()) {
+                        final FrameLayout.LayoutParams kuroParams = (FrameLayout.LayoutParams) avatarContainer.getLayoutParams();
+                        final int kuroW = (int) kuroBaseWidth(pullUpProgress);
+                        if (kuroParams.width != kuroW) {
+                            kuroParams.width = kuroW;
+                            avatarContainer.requestLayout();
+                        }
+                    }
                     avatarContainer.setScaleX(avatarScale);
                     avatarContainer.setScaleY(avatarScale);
                     fixAvatarImageInCenter();
@@ -8907,6 +8947,11 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     float onlineX = viewportWidth / 2f - (params2.leftMargin + Math.min(onlineTextView[hasFallbackPhoto ? 3 : a].getExactWidth(), a == 1 ? params2.width : viewportWidth) * 0.5f);
                     FrameLayout.LayoutParams params3 = (FrameLayout.LayoutParams) idTextView.getLayoutParams();
                     float idX = viewportWidth / 2f - (params3.leftMargin + Math.min(idTextView.getExactWidth(), params3.width) * 0.5f);
+                    if (kuroCard()) {
+                        nameX = dp(16) - params1.leftMargin;
+                        onlineX = dp(16) - params2.leftMargin;
+                        idX = dp(16) - params3.leftMargin;
+                    }
 
                     if (a == 1) {
                         this.nameX = nameX;
@@ -9001,6 +9046,11 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             float onlineX = listView.getMeasuredWidth() / 2f - (params.leftMargin + onlineTextView[a].getExactWidth() * 0.5f);
             params = (FrameLayout.LayoutParams) idTextView.getLayoutParams();
             float idX = listView.getMeasuredWidth() / 2f - (params.leftMargin + idTextView.getExactWidth() * 0.5f);
+            if (kuroCard()) {
+                nameX = dp(16) - ((FrameLayout.LayoutParams) nameTextView[a].getLayoutParams()).leftMargin;
+                onlineX = dp(16) - ((FrameLayout.LayoutParams) onlineTextView[a].getLayoutParams()).leftMargin;
+                idX = dp(16) - params.leftMargin;
+            }
 
             if (a == 1) {
                 this.nameX = nameX;

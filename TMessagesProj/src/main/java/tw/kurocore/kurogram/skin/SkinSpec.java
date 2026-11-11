@@ -325,6 +325,7 @@ public final class SkinSpec {
             "screens.chats.tabsRadiusDp|int:0:30",
             "screens.profile.avatarRadiusDp|int:0:50",
             "screens.profile.actionsStyle|enum:buttons,row",
+            "screens.profile.photoStyle|enum:avatar,card",
     };
 
     /**
@@ -366,6 +367,7 @@ public final class SkinSpec {
             "screens.chats.tabsRadiusDp",
             "screens.profile.avatarRadiusDp",
             "screens.profile.actionsStyle",
+            "screens.profile.photoStyle",
     };
 
     private static SkinGrammar grammar;
