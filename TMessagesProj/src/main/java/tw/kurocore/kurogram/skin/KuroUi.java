@@ -46,6 +46,12 @@ public final class KuroUi {
         return v >= 0 ? v : defaultDp;
     }
 
+    /** Profile header avatar size in dp: skin screens.profile.avatarSizeDp (64-160) or Telegram's own 96. */
+    public static int profileSizeDp() {
+        int v = t().profileAvatarSizeDp;
+        return v >= 64 ? Math.min(v, 160) : 96;
+    }
+
     /** Chat shape radius in px: the skin value (dp) when the skin gives one, otherwise Telegram's own default (dp). */
     public static float chatRadius(int skinDp, float defaultDp) {
         return org.telegram.messenger.AndroidUtilities.dpf2(skinDp >= 0 ? skinDp : defaultDp);

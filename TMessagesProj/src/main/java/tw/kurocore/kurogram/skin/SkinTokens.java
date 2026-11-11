@@ -53,7 +53,7 @@ public final class SkinTokens {
     public final int fabSizeDp, fabRadiusDp;
     /** Chat shapes, -1 = keep Telegram's own radius. */
     public final int chatWallpaperColor, chatWallpaperColor2, chatWallpaperAngle;
-    public final int chatHeaderRadiusDp, chatInputRadiusDp, chatPanelRadiusDp, chatButtonRadiusDp, chatDateRadiusDp, chatMenuRadiusDp, chatReactionRadiusDp, chatsTabsRadiusDp, profileAvatarRadiusDp;
+    public final int chatHeaderRadiusDp, chatInputRadiusDp, chatPanelRadiusDp, chatButtonRadiusDp, chatDateRadiusDp, chatMenuRadiusDp, chatReactionRadiusDp, chatsTabsRadiusDp, profileAvatarRadiusDp, profileAvatarSizeDp;
     /** Theme Store: screens.themeStore.previewAspect (-1 not set, 0 square, 1 portrait, 2 tall), cardRadiusDp / cardGapDp / titleSizeSp (-1 = not set). */
     /** screens.profile.cardRadiusDp when the skin sets it, else -1 (ProfileActivity then keeps Telegram's own card radius). */
     public final int profileSectionRadiusDp;
@@ -180,6 +180,7 @@ public final class SkinTokens {
         chatMenuRadiusDp = s.intValue("chat.menuRadiusDp", -1);
         chatReactionRadiusDp = s.intValue("chat.reactionRadiusDp", -1);
         chatsTabsRadiusDp = s.intValue("screens.chats.tabsRadiusDp", -1);
+        profileAvatarSizeDp = s.intValue("screens.profile.avatarSizeDp", -1);
         profileAvatarRadiusDp = s.intValue("screens.profile.avatarRadiusDp", -1);
         cellPaddingStartDp = s.intValue("components.cell.paddingStartDp", -1);
         cellIconSizeDp = s.intValue("components.cell.iconSizeDp", -1);

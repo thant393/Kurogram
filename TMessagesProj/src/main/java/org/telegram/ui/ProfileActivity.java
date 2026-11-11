@@ -6100,10 +6100,11 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
     }
 
     private int getHeaderOnlyExtraHeight() {
+        final int kuroExtra = dp(tw.kurocore.kurogram.skin.KuroUi.profileSizeDp() - 96);
         if (getActionsExtraHeight() == 0) {
-            return dp(168f);
+            return dp(168f) + kuroExtra;
         }
-        return dp(152f);
+        return dp(152f) + kuroExtra;
     }
 
     private int getActionsExtraHeight() {
@@ -8556,7 +8557,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             float h = openAnimationInProgress ? initialAnimationExtraHeight : extraHeight;
             if (h > headerExtraHeight || isPulledDown) {
                 expandProgress = Math.max(0f, Math.min(1f, (h - headerExtraHeight) / (listView.getMeasuredWidth() - newTop - getHeaderOnlyExtraHeight())));
-                avatarScale = lerp(96 / 42f, 138 / 42f, Math.min(1f, expandProgress * 3f)) / 100f * 42f;
+                avatarScale = lerp(tw.kurocore.kurogram.skin.KuroUi.profileSizeDp() / 42f, Math.max(138, tw.kurocore.kurogram.skin.KuroUi.profileSizeDp()) / 42f, Math.min(1f, expandProgress * 3f)) / 100f * 42f;
                 pullUpProgress = 0.0f;
 
                 if (storyView != null) {
@@ -8827,14 +8828,14 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 updateCollectibleHint();
             } else if (h <= headerExtraHeight) {
                 if (openAnimationInProgress) {
-                    avatarScale = lerp(42, 96, diff) / 100f;
+                    avatarScale = lerp(42, tw.kurocore.kurogram.skin.KuroUi.profileSizeDp(), diff) / 100f;
                     pullUpProgress = 0.0f;
                 } else {
                     float intoSize = 24f;
                     if (avatarGooey != null && avatarGooey.notchInfo != null && avatarGooey.notchInfo.isLikelyCircle) {
                         intoSize = 0.5f * avatarGooey.notchInfo.bounds.width() / AndroidUtilities.density;
                     }
-                    avatarScale = lerp(intoSize, 96, diff) / 100f;
+                    avatarScale = lerp(intoSize, tw.kurocore.kurogram.skin.KuroUi.profileSizeDp(), diff) / 100f;
                     pullUpProgress = 1.0f - diff;
                 }
 
