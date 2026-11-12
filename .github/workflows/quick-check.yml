@@ -1,0 +1,46 @@
+name: Quick check
+# Cheap check on every push: skin rule lists agree, and the Java compiles. No native build, no APK.
+on:
+  push:
+    branches: [ "modular-step1" ]
+    paths-ignore:
+      - '**.md'
+  workflow_dispatch:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+      - name: Check skin rule lists
+        # Java rule lists must equal docs/skin-rules.manifest.json (the backend repo checks its own copy against this one)
+        run: python3 Tools/check_rules.py
+      - uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: temurin
+      - uses: gradle/actions/setup-gradle@v6
+      - uses: android-actions/setup-android@v4
+        with:
+          packages: "build-tools;37.0.0 ndk;27.3.13750724 platforms;android-37.0 cmake;3.22.1"
+      - name: Configure
+        run: |
+          mkdir -p ~/.gradle
+          echo 'org.gradle.jvmargs=-Xmx6g -Dfile.encoding=UTF-8' >> ~/.gradle/gradle.properties
+          echo "apiId=${{ secrets.API_ID }}" >> local.properties
+          echo "apiHash=${{ secrets.API_HASH }}" >> local.properties
+          echo "mapsApiKey=dummy" >> local.properties
+          echo "sentryDsn=" >> local.properties
+          echo "helperBotId=0" >> local.properties
+          echo "helperBotUsername=none" >> local.properties
+          echo "stickerApiBaseUrl=${{ secrets.STICKER_API_BASE_URL || 'https://backend-api-gn09.onrender.com' }}" >> local.properties
+          cat > TMessagesProj_App/google-services.json << 'JSON'
+          {"project_info":{"project_number":"123456789012","project_id":"kurogram-dummy"},
+          "client":[
+          {"client_info":{"mobilesdk_app_id":"1:123456789012:android:0000000000000000","android_client_info":{"package_name":"org.kurogram.messenger"}},"api_key":[{"current_key":"dummy"}]},
+          {"client_info":{"mobilesdk_app_id":"1:123456789012:android:1111111111111111","android_client_info":{"package_name":"org.kurogram.messenger.beta"}},"api_key":[{"current_key":"dummy"}]}],
+          "configuration_version":"1"}
+          JSON
+      - name: Compile Java
+        run: ./gradlew :TMessagesProj:compileDebugJavaWithJavac -PbuildAbi=arm64-v8a --console=plain
