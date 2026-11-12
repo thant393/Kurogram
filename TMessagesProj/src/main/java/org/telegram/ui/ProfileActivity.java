@@ -6099,6 +6099,10 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         avatarGooey.setVisibility(pullUpProgress >= 1.0f ? View.GONE : View.VISIBLE);
     }
 
+    private int kuroExpandedLift() {
+        return kuroCard() ? dp(16) : 0;
+    }
+
     private int getHeaderOnlyExtraHeight() {
         final int kuroExtra = dp(kuroSizeDp() - 96) + kuroTopGap();
         if (getActionsExtraHeight() == 0) {
@@ -6403,21 +6407,21 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         final float ky = isPulledDown ? dpf2(8) : dpf2(-24);
 
         final float nameTextViewXEnd = AndroidUtilities.dpf2(18f) - ((FrameLayout.LayoutParams) nameTextView[1].getLayoutParams()).leftMargin;
-        final float nameTextViewYEnd = newTop + extraHeight - getActionsExtraHeight() - AndroidUtilities.dpf2(30f) - nameTextView[1].getBottom();
+        final float nameTextViewYEnd = newTop + extraHeight - getActionsExtraHeight() - AndroidUtilities.dpf2(30f) - kuroExpandedLift() - nameTextView[1].getBottom();
         final float nameTextViewCx = kx + nameX + (nameTextViewXEnd - nameX) / 2f;
         final float nameTextViewCy = ky + nameY + (nameTextViewYEnd - nameY) / 2f;
         final float nameTextViewX = (1 - value) * (1 - value) * nameX + 2 * (1 - value) * value * nameTextViewCx + value * value * nameTextViewXEnd;
         final float nameTextViewY = (1 - value) * (1 - value) * nameY + 2 * (1 - value) * value * nameTextViewCy + value * value * nameTextViewYEnd;
 
         final float onlineTextViewXEnd = AndroidUtilities.dpf2(16f) - ((FrameLayout.LayoutParams) onlineTextView[1].getLayoutParams()).leftMargin;
-        final float onlineTextViewYEnd = newTop + extraHeight - getActionsExtraHeight() - AndroidUtilities.dpf2(10f) - onlineTextView[1].getBottom();
+        final float onlineTextViewYEnd = newTop + extraHeight - getActionsExtraHeight() - AndroidUtilities.dpf2(10f) - kuroExpandedLift() - onlineTextView[1].getBottom();
         final float onlineTextViewCx = kx + onlineX + (onlineTextViewXEnd - onlineX) / 2f;
         final float onlineTextViewCy = ky + onlineY + (onlineTextViewYEnd - onlineY) / 2f;
         final float onlineTextViewX = (1 - value) * (1 - value) * onlineX + 2 * (1 - value) * value * onlineTextViewCx + value * value * onlineTextViewXEnd;
         final float onlineTextViewY = (1 - value) * (1 - value) * onlineY + 2 * (1 - value) * value * onlineTextViewCy + value * value * onlineTextViewYEnd;
 
         final float idTextViewXEnd = AndroidUtilities.dpf2(16f) - ((FrameLayout.LayoutParams) idTextView.getLayoutParams()).leftMargin;
-        final float idTextViewYEnd = newTop + extraHeight - getActionsExtraHeight() - AndroidUtilities.dpf2(-8) - idTextView.getBottom();
+        final float idTextViewYEnd = newTop + extraHeight - getActionsExtraHeight() - AndroidUtilities.dpf2(-8) - kuroExpandedLift() - idTextView.getBottom();
         final float idTextViewCx = kx + idX + (idTextViewXEnd - idX) / 2f;
         final float idTextViewCy = ky + idY + (idTextViewYEnd - idY) / 2f;
         final float idTextViewX = (1 - value) * (1 - value) * idX + 2 * (1 - value) * value * idTextViewCx + value * value * idTextViewXEnd;
@@ -8716,11 +8720,11 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                             additionalTranslationY = -(1.0f - avatarAnimationProgress) * dp(50);
                         }
                         nameTextView[1].setTranslationX(AndroidUtilities.dpf2(18f) - nameTextView[1].getLeft());
-                        nameTextView[1].setTranslationY(newTop + h - getActionsExtraHeight() - dpf2(30f) - nameTextView[1].getBottom() + additionalTranslationY);
+                        nameTextView[1].setTranslationY(newTop + h - getActionsExtraHeight() - dpf2(30f) - kuroExpandedLift() - nameTextView[1].getBottom() + additionalTranslationY);
                         onlineTextView[1].setTranslationX(getOnlineTextViewTranslationXWithOffsets(dpf2(16) - onlineTextView[1].getLeft()));
-                        onlineTextView[1].setTranslationY(getOnlineTextViewTranslationYWithOffsets(newTop + h - getActionsExtraHeight() - dpf2(10) - onlineTextView[1].getBottom() + additionalTranslationY));
+                        onlineTextView[1].setTranslationY(getOnlineTextViewTranslationYWithOffsets(newTop + h - getActionsExtraHeight() - dpf2(10) - kuroExpandedLift() - onlineTextView[1].getBottom() + additionalTranslationY));
                         idTextView.setTranslationX(dpf2(16f) - idTextView.getLeft());
-                        idTextView.setTranslationY(newTop + h - getActionsExtraHeight() - dpf2(-8) - idTextView.getBottom() + additionalTranslationY);
+                        idTextView.setTranslationY(newTop + h - getActionsExtraHeight() - dpf2(-8) - kuroExpandedLift() - idTextView.getBottom() + additionalTranslationY);
                         mediaCounterTextView.setTranslationX(onlineTextView[1].getTranslationX());
                         mediaCounterTextView.setTranslationY(onlineTextView[1].getTranslationY());
                         updateCollectibleHint();
@@ -8937,7 +8941,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     expandAnimator.removeListener(resetListener);
                     expandAnimator.addListener(resetListener);
                 }
-                final float avatarBottom = (float) Math.floor(endNameY) + (avatarContainer.getHeight() * avatarContainer.getScaleY() + dpf2(8)) * (openAnimationInProgress ? avatarAnimationProgress : diff);
+                final float avatarBottom = (float) Math.floor(endNameY) + (avatarContainer.getHeight() * avatarContainer.getScaleY() + dpf2(8) + (kuroCard() ? kuroTopGap() : 0)) * (openAnimationInProgress ? avatarAnimationProgress : diff);
                 nameY = avatarBottom + dp(1.3f) + dp(7) * diff + titleAnimationsYDiff * (1f - avatarAnimationProgress);
                 onlineY = avatarBottom + dp(24) + (float) Math.floor(11 * AndroidUtilities.density) * diff;
                 idY = avatarBottom + dp(32) + (float) Math.floor(22 * AndroidUtilities.density) * diff;
@@ -9138,7 +9142,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 - 21 * AndroidUtilities.density
                 + actionBar.getTranslationY();
 
-        float avatarBottom = (float) Math.floor(endNameY) + (AndroidUtilities.dp(42) * scale + dpf2(8)) * diff;
+        float avatarBottom = (float) Math.floor(endNameY) + (AndroidUtilities.dp(42) * scale + dpf2(8) + (kuroCard() ? kuroTopGap() : 0)) * diff;
         nameY = avatarBottom + AndroidUtilities.dp(1.3f) + AndroidUtilities.dp(7) * diff;
         onlineY = avatarBottom + AndroidUtilities.dp(24) + (float) Math.floor(11 * AndroidUtilities.density) * diff;
         idY = avatarBottom + AndroidUtilities.dp(32) + (float) Math.floor(22 * AndroidUtilities.density) * diff;
