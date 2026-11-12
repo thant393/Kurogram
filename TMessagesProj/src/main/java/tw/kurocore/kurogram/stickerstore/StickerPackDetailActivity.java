@@ -77,7 +77,7 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
     private static final int MENU_REPORT = 12;
     private FrameLayout gridFrame;
     private RecyclerListView gridView;
-    private RadialProgressView progressView;
+    private SkeletonView progressView;
     private TextView errorView;
     private TextView actionButton;
 
@@ -254,8 +254,8 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
         gridView.setAdapter(new StickerAdapter());
         gridFrame.addView(gridView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
-        progressView = new RadialProgressView(context);
-        gridFrame.addView(progressView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER));
+        progressView = new SkeletonView(context, 4, 1f, false);
+        gridFrame.addView(progressView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
         errorView = new TextView(context);
         errorView.setTextSize(14);

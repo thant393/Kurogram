@@ -35,7 +35,7 @@ public class ThemesTabView extends FrameLayout {
     private final RecyclerListView listView;
     private final GridLayoutManager layoutManager;
     private final RecyclerListView.SelectionAdapter adapter;
-    private final RadialProgressView progressView;
+    private final SkeletonView progressView;
     private final TextView infoView;
     private FeatureUnavailableView unavailableView;
     private final ArrayList<ThemeInfo> themes = new ArrayList<>();
@@ -201,8 +201,8 @@ public class ThemesTabView extends FrameLayout {
             buildHeader(context);
         }
 
-        progressView = new RadialProgressView(context);
-        addView(progressView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER));
+        progressView = new SkeletonView(context, StoreLook.columns(), 1.25f, true);
+        addView(progressView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.TOP, 0, ownerId == 0 && StoreLook.chipsOn() ? 56 : 0, 0, 0));
         infoView = new TextView(context);
         infoView.setTextSize(14);
         infoView.setGravity(Gravity.CENTER);

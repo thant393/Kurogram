@@ -30,7 +30,7 @@ public class MyStickersView extends FrameLayout {
     private final String ownerId;
     private final RecyclerListView listView;
     private final GridLayoutManager layoutManager;
-    private final RadialProgressView progressView;
+    private final SkeletonView progressView;
     private final TextView infoView;
     private final ArrayList<StickerPackInfo> packs = new ArrayList<>();      // uploaded to the store
     private final ArrayList<StickerPackInfo> display = new ArrayList<>();    // custom (not uploaded yet) + packs
@@ -108,8 +108,8 @@ public class MyStickersView extends FrameLayout {
             }
         });
 
-        progressView = new RadialProgressView(context);
-        addView(progressView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER));
+        progressView = new SkeletonView(context, 1, 0.3f, false);
+        addView(progressView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.TOP));
 
         infoView = new TextView(context);
         infoView.setTextSize(14);

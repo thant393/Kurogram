@@ -28,7 +28,7 @@ public class StickersTabView extends FrameLayout {
     private final RecyclerListView listView;
     private final GridLayoutManager layoutManager;
     private final Adapter adapter;
-    private final RadialProgressView progressView;
+    private final SkeletonView progressView;
     private final TextView infoView;
     private final TextView sortPopular;
     private final FrameLayout header;
@@ -106,8 +106,8 @@ public class StickersTabView extends FrameLayout {
         sortPopular.setOnClickListener(v -> setSort(StickerStoreApi.SORT_POPULAR));
         sortNewest.setOnClickListener(v -> setSort(StickerStoreApi.SORT_NEWEST));
 
-        progressView = new RadialProgressView(context);
-        addView(progressView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER, 0, 28, 0, 0));
+        progressView = new SkeletonView(context, 3, 1f, false);
+        addView(progressView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.TOP, 0, 56, 0, 0));
 
         infoView = new TextView(context);
         infoView.setTextSize(14);
