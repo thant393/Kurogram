@@ -6100,7 +6100,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
     }
 
     private int getHeaderOnlyExtraHeight() {
-        final int kuroExtra = dp(kuroSizeDp() - 96);
+        final int kuroExtra = dp(kuroSizeDp() - 96) + kuroTopGap();
         if (getActionsExtraHeight() == 0) {
             return dp(168f) + kuroExtra;
         }
@@ -6514,6 +6514,11 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             return def;
         }
         return ColorUtils.calculateLuminance(bg) > 0.5 ? 0xFF1C1C1E : Color.WHITE;
+    }
+
+    /** Card mode: a small gap between the toolbar icons and the top of the photo card. */
+    private int kuroTopGap() {
+        return kuroCard() ? dp(16) : 0;
     }
 
     private boolean kuroCard() {
@@ -8594,7 +8599,8 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     (actionBar.getOccupyStatusBar() ? AndroidUtilities.statusBarHeight : 0)
                         + ActionBar.getCurrentActionBarHeight()
                         - dp(21)
-                        + actionBar.getTranslationY();
+                        + actionBar.getTranslationY()
+                        + kuroTopGap();
                 avatarY = lerp(endY, startY, diff);
             } else {
                 avatarY = endNameY;
@@ -9039,7 +9045,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 - dp(21)
                 + actionBar.getTranslationY();
 
-        avatarY = endNameY;
+        avatarY = endNameY + kuroTopGap();
         avatarScale = 138 / 100f;
         pullUpProgress = 0.0f;
         fixAvatarImageInCenter();
