@@ -40,7 +40,9 @@ public class UploadHubActivity extends BaseFragment {
     private boolean busy;
     private EditText themeTitleInput, themeDescInput, themeContentInput;
     private TextView themeCategoryView, themeUploadButton, themeStatusView;
-    private static final String[] THEME_CATEGORIES = {"Custom", "Dark", "Light", "Minimal", "Colorful"};
+    // Categories are whatever the store's themes use (fetched), plus "Custom"; "+ New…" lets the uploader type a new one.
+    private final java.util.ArrayList<String> themeCategories = new java.util.ArrayList<>(java.util.Arrays.asList("Custom"));
+    private static final String NEW_CATEGORY = "＋ New category…";
     private int themeCategoryIndex;
     private boolean themeBusy;
     private final String prefillShortName;
@@ -143,10 +145,21 @@ public class UploadHubActivity extends BaseFragment {
         themeCategoryView.setGravity(Gravity.CENTER_VERTICAL);
         themeCategoryView.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
         themeCategoryView.setOnClickListener(v -> {
-            themeCategoryIndex = (themeCategoryIndex + 1) % THEME_CATEGORIES.length;
+            themeCategoryIndex = (themeCategoryIndex + 1) % (themeCategories.size() + 1);
+            if (themeCategoryIndex == themeCategories.size()) {
+                askNewCategory(context);
+            }
             updateCategoryLabel();
         });
         updateCategoryLabel();
+        KuroFeatures.themes().fetchCategories(names -> {
+            for (String n : names) {
+                if (!themeCategories.contains(n)) {
+                    themeCategories.add(n);
+                }
+            }
+            updateCategoryLabel();
+        });
         themeCard.addView(themeCategoryView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 44, 4, 4, 4, 0));
 
         TextView pasteButton = new TextView(context);
@@ -330,8 +343,40 @@ public class UploadHubActivity extends BaseFragment {
         return input;
     }
 
+    private String currentCategory() {
+        return themeCategoryIndex >= 0 && themeCategoryIndex < themeCategories.size() ? themeCategories.get(themeCategoryIndex) : "Custom";
+    }
+
     private void updateCategoryLabel() {
-        themeCategoryView.setText("Category: " + THEME_CATEGORIES[themeCategoryIndex] + "  ›  (tap to change)");
+        String label = themeCategoryIndex >= themeCategories.size() ? NEW_CATEGORY : currentCategory();
+        themeCategoryView.setText("Category: " + label + "  ›  (tap to change)");
+    }
+
+    /** A category that does not exist yet: the first theme that uses it creates it. */
+    private void askNewCategory(Context context) {
+        final android.widget.EditText input = new android.widget.EditText(context);
+        input.setSingleLine(true);
+        input.setFilters(new android.text.InputFilter[]{new android.text.InputFilter.LengthFilter(24)});
+        new android.app.AlertDialog.Builder(context)
+                .setTitle("New category")
+                .setView(input)
+                .setPositiveButton("OK", (d, w) -> {
+                    String name = input.getText().toString().trim();
+                    if (!name.isEmpty()) {
+                        if (!themeCategories.contains(name)) {
+                            themeCategories.add(name);
+                        }
+                        themeCategoryIndex = themeCategories.indexOf(name);
+                    } else {
+                        themeCategoryIndex = 0;
+                    }
+                    updateCategoryLabel();
+                })
+                .setNegativeButton("Cancel", (d, w) -> {
+                    themeCategoryIndex = 0;
+                    updateCategoryLabel();
+                })
+                .show();
     }
 
     private void pasteContent(Context context) {
@@ -389,7 +434,7 @@ public class UploadHubActivity extends BaseFragment {
         themeUploadButton.setAlpha(0.6f);
         themeUploadButton.setText("Uploading…");
         setThemeStatus("Uploading…", false);
-        KuroFeatures.themes().submitTheme(me.id, title, description, THEME_CATEGORIES[themeCategoryIndex], type, content, me, new StickerStoreApi.ResultCallback() {
+        KuroFeatures.themes().submitTheme(me.id, title, description, currentCategory(), type, content, me, new StickerStoreApi.ResultCallback() {
             @Override
             public void onSuccess(JSONObject response) {
                 if (fragmentView == null) return;
