@@ -2486,7 +2486,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         actionBar.setForceSkipTouches(true);
         actionBar.setBackgroundColor(Color.TRANSPARENT);
         actionBar.setItemsBackgroundColor(peerColor != null ? 0x20ffffff : getThemedColor(Theme.key_avatar_actionBarSelectorBlue), false);
-        actionBar.setItemsColor(getThemedColor(Theme.key_actionBarDefaultIcon), false);
+        actionBar.setItemsColor(kuroIconColor(), false);
         actionBar.setItemsColor(getThemedColor(Theme.key_actionBarDefaultIcon), true);
         actionBar.setCastShadows(false);
         actionBar.setAddToContainer(false);
@@ -6467,7 +6467,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         }
 
         nameTextView[1].setTextColor(peerColor != null ? Color.WHITE : ColorUtils.blendARGB(getThemedColor(Theme.key_profile_title), Color.WHITE, currentExpandAnimatorValue));
-        actionBar.setItemsColor(peerColor != null ? Color.WHITE : ColorUtils.blendARGB(getThemedColor(Theme.key_actionBarDefaultIcon), Color.WHITE, value), false);
+        actionBar.setItemsColor(peerColor != null ? Color.WHITE : ColorUtils.blendARGB(kuroIconColor(), Color.WHITE, value), false);
         actionBar.setMenuOffsetSuppressed(true);
 
         avatarImage.setForegroundAlpha(value);
@@ -6503,6 +6503,19 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
     }
 
     /** screens.profile.photoStyle == "card": the header photo is a wide rounded card and the texts are left-aligned. */
+    /** Toolbar icon colour: in card mode the toolbar sits on the skin's profile background, so pick dark/light icons by its brightness. */
+    private int kuroIconColor() {
+        final int def = getThemedColor(Theme.key_actionBarDefaultIcon);
+        if (!kuroCard()) {
+            return def;
+        }
+        final int bg = tw.kurocore.kurogram.skin.KuroSkinManager.get().colorOr("screens.profile.background", 0);
+        if (bg == 0) {
+            return def;
+        }
+        return ColorUtils.calculateLuminance(bg) > 0.5 ? 0xFF1C1C1E : Color.WHITE;
+    }
+
     private boolean kuroCard() {
         return tw.kurocore.kurogram.skin.KuroUi.t().profilePhotoCard && !isTopic;
     }
@@ -8835,7 +8848,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 avatarImage.setBlurRadiusProgressForExpand(avatarAnimationProgress, avatarScale, true);
 
                 overlaysView.setAlphaValue(avatarAnimationProgress, false);
-                actionBar.setItemsColor(ColorUtils.blendARGB(peerColor != null ? Color.WHITE : getThemedColor(Theme.key_actionBarDefaultIcon), Color.WHITE, avatarAnimationProgress), false);
+                actionBar.setItemsColor(ColorUtils.blendARGB(peerColor != null ? Color.WHITE : kuroIconColor(), Color.WHITE, avatarAnimationProgress), false);
 
                 if (scamDrawable != null) {
                     scamDrawable.setColor(ColorUtils.blendARGB(getThemedColor(Theme.key_avatar_subtitleInProfileBlue), Color.argb(179, 255, 255, 255), avatarAnimationProgress));
@@ -8949,7 +8962,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     float idX = viewportWidth / 2f - (params3.leftMargin + Math.min(idTextView.getExactWidth(), params3.width) * 0.5f);
                     if (kuroCard()) {
                         nameX = dp(16) - params1.leftMargin;
-                        onlineX = dp(16) - params2.leftMargin;
+                        onlineX = dp(16) - params2.leftMargin + getRatingViewTranslationXOffset();
                         idX = dp(16) - params3.leftMargin;
                     }
 
@@ -9048,7 +9061,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             float idX = listView.getMeasuredWidth() / 2f - (params.leftMargin + idTextView.getExactWidth() * 0.5f);
             if (kuroCard()) {
                 nameX = dp(16) - ((FrameLayout.LayoutParams) nameTextView[a].getLayoutParams()).leftMargin;
-                onlineX = dp(16) - ((FrameLayout.LayoutParams) onlineTextView[a].getLayoutParams()).leftMargin;
+                onlineX = dp(16) - ((FrameLayout.LayoutParams) onlineTextView[a].getLayoutParams()).leftMargin + getRatingViewTranslationXOffset();
                 idX = dp(16) - params.leftMargin;
             }
 
@@ -11588,7 +11601,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     avatarImage.getImageReceiver().setVideoThumbIsSame(true);
                     avatarImage.setImage(videoThumbLocation, "avatar", imageLocation, "50_50", thumbLocation, "50_50", avatarDrawable, user);
                 } else {
-                    avatarImage.setImage(videoLocation, ImageLoader.AUTOPLAY_FILTER, imageLocation, "100_100", thumbLocation, "50_50", avatarDrawable, user);
+                    avatarImage.setImage(videoLocation, ImageLoader.AUTOPLAY_FILTER, imageLocation, (kuroCard() ? "512_512" : "100_100"), thumbLocation, "50_50", avatarDrawable, user);
                 }
             }
 
@@ -15597,7 +15610,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     idTextView.setTextColor(applyPeerColor(getThemedColor(Theme.key_actionBarDefaultSubtitle), true, false));
                 }
                 if (actionBar != null) {
-                    actionBar.setItemsColor(peerColor != null ? Color.WHITE : getThemedColor(Theme.key_actionBarDefaultIcon), false);
+                    actionBar.setItemsColor(peerColor != null ? Color.WHITE : kuroIconColor(), false);
                     actionBar.setItemsBackgroundColor(peerColor != null ? 0x20ffffff : getThemedColor(Theme.key_avatar_actionBarSelectorBlue), false);
                 }
 //                if (sharedMediaLayout != null) {
