@@ -43,6 +43,20 @@ public class StickerStoreApi {
                     .connectTimeout(20, TimeUnit.SECONDS)
                     .readTimeout(20, TimeUnit.SECONDS)
                     .writeTimeout(20, TimeUnit.SECONDS)
+                    .addInterceptor(chain -> {
+                        Request req = chain.request();
+                        String token = StickerAuth.token();
+                        if (token != null) {
+                            req = req.newBuilder().header("Authorization", "Bearer " + token).build();
+                        }
+                        Response res = chain.proceed(req);
+                        if (res.code() == 401) {
+                            // not signed in, or the saved login expired: ask once, the person then retries
+                            if (token != null) StickerAuth.clear();
+                            StickerAuth.promptSignIn();
+                        }
+                        return res;
+                    })
                     .build();
         }
         return okHttpClient;
