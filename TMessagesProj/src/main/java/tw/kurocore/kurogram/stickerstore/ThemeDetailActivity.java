@@ -534,7 +534,12 @@ public class ThemeDetailActivity extends BaseFragment {
             ChipFlow dots = new ChipFlow(context, AndroidUtilities.dp(10));
             final String styleId = current.id;
             for (final ThemeInfo.Way w : current.colorways) {
-                View dot = new View(context);
+                View dot = new View(context) {
+                    @Override
+                    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+                        setMeasuredDimension(AndroidUtilities.dp(40), AndroidUtilities.dp(40));
+                    }
+                };
                 GradientDrawable d = new GradientDrawable();
                 d.setShape(GradientDrawable.OVAL);
                 d.setColor(w.swatch != 0 ? w.swatch : 0xFF9E9E9E);
@@ -543,7 +548,7 @@ public class ThemeDetailActivity extends BaseFragment {
                 dot.setBackground(d);
                 dot.setContentDescription(w.name);
                 dot.setOnClickListener(v -> chooseVariant(styleId, on ? null : w.id));
-                dots.addView(dot, new ViewGroup.LayoutParams(AndroidUtilities.dp(40), AndroidUtilities.dp(40)));
+                dots.addView(dot);
             }
             variantBox.addView(dots, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 8, 0, 0));
         }
