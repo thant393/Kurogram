@@ -27,6 +27,18 @@ public class ThemeInfo {
     public long ownerTelegramId;
     public String ownerName;
     public String ownerUsername;
+    /** Optional looks of this theme: styles, each with colourways (empty = a single look). */
+    public java.util.ArrayList<Style> styles = new java.util.ArrayList<>();
+
+    public static class Way {
+        public String id, name;
+        public int swatch; // 0 = none
+    }
+
+    public static class Style {
+        public String id, name;
+        public java.util.ArrayList<Way> colorways = new java.util.ArrayList<>();
+    }
 
     public static ThemeInfo fromJson(JSONObject o) {
         ThemeInfo t = new ThemeInfo();
@@ -50,6 +62,27 @@ public class ThemeInfo {
             for (int i = 0; i < tagArray.length() && i < 12; i++) {
                 String tag = tagArray.optString(i, "");
                 if (!tag.isEmpty()) t.tags.add(tag);
+            }
+        }
+        org.json.JSONArray styleArray = o.optJSONArray("styles");
+        if (styleArray != null) {
+            for (int i = 0; i < styleArray.length() && i < 12; i++) {
+                JSONObject so = styleArray.optJSONObject(i);
+                if (so == null || so.optString("id", "").isEmpty()) continue;
+                Style st = new Style();
+                st.id = so.optString("id");
+                st.name = so.optString("name", st.id);
+                org.json.JSONArray ways = so.optJSONArray("colorways");
+                for (int j = 0; ways != null && j < ways.length() && j < 24; j++) {
+                    JSONObject wo = ways.optJSONObject(j);
+                    if (wo == null || wo.optString("id", "").isEmpty()) continue;
+                    Way w = new Way();
+                    w.id = wo.optString("id");
+                    w.name = wo.optString("name", w.id);
+                    w.swatch = parseColor(wo.isNull("swatch") ? null : wo.optString("swatch", null));
+                    st.colorways.add(w);
+                }
+                t.styles.add(st);
             }
         }
         t.version = o.optInt("version", 1);

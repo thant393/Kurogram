@@ -42,6 +42,16 @@ public interface ThemeStore extends KuroFeature {
     /** The theme file: {id, slug, type, version, sha256, content}. Counts as one download. */
     void download(String themeId, long accountId, StickerStoreApi.ResultCallback callback);
 
+    /** Same, for one style / colourway of the theme (null = the theme's default look). */
+    default void download(String themeId, long accountId, String style, String colorway, StickerStoreApi.ResultCallback callback) {
+        download(themeId, accountId, callback);
+    }
+
+    /** One version's file for a given style / colourway, without counting a download. */
+    default void fetchVersionContent(String id, int version, String style, String colorway, ContentCallback callback) {
+        fetchVersionContent(id, version, callback);
+    }
+
     void submitTheme(long accountId, String title, String description, String category, String type,
                      String content, OwnerProfileSync.Profile owner, StickerStoreApi.ResultCallback callback);
 

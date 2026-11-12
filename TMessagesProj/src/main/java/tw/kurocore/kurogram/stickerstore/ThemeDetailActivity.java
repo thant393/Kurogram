@@ -6,6 +6,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -49,6 +50,10 @@ public class ThemeDetailActivity extends BaseFragment {
     private final java.util.ArrayList<PhoneScene> scenes = new java.util.ArrayList<>();
     private PhoneScene logoScene;
     private int likes;
+    // chosen look of a theme that has styles / colourways (null = the theme's default look)
+    private String selStyle, selWay;
+    private LinearLayout variantBox;
+    private int previewBg, previewAccent;
 
     public ThemeDetailActivity(ThemeInfo info) {
         this.info = info;
@@ -153,7 +158,10 @@ public class ThemeDetailActivity extends BaseFragment {
         }
         column.addView(strip, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 18, 0, 0));
 
+        previewBg = bg;
+        previewAccent = accent;
         loadRealPreview(bg, accent);
+        addVariantPicker(context, column, subColor, textColor);
 
         // Categories and tags
         TextView ctTitle = text(context, "Categories and tags", 18, true, Theme.key_windowBackgroundWhiteBlackText);
@@ -195,7 +203,7 @@ public class ThemeDetailActivity extends BaseFragment {
         if (info.id == null || !"skin".equals(info.type)) {
             return;
         }
-        KuroFeatures.themes().fetchVersionContent(info.id, info.version, content -> {
+        KuroFeatures.themes().fetchVersionContent(info.id, info.version, selStyle, selWay, content -> {
             if (content == null || fragmentView == null) {
                 return;
             }
@@ -454,7 +462,104 @@ public class ThemeDetailActivity extends BaseFragment {
     }
 
     private boolean isApplied() {
-        return info.id != null && info.id.equals(KuroFeatures.themes().appliedId()) && KuroFeatures.themes().appliedVersion() >= info.version;
+        return info.id != null && info.id.equals(KuroFeatures.themes().appliedId()) && KuroFeatures.themes().appliedVersion() >= info.version
+                && variantKey().equals(appliedVariant());
+    }
+
+    private String variantKey() {
+        return (selStyle == null ? "" : selStyle) + "|" + (selWay == null ? "" : selWay);
+    }
+
+    private android.content.SharedPreferences variantPrefs() {
+        return ApplicationLoader.applicationContext.getSharedPreferences("kuro_theme_variant", Context.MODE_PRIVATE);
+    }
+
+    private String appliedVariant() {
+        try {
+            return variantPrefs().getString(info.id, "|");
+        } catch (Exception e) {
+            return "|";
+        }
+    }
+
+    private void rememberVariant() {
+        try {
+            variantPrefs().edit().putString(info.id, variantKey()).apply();
+        } catch (Exception ignored) {
+        }
+    }
+
+    /** Style chips and colour dots for a theme that offers several looks. */
+    private void addVariantPicker(Context context, LinearLayout column, int subColor, int textColor) {
+        if (info.styles.isEmpty()) {
+            return;
+        }
+        variantBox = new LinearLayout(context);
+        variantBox.setOrientation(LinearLayout.VERTICAL);
+        column.addView(variantBox, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 20, 20, 20, 0));
+        rebuildVariantPicker(context, subColor, textColor);
+    }
+
+    private void chooseVariant(String style, String way) {
+        selStyle = style;
+        selWay = way;
+        loadRealPreview(previewBg, previewAccent);
+        if (variantBox != null) {
+            rebuildVariantPicker(variantBox.getContext(), tw.kurocore.kurogram.skin.KuroUi.textSecondary(), tw.kurocore.kurogram.skin.KuroUi.textPrimary());
+        }
+        refreshButtons();
+    }
+
+    private void rebuildVariantPicker(Context context, int subColor, int textColor) {
+        variantBox.removeAllViews();
+        final int accent = tw.kurocore.kurogram.skin.KuroUi.accent();
+        TextView styleLabel = text(context, "Style", 14, false, Theme.key_windowBackgroundWhiteGrayText);
+        styleLabel.setTextColor(subColor);
+        variantBox.addView(styleLabel, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+        ChipFlow flow = new ChipFlow(context, AndroidUtilities.dp(8));
+        flow.addView(variantChip(context, "Default", selStyle == null, accent, textColor, () -> chooseVariant(null, null)));
+        ThemeInfo.Style current = null;
+        for (final ThemeInfo.Style st : info.styles) {
+            boolean on = st.id.equals(selStyle);
+            if (on) {
+                current = st;
+            }
+            flow.addView(variantChip(context, st.name, on, accent, textColor, () -> chooseVariant(st.id, null)));
+        }
+        variantBox.addView(flow, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 8, 0, 0));
+        if (current != null && !current.colorways.isEmpty()) {
+            TextView colourLabel = text(context, "Colour", 14, false, Theme.key_windowBackgroundWhiteGrayText);
+            colourLabel.setTextColor(subColor);
+            variantBox.addView(colourLabel, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 14, 0, 0));
+            ChipFlow dots = new ChipFlow(context, AndroidUtilities.dp(10));
+            final String styleId = current.id;
+            for (final ThemeInfo.Way w : current.colorways) {
+                View dot = new View(context);
+                GradientDrawable d = new GradientDrawable();
+                d.setShape(GradientDrawable.OVAL);
+                d.setColor(w.swatch != 0 ? w.swatch : 0xFF9E9E9E);
+                boolean on = w.id.equals(selWay);
+                d.setStroke(AndroidUtilities.dp(on ? 3 : 1), on ? accent : tw.kurocore.kurogram.skin.KuroUi.hairline());
+                dot.setBackground(d);
+                dot.setContentDescription(w.name);
+                dot.setOnClickListener(v -> chooseVariant(styleId, on ? null : w.id));
+                dots.addView(dot, new ViewGroup.LayoutParams(AndroidUtilities.dp(40), AndroidUtilities.dp(40)));
+            }
+            variantBox.addView(dots, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 8, 0, 0));
+        }
+    }
+
+    private TextView variantChip(Context context, String label, boolean on, int accent, int textColor, Runnable click) {
+        TextView chip = text(context, label, 14, on, Theme.key_windowBackgroundWhiteBlackText);
+        chip.setTextColor(on ? 0xFFFFFFFF : textColor);
+        chip.setPadding(AndroidUtilities.dp(14), AndroidUtilities.dp(8), AndroidUtilities.dp(14), AndroidUtilities.dp(8));
+        GradientDrawable d = new GradientDrawable();
+        d.setCornerRadius(AndroidUtilities.dp(20));
+        d.setColor(on ? accent : 0x00000000);
+        d.setStroke(Math.max(1, AndroidUtilities.dp(1)), on ? accent : tw.kurocore.kurogram.skin.KuroUi.hairline());
+        chip.setBackground(d);
+        chip.setOnClickListener(v -> click.run());
+        return chip;
     }
 
     private void refreshButtons() {
@@ -541,7 +646,7 @@ public class ThemeDetailActivity extends BaseFragment {
         setStatus("Downloading…", false);
         refreshButtons();
         final long me = UserConfig.getInstance(currentAccount).getClientUserId();
-        KuroFeatures.themes().download(info.id, me, new StickerStoreApi.ResultCallback() {
+        KuroFeatures.themes().download(info.id, me, selStyle, selWay, new StickerStoreApi.ResultCallback() {
             @Override
             public void onSuccess(JSONObject response) {
                 if (fragmentView == null) return;
@@ -594,6 +699,7 @@ public class ThemeDetailActivity extends BaseFragment {
                     throw new IllegalArgumentException("unsupported theme type");
                 }
                 KuroFeatures.themes().setApplied(info.id, response.optInt("version", info.version));
+                rememberVariant();
                 setStatus(fromCache ? "Applied (offline copy)" : "Applied", false);
             }
         } catch (IllegalArgumentException e) {
