@@ -395,26 +395,54 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
     }
 
     private final class RailView extends android.widget.HorizontalScrollView {
+        private final android.widget.LinearLayout row;
+        private final java.util.ArrayList<View> cards = new java.util.ArrayList<>();
+
         RailView(Context context) {
             super(context);
             setHorizontalScrollBarEnabled(false);
             setOverScrollMode(OVER_SCROLL_NEVER);
-            android.widget.LinearLayout row = new android.widget.LinearLayout(context);
+            row = new android.widget.LinearLayout(context);
             row.setOrientation(android.widget.LinearLayout.HORIZONTAL);
             row.setPadding(dp(12), dp(8), dp(12), dp(8));
             TLRPC.User self = getUserConfig().getCurrentUser();
             StoryCard add = new StoryCard(context, self, true, false, null);
             add.setOnClickListener(v -> addStory());
-            row.addView(add, LayoutHelper.createLinear(88, 150, 0, 0, 4, 0));
+            cards.add(add);
+            row.addView(add, new android.widget.LinearLayout.LayoutParams(dp(88), dp(150)));
             for (int i = 0; i < railUsers.size(); i++) {
                 final int index = i;
                 final boolean story = i < railStoryPeers.size();
                 StoryCard card = new StoryCard(context, railUsers.get(i), false, story, story && i < railStoryItems.size() ? railStoryItems.get(i) : null);
                 card.setOnClickListener(v -> openStory(index));
-                row.addView(card, LayoutHelper.createLinear(88, 150, 0, 0, 4, 0));
+                cards.add(card);
+                row.addView(card, new android.widget.LinearLayout.LayoutParams(dp(88), dp(150)));
             }
             addView(row, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
             setFillViewport(false);
+        }
+
+        /** Card size follows the real width, so portrait, landscape and tablets all look filled. */
+        @Override
+        protected void onMeasure(int widthSpec, int heightSpec) {
+            final int w = MeasureSpec.getSize(widthSpec);
+            if (w > 0) {
+                final int gap = dp(4);
+                final int avail = w - dp(24);
+                final int count = Math.max(4, Math.round(w / (float) dp(100)));
+                final boolean overflow = cards.size() > count;
+                final float per = overflow ? avail / (count + 0.5f) : avail / (float) Math.min(count, cards.size());
+                final int cw = Math.max(dp(80), Math.min(dp(150), (int) per - gap));
+                final int ch = Math.min(dp(230), (int) (cw * 1.7f));
+                for (View c : cards) {
+                    android.widget.LinearLayout.LayoutParams lp = (android.widget.LinearLayout.LayoutParams) c.getLayoutParams();
+                    lp.width = cw;
+                    lp.height = ch;
+                    lp.rightMargin = gap;
+                }
+                heightSpec = MeasureSpec.makeMeasureSpec(ch + dp(16), MeasureSpec.EXACTLY);
+            }
+            super.onMeasure(widthSpec, heightSpec);
         }
     }
 
@@ -584,7 +612,7 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
                 return new RecyclerListView.Holder(cell);
             }
             // The story rail needs an explicit height; wrap_content inside a horizontal scroller clipped the cards.
-            v.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, viewType == 1 ? dp(166) : ViewGroup.LayoutParams.WRAP_CONTENT));
+            v.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, viewType == 1 ? ViewGroup.LayoutParams.WRAP_CONTENT : ViewGroup.LayoutParams.WRAP_CONTENT));
             return new RecyclerListView.Holder(v);
         }
 

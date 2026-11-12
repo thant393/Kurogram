@@ -542,7 +542,12 @@ public class ThemeDetailActivity extends BaseFragment {
                 };
                 GradientDrawable d = new GradientDrawable();
                 d.setShape(GradientDrawable.OVAL);
-                d.setColor(w.swatch != 0 ? w.swatch : 0xFF9E9E9E);
+                if (w.swatch != 0 && w.swatch2 != 0) {
+                    d.setOrientation(GradientDrawable.Orientation.TL_BR);
+                    d.setColors(w.swatch3 != 0 ? new int[]{w.swatch, w.swatch2, w.swatch3} : new int[]{w.swatch, w.swatch2});
+                } else {
+                    d.setColor(w.swatch != 0 ? w.swatch : 0xFF9E9E9E);
+                }
                 boolean on = w.id.equals(selWay);
                 d.setStroke(AndroidUtilities.dp(on ? 3 : 1), on ? accent : tw.kurocore.kurogram.skin.KuroUi.hairline());
                 dot.setBackground(d);

@@ -33,6 +33,7 @@ public class ThemeInfo {
     public static class Way {
         public String id, name;
         public int swatch; // 0 = none
+        public int swatch2, swatch3; // optional gradient stops
     }
 
     public static class Style {
@@ -80,6 +81,8 @@ public class ThemeInfo {
                     w.id = wo.optString("id");
                     w.name = wo.optString("name", w.id);
                     w.swatch = parseColor(wo.isNull("swatch") ? null : wo.optString("swatch", null));
+                    w.swatch2 = parseColor(wo.isNull("swatch2") ? null : wo.optString("swatch2", null));
+                    w.swatch3 = parseColor(wo.isNull("swatch3") ? null : wo.optString("swatch3", null));
                     st.colorways.add(w);
                 }
                 t.styles.add(st);
