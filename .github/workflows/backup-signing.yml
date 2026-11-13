@@ -1,0 +1,37 @@
+name: Backup signing key (temporary)
+# One-off recovery of the release signing key from the repository secrets, because GitHub never shows secrets again.
+# The result is encrypted with the BACKUP_PASSPHRASE secret and kept for 1 day. This repository is public, so the
+# artifact must never be uploaded unencrypted. Delete this workflow after the backup is downloaded.
+on:
+  workflow_dispatch:
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pack and encrypt
+        env:
+          KEYSTORE_JKS: ${{ secrets.KEYSTORE_JKS }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          set -e
+          if [ -z "$BACKUP_PASSPHRASE" ]; then echo "::error::Add the BACKUP_PASSPHRASE secret first"; exit 1; fi
+          if [ -z "$KEYSTORE_JKS" ]; then echo "::error::KEYSTORE_JKS secret is empty - nothing to recover"; exit 1; fi
+          umask 077
+          mkdir out
+          echo "$KEYSTORE_JKS" | base64 --decode > out/keystore.jks
+          test -s out/keystore.jks
+          printf 'storePassword=%s\nkeyAlias=%s\nkeyPassword=%s\n' "$KEYSTORE_PASSWORD" "$KEY_ALIAS" "$KEY_PASSWORD" > out/signing.txt
+          # also confirm the file really opens with the stored password, and record only the non-secret facts
+          keytool -list -keystore out/keystore.jks -storepass "$KEYSTORE_PASSWORD" > out/keytool-list.txt 2>&1 || echo "keytool could not open it with KEYSTORE_PASSWORD" >> out/keytool-list.txt
+          tar -czf signing-backup.tar.gz -C out .
+          gpg --batch --yes --pinentry-mode loopback --symmetric --cipher-algo AES256 --passphrase "$BACKUP_PASSPHRASE" -o signing-backup.tar.gz.gpg signing-backup.tar.gz
+          rm -rf out signing-backup.tar.gz
+          grep -q "Keystore type\|keytool could not" /dev/null || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: signing-backup-encrypted
+          path: signing-backup.tar.gz.gpg
+          retention-days: 1
