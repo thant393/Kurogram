@@ -90,6 +90,22 @@ jobs:
             echo "== $apk =="
             "$ANDROID_HOME"/build-tools/37.0.0/apksigner verify --verbose "$apk" || (echo "::error::$apk is not validly signed" && exit 1)
           done
+      - name: Check the release signing key
+        # The APK must carry the Kurogram release certificate. If the keystore secrets are ever missing or wrong,
+        # Gradle quietly signs with the debug key instead, and an APK like that could never be updated over the
+        # real one. The fingerprint is public (it identifies the key, it does not unlock it).
+        env:
+          EXPECTED_SHA256: "06:9E:1B:19:59:46:02:53:01:5E:CD:9F:BD:49:4A:30:E1:99:18:EE:46:C4:3A:54:2E:F6:FB:D0:20:A9:B1:D4"
+        run: |
+          want=$(echo "$EXPECTED_SHA256" | tr -d ':' | tr 'A-F' 'a-f')
+          for apk in TMessagesProj_App/build/outputs/apk/debug/*.apk; do
+            got=$("$ANDROID_HOME"/build-tools/37.0.0/apksigner verify --print-certs "$apk" | grep -m1 "certificate SHA-256 digest" | sed 's/.*: //' | tr -d ' :' | tr 'A-F' 'a-f')
+            if [ "$got" != "$want" ]; then
+              echo "::error::$apk is not signed with the Kurogram release key (got ${got:-none})"
+              exit 1
+            fi
+            echo "$apk signed with the Kurogram release key"
+          done
       # Only upload whichever ABI(s) were actually built for this run. The universal APK
       # is never built from this workflow at all now (see splits.abi) since it bundles
       # every ABI into one file and balloons past 180MB.
