@@ -301,6 +301,8 @@ public class ApplicationLoader extends Application {
 
         super.onCreate();
 
+        tw.kurocore.kurogram.skin.SkinSafeMode.onAppStart(applicationContext);
+
         // AndroidUtilities must be initialized before FileLog
         final String helloWorld = AndroidUtilities.getHelloWorld();
         AnalyticsHelper.start(this);

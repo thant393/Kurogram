@@ -166,6 +166,10 @@ public final class LayoutSpec {
             if (tabs != null && !tabs.contains("chats")) {
                 throw new IllegalArgumentException("bottomTabs.items must include chats");
             }
+            List<String> drawerItems = listOr(values, "drawer.items");
+            if (tabs != null && !tabs.contains("settings") && drawerItems != null && !drawerItems.contains("settings")) {
+                throw new IllegalArgumentException("Settings must stay reachable (bottomTabs.items or drawer.items)");
+            }
             if (get(root, "chatList.header") != null) {
                 List<String> both = new ArrayList<>(listOr(values, "chatList.header.left") == null ? new ArrayList<String>() : listOr(values, "chatList.header.left"));
                 List<String> right = listOr(values, "chatList.header.right");
