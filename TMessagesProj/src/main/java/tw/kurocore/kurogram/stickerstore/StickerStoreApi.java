@@ -49,6 +49,12 @@ public class StickerStoreApi {
                         if (token != null) {
                             req = req.newBuilder().header("Authorization", "Bearer " + token).build();
                         }
+                        if (token == null && !"GET".equals(req.method())) {
+                            // not signed in yet: let this request go through (the server may still accept the old
+                            // way) and offer the sign-in once per app start, so tokens get adopted before the
+                            // server starts requiring them
+                            StickerAuth.promptSignInOnce();
+                        }
                         Response res = chain.proceed(req);
                         if (res.code() == 401) {
                             // not signed in, or the saved login expired: ask once, the person then retries

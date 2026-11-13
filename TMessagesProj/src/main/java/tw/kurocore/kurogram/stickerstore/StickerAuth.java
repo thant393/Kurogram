@@ -48,6 +48,14 @@ public final class StickerAuth {
         return (base.endsWith("/") ? base : base + "/") + path;
     }
 
+    private static boolean promptedThisRun;
+
+    public static void promptSignInOnce() {
+        if (promptedThisRun) return;
+        promptedThisRun = true;
+        promptSignIn();
+    }
+
     /** Asks the person to sign in (once); safe to call from any thread, ignores repeats while one is running. */
     public static void promptSignIn() {
         AndroidUtilities.runOnUIThread(() -> {
