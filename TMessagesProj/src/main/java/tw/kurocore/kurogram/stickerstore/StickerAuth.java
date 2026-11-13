@@ -87,7 +87,11 @@ public final class StickerAuth {
                 }
                 AndroidUtilities.runOnUIThread(() -> {
                     try {
-                        act.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(link)));
+                        // Open the bot chat inside THIS app. Without the package, Android lets the person (or a default)
+                        // pick any other Telegram client they have installed, and the sign-in would end up there.
+                        Intent open = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+                        open.setPackage(act.getPackageName());
+                        act.startActivity(open);
                     } catch (Exception e) {
                         FileLog.e(e);
                     }
