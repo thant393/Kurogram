@@ -10,6 +10,13 @@ on:
           - armeabi-v7a
           - arm64-v8a
           - all
+      variant:
+        description: "debug = quick test build (slow app, side-by-side .beta package); release = optimized build (R8 + baseline profile, the real app package)"
+        type: choice
+        default: debug
+        options:
+          - debug
+          - release
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -83,10 +90,10 @@ jobs:
         # packaging only the chosen target(s) (see the comment there) instead of all four
         # ABIs plus the universal apk every run - this is what actually makes a
         # dev/testing run fast, not just which outputs get uploaded afterward.
-        run: ./gradlew assembleDebug -PbuildAbi=${{ inputs.target }}
+        run: ./gradlew ${{ inputs.variant == 'release' && 'assembleRelease' || 'assembleDebug' }} -PbuildAbi=${{ inputs.target }}
       - name: Verify APKs are signed
         run: |
-          for apk in TMessagesProj_App/build/outputs/apk/debug/*.apk; do
+          for apk in TMessagesProj_App/build/outputs/apk/${{ inputs.variant }}/*.apk; do
             echo "== $apk =="
             "$ANDROID_HOME"/build-tools/37.0.0/apksigner verify --verbose "$apk" || (echo "::error::$apk is not validly signed" && exit 1)
           done
@@ -98,7 +105,7 @@ jobs:
           EXPECTED_SHA256: "06:9E:1B:19:59:46:02:53:01:5E:CD:9F:BD:49:4A:30:E1:99:18:EE:46:C4:3A:54:2E:F6:FB:D0:20:A9:B1:D4"
         run: |
           want=$(echo "$EXPECTED_SHA256" | tr -d ':' | tr 'A-F' 'a-f')
-          for apk in TMessagesProj_App/build/outputs/apk/debug/*.apk; do
+          for apk in TMessagesProj_App/build/outputs/apk/${{ inputs.variant }}/*.apk; do
             got=$("$ANDROID_HOME"/build-tools/37.0.0/apksigner verify --print-certs "$apk" | grep -m1 "certificate SHA-256 digest" | sed 's/.*: //' | tr -d ' :' | tr 'A-F' 'a-f')
             if [ "$got" != "$want" ]; then
               echo "::error::$apk is not signed with the Kurogram release key (got ${got:-none})"
@@ -113,11 +120,11 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: Kurogram-arm64-v8a
-          path: TMessagesProj_App/build/outputs/apk/debug/*-arm64-v8a.apk
+          path: TMessagesProj_App/build/outputs/apk/${{ inputs.variant }}/*-arm64-v8a.apk
           archive: false
       - if: ${{ inputs.target == 'armeabi-v7a' || inputs.target == 'all' }}
         uses: actions/upload-artifact@v7
         with:
           name: Kurogram-armeabi-v7a
-          path: TMessagesProj_App/build/outputs/apk/debug/*-armeabi-v7a.apk
+          path: TMessagesProj_App/build/outputs/apk/${{ inputs.variant }}/*-armeabi-v7a.apk
           archive: false
