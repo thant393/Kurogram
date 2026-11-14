@@ -41,6 +41,16 @@ public final class StartupTrace {
         }, 0);
     }
 
+    private static int loggedInAccounts() {
+        int n = 0;
+        for (int a = 0; a < org.telegram.messenger.UserConfig.MAX_ACCOUNT_COUNT; a++) {
+            if (org.telegram.messenger.UserConfig.getInstance(a).isClientActivated()) {
+                n++;
+            }
+        }
+        return n;
+    }
+
     private static void show() {
         if (shown) {
             return;
@@ -55,6 +65,21 @@ public final class StartupTrace {
         for (int i = 0; i < d.length; i++) {
             sb.append(names[i]).append(": ").append(d[i]).append('\n');
         }
-        Toast.makeText(ApplicationLoader.applicationContext, sb.toString().trim(), Toast.LENGTH_LONG).show();
+        String text = sb.toString().trim();
+        // A toast cuts the text after two lines, so the breakdown is shown in a dialog the person can screenshot at leisure
+        org.telegram.ui.LaunchActivity act = org.telegram.ui.LaunchActivity.instance;
+        if (act != null && !act.isFinishing()) {
+            try {
+                org.telegram.ui.ActionBar.AlertDialog.Builder b = new org.telegram.ui.ActionBar.AlertDialog.Builder(act);
+                b.setTitle("Startup timing");
+                b.setMessage(text + "\naccounts logged in: " + loggedInAccounts());
+                b.setPositiveButton("OK", null);
+                b.show();
+                return;
+            } catch (Throwable ignore) {
+                // fall back to the toast below
+            }
+        }
+        Toast.makeText(ApplicationLoader.applicationContext, text, Toast.LENGTH_LONG).show();
     }
 }
