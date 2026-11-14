@@ -7179,6 +7179,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     @Override
     public void onResume() {
         super.onResume();
+        tw.kurocore.kurogram.helpers.StartupTrace.chatListResumed();
         if (dialogStoriesCell != null) {
             dialogStoriesCell.onResume();
         }

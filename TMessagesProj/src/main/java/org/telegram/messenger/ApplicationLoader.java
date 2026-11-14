@@ -196,8 +196,10 @@ public class ApplicationLoader extends Application {
     }
 
     public static void postInitApplication() {
+        tw.kurocore.kurogram.helpers.StartupTrace.mark(3);
         tw.kurocore.kurogram.feature.KuroFeatures.init(applicationContext);
         if (applicationInited || applicationContext == null) {
+            tw.kurocore.kurogram.helpers.StartupTrace.mark(4);
             return;
         }
         applicationInited = true;
@@ -284,6 +286,7 @@ public class ApplicationLoader extends Application {
             DownloadController.getInstance(a);
         }
         BillingController.getInstance().startConnection();
+        tw.kurocore.kurogram.helpers.StartupTrace.mark(4);
     }
 
     public ApplicationLoader() {
@@ -292,6 +295,7 @@ public class ApplicationLoader extends Application {
 
     @Override
     public void onCreate() {
+        tw.kurocore.kurogram.helpers.StartupTrace.mark(0);
         applicationLoaderInstance = this;
         try {
             applicationContext = getApplicationContext();
@@ -370,6 +374,7 @@ public class ApplicationLoader extends Application {
 
         LauncherIconController.tryFixLauncherIconIfNeeded();
         ProxyRotationController.init();
+        tw.kurocore.kurogram.helpers.StartupTrace.mark(1);
 
         //if (BuildConfig.DEBUG_PRIVATE_VERSION) {
         //    Choreographer60FpsContent.getInstance().addFrameCallback(debugEverySecondChecks, 1);

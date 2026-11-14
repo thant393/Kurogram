@@ -402,6 +402,7 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        tw.kurocore.kurogram.helpers.StartupTrace.mark(2);
         isActive = true;
         activeInstanceCount++;
         if (BuildVars.DEBUG_VERSION) {
@@ -863,6 +864,7 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
         //    refreshRateController = new RefreshRateController(this);
         //}
         checkFrameMetrics();
+        tw.kurocore.kurogram.helpers.StartupTrace.mark(7);
     }
 
     public void checkFrameMetrics() {
