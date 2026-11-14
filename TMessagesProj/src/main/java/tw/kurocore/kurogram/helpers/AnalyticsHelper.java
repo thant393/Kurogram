@@ -25,7 +25,7 @@ import tw.kurocore.kurogram.Extra;
 public class AnalyticsHelper {
     private static SharedPreferences preferences;
 
-    private static FirebaseAnalytics firebaseAnalytics;
+    private static volatile FirebaseAnalytics firebaseAnalytics;
 
     public static boolean sendBugReport = true;
     public static boolean analyticsDisabled = false;
@@ -43,26 +43,35 @@ public class AnalyticsHelper {
         if (userId == null || userId.length() < 32) {
             preferences.edit().putString("userId", userId = generateUserID()).apply();
         }
-        firebaseAnalytics = FirebaseAnalytics.getInstance(application);
-        firebaseAnalytics.setAnalyticsCollectionEnabled(true);
-        firebaseAnalytics.setUserId(userId);
-        SentryAndroid.init(application, options -> {
-            options.setDsn(Extra.SENTRY_DSN);
-            options.setEnvironment(BuildConfig.BUILD_TYPE);
-            options.setPrintUncaughtStackTrace(true);
-            options.getDataCollection().forceDataCollection();
-            options.setEnableUserInteractionTracing(true);
-            options.setAttachViewHierarchy(true);
-            options.setEnableSystemEventBreadcrumbsExtras(true);
-            options.setTracesSampleRate(0.01);
-        });
-        var user = new User();
-        user.setId(userId);
-        Sentry.setUser(user);
+        // Firebase and Sentry take a noticeable slice of the cold start; nothing needs them before the first screen,
+        // so they start on a background thread (anything logged in the meantime is simply skipped).
+        final String id = userId;
+        new Thread(() -> {
+            try {
+            firebaseAnalytics = FirebaseAnalytics.getInstance(application);
+            firebaseAnalytics.setAnalyticsCollectionEnabled(true);
+            firebaseAnalytics.setUserId(userId);
+            SentryAndroid.init(application, options -> {
+                options.setDsn(Extra.SENTRY_DSN);
+                options.setEnvironment(BuildConfig.BUILD_TYPE);
+                options.setPrintUncaughtStackTrace(true);
+                options.getDataCollection().forceDataCollection();
+                options.setEnableUserInteractionTracing(true);
+                options.setAttachViewHierarchy(true);
+                options.setEnableSystemEventBreadcrumbsExtras(true);
+                options.setTracesSampleRate(0.01);
+            });
+            var user = new User();
+            user.setId(id);
+            Sentry.setUser(user);
 
-        if (BuildVars.LOGS_ENABLED) {
-            FileLog.d("Analytics: userId = " + userId);
-        }
+            if (BuildVars.LOGS_ENABLED) {
+                FileLog.d("Analytics: userId = " + id);
+            }
+            } catch (Throwable t) {
+                FileLog.e(t);
+            }
+        }, "AnalyticsInit").start();
     }
 
     private static String generateUserID() {
@@ -78,7 +87,7 @@ public class AnalyticsHelper {
         breadcrumb.setData("state", lifecycle);
         breadcrumb.setData("screen", getFragmentName(fragment));
         Sentry.addBreadcrumb(breadcrumb);
-        if ("created".equals(lifecycle)) {
+        if ("created".equals(lifecycle) && firebaseAnalytics != null) {
             firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, null);
         }
     }
@@ -94,7 +103,9 @@ public class AnalyticsHelper {
         for (String key : map.keySet()) {
             bundle.putString(key, map.get(key));
         }
-        firebaseAnalytics.logEvent(event, bundle);
+        if (firebaseAnalytics != null) {
+            firebaseAnalytics.logEvent(event, bundle);
+        }
     }
 
     public static boolean isSettingsAvailable() {

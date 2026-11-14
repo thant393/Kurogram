@@ -12154,9 +12154,30 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         return 0;
     }
 
+    /** The skin's chats background can differ between day and night, so it is re-read whenever the theme changes. */
+    private void applyKuroChatsBackground() {
+        if (viewPages == null) {
+            return;
+        }
+        int bg = tw.kurocore.kurogram.skin.KuroSkinManager.get().colorOr("screens.chats.background", 0);
+        for (int a = 0; a < viewPages.length; a++) {
+            if (viewPages[a] == null || viewPages[a].listView == null) {
+                continue;
+            }
+            if (bg != 0) {
+                viewPages[a].listView.setBackgroundColor(bg);
+            } else if (initialDialogsType == DIALOGS_TYPE_BOT_REQUEST_PEER) {
+                viewPages[a].listView.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundGray));
+            } else {
+                viewPages[a].listView.setBackground(null);
+            }
+        }
+    }
+
     @Override
     public ArrayList<ThemeDescription> getThemeDescriptions() {
         ThemeDescription.ThemeDescriptionDelegate cellDelegate = () -> {
+            applyKuroChatsBackground();
             for (int b = 0; b < 3; b++) {
                 RecyclerListView list;
                 if (b == 2) {
