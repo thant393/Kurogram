@@ -2538,7 +2538,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                 });
             }
 
-            final boolean allowTestBackend = BuildConfig.DEBUG || newAccount;
+            final boolean allowTestBackend = BuildVars.DEBUG_PRIVATE_VERSION; // Telegram test servers are for developers only, never shown to users
             if (allowTestBackend && activityMode == MODE_LOGIN) {
                 testBackendCheckBox = new CheckBoxCell(context, 2);
                 testBackendCheckBox.setText(getString(R.string.DebugTestBackend), "", testBackend = getConnectionsManager().isTestBackend(), false);
