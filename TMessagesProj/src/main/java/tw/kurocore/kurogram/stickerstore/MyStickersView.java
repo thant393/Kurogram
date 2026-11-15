@@ -94,7 +94,7 @@ public class MyStickersView extends FrameLayout {
                 StickerPackInfo info = display.get(position);
                 if (custom.contains(info)) {
                     // Made by this user on Telegram but not in the store yet: one tap to upload it.
-                    fragment.presentFragment(new UploadHubActivity(info.shortName));
+                    fragment.presentFragment(new StickerUploadActivity(info.shortName));
                 } else {
                     fragment.presentFragment(new StickerPackDetailActivity(info));
                 }

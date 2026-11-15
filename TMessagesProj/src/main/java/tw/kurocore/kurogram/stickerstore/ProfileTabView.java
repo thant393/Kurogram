@@ -211,7 +211,7 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
         fab.setContentDescription("Upload");
         fab.setOnClickListener(v -> {
             if (fragment != null && fragment.getParentActivity() != null) {
-                fragment.presentFragment(new UploadHubActivity());
+                fragment.presentFragment(selectedTab == TAB_THEMES ? new ThemeUploadActivity() : new StickerUploadActivity());
             }
         });
         addView(fab, LayoutHelper.createFrame(56, 56, Gravity.BOTTOM | Gravity.RIGHT, 0, 0, 20, 28));

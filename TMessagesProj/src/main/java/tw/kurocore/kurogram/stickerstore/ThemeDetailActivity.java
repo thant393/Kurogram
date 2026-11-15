@@ -70,6 +70,8 @@ public class ThemeDetailActivity extends BaseFragment {
                     finishFragment();
                 } else if (id == 2) {
                     reportTheme();
+                } else if (id == 3) {
+                    presentFragment(new ThemeUploadActivity(info));
                 }
             }
         });
@@ -77,6 +79,10 @@ public class ThemeDetailActivity extends BaseFragment {
         if (info.ownerTelegramId != UserConfig.getInstance(currentAccount).getClientUserId()) {
             org.telegram.ui.ActionBar.ActionBarMenuItem more = actionBar.createMenu().addItem(1, R.drawable.ic_ab_other);
             more.addSubItem(2, R.drawable.msg_report, "Report");
+        } else {
+            // Your own theme: edit it (details or a new file) or take it down.
+            org.telegram.ui.ActionBar.ActionBarMenuItem more = actionBar.createMenu().addItem(1, R.drawable.ic_ab_other);
+            more.addSubItem(3, R.drawable.msg_edit, "Edit");
         }
 
         FrameLayout root = new FrameLayout(context);

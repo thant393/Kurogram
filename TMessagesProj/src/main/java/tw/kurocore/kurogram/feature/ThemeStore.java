@@ -55,6 +55,26 @@ public interface ThemeStore extends KuroFeature {
     void submitTheme(long accountId, String title, String description, String category, String type,
                      String content, OwnerProfileSync.Profile owner, StickerStoreApi.ResultCallback callback);
 
+    /** Owner edit: any null field stays as it is; a non-null {@code content} publishes a new version. */
+    default void updateTheme(String themeId, long accountId, String title, String description, String category,
+                             String content, StickerStoreApi.ResultCallback callback) {
+        try {
+            org.json.JSONObject body = new org.json.JSONObject();
+            if (title != null) body.put("title", title);
+            if (description != null) body.put("description", description);
+            if (category != null) body.put("category", category);
+            if (content != null) body.put("content", content);
+            StickerStoreApi.send("PUT", "api/v1/themes/" + themeId + "?account_id=" + accountId, body, callback);
+        } catch (Exception e) {
+            callback.onError("Couldn't build the request");
+        }
+    }
+
+    /** Owner takes the theme out of the store (hidden, not erased). */
+    default void unpublishTheme(String themeId, long accountId, StickerStoreApi.ResultCallback callback) {
+        StickerStoreApi.send("DELETE", "api/v1/themes/" + themeId + "?account_id=" + accountId, null, callback);
+    }
+
     void setLike(String themeId, long accountId, boolean liked, StickerStoreApi.ResultCallback callback);
 
     void rate(String themeId, long accountId, int stars, StickerStoreApi.ResultCallback callback);
