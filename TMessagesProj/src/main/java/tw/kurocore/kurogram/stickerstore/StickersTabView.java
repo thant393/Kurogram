@@ -61,6 +61,7 @@ public class StickersTabView extends FrameLayout {
         layoutManager = new GridLayoutManager(context, 3);
         listView = new RecyclerListView(context);
         listView.setLayoutManager(layoutManager);
+        StoreLook.autoSpan(listView, layoutManager, () -> 3, 120, null);
         // Top padding = the header's height, so the first row starts right below the header
         // instead of under it; clipToPadding(false) lets rows scroll up *beneath* it.
         listView.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(HEADER_HEIGHT_DP), AndroidUtilities.dp(8), AndroidUtilities.dp(16));

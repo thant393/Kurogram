@@ -53,7 +53,8 @@ import tw.kurocore.kurogram.settings.GroupCardHelper;
  */
 public class StickerPackDetailActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate {
 
-    private static final int GRID_COLUMNS = 4;
+    private static final int GRID_COLUMNS = 4; // phone layout; wider screens get more (see gridColumns)
+    private int gridColumns = GRID_COLUMNS;
     private static final int GRID_CELL_DP = 80;
     private static final int GRID_PADDING_DP = 8; // top+bottom padding applied to gridView, each side
     private static final int GRID_MIN_HEIGHT_DP = 160; // used while loading/on error, before the real count is known
@@ -245,6 +246,10 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
         gridView = new RecyclerListView(context);
         GridLayoutManager layoutManager = new GridLayoutManager(context, GRID_COLUMNS);
         gridView.setLayoutManager(layoutManager);
+        StoreLook.autoSpan(gridView, layoutManager, () -> GRID_COLUMNS, 80, () -> {
+            gridColumns = layoutManager.getSpanCount();
+            gridView.post(this::updateGridHeight);
+        });
         gridView.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(8), AndroidUtilities.dp(8), AndroidUtilities.dp(8));
         gridView.setClipToPadding(false);
         // The outer ScrollView already owns scrolling for the whole screen - the grid's
@@ -811,7 +816,7 @@ public class StickerPackDetailActivity extends BaseFragment implements Notificat
         if (count <= 0) {
             heightDp = GRID_MIN_HEIGHT_DP;
         } else {
-            int rows = (count + GRID_COLUMNS - 1) / GRID_COLUMNS;
+            int rows = (count + gridColumns - 1) / gridColumns;
             heightDp = rows * GRID_CELL_DP + GRID_PADDING_DP * 2;
         }
         ViewGroup.LayoutParams params = gridFrame.getLayoutParams();

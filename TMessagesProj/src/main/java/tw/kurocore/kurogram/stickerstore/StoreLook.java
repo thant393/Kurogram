@@ -18,6 +18,31 @@ public final class StoreLook {
     private StoreLook() {
     }
 
+    /** Columns that fit {@code widthPx}: never fewer than {@code base} (the phone layout), more when each column can stay at least {@code minCellDp} wide. */
+    public static int fitColumns(int widthPx, int base, int minCellDp) {
+        int fit = widthPx / Math.max(1, org.telegram.messenger.AndroidUtilities.dp(minCellDp));
+        return Math.max(base, Math.min(fit, base * 3));
+    }
+
+    /** Re-evaluates the span count whenever the list's width changes (rotation, split screen, foldables). */
+    public static void autoSpan(androidx.recyclerview.widget.RecyclerView list,
+                                androidx.recyclerview.widget.GridLayoutManager lm,
+                                java.util.function.IntSupplier base, int minCellDp, Runnable after) {
+        list.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, or, ob) -> {
+            int w = r - l - v.getPaddingLeft() - v.getPaddingRight();
+            if (w <= 0) {
+                return;
+            }
+            int cols = fitColumns(w, base.getAsInt(), minCellDp);
+            if (lm.getSpanCount() != cols) {
+                lm.setSpanCount(cols);
+                if (after != null) {
+                    after.run();
+                }
+            }
+        });
+    }
+
     private static LayoutSpec layout() {
         return LayoutManager.get().spec();
     }

@@ -52,6 +52,7 @@ public class MyStickersView extends FrameLayout {
         layoutManager = new GridLayoutManager(context, 3);
         listView = new RecyclerListView(context);
         listView.setLayoutManager(layoutManager);
+        StoreLook.autoSpan(listView, layoutManager, () -> 3, 120, null);
         listView.setPadding(AndroidUtilities.dp(10), AndroidUtilities.dp(6), AndroidUtilities.dp(10), AndroidUtilities.dp(16));
         listView.setClipToPadding(false);
         listView.setSelectorDrawableColor(0); // each card draws its own rounded ripple
@@ -134,7 +135,6 @@ public class MyStickersView extends FrameLayout {
             return; // nothing changed since the cells were last built
         }
         appliedSkin = skin;
-        layoutManager.setSpanCount(3);
         listView.setAdapter(adapter); // new cells pick up the radius / style
     }
 

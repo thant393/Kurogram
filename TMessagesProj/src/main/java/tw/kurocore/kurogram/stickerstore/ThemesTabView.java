@@ -113,7 +113,7 @@ public class ThemesTabView extends FrameLayout {
 
     /** Re-reads the layout keys that change the frame of the grid (columns, chip row). */
     private void applyStoreLayout() {
-        int columns = StoreLook.columns();
+        int columns = StoreLook.fitColumns(Math.max(0, listView.getWidth() - listView.getPaddingLeft() - listView.getPaddingRight()), StoreLook.columns(), 170);
         if (layoutManager.getSpanCount() != columns) {
             layoutManager.setSpanCount(columns);
         }
@@ -152,6 +152,7 @@ public class ThemesTabView extends FrameLayout {
         layoutManager = new GridLayoutManager(context, StoreLook.columns());
         listView = new RecyclerListView(context);
         listView.setLayoutManager(layoutManager);
+        StoreLook.autoSpan(listView, layoutManager, StoreLook::columns, 170, null);
         listView.setPadding(AndroidUtilities.dp(10), AndroidUtilities.dp(topPaddingDp()), AndroidUtilities.dp(10), AndroidUtilities.dp(16));
         listView.setClipToPadding(false);
         listView.setSelectorDrawableColor(0);
