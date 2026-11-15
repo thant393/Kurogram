@@ -1,0 +1,2261 @@
+{
+ "counts": {
+  "PLANNED_P1": 19,
+  "ENGINE_UNSUPPORTED": 11,
+  "PLANNED_P2": 94,
+  "PLANNED_P3": 100,
+  "PLANNED_P4": 1
+ },
+ "rules": [
+  {
+   "path": "tokens.colors.accent",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P1",
+   "group": "colors",
+   "level": "basic",
+   "phase": 1,
+   "wiring": "unverified"
+  },
+  {
+   "path": "tokens.colors.onAccent",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P1",
+   "group": "colors",
+   "level": "basic",
+   "phase": 1,
+   "wiring": "unverified"
+  },
+  {
+   "path": "tokens.colors.background",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P1",
+   "group": "colors",
+   "level": "basic",
+   "phase": 1,
+   "wiring": "unverified"
+  },
+  {
+   "path": "tokens.colors.surface",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P1",
+   "group": "colors",
+   "level": "basic",
+   "phase": 1,
+   "wiring": "unverified"
+  },
+  {
+   "path": "tokens.colors.surfaceElevated",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P1",
+   "group": "colors",
+   "level": "advanced",
+   "phase": 1,
+   "wiring": "unverified"
+  },
+  {
+   "path": "tokens.colors.textPrimary",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P1",
+   "group": "colors",
+   "level": "basic",
+   "phase": 1,
+   "wiring": "unverified"
+  },
+  {
+   "path": "tokens.colors.textSecondary",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P1",
+   "group": "colors",
+   "level": "basic",
+   "phase": 1,
+   "wiring": "unverified"
+  },
+  {
+   "path": "tokens.colors.divider",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P1",
+   "group": "colors",
+   "level": "advanced",
+   "phase": 1,
+   "wiring": "unverified"
+  },
+  {
+   "path": "tokens.colors.icon",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P1",
+   "group": "colors",
+   "level": "advanced",
+   "phase": 1,
+   "wiring": "unverified"
+  },
+  {
+   "path": "tokens.colors.error",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P1",
+   "group": "colors",
+   "level": "advanced",
+   "phase": 1,
+   "wiring": "unverified"
+  },
+  {
+   "path": "tokens.colors.success",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P1",
+   "group": "colors",
+   "level": "advanced",
+   "phase": 1,
+   "wiring": "unverified"
+  },
+  {
+   "path": "tokens.colors.overlay",
+   "kind": "argb",
+   "section": "skin",
+   "status": "PLANNED_P1",
+   "group": "colors",
+   "level": "advanced",
+   "phase": 1,
+   "wiring": "unverified"
+  },
+  {
+   "path": "tokens.gradient.top",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P1",
+   "group": "gradient",
+   "level": "basic",
+   "phase": 1,
+   "wiring": "unverified"
+  },
+  {
+   "path": "tokens.gradient.middle",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P1",
+   "group": "gradient",
+   "level": "basic",
+   "phase": 1,
+   "wiring": "unverified"
+  },
+  {
+   "path": "tokens.gradient.bottom",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P1",
+   "group": "gradient",
+   "level": "basic",
+   "phase": 1,
+   "wiring": "unverified"
+  },
+  {
+   "path": "tokens.gradient.direction",
+   "kind": "enum:vertical,diagonal,horizontal",
+   "section": "skin",
+   "status": "PLANNED_P1",
+   "group": "gradient",
+   "level": "basic",
+   "phase": 1,
+   "wiring": "unverified"
+  },
+  {
+   "path": "tokens.typography.fontFamily",
+   "kind": "enum:default",
+   "section": "skin",
+   "status": "ENGINE_UNSUPPORTED",
+   "group": "typography",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "tokens.typography.bodySizeSp",
+   "kind": "int:12:30",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "typography",
+   "level": "basic",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "tokens.typography.titleSizeSp",
+   "kind": "int:14:40",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "typography",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "tokens.typography.captionSizeSp",
+   "kind": "int:8:20",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "typography",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "tokens.typography.fontWeight",
+   "kind": "enum:normal,medium,bold",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "typography",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "tokens.typography.lineHeightMultiplier",
+   "kind": "float:1:2",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "typography",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "tokens.spacing.xs",
+   "kind": "int:0:64",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "spacing",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "tokens.spacing.sm",
+   "kind": "int:0:64",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "spacing",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "tokens.spacing.md",
+   "kind": "int:0:64",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "spacing",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "tokens.spacing.lg",
+   "kind": "int:0:64",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "spacing",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "tokens.spacing.xl",
+   "kind": "int:0:64",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "spacing",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "tokens.shapes.cardRadiusDp",
+   "kind": "int:0:32",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "shapes",
+   "level": "basic",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "tokens.shapes.buttonRadiusDp",
+   "kind": "int:0:32",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "shapes",
+   "level": "basic",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "tokens.shapes.inputRadiusDp",
+   "kind": "int:0:32",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "shapes",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "tokens.shapes.dialogRadiusDp",
+   "kind": "int:0:32",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "shapes",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "tokens.shapes.bubbleRadiusDp",
+   "kind": "int:0:17",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "shapes",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "tokens.elevation.cardDp",
+   "kind": "int:0:24",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "elevation",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "tokens.elevation.dialogDp",
+   "kind": "int:0:24",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "elevation",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.appBar.background",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "comp.appBar",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.appBar.foreground",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "comp.appBar",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.appBar.heightDp",
+   "kind": "int:40:72",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "comp.appBar",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.navigationBar.background",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "comp.navigationBar",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.navigationBar.selected",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "comp.navigationBar",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.navigationBar.unselected",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "comp.navigationBar",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.bottomNavigation.background",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "comp.bottomNavigation",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.bottomNavigation.selectedBackground",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "comp.bottomNavigation",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.bottomNavigation.iconSizeDp",
+   "kind": "int:16:40",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "comp.bottomNavigation",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.card.background",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "comp.card",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.card.borderColor",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "comp.card",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.card.borderWidthDp",
+   "kind": "int:0:4",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "comp.card",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.button.background",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "comp.button",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.button.foreground",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "comp.button",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.button.heightDp",
+   "kind": "int:36:64",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "comp.button",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.input.background",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "comp.input",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.input.foreground",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "comp.input",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.input.hint",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "comp.input",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.dialog.background",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "comp.dialog",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.dialog.scrim",
+   "kind": "argb",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "comp.dialog",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.chats.layout",
+   "kind": "enum:classic",
+   "section": "skin",
+   "status": "ENGINE_UNSUPPORTED",
+   "group": "screen.chats",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.chats.background",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P3",
+   "group": "screen.chats",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.chats.listStyle",
+   "kind": "enum:card,flat,glass",
+   "section": "skin",
+   "status": "PLANNED_P3",
+   "group": "screen.chats",
+   "level": "basic",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.chats.avatarSizeDp",
+   "kind": "int:32:72",
+   "section": "skin",
+   "status": "PLANNED_P3",
+   "group": "screen.chats",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.chats.showDividers",
+   "kind": "bool",
+   "section": "skin",
+   "status": "PLANNED_P3",
+   "group": "screen.chats",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.chats.threeLines",
+   "kind": "bool",
+   "section": "skin",
+   "status": "PLANNED_P3",
+   "group": "screen.chats",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.contacts.background",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P3",
+   "group": "screen.contacts",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.contacts.sectionStyle",
+   "kind": "enum:card,flat,glass",
+   "section": "skin",
+   "status": "PLANNED_P3",
+   "group": "screen.contacts",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.contacts.avatarSizeDp",
+   "kind": "int:32:72",
+   "section": "skin",
+   "status": "PLANNED_P3",
+   "group": "screen.contacts",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.profile.background",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P3",
+   "group": "screen.profile",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.profile.headerStyle",
+   "kind": "enum:centered,left,glass",
+   "section": "skin",
+   "status": "PLANNED_P3",
+   "group": "screen.profile",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.profile.avatarSizeDp",
+   "kind": "int:64:160",
+   "section": "skin",
+   "status": "PLANNED_P3",
+   "group": "screen.profile",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.profile.cardRadiusDp",
+   "kind": "int:0:32",
+   "section": "skin",
+   "status": "PLANNED_P3",
+   "group": "screen.profile",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.settings.background",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P3",
+   "group": "screen.settings",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.settings.groupStyle",
+   "kind": "enum:card,flat,glass",
+   "section": "skin",
+   "status": "PLANNED_P3",
+   "group": "screen.settings",
+   "level": "basic",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.settings.iconStyle",
+   "kind": "enum:rounded,square,plain",
+   "section": "skin",
+   "status": "PLANNED_P3",
+   "group": "screen.settings",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.settings.showDescriptions",
+   "kind": "bool",
+   "section": "skin",
+   "status": "PLANNED_P3",
+   "group": "screen.settings",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.themeStore.background",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P3",
+   "group": "screen.themeStore",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.themeStore.gridColumns",
+   "kind": "int:2:3",
+   "section": "skin",
+   "status": "PLANNED_P3",
+   "group": "screen.themeStore",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.themeStore.previewRadiusDp",
+   "kind": "int:0:32",
+   "section": "skin",
+   "status": "PLANNED_P3",
+   "group": "screen.themeStore",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "chat.bubbleIn",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "chat",
+   "level": "basic",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "chat.bubbleOut",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "chat",
+   "level": "basic",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "chat.bubbleInText",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "chat",
+   "level": "basic",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "chat.bubbleOutText",
+   "kind": "col",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "chat",
+   "level": "basic",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "chat.bubbleRadiusDp",
+   "kind": "int:0:17",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "chat",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "chat.fontSizeSp",
+   "kind": "int:12:30",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "chat",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "assets.wallpaper",
+   "kind": "null",
+   "section": "skin",
+   "status": "ENGINE_UNSUPPORTED",
+   "group": "assets",
+   "level": "advanced",
+   "phase": 5,
+   "wiring": "unverified"
+  },
+  {
+   "path": "assets.font",
+   "kind": "null",
+   "section": "skin",
+   "status": "ENGINE_UNSUPPORTED",
+   "group": "assets",
+   "level": "advanced",
+   "phase": 5,
+   "wiring": "unverified"
+  },
+  {
+   "path": "assets.iconPack",
+   "kind": "null",
+   "section": "skin",
+   "status": "ENGINE_UNSUPPORTED",
+   "group": "assets",
+   "level": "advanced",
+   "phase": 5,
+   "wiring": "unverified"
+  },
+  {
+   "path": "effects.blur",
+   "kind": "bool",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "effects",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "effects.glass",
+   "kind": "bool",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "effects",
+   "level": "basic",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "effects.animations",
+   "kind": "bool",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "effects",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "effects.reducedMotion",
+   "kind": "bool",
+   "section": "skin",
+   "status": "PLANNED_P2",
+   "group": "effects",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "schemaMinor",
+   "kind": "int:0:99",
+   "section": "skinMinor1",
+   "status": "ENGINE_UNSUPPORTED",
+   "group": "structure",
+   "level": "advanced",
+   "phase": 1,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.cell.heightDp",
+   "kind": "int:40:80",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "comp.cell",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.cell.twoLineHeightDp",
+   "kind": "int:56:96",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "comp.cell",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.cell.paddingStartDp",
+   "kind": "int:8:32",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "comp.cell",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.cell.titleSizeSp",
+   "kind": "int:12:22",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "comp.cell",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.cell.valueSizeSp",
+   "kind": "int:11:18",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "comp.cell",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.cell.titleWeight",
+   "kind": "enum:regular,medium,bold",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "comp.cell",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.cell.iconSizeDp",
+   "kind": "int:16:32",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "comp.cell",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.cell.dividerVisible",
+   "kind": "bool",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "comp.cell",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.cell.dividerInsetDp",
+   "kind": "int:0:96",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "comp.cell",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.cell.dividerColor",
+   "kind": "col",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "comp.cell",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.cell.pressedColor",
+   "kind": "argb",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "comp.cell",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.section.style",
+   "kind": "enum:flat,card",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "comp.section",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.section.radiusDp",
+   "kind": "int:0:32",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "comp.section",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.section.gapDp",
+   "kind": "int:0:32",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "comp.section",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.section.headerSizeSp",
+   "kind": "int:11:18",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "comp.section",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.section.headerWeight",
+   "kind": "enum:regular,medium,bold",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "comp.section",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.section.headerColor",
+   "kind": "col",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "comp.section",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.section.infoSizeSp",
+   "kind": "int:11:16",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "comp.section",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.switch.trackOn",
+   "kind": "col",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "comp.switch",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.switch.trackOff",
+   "kind": "col",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "comp.switch",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.switch.thumbOn",
+   "kind": "col",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "comp.switch",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.switch.thumbOff",
+   "kind": "col",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "comp.switch",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.search.background",
+   "kind": "col",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "comp.search",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.search.radiusDp",
+   "kind": "int:0:32",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "comp.search",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.search.hintColor",
+   "kind": "col",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "comp.search",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.search.iconColor",
+   "kind": "col",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "comp.search",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.fab.sizeDp",
+   "kind": "int:40:72",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "comp.fab",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.fab.radiusDp",
+   "kind": "int:0:36",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "comp.fab",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.session.avatarRadiusDp",
+   "kind": "int:0:32",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "comp.session",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.session.nameSizeSp",
+   "kind": "int:12:20",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "comp.session",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.privacy.background",
+   "kind": "col",
+   "section": "skinMinor1",
+   "status": "PLANNED_P3",
+   "group": "screen.privacy",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.notifications.background",
+   "kind": "col",
+   "section": "skinMinor1",
+   "status": "PLANNED_P3",
+   "group": "screen.notifications",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.dataStorage.background",
+   "kind": "col",
+   "section": "skinMinor1",
+   "status": "PLANNED_P3",
+   "group": "screen.dataStorage",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.devices.background",
+   "kind": "col",
+   "section": "skinMinor1",
+   "status": "PLANNED_P3",
+   "group": "screen.devices",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "ux.transition",
+   "kind": "enum:default,fade,slide,none",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "ux",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "ux.ripple",
+   "kind": "bool",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "ux",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "ux.animationScale",
+   "kind": "float:0:2",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "ux",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.themeStore.previewAspect",
+   "kind": "enum:square,portrait,tall",
+   "section": "skinMinor1",
+   "status": "PLANNED_P3",
+   "group": "screen.themeStore",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.themeStore.cardRadiusDp",
+   "kind": "int:0:32",
+   "section": "skinMinor1",
+   "status": "PLANNED_P3",
+   "group": "screen.themeStore",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.themeStore.cardGapDp",
+   "kind": "int:4:20",
+   "section": "skinMinor1",
+   "status": "PLANNED_P3",
+   "group": "screen.themeStore",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.themeStore.titleSizeSp",
+   "kind": "int:12:20",
+   "section": "skinMinor1",
+   "status": "PLANNED_P3",
+   "group": "screen.themeStore",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "components.button.style",
+   "kind": "enum:filled,outlined,text",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "comp.button",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "chat.sendButton",
+   "kind": "col",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "chat",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "chat.dateBackground",
+   "kind": "col",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "chat",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "chat.dateText",
+   "kind": "col",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "chat",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "chat.headerRadiusDp",
+   "kind": "int:0:30",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "chat",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "chat.inputRadiusDp",
+   "kind": "int:0:30",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "chat",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "chat.panelRadiusDp",
+   "kind": "int:0:30",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "chat",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "chat.buttonRadiusDp",
+   "kind": "int:0:30",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "chat",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "chat.dateRadiusDp",
+   "kind": "int:0:30",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "chat",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "chat.wallpaperColor",
+   "kind": "col",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "chat",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "chat.wallpaperColor2",
+   "kind": "col",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "chat",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "chat.wallpaperAngle",
+   "kind": "int:0:359",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "chat",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "chat.menuRadiusDp",
+   "kind": "int:0:30",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "chat",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "chat.reactionRadiusDp",
+   "kind": "int:0:30",
+   "section": "skinMinor1",
+   "status": "PLANNED_P2",
+   "group": "chat",
+   "level": "advanced",
+   "phase": 2,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.chats.tabsRadiusDp",
+   "kind": "int:0:30",
+   "section": "skinMinor1",
+   "status": "PLANNED_P3",
+   "group": "screen.chats",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.profile.avatarRadiusDp",
+   "kind": "int:0:50",
+   "section": "skinMinor1",
+   "status": "PLANNED_P3",
+   "group": "screen.profile",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.profile.actionsStyle",
+   "kind": "enum:buttons,row",
+   "section": "skinMinor1",
+   "status": "PLANNED_P3",
+   "group": "screen.profile",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.profile.photoStyle",
+   "kind": "enum:avatar,card",
+   "section": "skinMinor1",
+   "status": "PLANNED_P3",
+   "group": "screen.profile",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.settings.header",
+   "kind": "enum:centered,cover",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.settings",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.settings.accounts",
+   "kind": "enum:list,collapsible",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.settings",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.people.storyRail",
+   "kind": "enum:on,off",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.people",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.people.chips",
+   "kind": "enum:on,off",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.people",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.settings.items",
+   "kind": "list:profile,settings,contacts,calls,saved,archive,kuroTheme,kuroSettings,numberFinder,specialContacts,onlineContacts,contactChanges,account,chatSettings,privacy,notifications,data,folders,devices,power,language,premium,stars,ton,business,gift,askQuestion,faq,features,privacyPolicy:1:40",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.settings",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.contacts.mode",
+   "kind": "enum:list,grid",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.contacts",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.contacts.grid.columns",
+   "kind": "int:2:5",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.contacts",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.contacts.grid.avatarDp",
+   "kind": "int:48:96",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.contacts",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.contacts.row.avatarSizeDp",
+   "kind": "int:32:64",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.contacts",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.contacts.row.heightDp",
+   "kind": "int:48:80",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.contacts",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.contacts.row.status",
+   "kind": "bool",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.contacts",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.contacts.sort",
+   "kind": "enum:name,time",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.contacts",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.mode",
+   "kind": "enum:list,grid",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "basic",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.grid.columns",
+   "kind": "int:2:5",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.grid.avatarDp",
+   "kind": "int:40:96",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.grid.showName",
+   "kind": "bool",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.grid.showBadge",
+   "kind": "bool",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.row.preview.show",
+   "kind": "bool",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.row.heightDp",
+   "kind": "int:56:96",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "basic",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.row.avatar.sizeDp",
+   "kind": "int:32:72",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.row.avatar.shape",
+   "kind": "enum:circle,rounded",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.row.avatar.onlineDot.sizeDp",
+   "kind": "int:6:20",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.row.avatar.onlineDot.color",
+   "kind": "enum:success,accent",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.row.avatar.lastActive",
+   "kind": "enum:none,badge",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.row.title.weight",
+   "kind": "enum:normal,medium,bold",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.row.title.sizeSp",
+   "kind": "int:12:22",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.row.title.unreadWeight",
+   "kind": "enum:normal,medium,bold",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.row.preview.lines",
+   "kind": "int:1:3",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.row.preview.sizeSp",
+   "kind": "int:11:20",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.row.preview.color",
+   "kind": "enum:textPrimary,textSecondary",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.row.preview.unreadColor",
+   "kind": "enum:textPrimary,textSecondary",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.row.meta.time",
+   "kind": "enum:top-right,bottom-right,hidden",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.row.meta.seenAvatar",
+   "kind": "enum:none,bottom-right",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.row.meta.unreadDot",
+   "kind": "enum:none,right",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.row.pinned",
+   "kind": "enum:none,icon-left-of-time",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.row.dividers",
+   "kind": "bool",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.header.collapse",
+   "kind": "enum:scroll,pinned",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.header.left",
+   "kind": "list:menu,compose,search:0:2",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.header.right",
+   "kind": "list:menu,compose,search:0:3",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.storyRail.enabled",
+   "kind": "bool",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.storyRail.avatarSizeDp",
+   "kind": "int:40:80",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.storyRail.showCreate",
+   "kind": "bool",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.folders.style",
+   "kind": "enum:chips,tabs,none",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.folders.position",
+   "kind": "enum:below-header,below-rail",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.folders.collapsible",
+   "kind": "bool",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.specialRows.archive",
+   "kind": "enum:row,hidden",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.drawer.content",
+   "kind": "enum:settings,list",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.drawer",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chatList.searchBar",
+   "kind": "bool",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.drawer.items",
+   "kind": "list:profile,settings,contacts,calls,saved,archive,kuroTheme,kuroSettings,numberFinder,specialContacts,onlineContacts,contactChanges,account,chatSettings,privacy,notifications,data,folders,devices,power,language,premium,stars,ton,business,gift,askQuestion,faq,features,privacyPolicy:1:40",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.drawer",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.bottomTabs.items",
+   "kind": "list:chats,people,settings,profile,unread:2:5",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.bottomTabs",
+   "level": "basic",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.bottomTabs.peopleSource",
+   "kind": "enum:contacts,online",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.bottomTabs",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.bottomTabs.labels",
+   "kind": "bool",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.bottomTabs",
+   "level": "basic",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.bottomTabs.labelSizeSp",
+   "kind": "int:9:14",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.bottomTabs",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.bottomTabs.indicator",
+   "kind": "enum:none,pill",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.bottomTabs",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.bottomTabs.border",
+   "kind": "bool",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.bottomTabs",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.bottomTabs.style",
+   "kind": "enum:flat,glass",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.bottomTabs",
+   "level": "basic",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chat.header.avatarLeft",
+   "kind": "bool",
+   "section": "layout",
+   "status": "ENGINE_UNSUPPORTED",
+   "group": "layout.chat",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chat.header.actions",
+   "kind": "list:call,video,more,search:0:4",
+   "section": "layout",
+   "status": "ENGINE_UNSUPPORTED",
+   "group": "layout.chat",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chat.input.style",
+   "kind": "enum:classic,pill",
+   "section": "layout",
+   "status": "ENGINE_UNSUPPORTED",
+   "group": "layout.chat",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chat.input.leading",
+   "kind": "list:plus,attach,emoji:0:2",
+   "section": "layout",
+   "status": "ENGINE_UNSUPPORTED",
+   "group": "layout.chat",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.chat.input.trailing",
+   "kind": "list:emoji,mic,attach:0:3",
+   "section": "layout",
+   "status": "ENGINE_UNSUPPORTED",
+   "group": "layout.chat",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.settings.mode",
+   "kind": "enum:list,grid",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.settings",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.settings.grid.columns",
+   "kind": "int:2:4",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.settings",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.themeStore.mode",
+   "kind": "enum:grid,list",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.themeStore",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.themeStore.meta.creator",
+   "kind": "bool",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.themeStore",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.themeStore.meta.downloads",
+   "kind": "bool",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.themeStore",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.themeStore.meta.position",
+   "kind": "enum:below,overlay",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.themeStore",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.themeStore.chips",
+   "kind": "enum:on,off",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.themeStore",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.themeStore.search",
+   "kind": "enum:on,off",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.themeStore",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.notifications.hiddenRows",
+   "kind": "list:reactions,callsVibrate,callsRingtone,inappSound,inappVibrate,inappPreview,inchatSound,inappPriority,contactJoined,pinnedMessage,notificationsService,notificationsServiceConnection,repeat:0:13",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.notifications",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.profile.hiddenRows",
+   "kind": "list:phone,bio,username,birthday,bizHours,bizLocation,note:0:7",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.profile",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.privacy.hiddenRows",
+   "kind": "list:phoneNumber,lastSeen,profilePhoto,forwards,calls,voices,noncontacts,birthday,gifts,bio,music,groups,paymentsClear,contactsDelete,contactsSync,contactsSuggest,secretMap,secretWebpage:0:18",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.privacy",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.dataStorage.hiddenRows",
+   "kind": "list:storageUsage,dataUsage,saveToGalleryPeer,saveToGalleryGroups,saveToGalleryChannels,useLessDataForCalls,proxy,clearDrafts:0:8",
+   "section": "layout",
+   "status": "PLANNED_P3",
+   "group": "layout.dataStorage",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "schemaVersion",
+   "kind": "structure",
+   "section": "structure",
+   "status": "PLANNED_P1",
+   "group": "structure",
+   "level": "advanced",
+   "phase": 1,
+   "wiring": "unverified"
+  },
+  {
+   "path": "appearance",
+   "kind": "structure",
+   "section": "structure",
+   "status": "PLANNED_P1",
+   "group": "structure",
+   "level": "basic",
+   "phase": 1,
+   "wiring": "unverified"
+  },
+  {
+   "path": "meta",
+   "kind": "structure",
+   "section": "structure",
+   "status": "PLANNED_P1",
+   "group": "structure",
+   "level": "basic",
+   "phase": 1,
+   "wiring": "unverified"
+  },
+  {
+   "path": "night",
+   "kind": "structure",
+   "section": "structure",
+   "status": "PLANNED_P4",
+   "group": "structure",
+   "level": "advanced",
+   "phase": 4,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout",
+   "kind": "structure",
+   "section": "structure",
+   "status": "PLANNED_P3",
+   "group": "structure",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  }
+ ]
+}

@@ -16,10 +16,16 @@ jobs:
       - name: Check skin rule lists
         # Java rule lists must equal docs/skin-rules.manifest.json (the backend repo checks its own copy against this one)
         run: python3 Tools/check_rules.py
+      - name: Check Theme Builder catalog covers every rule
+        # fails when an engine rule has no catalog entry (UNMAPPED) or the catalog points at a rule that does not exist
+        run: python3 Tools/check_catalog.py
       - uses: actions/setup-java@v5
         with:
           java-version: '21'
           distribution: temurin
+      - name: Theme Builder model tests
+        # JDK only: vectors, round trip, unknown-field preservation, undo/redo
+        run: Tools/jvm-tests/run.sh
       - uses: gradle/actions/setup-gradle@v6
       - uses: android-actions/setup-android@v4
         with:

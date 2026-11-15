@@ -1,0 +1,6354 @@
+{
+ "catalogVersion": 1,
+ "languages": [
+  "en",
+  "my"
+ ],
+ "screens": {
+  "chats": {
+   "label": {
+    "en": "Chats",
+    "my": "ချက်တ်စာရင်း"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "chat": {
+   "label": {
+    "en": "Chat",
+    "my": "ချက်တ်ဖန်သားပြင်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "contacts": {
+   "label": {
+    "en": "Contacts",
+    "my": "ဆက်သွယ်ရန်စာရင်း"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "people": {
+   "label": {
+    "en": "People",
+    "my": "လူများ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "unread": {
+   "label": {
+    "en": "Unread",
+    "my": "မဖတ်ရသေးသော"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "settings": {
+   "label": {
+    "en": "Settings",
+    "my": "ဆက်တင်များ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "kuroSettings": {
+   "label": {
+    "en": "Kuro settings",
+    "my": "Kuro ဆက်တင်များ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "profile": {
+   "label": {
+    "en": "Profile",
+    "my": "ပရိုဖိုင်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "themeStore": {
+   "label": {
+    "en": "Theme store",
+    "my": "Theme စတိုး"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "privacy": {
+   "label": {
+    "en": "Privacy",
+    "my": "ကိုယ်ရေးလုံခြုံမှု"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "notifications": {
+   "label": {
+    "en": "Notifications",
+    "my": "အကြောင်းကြားချက်များ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "dataStorage": {
+   "label": {
+    "en": "Data and storage",
+    "my": "ဒေတာနှင့် သိုလှောင်မှု"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "devices": {
+   "label": {
+    "en": "Devices",
+    "my": "စက်များ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  }
+ },
+ "components": {
+  "global": {
+   "label": {
+    "en": "Whole app",
+    "my": "app တစ်ခုလုံး"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "screenBackground": {
+   "label": {
+    "en": "Screen background",
+    "my": "မျက်နှာပြင်နောက်ခံ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "appBar": {
+   "label": {
+    "en": "Top bar",
+    "my": "အပေါ်ဘား"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "bottomTabs": {
+   "label": {
+    "en": "Bottom tabs",
+    "my": "အောက်ခြေ tab များ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "bottomTabs.item": {
+   "label": {
+    "en": "Bottom tab item",
+    "my": "အောက်ခြေ tab တစ်ခု"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "fab": {
+   "label": {
+    "en": "Compose button",
+    "my": "ရေးသားခလုတ်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "drawer": {
+   "label": {
+    "en": "Side menu",
+    "my": "ဘေးမီနူး"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "card": {
+   "label": {
+    "en": "Card",
+    "my": "ကတ်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "section": {
+   "label": {
+    "en": "Section",
+    "my": "အပိုင်း"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "cell": {
+   "label": {
+    "en": "List row",
+    "my": "စာရင်းအတန်း"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "switch": {
+   "label": {
+    "en": "Switch",
+    "my": "ခလုတ်ဖွင့်ပိတ်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "button": {
+   "label": {
+    "en": "Button",
+    "my": "ခလုတ်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "input": {
+   "label": {
+    "en": "Input field",
+    "my": "ရိုက်ထည့်ရန်ကွက်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "dialog": {
+   "label": {
+    "en": "Dialog",
+    "my": "ဒိုင်ယာလော့"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "search": {
+   "label": {
+    "en": "Search field",
+    "my": "ရှာဖွေရန်ကွက်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "session": {
+   "label": {
+    "en": "Device row",
+    "my": "စက်အတန်း"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "chatRow": {
+   "label": {
+    "en": "Chat row",
+    "my": "ချက်တ်အတန်း"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "chatRow.avatar": {
+   "label": {
+    "en": "Chat avatar",
+    "my": "ချက်တ်ပရိုဖိုင်ပုံ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "chatRow.title": {
+   "label": {
+    "en": "Chat title",
+    "my": "ချက်တ်အမည်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "chatRow.preview": {
+   "label": {
+    "en": "Message preview",
+    "my": "မက်ဆေ့ချ်အကျဉ်း"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "chatRow.time": {
+   "label": {
+    "en": "Time and status",
+    "my": "အချိန်နှင့် အခြေအနေ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "chatRow.badge": {
+   "label": {
+    "en": "Unread badge",
+    "my": "မဖတ်ရသေးသော အရေအတွက်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "chatList.header": {
+   "label": {
+    "en": "Chat list header",
+    "my": "ချက်တ်စာရင်း ခေါင်းပိုင်း"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "chatList.storyRail": {
+   "label": {
+    "en": "Story row",
+    "my": "Story တန်း"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "chatList.folders": {
+   "label": {
+    "en": "Folders bar",
+    "my": "Folder ဘား"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "chatList.search": {
+   "label": {
+    "en": "Chat search",
+    "my": "ချက်တ်ရှာဖွေခြင်း"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "chatList.grid": {
+   "label": {
+    "en": "Chat grid",
+    "my": "ချက်တ်ဇယားကွက်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "settingsRow": {
+   "label": {
+    "en": "Settings row",
+    "my": "ဆက်တင်အတန်း"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "settingsHeader": {
+   "label": {
+    "en": "Settings header",
+    "my": "ဆက်တင် ခေါင်းပိုင်း"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "contactRow": {
+   "label": {
+    "en": "Contact row",
+    "my": "ဆက်သွယ်ရန်အတန်း"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "contactsGrid": {
+   "label": {
+    "en": "Contacts grid",
+    "my": "ဆက်သွယ်ရန် ဇယားကွက်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "peopleRail": {
+   "label": {
+    "en": "People row",
+    "my": "လူများတန်း"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "profileHeader": {
+   "label": {
+    "en": "Profile header",
+    "my": "ပရိုဖိုင် ခေါင်းပိုင်း"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "infoCard": {
+   "label": {
+    "en": "Profile info card",
+    "my": "ပရိုဖိုင်အချက်အလက်ကတ်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "themeCard": {
+   "label": {
+    "en": "Theme card",
+    "my": "Theme ကတ်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "bubble.in": {
+   "label": {
+    "en": "Incoming bubble",
+    "my": "ဝင်လာသော မက်ဆေ့ချ်ဘူး"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "bubble.out": {
+   "label": {
+    "en": "Outgoing bubble",
+    "my": "ပို့သော မက်ဆေ့ချ်ဘူး"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "chatHeader": {
+   "label": {
+    "en": "Chat header",
+    "my": "ချက်တ် ခေါင်းပိုင်း"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "chatInput": {
+   "label": {
+    "en": "Message input",
+    "my": "မက်ဆေ့ချ်ရိုက်ကွက်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "datePill": {
+   "label": {
+    "en": "Date label",
+    "my": "ရက်စွဲအမှတ်အသား"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "chatPanel": {
+   "label": {
+    "en": "Chat menu and panels",
+    "my": "ချက်တ်မီနူးနှင့် panel များ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  }
+ },
+ "groups": {
+  "structure": {
+   "label": {
+    "en": "Theme",
+    "my": "Theme"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "colors": {
+   "label": {
+    "en": "Colours",
+    "my": "အရောင်များ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "gradient": {
+   "label": {
+    "en": "Gradient",
+    "my": "အရောင်ဖျော့ဆင်း"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "typography": {
+   "label": {
+    "en": "Text",
+    "my": "စာသား"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "spacing": {
+   "label": {
+    "en": "Spacing",
+    "my": "အကွာအဝေး"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "shapes": {
+   "label": {
+    "en": "Shapes",
+    "my": "ပုံသဏ္ဍာန်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "elevation": {
+   "label": {
+    "en": "Elevation",
+    "my": "အမြင့်အရိပ်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "chat": {
+   "label": {
+    "en": "Chat",
+    "my": "ချက်တ်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "effects": {
+   "label": {
+    "en": "Effects",
+    "my": "Effect များ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "ux": {
+   "label": {
+    "en": "Motion and touch",
+    "my": "လှုပ်ရှားမှုနှင့် ထိတွေ့မှု"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "assets": {
+   "label": {
+    "en": "Assets",
+    "my": "ပုံနှင့်ဖောင့်များ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "comp.appBar": {
+   "label": {
+    "en": "Top bar",
+    "my": "အပေါ်ဘား"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "comp.navigationBar": {
+   "label": {
+    "en": "Navigation bar",
+    "my": "လမ်းညွှန်ဘား"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "comp.bottomNavigation": {
+   "label": {
+    "en": "Bottom navigation",
+    "my": "အောက်ခြေလမ်းညွှန်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "comp.card": {
+   "label": {
+    "en": "Cards",
+    "my": "ကတ်များ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "comp.button": {
+   "label": {
+    "en": "Buttons",
+    "my": "ခလုတ်များ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "comp.input": {
+   "label": {
+    "en": "Input fields",
+    "my": "ရိုက်ထည့်ကွက်များ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "comp.dialog": {
+   "label": {
+    "en": "Dialogs",
+    "my": "ဒိုင်ယာလော့များ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "comp.cell": {
+   "label": {
+    "en": "List rows",
+    "my": "စာရင်းအတန်းများ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "comp.section": {
+   "label": {
+    "en": "Sections",
+    "my": "အပိုင်းများ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "comp.switch": {
+   "label": {
+    "en": "Switches",
+    "my": "ဖွင့်ပိတ်ခလုတ်များ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "comp.search": {
+   "label": {
+    "en": "Search fields",
+    "my": "ရှာဖွေရန်ကွက်များ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "comp.fab": {
+   "label": {
+    "en": "Compose button",
+    "my": "ရေးသားခလုတ်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "comp.session": {
+   "label": {
+    "en": "Device rows",
+    "my": "စက်အတန်းများ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "screen.chats": {
+   "label": {
+    "en": "Chats screen",
+    "my": "ချက်တ်စာရင်း screen"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "screen.contacts": {
+   "label": {
+    "en": "Contacts screen",
+    "my": "ဆက်သွယ်ရန် screen"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "screen.profile": {
+   "label": {
+    "en": "Profile screen",
+    "my": "ပရိုဖိုင် screen"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "screen.settings": {
+   "label": {
+    "en": "Settings screen",
+    "my": "ဆက်တင် screen"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "screen.themeStore": {
+   "label": {
+    "en": "Theme store screen",
+    "my": "Theme စတိုး screen"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "screen.privacy": {
+   "label": {
+    "en": "Privacy screen",
+    "my": "ကိုယ်ရေးလုံခြုံမှု screen"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "screen.notifications": {
+   "label": {
+    "en": "Notifications screen",
+    "my": "အကြောင်းကြားချက် screen"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "screen.dataStorage": {
+   "label": {
+    "en": "Data and storage screen",
+    "my": "ဒေတာနှင့် သိုလှောင်မှု screen"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "screen.devices": {
+   "label": {
+    "en": "Devices screen",
+    "my": "စက်များ screen"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "layout.chatList": {
+   "label": {
+    "en": "Chat list layout",
+    "my": "ချက်တ်စာရင်း ဖွဲ့စည်းပုံ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "layout.bottomTabs": {
+   "label": {
+    "en": "Bottom tabs layout",
+    "my": "အောက်ခြေ tab ဖွဲ့စည်းပုံ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "layout.drawer": {
+   "label": {
+    "en": "Side menu layout",
+    "my": "ဘေးမီနူး ဖွဲ့စည်းပုံ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "layout.settings": {
+   "label": {
+    "en": "Settings layout",
+    "my": "ဆက်တင် ဖွဲ့စည်းပုံ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "layout.contacts": {
+   "label": {
+    "en": "Contacts layout",
+    "my": "ဆက်သွယ်ရန် ဖွဲ့စည်းပုံ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "layout.people": {
+   "label": {
+    "en": "People layout",
+    "my": "လူများ ဖွဲ့စည်းပုံ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "layout.themeStore": {
+   "label": {
+    "en": "Theme store layout",
+    "my": "Theme စတိုး ဖွဲ့စည်းပုံ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "layout.chat": {
+   "label": {
+    "en": "Chat layout",
+    "my": "ချက်တ် ဖွဲ့စည်းပုံ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "layout.profile": {
+   "label": {
+    "en": "Profile rows",
+    "my": "ပရိုဖိုင်အတန်းများ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "layout.privacy": {
+   "label": {
+    "en": "Privacy rows",
+    "my": "ကိုယ်ရေးလုံခြုံမှုအတန်းများ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "layout.notifications": {
+   "label": {
+    "en": "Notification rows",
+    "my": "အကြောင်းကြားချက်အတန်းများ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "layout.dataStorage": {
+   "label": {
+    "en": "Data and storage rows",
+    "my": "ဒေတာနှင့် သိုလှောင်မှု အတန်းများ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  }
+ },
+ "entries": [
+  {
+   "path": "tokens.colors.accent",
+   "group": "colors",
+   "level": "basic",
+   "phase": 1,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "fab",
+    "bottomTabs.item",
+    "button"
+   ],
+   "label": {
+    "en": "Accent",
+    "my": "အဓိကအရောင်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "tokens.colors.onAccent",
+   "group": "colors",
+   "level": "basic",
+   "phase": 1,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "fab",
+    "button"
+   ],
+   "label": {
+    "en": "On accent",
+    "my": "on အဓိကအရောင်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "tokens.colors.background",
+   "group": "colors",
+   "level": "basic",
+   "phase": 1,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "screenBackground"
+   ],
+   "label": {
+    "en": "Background",
+    "my": "နောက်ခံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "tokens.colors.surface",
+   "group": "colors",
+   "level": "basic",
+   "phase": 1,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "card",
+    "section"
+   ],
+   "label": {
+    "en": "Surface",
+    "my": "မျက်နှာပြင်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "tokens.colors.surfaceElevated",
+   "group": "colors",
+   "level": "advanced",
+   "phase": 1,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "card",
+    "dialog"
+   ],
+   "label": {
+    "en": "Surface elevated",
+    "my": "မျက်နှာပြင် မြင့်တက်သော"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "tokens.colors.textPrimary",
+   "group": "colors",
+   "level": "basic",
+   "phase": 1,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "chatRow.title",
+    "cell"
+   ],
+   "label": {
+    "en": "Text primary",
+    "my": "စာသား အဓိက"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "tokens.colors.textSecondary",
+   "group": "colors",
+   "level": "basic",
+   "phase": 1,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "chatRow.preview",
+    "chatRow.time"
+   ],
+   "label": {
+    "en": "Text secondary",
+    "my": "စာသား ဒုတိယ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "tokens.colors.divider",
+   "group": "colors",
+   "level": "advanced",
+   "phase": 1,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "chatRow",
+    "cell"
+   ],
+   "label": {
+    "en": "Divider",
+    "my": "ပိုင်းခြားမျဉ်း"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "tokens.colors.icon",
+   "group": "colors",
+   "level": "advanced",
+   "phase": 1,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "bottomTabs.item",
+    "appBar"
+   ],
+   "label": {
+    "en": "Icon",
+    "my": "အိုင်ကွန်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "tokens.colors.error",
+   "group": "colors",
+   "level": "advanced",
+   "phase": 1,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "chatRow.badge"
+   ],
+   "label": {
+    "en": "Error",
+    "my": "အမှား"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "tokens.colors.success",
+   "group": "colors",
+   "level": "advanced",
+   "phase": 1,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "chatRow.badge"
+   ],
+   "label": {
+    "en": "Success",
+    "my": "အောင်မြင်မှု"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "tokens.colors.overlay",
+   "group": "colors",
+   "level": "advanced",
+   "phase": 1,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "dialog"
+   ],
+   "label": {
+    "en": "Overlay",
+    "my": "ဖုံးအုပ်အလွှာ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "tokens.gradient.top",
+   "group": "gradient",
+   "level": "basic",
+   "phase": 1,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "screenBackground"
+   ],
+   "label": {
+    "en": "Top",
+    "my": "အပေါ်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "tokens.gradient.middle",
+   "group": "gradient",
+   "level": "basic",
+   "phase": 1,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "screenBackground"
+   ],
+   "label": {
+    "en": "Middle",
+    "my": "အလယ်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "tokens.gradient.bottom",
+   "group": "gradient",
+   "level": "basic",
+   "phase": 1,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "screenBackground"
+   ],
+   "label": {
+    "en": "Bottom",
+    "my": "အောက်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "tokens.gradient.direction",
+   "group": "gradient",
+   "level": "basic",
+   "phase": 1,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "screenBackground"
+   ],
+   "label": {
+    "en": "Direction",
+    "my": "ဦးတည်ချက်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "tokens.typography.fontFamily",
+   "group": "typography",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "chatRow.title",
+    "chatRow.preview",
+    "cell"
+   ],
+   "label": {
+    "en": "Font family",
+    "my": "ဖောင့် မျိုးစုံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "tokens.typography.bodySizeSp",
+   "group": "typography",
+   "level": "basic",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "chatRow.title",
+    "chatRow.preview",
+    "cell"
+   ],
+   "label": {
+    "en": "Body size (sp)",
+    "my": "ခန္ဓာကိုယ်စာသား အရွယ်အစား (sp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "tokens.typography.titleSizeSp",
+   "group": "typography",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "chatRow.title",
+    "chatRow.preview",
+    "cell"
+   ],
+   "label": {
+    "en": "Title size (sp)",
+    "my": "ခေါင်းစဉ် အရွယ်အစား (sp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "tokens.typography.captionSizeSp",
+   "group": "typography",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "chatRow.time"
+   ],
+   "label": {
+    "en": "Caption size (sp)",
+    "my": "ကပ်ရှင် အရွယ်အစား (sp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "tokens.typography.fontWeight",
+   "group": "typography",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "chatRow.title",
+    "chatRow.preview",
+    "cell"
+   ],
+   "label": {
+    "en": "Font weight",
+    "my": "ဖောင့် အထူ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "tokens.typography.lineHeightMultiplier",
+   "group": "typography",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "chatRow.title",
+    "chatRow.preview",
+    "cell"
+   ],
+   "label": {
+    "en": "Line height multiplier",
+    "my": "စာကြောင်း အမြင့် multiplier"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "tokens.spacing.xs",
+   "group": "spacing",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "card",
+    "dialog"
+   ],
+   "label": {
+    "en": "Xs",
+    "my": "xs"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "tokens.spacing.sm",
+   "group": "spacing",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "card",
+    "dialog"
+   ],
+   "label": {
+    "en": "Sm",
+    "my": "sm"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "tokens.spacing.md",
+   "group": "spacing",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "card",
+    "dialog"
+   ],
+   "label": {
+    "en": "Md",
+    "my": "md"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "tokens.spacing.lg",
+   "group": "spacing",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "card",
+    "dialog"
+   ],
+   "label": {
+    "en": "Lg",
+    "my": "lg"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "tokens.spacing.xl",
+   "group": "spacing",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "card",
+    "dialog"
+   ],
+   "label": {
+    "en": "Xl",
+    "my": "xl"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "tokens.shapes.cardRadiusDp",
+   "group": "shapes",
+   "level": "basic",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "card",
+    "section"
+   ],
+   "label": {
+    "en": "Card radius (dp)",
+    "my": "ကတ် ထောင့်ကွေးမှု (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "tokens.shapes.buttonRadiusDp",
+   "group": "shapes",
+   "level": "basic",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "button"
+   ],
+   "label": {
+    "en": "Button radius (dp)",
+    "my": "ခလုတ် ထောင့်ကွေးမှု (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "tokens.shapes.inputRadiusDp",
+   "group": "shapes",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "input"
+   ],
+   "label": {
+    "en": "Input radius (dp)",
+    "my": "ရိုက်ထည့်ကွက် ထောင့်ကွေးမှု (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "tokens.shapes.dialogRadiusDp",
+   "group": "shapes",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "dialog"
+   ],
+   "label": {
+    "en": "Dialog radius (dp)",
+    "my": "ဒိုင်ယာလော့ ထောင့်ကွေးမှု (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "tokens.shapes.bubbleRadiusDp",
+   "group": "shapes",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "bubble.in",
+    "bubble.out"
+   ],
+   "label": {
+    "en": "Bubble radius (dp)",
+    "my": "မက်ဆေ့ချ်ဘူး ထောင့်ကွေးမှု (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "tokens.elevation.cardDp",
+   "group": "elevation",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "card",
+    "dialog"
+   ],
+   "label": {
+    "en": "Card (dp)",
+    "my": "ကတ် (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "tokens.elevation.dialogDp",
+   "group": "elevation",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "card",
+    "dialog"
+   ],
+   "label": {
+    "en": "Dialog (dp)",
+    "my": "ဒိုင်ယာလော့ (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.appBar.background",
+   "group": "comp.appBar",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "appBar"
+   ],
+   "label": {
+    "en": "Background",
+    "my": "နောက်ခံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.appBar.foreground",
+   "group": "comp.appBar",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "appBar"
+   ],
+   "label": {
+    "en": "Foreground",
+    "my": "foreground"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.appBar.heightDp",
+   "group": "comp.appBar",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "appBar"
+   ],
+   "label": {
+    "en": "Height (dp)",
+    "my": "အမြင့် (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.navigationBar.background",
+   "group": "comp.navigationBar",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "bottomTabs"
+   ],
+   "label": {
+    "en": "Background",
+    "my": "နောက်ခံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.navigationBar.selected",
+   "group": "comp.navigationBar",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "bottomTabs"
+   ],
+   "label": {
+    "en": "Selected",
+    "my": "selected"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.navigationBar.unselected",
+   "group": "comp.navigationBar",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "bottomTabs"
+   ],
+   "label": {
+    "en": "Unselected",
+    "my": "unselected"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.bottomNavigation.background",
+   "group": "comp.bottomNavigation",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "bottomTabs",
+    "bottomTabs.item"
+   ],
+   "label": {
+    "en": "Background",
+    "my": "နောက်ခံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.bottomNavigation.selectedBackground",
+   "group": "comp.bottomNavigation",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "bottomTabs",
+    "bottomTabs.item"
+   ],
+   "label": {
+    "en": "Selected background",
+    "my": "selected နောက်ခံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.bottomNavigation.iconSizeDp",
+   "group": "comp.bottomNavigation",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "bottomTabs",
+    "bottomTabs.item"
+   ],
+   "label": {
+    "en": "Icon size (dp)",
+    "my": "အိုင်ကွန် အရွယ်အစား (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.card.background",
+   "group": "comp.card",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "card"
+   ],
+   "label": {
+    "en": "Background",
+    "my": "နောက်ခံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.card.borderColor",
+   "group": "comp.card",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "card"
+   ],
+   "label": {
+    "en": "Border color",
+    "my": "ဘောင် အရောင်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.card.borderWidthDp",
+   "group": "comp.card",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "card"
+   ],
+   "label": {
+    "en": "Border width (dp)",
+    "my": "ဘောင် အကျယ် (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.button.background",
+   "group": "comp.button",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "themeStore"
+   ],
+   "targets": [
+    "button"
+   ],
+   "label": {
+    "en": "Background",
+    "my": "နောက်ခံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.button.foreground",
+   "group": "comp.button",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "themeStore"
+   ],
+   "targets": [
+    "button"
+   ],
+   "label": {
+    "en": "Foreground",
+    "my": "foreground"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.button.heightDp",
+   "group": "comp.button",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "themeStore"
+   ],
+   "targets": [
+    "button"
+   ],
+   "label": {
+    "en": "Height (dp)",
+    "my": "အမြင့် (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.input.background",
+   "group": "comp.input",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "input"
+   ],
+   "label": {
+    "en": "Background",
+    "my": "နောက်ခံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.input.foreground",
+   "group": "comp.input",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "input"
+   ],
+   "label": {
+    "en": "Foreground",
+    "my": "foreground"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.input.hint",
+   "group": "comp.input",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "input"
+   ],
+   "label": {
+    "en": "Hint",
+    "my": "အရိပ်အမြွက်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.dialog.background",
+   "group": "comp.dialog",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "dialog"
+   ],
+   "label": {
+    "en": "Background",
+    "my": "နောက်ခံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.dialog.scrim",
+   "group": "comp.dialog",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "dialog"
+   ],
+   "label": {
+    "en": "Scrim",
+    "my": "scrim"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "screens.chats.layout",
+   "group": "screen.chats",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatRow"
+   ],
+   "label": {
+    "en": "Layout",
+    "my": "ဖွဲ့စည်းပုံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "screens.chats.background",
+   "group": "screen.chats",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "screenBackground"
+   ],
+   "label": {
+    "en": "Background",
+    "my": "နောက်ခံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "screens.chats.listStyle",
+   "group": "screen.chats",
+   "level": "basic",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatRow"
+   ],
+   "label": {
+    "en": "List style",
+    "my": "စာရင်း ပုံစံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "screens.chats.avatarSizeDp",
+   "group": "screen.chats",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatRow.avatar"
+   ],
+   "label": {
+    "en": "Avatar size (dp)",
+    "my": "ပရိုဖိုင်ပုံ အရွယ်အစား (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "screens.chats.showDividers",
+   "group": "screen.chats",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatRow"
+   ],
+   "label": {
+    "en": "Show dividers",
+    "my": "ပြမည် ပိုင်းခြားမျဉ်းများ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "screens.chats.threeLines",
+   "group": "screen.chats",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatRow"
+   ],
+   "label": {
+    "en": "Three lines",
+    "my": "three စာကြောင်းများ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "screens.contacts.background",
+   "group": "screen.contacts",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "contacts"
+   ],
+   "targets": [
+    "screenBackground"
+   ],
+   "label": {
+    "en": "Background",
+    "my": "နောက်ခံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "screens.contacts.sectionStyle",
+   "group": "screen.contacts",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "contacts"
+   ],
+   "targets": [
+    "contactRow"
+   ],
+   "label": {
+    "en": "Section style",
+    "my": "အပိုင်း ပုံစံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "screens.contacts.avatarSizeDp",
+   "group": "screen.contacts",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "contacts"
+   ],
+   "targets": [
+    "contactRow"
+   ],
+   "label": {
+    "en": "Avatar size (dp)",
+    "my": "ပရိုဖိုင်ပုံ အရွယ်အစား (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "screens.profile.background",
+   "group": "screen.profile",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "profile"
+   ],
+   "targets": [
+    "screenBackground"
+   ],
+   "label": {
+    "en": "Background",
+    "my": "နောက်ခံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "screens.profile.headerStyle",
+   "group": "screen.profile",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "profile"
+   ],
+   "targets": [
+    "profileHeader",
+    "infoCard"
+   ],
+   "label": {
+    "en": "Header style",
+    "my": "ခေါင်းပိုင်း ပုံစံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "screens.profile.avatarSizeDp",
+   "group": "screen.profile",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "profile"
+   ],
+   "targets": [
+    "profileHeader",
+    "infoCard"
+   ],
+   "label": {
+    "en": "Avatar size (dp)",
+    "my": "ပရိုဖိုင်ပုံ အရွယ်အစား (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "screens.profile.cardRadiusDp",
+   "group": "screen.profile",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "profile"
+   ],
+   "targets": [
+    "profileHeader",
+    "infoCard"
+   ],
+   "label": {
+    "en": "Card radius (dp)",
+    "my": "ကတ် ထောင့်ကွေးမှု (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "screens.settings.background",
+   "group": "screen.settings",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "settings"
+   ],
+   "targets": [
+    "screenBackground"
+   ],
+   "label": {
+    "en": "Background",
+    "my": "နောက်ခံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "screens.settings.groupStyle",
+   "group": "screen.settings",
+   "level": "basic",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "settings"
+   ],
+   "targets": [
+    "settingsRow"
+   ],
+   "label": {
+    "en": "Group style",
+    "my": "အုပ်စု ပုံစံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "screens.settings.iconStyle",
+   "group": "screen.settings",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "settings"
+   ],
+   "targets": [
+    "settingsRow"
+   ],
+   "label": {
+    "en": "Icon style",
+    "my": "အိုင်ကွန် ပုံစံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "screens.settings.showDescriptions",
+   "group": "screen.settings",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "settings"
+   ],
+   "targets": [
+    "settingsRow"
+   ],
+   "label": {
+    "en": "Show descriptions",
+    "my": "ပြမည် ဖော်ပြချက်များ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "screens.themeStore.background",
+   "group": "screen.themeStore",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "themeStore"
+   ],
+   "targets": [
+    "screenBackground"
+   ],
+   "label": {
+    "en": "Background",
+    "my": "နောက်ခံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "screens.themeStore.gridColumns",
+   "group": "screen.themeStore",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "themeStore"
+   ],
+   "targets": [
+    "themeCard"
+   ],
+   "label": {
+    "en": "Grid columns",
+    "my": "ဇယားကွက် ကော်လံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "screens.themeStore.previewRadiusDp",
+   "group": "screen.themeStore",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "themeStore"
+   ],
+   "targets": [
+    "themeCard"
+   ],
+   "label": {
+    "en": "Preview radius (dp)",
+    "my": "မက်ဆေ့ချ်အကျဉ်း ထောင့်ကွေးမှု (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "chat.bubbleIn",
+   "group": "chat",
+   "level": "basic",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "chat"
+   ],
+   "targets": [
+    "bubble.in"
+   ],
+   "label": {
+    "en": "Bubble in",
+    "my": "မက်ဆေ့ချ်ဘူး ဝင်လာ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "chat.bubbleOut",
+   "group": "chat",
+   "level": "basic",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "chat"
+   ],
+   "targets": [
+    "bubble.out"
+   ],
+   "label": {
+    "en": "Bubble out",
+    "my": "မက်ဆေ့ချ်ဘူး ပို့"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "chat.bubbleInText",
+   "group": "chat",
+   "level": "basic",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "chat"
+   ],
+   "targets": [
+    "bubble.in"
+   ],
+   "label": {
+    "en": "Bubble in text",
+    "my": "မက်ဆေ့ချ်ဘူး ဝင်လာ စာသား"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "chat.bubbleOutText",
+   "group": "chat",
+   "level": "basic",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "chat"
+   ],
+   "targets": [
+    "bubble.out"
+   ],
+   "label": {
+    "en": "Bubble out text",
+    "my": "မက်ဆေ့ချ်ဘူး ပို့ စာသား"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "chat.bubbleRadiusDp",
+   "group": "chat",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "chat"
+   ],
+   "targets": [
+    "bubble.in",
+    "bubble.out"
+   ],
+   "label": {
+    "en": "Bubble radius (dp)",
+    "my": "မက်ဆေ့ချ်ဘူး ထောင့်ကွေးမှု (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "chat.fontSizeSp",
+   "group": "chat",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "chat"
+   ],
+   "targets": [
+    "bubble.in",
+    "bubble.out"
+   ],
+   "label": {
+    "en": "Font size (sp)",
+    "my": "ဖောင့် အရွယ်အစား (sp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "assets.wallpaper",
+   "group": "assets",
+   "level": "advanced",
+   "phase": 5,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "global"
+   ],
+   "label": {
+    "en": "Wallpaper",
+    "my": "နောက်ခံပုံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "assets.font",
+   "group": "assets",
+   "level": "advanced",
+   "phase": 5,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "global"
+   ],
+   "label": {
+    "en": "Font",
+    "my": "ဖောင့်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "assets.iconPack",
+   "group": "assets",
+   "level": "advanced",
+   "phase": 5,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "global"
+   ],
+   "label": {
+    "en": "Icon pack",
+    "my": "အိုင်ကွန် pack"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "effects.blur",
+   "group": "effects",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "global"
+   ],
+   "label": {
+    "en": "Blur",
+    "my": "မှုန်ဝါး"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "effects.glass",
+   "group": "effects",
+   "level": "basic",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "global"
+   ],
+   "label": {
+    "en": "Glass",
+    "my": "ဖန်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "effects.animations",
+   "group": "effects",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "global"
+   ],
+   "label": {
+    "en": "Animations",
+    "my": "လှုပ်ရှားမှု"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "effects.reducedMotion",
+   "group": "effects",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "global"
+   ],
+   "label": {
+    "en": "Reduced motion",
+    "my": "လျှော့ထား လှုပ်ရှားမှု"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.cell.heightDp",
+   "group": "comp.cell",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "cell"
+   ],
+   "label": {
+    "en": "Height (dp)",
+    "my": "အမြင့် (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.cell.twoLineHeightDp",
+   "group": "comp.cell",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "cell"
+   ],
+   "label": {
+    "en": "Two line height (dp)",
+    "my": "two စာကြောင်း အမြင့် (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.cell.paddingStartDp",
+   "group": "comp.cell",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "cell"
+   ],
+   "label": {
+    "en": "Padding start (dp)",
+    "my": "အတွင်းအကွာ အစ (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.cell.titleSizeSp",
+   "group": "comp.cell",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "cell"
+   ],
+   "label": {
+    "en": "Title size (sp)",
+    "my": "ခေါင်းစဉ် အရွယ်အစား (sp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.cell.valueSizeSp",
+   "group": "comp.cell",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "cell"
+   ],
+   "label": {
+    "en": "Value size (sp)",
+    "my": "value အရွယ်အစား (sp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.cell.titleWeight",
+   "group": "comp.cell",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "cell"
+   ],
+   "label": {
+    "en": "Title weight",
+    "my": "ခေါင်းစဉ် အထူ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.cell.iconSizeDp",
+   "group": "comp.cell",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "cell"
+   ],
+   "label": {
+    "en": "Icon size (dp)",
+    "my": "အိုင်ကွန် အရွယ်အစား (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.cell.dividerVisible",
+   "group": "comp.cell",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "cell"
+   ],
+   "label": {
+    "en": "Divider visible",
+    "my": "ပိုင်းခြားမျဉ်း မြင်ရမည်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.cell.dividerInsetDp",
+   "group": "comp.cell",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "cell"
+   ],
+   "label": {
+    "en": "Divider inset (dp)",
+    "my": "ပိုင်းခြားမျဉ်း အတွင်းကွာ (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.cell.dividerColor",
+   "group": "comp.cell",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "cell"
+   ],
+   "label": {
+    "en": "Divider color",
+    "my": "ပိုင်းခြားမျဉ်း အရောင်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.cell.pressedColor",
+   "group": "comp.cell",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "cell"
+   ],
+   "label": {
+    "en": "Pressed color",
+    "my": "ဖိထားသော အရောင်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.section.style",
+   "group": "comp.section",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "section"
+   ],
+   "label": {
+    "en": "Style",
+    "my": "ပုံစံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.section.radiusDp",
+   "group": "comp.section",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "section"
+   ],
+   "label": {
+    "en": "Radius (dp)",
+    "my": "ထောင့်ကွေးမှု (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.section.gapDp",
+   "group": "comp.section",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "section"
+   ],
+   "label": {
+    "en": "Gap (dp)",
+    "my": "ကွာဟချက် (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.section.headerSizeSp",
+   "group": "comp.section",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "section"
+   ],
+   "label": {
+    "en": "Header size (sp)",
+    "my": "ခေါင်းပိုင်း အရွယ်အစား (sp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.section.headerWeight",
+   "group": "comp.section",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "section"
+   ],
+   "label": {
+    "en": "Header weight",
+    "my": "ခေါင်းပိုင်း အထူ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.section.headerColor",
+   "group": "comp.section",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "section"
+   ],
+   "label": {
+    "en": "Header color",
+    "my": "ခေါင်းပိုင်း အရောင်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.section.infoSizeSp",
+   "group": "comp.section",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "section"
+   ],
+   "label": {
+    "en": "Info size (sp)",
+    "my": "info အရွယ်အစား (sp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.switch.trackOn",
+   "group": "comp.switch",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "switch"
+   ],
+   "label": {
+    "en": "Track on",
+    "my": "လမ်းကြောင်း on"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.switch.trackOff",
+   "group": "comp.switch",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "switch"
+   ],
+   "label": {
+    "en": "Track off",
+    "my": "လမ်းကြောင်း off"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.switch.thumbOn",
+   "group": "comp.switch",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "switch"
+   ],
+   "label": {
+    "en": "Thumb on",
+    "my": "လက်မ on"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.switch.thumbOff",
+   "group": "comp.switch",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "switch"
+   ],
+   "label": {
+    "en": "Thumb off",
+    "my": "လက်မ off"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.search.background",
+   "group": "comp.search",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "themeStore"
+   ],
+   "targets": [
+    "search"
+   ],
+   "label": {
+    "en": "Background",
+    "my": "နောက်ခံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.search.radiusDp",
+   "group": "comp.search",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "themeStore"
+   ],
+   "targets": [
+    "search"
+   ],
+   "label": {
+    "en": "Radius (dp)",
+    "my": "ထောင့်ကွေးမှု (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.search.hintColor",
+   "group": "comp.search",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "themeStore"
+   ],
+   "targets": [
+    "search"
+   ],
+   "label": {
+    "en": "Hint color",
+    "my": "အရိပ်အမြွက် အရောင်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.search.iconColor",
+   "group": "comp.search",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "themeStore"
+   ],
+   "targets": [
+    "search"
+   ],
+   "label": {
+    "en": "Icon color",
+    "my": "အိုင်ကွန် အရောင်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.fab.sizeDp",
+   "group": "comp.fab",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "fab"
+   ],
+   "label": {
+    "en": "Size (dp)",
+    "my": "အရွယ်အစား (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.fab.radiusDp",
+   "group": "comp.fab",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "fab"
+   ],
+   "label": {
+    "en": "Radius (dp)",
+    "my": "ထောင့်ကွေးမှု (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.session.avatarRadiusDp",
+   "group": "comp.session",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "devices"
+   ],
+   "targets": [
+    "session"
+   ],
+   "label": {
+    "en": "Avatar radius (dp)",
+    "my": "ပရိုဖိုင်ပုံ ထောင့်ကွေးမှု (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.session.nameSizeSp",
+   "group": "comp.session",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "devices"
+   ],
+   "targets": [
+    "session"
+   ],
+   "label": {
+    "en": "Name size (sp)",
+    "my": "အမည် အရွယ်အစား (sp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "screens.privacy.background",
+   "group": "screen.privacy",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "privacy"
+   ],
+   "targets": [
+    "screenBackground"
+   ],
+   "label": {
+    "en": "Background",
+    "my": "နောက်ခံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "screens.notifications.background",
+   "group": "screen.notifications",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "notifications"
+   ],
+   "targets": [
+    "screenBackground"
+   ],
+   "label": {
+    "en": "Background",
+    "my": "နောက်ခံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "screens.dataStorage.background",
+   "group": "screen.dataStorage",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "dataStorage"
+   ],
+   "targets": [
+    "screenBackground"
+   ],
+   "label": {
+    "en": "Background",
+    "my": "နောက်ခံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "screens.devices.background",
+   "group": "screen.devices",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "devices"
+   ],
+   "targets": [
+    "screenBackground"
+   ],
+   "label": {
+    "en": "Background",
+    "my": "နောက်ခံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "ux.transition",
+   "group": "ux",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "global"
+   ],
+   "label": {
+    "en": "Transition",
+    "my": "ကူးပြောင်းမှု"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "ux.ripple",
+   "group": "ux",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "global"
+   ],
+   "label": {
+    "en": "Ripple",
+    "my": "ထိတွေ့လှိုင်း"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "ux.animationScale",
+   "group": "ux",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "global"
+   ],
+   "label": {
+    "en": "Animation scale",
+    "my": "လှုပ်ရှားမှု အတိုင်းအတာ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "screens.themeStore.previewAspect",
+   "group": "screen.themeStore",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "themeStore"
+   ],
+   "targets": [
+    "themeCard"
+   ],
+   "label": {
+    "en": "Preview aspect",
+    "my": "မက်ဆေ့ချ်အကျဉ်း အချိုး"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "screens.themeStore.cardRadiusDp",
+   "group": "screen.themeStore",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "themeStore"
+   ],
+   "targets": [
+    "themeCard"
+   ],
+   "label": {
+    "en": "Card radius (dp)",
+    "my": "ကတ် ထောင့်ကွေးမှု (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "screens.themeStore.cardGapDp",
+   "group": "screen.themeStore",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "themeStore"
+   ],
+   "targets": [
+    "themeCard"
+   ],
+   "label": {
+    "en": "Card gap (dp)",
+    "my": "ကတ် ကွာဟချက် (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "screens.themeStore.titleSizeSp",
+   "group": "screen.themeStore",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "themeStore"
+   ],
+   "targets": [
+    "themeCard"
+   ],
+   "label": {
+    "en": "Title size (sp)",
+    "my": "ခေါင်းစဉ် အရွယ်အစား (sp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "components.button.style",
+   "group": "comp.button",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "themeStore"
+   ],
+   "targets": [
+    "button"
+   ],
+   "label": {
+    "en": "Style",
+    "my": "ပုံစံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "chat.sendButton",
+   "group": "chat",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "chat"
+   ],
+   "targets": [
+    "chatInput"
+   ],
+   "label": {
+    "en": "Send button",
+    "my": "ပို့ရန် ခလုတ်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "chat.dateBackground",
+   "group": "chat",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "chat"
+   ],
+   "targets": [
+    "datePill"
+   ],
+   "label": {
+    "en": "Date background",
+    "my": "ရက်စွဲ နောက်ခံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "chat.dateText",
+   "group": "chat",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "chat"
+   ],
+   "targets": [
+    "datePill"
+   ],
+   "label": {
+    "en": "Date text",
+    "my": "ရက်စွဲ စာသား"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "chat.headerRadiusDp",
+   "group": "chat",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "chat"
+   ],
+   "targets": [
+    "chatHeader"
+   ],
+   "label": {
+    "en": "Header radius (dp)",
+    "my": "ခေါင်းပိုင်း ထောင့်ကွေးမှု (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "chat.inputRadiusDp",
+   "group": "chat",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "chat"
+   ],
+   "targets": [
+    "chatInput"
+   ],
+   "label": {
+    "en": "Input radius (dp)",
+    "my": "ရိုက်ထည့်ကွက် ထောင့်ကွေးမှု (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "chat.panelRadiusDp",
+   "group": "chat",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "chat"
+   ],
+   "targets": [
+    "chatPanel"
+   ],
+   "label": {
+    "en": "Panel radius (dp)",
+    "my": "panel ထောင့်ကွေးမှု (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "chat.buttonRadiusDp",
+   "group": "chat",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "chat"
+   ],
+   "targets": [
+    "chatInput"
+   ],
+   "label": {
+    "en": "Button radius (dp)",
+    "my": "ခလုတ် ထောင့်ကွေးမှု (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "chat.dateRadiusDp",
+   "group": "chat",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "chat"
+   ],
+   "targets": [
+    "datePill"
+   ],
+   "label": {
+    "en": "Date radius (dp)",
+    "my": "ရက်စွဲ ထောင့်ကွေးမှု (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "chat.wallpaperColor",
+   "group": "chat",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "chat"
+   ],
+   "targets": [
+    "screenBackground"
+   ],
+   "label": {
+    "en": "Wallpaper color",
+    "my": "နောက်ခံပုံ အရောင်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "chat.wallpaperColor2",
+   "group": "chat",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "chat"
+   ],
+   "targets": [
+    "screenBackground"
+   ],
+   "label": {
+    "en": "Wallpaper color2",
+    "my": "နောက်ခံပုံ color2"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "chat.wallpaperAngle",
+   "group": "chat",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "chat"
+   ],
+   "targets": [
+    "screenBackground"
+   ],
+   "label": {
+    "en": "Wallpaper angle",
+    "my": "နောက်ခံပုံ ထောင့်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "chat.menuRadiusDp",
+   "group": "chat",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "chat"
+   ],
+   "targets": [
+    "chatPanel"
+   ],
+   "label": {
+    "en": "Menu radius (dp)",
+    "my": "မီနူး ထောင့်ကွေးမှု (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "chat.reactionRadiusDp",
+   "group": "chat",
+   "level": "advanced",
+   "phase": 2,
+   "built": false,
+   "screens": [
+    "chat"
+   ],
+   "targets": [
+    "chatPanel"
+   ],
+   "label": {
+    "en": "Reaction radius (dp)",
+    "my": "တုံ့ပြန်မှု ထောင့်ကွေးမှု (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "screens.chats.tabsRadiusDp",
+   "group": "screen.chats",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatList.folders"
+   ],
+   "label": {
+    "en": "Tabs radius (dp)",
+    "my": "tab များ ထောင့်ကွေးမှု (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "screens.profile.avatarRadiusDp",
+   "group": "screen.profile",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "profile"
+   ],
+   "targets": [
+    "profileHeader",
+    "infoCard"
+   ],
+   "label": {
+    "en": "Avatar radius (dp)",
+    "my": "ပရိုဖိုင်ပုံ ထောင့်ကွေးမှု (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "screens.profile.actionsStyle",
+   "group": "screen.profile",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "profile"
+   ],
+   "targets": [
+    "profileHeader",
+    "infoCard"
+   ],
+   "label": {
+    "en": "Actions style",
+    "my": "actions ပုံစံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "screens.profile.photoStyle",
+   "group": "screen.profile",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "profile"
+   ],
+   "targets": [
+    "profileHeader",
+    "infoCard"
+   ],
+   "label": {
+    "en": "Photo style",
+    "my": "photo ပုံစံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.settings.header",
+   "group": "layout.settings",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "settings"
+   ],
+   "targets": [
+    "settingsHeader"
+   ],
+   "label": {
+    "en": "Header",
+    "my": "ခေါင်းပိုင်း"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.settings.accounts",
+   "group": "layout.settings",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "settings"
+   ],
+   "targets": [
+    "settingsHeader"
+   ],
+   "label": {
+    "en": "Accounts",
+    "my": "အကောင့်များ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.people.storyRail",
+   "group": "layout.people",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "people"
+   ],
+   "targets": [
+    "peopleRail"
+   ],
+   "label": {
+    "en": "Story rail",
+    "my": "Story တန်း"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.people.chips",
+   "group": "layout.people",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "people"
+   ],
+   "targets": [
+    "peopleRail"
+   ],
+   "label": {
+    "en": "Chips",
+    "my": "chip များ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.settings.items",
+   "group": "layout.settings",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "settings"
+   ],
+   "targets": [
+    "settingsRow"
+   ],
+   "label": {
+    "en": "Items",
+    "my": "ပစ္စည်းများ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.contacts.mode",
+   "group": "layout.contacts",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "contacts"
+   ],
+   "targets": [
+    "contactsGrid"
+   ],
+   "label": {
+    "en": "Mode",
+    "my": "မုဒ်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.contacts.grid.columns",
+   "group": "layout.contacts",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "contacts"
+   ],
+   "targets": [
+    "contactsGrid"
+   ],
+   "label": {
+    "en": "Grid columns",
+    "my": "ဇယားကွက် ကော်လံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.contacts.grid.avatarDp",
+   "group": "layout.contacts",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "contacts"
+   ],
+   "targets": [
+    "contactsGrid"
+   ],
+   "label": {
+    "en": "Grid avatar (dp)",
+    "my": "ဇယားကွက် ပရိုဖိုင်ပုံ (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.contacts.row.avatarSizeDp",
+   "group": "layout.contacts",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "contacts"
+   ],
+   "targets": [
+    "contactRow"
+   ],
+   "label": {
+    "en": "Row avatar size (dp)",
+    "my": "အတန်း ပရိုဖိုင်ပုံ အရွယ်အစား (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.contacts.row.heightDp",
+   "group": "layout.contacts",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "contacts"
+   ],
+   "targets": [
+    "contactRow"
+   ],
+   "label": {
+    "en": "Row height (dp)",
+    "my": "အတန်း အမြင့် (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.contacts.row.status",
+   "group": "layout.contacts",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "contacts"
+   ],
+   "targets": [
+    "contactRow"
+   ],
+   "label": {
+    "en": "Row status",
+    "my": "အတန်း အခြေအနေ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.contacts.sort",
+   "group": "layout.contacts",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "contacts"
+   ],
+   "targets": [
+    "contactRow"
+   ],
+   "label": {
+    "en": "Sort",
+    "my": "စီရန်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.mode",
+   "group": "layout.chatList",
+   "level": "basic",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatRow",
+    "chatList.grid"
+   ],
+   "label": {
+    "en": "Mode",
+    "my": "မုဒ်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.grid.columns",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatList.grid"
+   ],
+   "label": {
+    "en": "Grid columns",
+    "my": "ဇယားကွက် ကော်လံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.grid.avatarDp",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatList.grid"
+   ],
+   "label": {
+    "en": "Grid avatar (dp)",
+    "my": "ဇယားကွက် ပရိုဖိုင်ပုံ (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.grid.showName",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatList.grid"
+   ],
+   "label": {
+    "en": "Grid show name",
+    "my": "ဇယားကွက် ပြမည် အမည်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.grid.showBadge",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatList.grid"
+   ],
+   "label": {
+    "en": "Grid show badge",
+    "my": "ဇယားကွက် ပြမည် အရေအတွက်အမှတ်အသား"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.row.preview.show",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatRow.preview"
+   ],
+   "label": {
+    "en": "Row preview show",
+    "my": "အတန်း မက်ဆေ့ချ်အကျဉ်း ပြမည်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.row.heightDp",
+   "group": "layout.chatList",
+   "level": "basic",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatRow"
+   ],
+   "label": {
+    "en": "Row height (dp)",
+    "my": "အတန်း အမြင့် (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.row.avatar.sizeDp",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatRow.avatar"
+   ],
+   "label": {
+    "en": "Row avatar size (dp)",
+    "my": "အတန်း ပရိုဖိုင်ပုံ အရွယ်အစား (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.row.avatar.shape",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatRow.avatar"
+   ],
+   "label": {
+    "en": "Row avatar shape",
+    "my": "အတန်း ပရိုဖိုင်ပုံ ပုံသဏ္ဍာန်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.row.avatar.onlineDot.sizeDp",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatRow.avatar"
+   ],
+   "label": {
+    "en": "Row avatar online dot size (dp)",
+    "my": "အတန်း ပရိုဖိုင်ပုံ အွန်လိုင်း အစက် အရွယ်အစား (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.row.avatar.onlineDot.color",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatRow.avatar"
+   ],
+   "label": {
+    "en": "Row avatar online dot color",
+    "my": "အတန်း ပရိုဖိုင်ပုံ အွန်လိုင်း အစက် အရောင်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.row.avatar.lastActive",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatRow.avatar"
+   ],
+   "label": {
+    "en": "Row avatar last active",
+    "my": "အတန်း ပရိုဖိုင်ပုံ နောက်ဆုံး အသုံးပြုချိန်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.row.title.weight",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatRow.title"
+   ],
+   "label": {
+    "en": "Row title weight",
+    "my": "အတန်း ခေါင်းစဉ် အထူ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.row.title.sizeSp",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatRow.title"
+   ],
+   "label": {
+    "en": "Row title size (sp)",
+    "my": "အတန်း ခေါင်းစဉ် အရွယ်အစား (sp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.row.title.unreadWeight",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatRow.title"
+   ],
+   "label": {
+    "en": "Row title unread weight",
+    "my": "အတန်း ခေါင်းစဉ် မဖတ်ရသေး အထူ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.row.preview.lines",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatRow.preview"
+   ],
+   "label": {
+    "en": "Row preview lines",
+    "my": "အတန်း မက်ဆေ့ချ်အကျဉ်း စာကြောင်းများ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.row.preview.sizeSp",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatRow.preview"
+   ],
+   "label": {
+    "en": "Row preview size (sp)",
+    "my": "အတန်း မက်ဆေ့ချ်အကျဉ်း အရွယ်အစား (sp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.row.preview.color",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatRow.preview"
+   ],
+   "label": {
+    "en": "Row preview color",
+    "my": "အတန်း မက်ဆေ့ချ်အကျဉ်း အရောင်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.row.preview.unreadColor",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatRow.preview"
+   ],
+   "label": {
+    "en": "Row preview unread color",
+    "my": "အတန်း မက်ဆေ့ချ်အကျဉ်း မဖတ်ရသေး အရောင်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.row.meta.time",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatRow.time"
+   ],
+   "label": {
+    "en": "Row meta time",
+    "my": "အတန်း အချက်အလက် အချိန်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.row.meta.seenAvatar",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatRow.time",
+    "chatRow.badge"
+   ],
+   "label": {
+    "en": "Row meta seen avatar",
+    "my": "အတန်း အချက်အလက် ဖတ်ပြီး ပရိုဖိုင်ပုံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.row.meta.unreadDot",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatRow.time",
+    "chatRow.badge"
+   ],
+   "label": {
+    "en": "Row meta unread dot",
+    "my": "အတန်း အချက်အလက် မဖတ်ရသေး အစက်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.row.pinned",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatRow"
+   ],
+   "label": {
+    "en": "Row pinned",
+    "my": "အတန်း ပင်တွဲထား"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.row.dividers",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatRow"
+   ],
+   "label": {
+    "en": "Row dividers",
+    "my": "အတန်း ပိုင်းခြားမျဉ်းများ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.header.collapse",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatList.header"
+   ],
+   "label": {
+    "en": "Header collapse",
+    "my": "ခေါင်းပိုင်း ခေါက်ရန်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.header.left",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatList.header"
+   ],
+   "label": {
+    "en": "Header left",
+    "my": "ခေါင်းပိုင်း ဘယ်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.header.right",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatList.header"
+   ],
+   "label": {
+    "en": "Header right",
+    "my": "ခေါင်းပိုင်း ညာ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.storyRail.enabled",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatList.storyRail"
+   ],
+   "label": {
+    "en": "Story rail enabled",
+    "my": "Story တန်း enabled"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.storyRail.avatarSizeDp",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatList.storyRail"
+   ],
+   "label": {
+    "en": "Story rail avatar size (dp)",
+    "my": "Story တန်း ပရိုဖိုင်ပုံ အရွယ်အစား (dp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.storyRail.showCreate",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatList.storyRail"
+   ],
+   "label": {
+    "en": "Story rail show create",
+    "my": "Story တန်း ပြမည် ဖန်တီးရန်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.folders.style",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatList.folders"
+   ],
+   "label": {
+    "en": "Folders style",
+    "my": "Folder များ ပုံစံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.folders.position",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatList.folders"
+   ],
+   "label": {
+    "en": "Folders position",
+    "my": "Folder များ နေရာ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.folders.collapsible",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatList.folders"
+   ],
+   "label": {
+    "en": "Folders collapsible",
+    "my": "Folder များ collapsible"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.specialRows.archive",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatRow"
+   ],
+   "label": {
+    "en": "Special rows archive",
+    "my": "အထူး အတန်းများ သိမ်းဆည်းထား"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.drawer.content",
+   "group": "layout.drawer",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "drawer"
+   ],
+   "label": {
+    "en": "Content",
+    "my": "အကြောင်းအရာ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.searchBar",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatList.search"
+   ],
+   "label": {
+    "en": "Search bar",
+    "my": "ရှာဖွေရန် ဘား"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.drawer.items",
+   "group": "layout.drawer",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "drawer"
+   ],
+   "label": {
+    "en": "Items",
+    "my": "ပစ္စည်းများ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.bottomTabs.items",
+   "group": "layout.bottomTabs",
+   "level": "basic",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "bottomTabs.item"
+   ],
+   "label": {
+    "en": "Items",
+    "my": "ပစ္စည်းများ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.bottomTabs.peopleSource",
+   "group": "layout.bottomTabs",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "bottomTabs"
+   ],
+   "label": {
+    "en": "People source",
+    "my": "people source"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.bottomTabs.labels",
+   "group": "layout.bottomTabs",
+   "level": "basic",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "bottomTabs"
+   ],
+   "label": {
+    "en": "Labels",
+    "my": "အညွှန်းများ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.bottomTabs.labelSizeSp",
+   "group": "layout.bottomTabs",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "bottomTabs"
+   ],
+   "label": {
+    "en": "Label size (sp)",
+    "my": "label အရွယ်အစား (sp)"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.bottomTabs.indicator",
+   "group": "layout.bottomTabs",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "bottomTabs"
+   ],
+   "label": {
+    "en": "Indicator",
+    "my": "အညွှန်း"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.bottomTabs.border",
+   "group": "layout.bottomTabs",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "bottomTabs"
+   ],
+   "label": {
+    "en": "Border",
+    "my": "ဘောင်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.bottomTabs.style",
+   "group": "layout.bottomTabs",
+   "level": "basic",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "bottomTabs"
+   ],
+   "label": {
+    "en": "Style",
+    "my": "ပုံစံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chat.header.avatarLeft",
+   "group": "layout.chat",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chat"
+   ],
+   "targets": [
+    "chatHeader"
+   ],
+   "label": {
+    "en": "Header avatar left",
+    "my": "ခေါင်းပိုင်း ပရိုဖိုင်ပုံ ဘယ်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chat.header.actions",
+   "group": "layout.chat",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chat"
+   ],
+   "targets": [
+    "chatHeader"
+   ],
+   "label": {
+    "en": "Header actions",
+    "my": "ခေါင်းပိုင်း actions"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chat.input.style",
+   "group": "layout.chat",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chat"
+   ],
+   "targets": [
+    "chatInput"
+   ],
+   "label": {
+    "en": "Input style",
+    "my": "ရိုက်ထည့်ကွက် ပုံစံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chat.input.leading",
+   "group": "layout.chat",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chat"
+   ],
+   "targets": [
+    "chatInput"
+   ],
+   "label": {
+    "en": "Input leading",
+    "my": "ရိုက်ထည့်ကွက် leading"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chat.input.trailing",
+   "group": "layout.chat",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chat"
+   ],
+   "targets": [
+    "chatInput"
+   ],
+   "label": {
+    "en": "Input trailing",
+    "my": "ရိုက်ထည့်ကွက် trailing"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.settings.mode",
+   "group": "layout.settings",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "settings"
+   ],
+   "targets": [
+    "settingsRow"
+   ],
+   "label": {
+    "en": "Mode",
+    "my": "မုဒ်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.settings.grid.columns",
+   "group": "layout.settings",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "settings"
+   ],
+   "targets": [
+    "settingsRow"
+   ],
+   "label": {
+    "en": "Grid columns",
+    "my": "ဇယားကွက် ကော်လံ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.themeStore.mode",
+   "group": "layout.themeStore",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "themeStore"
+   ],
+   "targets": [
+    "themeCard"
+   ],
+   "label": {
+    "en": "Mode",
+    "my": "မုဒ်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.themeStore.meta.creator",
+   "group": "layout.themeStore",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "themeStore"
+   ],
+   "targets": [
+    "themeCard"
+   ],
+   "label": {
+    "en": "Meta creator",
+    "my": "အချက်အလက် ဖန်တီးသူ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.themeStore.meta.downloads",
+   "group": "layout.themeStore",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "themeStore"
+   ],
+   "targets": [
+    "themeCard"
+   ],
+   "label": {
+    "en": "Meta downloads",
+    "my": "အချက်အလက် ဒေါင်းလုဒ်များ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.themeStore.meta.position",
+   "group": "layout.themeStore",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "themeStore"
+   ],
+   "targets": [
+    "themeCard"
+   ],
+   "label": {
+    "en": "Meta position",
+    "my": "အချက်အလက် နေရာ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.themeStore.chips",
+   "group": "layout.themeStore",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "themeStore"
+   ],
+   "targets": [
+    "themeCard"
+   ],
+   "label": {
+    "en": "Chips",
+    "my": "chip များ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.themeStore.search",
+   "group": "layout.themeStore",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "themeStore"
+   ],
+   "targets": [
+    "themeCard"
+   ],
+   "label": {
+    "en": "Search",
+    "my": "ရှာဖွေရန်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.notifications.hiddenRows",
+   "group": "layout.notifications",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "notifications"
+   ],
+   "targets": [
+    "section"
+   ],
+   "label": {
+    "en": "Hidden rows",
+    "my": "ဖျောက်ထားသော အတန်းများ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.profile.hiddenRows",
+   "group": "layout.profile",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "profile"
+   ],
+   "targets": [
+    "infoCard"
+   ],
+   "label": {
+    "en": "Hidden rows",
+    "my": "ဖျောက်ထားသော အတန်းများ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.privacy.hiddenRows",
+   "group": "layout.privacy",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "privacy"
+   ],
+   "targets": [
+    "section"
+   ],
+   "label": {
+    "en": "Hidden rows",
+    "my": "ဖျောက်ထားသော အတန်းများ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.dataStorage.hiddenRows",
+   "group": "layout.dataStorage",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "dataStorage"
+   ],
+   "targets": [
+    "section"
+   ],
+   "label": {
+    "en": "Hidden rows",
+    "my": "ဖျောက်ထားသော အတန်းများ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "appearance",
+   "group": "structure",
+   "level": "basic",
+   "phase": 1,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "global"
+   ],
+   "label": {
+    "en": "Light / Dark",
+    "my": "အလင်း / အမှောင်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ],
+   "note": "structure"
+  },
+  {
+   "path": "night",
+   "group": "structure",
+   "level": "advanced",
+   "phase": 4,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "global"
+   ],
+   "label": {
+    "en": "Night colours",
+    "my": "ညအရောင်များ"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ],
+   "note": "structure"
+  },
+  {
+   "path": "meta",
+   "group": "structure",
+   "level": "basic",
+   "phase": 1,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "global"
+   ],
+   "label": {
+    "en": "Name and description",
+    "my": "အမည်နှင့် ဖော်ပြချက်"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ],
+   "note": "structure"
+  },
+  {
+   "path": "layout",
+   "group": "structure",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "global"
+   ],
+   "label": {
+    "en": "Layout section",
+    "my": "ဖွဲ့စည်းပုံ အပိုင်း"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ],
+   "note": "structure"
+  },
+  {
+   "path": "schemaVersion",
+   "group": "structure",
+   "level": "advanced",
+   "phase": 1,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "global"
+   ],
+   "label": {
+    "en": "Format version",
+    "my": "ဖော်မတ်ဗားရှင်း"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ],
+   "note": "structure"
+  },
+  {
+   "path": "schemaMinor",
+   "group": "structure",
+   "level": "advanced",
+   "phase": 1,
+   "built": false,
+   "screens": [
+    "*"
+   ],
+   "targets": [
+    "global"
+   ],
+   "label": {
+    "en": "Format minor version",
+    "my": "ဖော်မတ် minor ဗားရှင်း"
+   },
+   "description": {
+    "en": "",
+    "my": ""
+   },
+   "reviewed": [
+    "en"
+   ],
+   "note": "set automatically by the Builder; never shown as a control"
+  }
+ ]
+}
