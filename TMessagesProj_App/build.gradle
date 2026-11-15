@@ -14,6 +14,11 @@ dependencies {
     baselineProfile project(':baselineprofile')
 }
 
+// Without a Sentry auth token (our CI, local builds) the upload tasks can only fail
+// and take the whole release build down with them, so skip them in that case.
+def sentryConfigured = System.getenv("SENTRY_AUTH_TOKEN") ||
+        rootProject.file('sentry.properties').exists()
+
 sentry {
     uploadNativeSymbols = true
     includeSourceContext = true
@@ -21,7 +26,7 @@ sentry {
     autoInstallation {
         enabled = false
     }
-    ignoredBuildTypes = ["debug"]
+    ignoredBuildTypes = sentryConfigured ? ["debug"] : ["debug", "release"]
 }
 
 android {
