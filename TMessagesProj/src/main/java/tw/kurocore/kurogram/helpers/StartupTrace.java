@@ -12,7 +12,7 @@ import org.telegram.messenger.ApplicationLoader;
  * list has been drawn, so slow stages can be found on a real phone without a debugger. Switch ENABLED off once done.
  */
 public final class StartupTrace {
-    public static final boolean ENABLED = true;
+    public static final boolean ENABLED = false;
 
     private static final long[] at = new long[8];
     private static final String[] names = {
