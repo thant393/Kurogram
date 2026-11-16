@@ -193,6 +193,37 @@ public class EditorTests {
         check(es.color("tokens.colors.divider", 0xFFABCDEF) == 0xFFABCDEF, "fallback when unset");
         for (String comp : es.browsableComponents()) check(cat.componentLabel(comp, "my").length() > 0, "browser label " + comp);
 
+
+        // ---- every numeric rule: its bounds are accepted, one step outside is refused (what the sliders rely on)
+        int ranged = 0;
+        for (RuleSet.Ref ref : rules.all()) {
+            if (ref.rule.kind != Rule.Kind.INT && ref.rule.kind != Rule.Kind.FLOAT) continue;
+            ThemeDraft nd = ThemeDraft.fromJson("{\"schemaVersion\":2,\"meta\":{\"id\":\"n\",\"name\":\"N\"}}", rules);
+            boolean isInt = ref.rule.kind == Rule.Kind.INT;
+            Object lo = isInt ? (Object) Long.valueOf((long) ref.rule.min) : (Object) Double.valueOf(ref.rule.min);
+            Object hi = isInt ? (Object) Long.valueOf((long) ref.rule.max) : (Object) Double.valueOf(ref.rule.max);
+            Object below = isInt ? (Object) Long.valueOf((long) ref.rule.min - 1) : (Object) Double.valueOf(ref.rule.min - 0.5);
+            Object above = isInt ? (Object) Long.valueOf((long) ref.rule.max + 1) : (Object) Double.valueOf(ref.rule.max + 0.5);
+            check(nd.set(ref.docPath, lo) == null && nd.set(ref.docPath, hi) == null, "bounds accepted " + ref.docPath);
+            check(nd.set(ref.docPath, below) != null && nd.set(ref.docPath, above) != null, "outside refused " + ref.docPath);
+            ranged++;
+        }
+        check(ranged > 60, "numeric rules " + ranged);
+
+        // ---- session value helpers fall back like the engine
+        EditorSession vs = new EditorSession(rules, cat, ThemeDraft.fromJson(themed, rules));
+        check(vs.intValue("tokens.shapes.cardRadiusDp", 14) == 14, "int fallback");
+        vs.draft.set("tokens.shapes.cardRadiusDp", 20L);
+        check(vs.intValue("tokens.shapes.cardRadiusDp", 14) == 20, "int value");
+        vs.draft.set("tokens.typography.lineHeightMultiplier", 1.5);
+        check(vs.number("tokens.typography.lineHeightMultiplier", 1) == 1.5, "float value");
+        check(vs.text("components.button.style", "filled").equals("filled"), "text fallback");
+        check(vs.colorChain(7, "components.button.background", "tokens.colors.accent") == 0xFF0866FF, "chain falls to token");
+        vs.draft.set("components.button.background", "#010203");
+        check(vs.colorChain(7, "components.button.background", "tokens.colors.accent") == 0xFF010203, "chain prefers component");
+        vs.setAdvanced(true);
+        check(vs.settingsFor("button").size() >= 4, "button has component settings in advanced");
+        check(vs.settingsFor("bubble.in").size() >= 3, "bubble has settings");
         check(BuilderText.complete(), "builder text has en and my for every key");
         check(BuilderText.get("my", "undo").length() > 0 && BuilderText.get("zz", "undo").equals(BuilderText.get("en", "undo")), "builder text fallback");
 

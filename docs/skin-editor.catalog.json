@@ -1342,7 +1342,7 @@
    "group": "typography",
    "level": "basic",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1361,14 +1361,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "tokens.typography.titleSizeSp",
    "group": "typography",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1387,14 +1388,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "tokens.typography.captionSizeSp",
    "group": "typography",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1411,14 +1413,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "tokens.typography.fontWeight",
    "group": "typography",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1437,14 +1440,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "tokens.typography.lineHeightMultiplier",
    "group": "typography",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1463,14 +1467,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "tokens.spacing.xs",
    "group": "spacing",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1488,14 +1493,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "tokens.spacing.sm",
    "group": "spacing",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1513,14 +1519,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "tokens.spacing.md",
    "group": "spacing",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1538,14 +1545,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "tokens.spacing.lg",
    "group": "spacing",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1563,14 +1571,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "tokens.spacing.xl",
    "group": "spacing",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1588,14 +1597,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "tokens.shapes.cardRadiusDp",
    "group": "shapes",
    "level": "basic",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1613,14 +1623,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "tokens.shapes.buttonRadiusDp",
    "group": "shapes",
    "level": "basic",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1637,14 +1648,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "tokens.shapes.inputRadiusDp",
    "group": "shapes",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1661,14 +1673,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "tokens.shapes.dialogRadiusDp",
    "group": "shapes",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1685,14 +1698,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "tokens.shapes.bubbleRadiusDp",
    "group": "shapes",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1710,14 +1724,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "tokens.elevation.cardDp",
    "group": "elevation",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1735,14 +1750,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "tokens.elevation.dialogDp",
    "group": "elevation",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1760,14 +1776,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.appBar.background",
    "group": "comp.appBar",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1784,14 +1801,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.appBar.foreground",
    "group": "comp.appBar",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1808,14 +1826,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.appBar.heightDp",
    "group": "comp.appBar",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1832,14 +1851,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.navigationBar.background",
    "group": "comp.navigationBar",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1856,14 +1876,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.navigationBar.selected",
    "group": "comp.navigationBar",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1880,14 +1901,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.navigationBar.unselected",
    "group": "comp.navigationBar",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1904,14 +1926,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.bottomNavigation.background",
    "group": "comp.bottomNavigation",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1929,14 +1952,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.bottomNavigation.selectedBackground",
    "group": "comp.bottomNavigation",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1954,14 +1978,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.bottomNavigation.iconSizeDp",
    "group": "comp.bottomNavigation",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1979,14 +2004,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.card.background",
    "group": "comp.card",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -2003,14 +2029,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.card.borderColor",
    "group": "comp.card",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -2027,14 +2054,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.card.borderWidthDp",
    "group": "comp.card",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -2051,14 +2079,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.button.background",
    "group": "comp.button",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "themeStore"
    ],
@@ -2075,14 +2104,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.button.foreground",
    "group": "comp.button",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "themeStore"
    ],
@@ -2099,14 +2129,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.button.heightDp",
    "group": "comp.button",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "themeStore"
    ],
@@ -2123,14 +2154,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.input.background",
    "group": "comp.input",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -2147,14 +2179,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.input.foreground",
    "group": "comp.input",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -2171,14 +2204,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.input.hint",
    "group": "comp.input",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -2195,14 +2229,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.dialog.background",
    "group": "comp.dialog",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -2219,14 +2254,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.dialog.scrim",
    "group": "comp.dialog",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -2243,7 +2279,8 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "screens.chats.layout",
@@ -2733,7 +2770,7 @@
    "group": "chat",
    "level": "basic",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "chat"
    ],
@@ -2750,14 +2787,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "chat.bubbleOut",
    "group": "chat",
    "level": "basic",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "chat"
    ],
@@ -2774,14 +2812,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "chat.bubbleInText",
    "group": "chat",
    "level": "basic",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "chat"
    ],
@@ -2798,14 +2837,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "chat.bubbleOutText",
    "group": "chat",
    "level": "basic",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "chat"
    ],
@@ -2822,14 +2862,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "chat.bubbleRadiusDp",
    "group": "chat",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "chat"
    ],
@@ -2847,14 +2888,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "chat.fontSizeSp",
    "group": "chat",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "chat"
    ],
@@ -2872,7 +2914,8 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "assets.wallpaper",
@@ -2951,7 +2994,7 @@
    "group": "effects",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -2968,14 +3011,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "effects.glass",
    "group": "effects",
    "level": "basic",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -2992,14 +3036,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "effects.animations",
    "group": "effects",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -3016,14 +3061,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "effects.reducedMotion",
    "group": "effects",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -3040,14 +3086,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "components.cell.heightDp",
    "group": "comp.cell",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -3064,14 +3111,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.cell.twoLineHeightDp",
    "group": "comp.cell",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -3088,14 +3136,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "components.cell.paddingStartDp",
    "group": "comp.cell",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -3112,14 +3161,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.cell.titleSizeSp",
    "group": "comp.cell",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -3136,14 +3186,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.cell.valueSizeSp",
    "group": "comp.cell",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -3160,14 +3211,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.cell.titleWeight",
    "group": "comp.cell",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -3184,14 +3236,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.cell.iconSizeDp",
    "group": "comp.cell",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -3208,14 +3261,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.cell.dividerVisible",
    "group": "comp.cell",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -3232,14 +3286,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.cell.dividerInsetDp",
    "group": "comp.cell",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -3256,14 +3311,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.cell.dividerColor",
    "group": "comp.cell",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -3280,14 +3336,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.cell.pressedColor",
    "group": "comp.cell",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -3304,14 +3361,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "components.section.style",
    "group": "comp.section",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -3328,14 +3386,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.section.radiusDp",
    "group": "comp.section",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -3352,14 +3411,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.section.gapDp",
    "group": "comp.section",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -3376,14 +3436,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.section.headerSizeSp",
    "group": "comp.section",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -3400,14 +3461,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "components.section.headerWeight",
    "group": "comp.section",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -3424,14 +3486,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "components.section.headerColor",
    "group": "comp.section",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -3448,14 +3511,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "components.section.infoSizeSp",
    "group": "comp.section",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -3472,14 +3536,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "components.switch.trackOn",
    "group": "comp.switch",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -3496,14 +3561,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.switch.trackOff",
    "group": "comp.switch",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -3520,14 +3586,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.switch.thumbOn",
    "group": "comp.switch",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -3544,14 +3611,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.switch.thumbOff",
    "group": "comp.switch",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -3568,14 +3636,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.search.background",
    "group": "comp.search",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "themeStore"
    ],
@@ -3592,14 +3661,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.search.radiusDp",
    "group": "comp.search",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "themeStore"
    ],
@@ -3616,14 +3686,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.search.hintColor",
    "group": "comp.search",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "themeStore"
    ],
@@ -3640,14 +3711,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.search.iconColor",
    "group": "comp.search",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "themeStore"
    ],
@@ -3664,14 +3736,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.fab.sizeDp",
    "group": "comp.fab",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -3688,14 +3761,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.fab.radiusDp",
    "group": "comp.fab",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -3712,14 +3786,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.session.avatarRadiusDp",
    "group": "comp.session",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "devices"
    ],
@@ -3736,14 +3811,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "components.session.nameSizeSp",
    "group": "comp.session",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "devices"
    ],
@@ -3760,7 +3836,8 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "screens.privacy.background",
@@ -3863,7 +3940,7 @@
    "group": "ux",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -3880,14 +3957,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "ux.ripple",
    "group": "ux",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -3904,14 +3982,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "ux.animationScale",
    "group": "ux",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -3928,7 +4007,8 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "screens.themeStore.previewAspect",
@@ -4031,7 +4111,7 @@
    "group": "comp.button",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "themeStore"
    ],
@@ -4048,14 +4128,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "chat.sendButton",
    "group": "chat",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "chat"
    ],
@@ -4072,14 +4153,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "chat.dateBackground",
    "group": "chat",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "chat"
    ],
@@ -4096,14 +4178,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "chat.dateText",
    "group": "chat",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "chat"
    ],
@@ -4120,14 +4203,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "chat.headerRadiusDp",
    "group": "chat",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "chat"
    ],
@@ -4144,14 +4228,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "chat.inputRadiusDp",
    "group": "chat",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "chat"
    ],
@@ -4168,14 +4253,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "chat.panelRadiusDp",
    "group": "chat",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "chat"
    ],
@@ -4192,14 +4278,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "chat.buttonRadiusDp",
    "group": "chat",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "chat"
    ],
@@ -4216,14 +4303,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "chat.dateRadiusDp",
    "group": "chat",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "chat"
    ],
@@ -4240,14 +4328,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "chat.wallpaperColor",
    "group": "chat",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "chat"
    ],
@@ -4264,14 +4353,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "chat.wallpaperColor2",
    "group": "chat",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "chat"
    ],
@@ -4288,14 +4378,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "chat.wallpaperAngle",
    "group": "chat",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "chat"
    ],
@@ -4312,14 +4403,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "chat.menuRadiusDp",
    "group": "chat",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "chat"
    ],
@@ -4336,14 +4428,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "chat.reactionRadiusDp",
    "group": "chat",
    "level": "advanced",
    "phase": 2,
-   "built": false,
+   "built": true,
    "screens": [
     "chat"
    ],
@@ -4360,7 +4453,8 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "screens.chats.tabsRadiusDp",

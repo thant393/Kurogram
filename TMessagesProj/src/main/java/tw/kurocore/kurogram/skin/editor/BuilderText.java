@@ -19,6 +19,9 @@ public final class BuilderText {
         t("advanced", "Advanced", "အဆင့်မြင့်");
         t("scene.chats", "Chats", "ချက်တ်များ");
         t("scene.settings", "Settings", "ဆက်တင်");
+        t("scene.chat", "Conversation", "စကားပြောခန်း");
+        t("scene.controls", "Components", "အစိတ်အပိုင်းများ");
+        t("value", "Value", "တန်ဖိုး");
         t("live", "Real app preview", "App အစစ်ဖြင့် ကြည့်ရန်");
         t("live.on", "Real app preview is ON", "App အစစ်ဖြင့် ကြည့်နေသည်");
         t("live.off", "Real app preview is off", "App အစစ်ဖြင့် မကြည့်တော့ပါ");

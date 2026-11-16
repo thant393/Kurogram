@@ -177,8 +177,15 @@ public class ThemeBuilderActivity extends BaseFragment {
             session.setAdvanced(!session.advanced());
             refreshAll();
         });
-        sceneBtn = button(context, "scene.settings", v -> {
-            session.setScene("chats".equals(session.scene()) ? "settings" : "chats");
+        sceneBtn = button(context, "scene.chat", v -> {
+            String[] order = {"chats", "chat", "settings", "controls"};
+            int at = 0;
+            for (int i = 0; i < order.length; i++) {
+                if (order[i].equals(session.scene())) {
+                    at = i;
+                }
+            }
+            session.setScene(order[(at + 1) % order.length]);
             refreshAll();
         });
         liveBtn = button(context, "live", v -> setLive(!live));
@@ -262,7 +269,7 @@ public class ThemeBuilderActivity extends BaseFragment {
             b.setText(tr((String) b.getTag()));
         }
         modeBtn.setText(tr(session.advanced() ? "basic" : "advanced"));
-        sceneBtn.setText(tr("chats".equals(session.scene()) ? "scene.settings" : "scene.chats"));
+        sceneBtn.setText(tr("scene." + session.scene()));
         styleButton(undoBtn, false);
         styleButton(redoBtn, false);
         undoBtn.setAlpha(session.draft.canUndo() ? 1f : 0.4f);
@@ -401,6 +408,8 @@ public class ThemeBuilderActivity extends BaseFragment {
                         report(session.draft.set(e.path, rule.options.get(i)));
                         changed(true);
                     }).show());
+        } else if (rule.kind == Rule.Kind.INT || rule.kind == Rule.Kind.FLOAT) {
+            addSlider(context, r, e, rule, cur);
         } else if (rule.kind == Rule.Kind.BOOL) {
             r.setOnClickListener(v -> {
                 report(session.draft.set(e.path, !Boolean.TRUE.equals(cur)));
@@ -416,6 +425,50 @@ public class ThemeBuilderActivity extends BaseFragment {
             });
             r.addView(x);
         }
+    }
+
+    /** INT and FLOAT rules: a slider inside the row. A whole drag is one undo step; the rule's own range limits it. */
+    private void addSlider(Context context, LinearLayout r, Catalog.Entry e, Rule rule, Object cur) {
+        final boolean isInt = rule.kind == Rule.Kind.INT;
+        final double min = rule.min, max = rule.max;
+        final int steps = isInt ? (int) (max - min) : 100;
+        final TextView value = (TextView) ((LinearLayout) r.getChildAt(0)).getChildAt(1);
+        double start = cur instanceof Number ? ((Number) cur).doubleValue() : min;
+        SeekBar sb = new SeekBar(context);
+        sb.setMax(steps);
+        sb.setProgress((int) Math.round((start - min) / (max - min) * steps));
+        final boolean[] fresh = {true};
+        sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar s, int v, boolean fromUser) {
+                if (!fromUser) {
+                    return;
+                }
+                double real = min + (max - min) * v / steps;
+                Object val = isInt ? (Object) Long.valueOf(Math.round(real)) : (Object) Double.valueOf(Math.round(real * 100) / 100.0);
+                String err = session.draft.set(e.path, val, !fresh[0]);
+                fresh[0] = false;
+                if (err == null) {
+                    value.setText(String.valueOf(val));
+                    preview.invalidate();
+                    refreshToolbar();
+                    scheduleLive();
+                    AndroidUtilities.cancelRunOnUIThread(autosave);
+                    AndroidUtilities.runOnUIThread(autosave, 800);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar s) {
+                fresh[0] = true;
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar s) {
+                fresh[0] = true;
+            }
+        });
+        r.addView(sb, 1, LayoutHelper.createLinear(120, LayoutHelper.WRAP_CONTENT));
     }
 
     // ------------------------------------------------------------------ colour dialog

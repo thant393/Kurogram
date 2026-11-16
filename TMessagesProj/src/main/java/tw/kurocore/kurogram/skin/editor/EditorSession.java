@@ -9,7 +9,7 @@ import java.util.List;
  */
 public final class EditorSession {
     /** Highest roadmap phase whose controls exist in the app. Settings of later phases stay hidden until built. */
-    public static final int BUILT_PHASE = 1;
+    public static final int BUILT_PHASE = 2;
 
     public final RuleSet rules;
     public final Catalog catalog;
@@ -122,6 +122,40 @@ public final class EditorSession {
             return "unknown setting " + path;
         }
         return draft.set(path, ColorCodec.format(argb, ref.rule.kind), continuation);
+    }
+
+    /** Whole number setting, or {@code def} when the draft leaves it out. */
+    public int intValue(String path, int def) {
+        Object v = draft.get(path);
+        return v instanceof Number ? ((Number) v).intValue() : def;
+    }
+
+    public double number(String path, double def) {
+        Object v = draft.get(path);
+        return v instanceof Number ? ((Number) v).doubleValue() : def;
+    }
+
+    public boolean bool(String path, boolean def) {
+        Object v = draft.get(path);
+        return v instanceof Boolean ? (Boolean) v : def;
+    }
+
+    public String text(String path, String def) {
+        Object v = draft.get(path);
+        return v instanceof String ? (String) v : def;
+    }
+
+    /** First colour in the list that the draft sets, else {@code def}: components fall back to the tokens, as the engine does. */
+    public int colorChain(int def, String... paths) {
+        for (String p : paths) {
+            if (draft.get(p) instanceof String) {
+                int c = color(p, 0);
+                if (c != 0) {
+                    return c;
+                }
+            }
+        }
+        return def;
     }
 
     public String appearance() {
