@@ -53,6 +53,13 @@ def main():
         for s in e.get("screens", []):
             if s != "*" and s not in cat["screens"]:
                 errors.append("unknown screen %r: %s" % (s, e["path"]))
+    for sec in ("skin", "skinMinor1", "layout"):
+        for r in man[sec]:
+            kind = r.split("|", 1)[1]
+            if kind.startswith("list:"):
+                for opt in kind.split(":")[1].split(","):
+                    if not cat.get("items", {}).get(opt, {}).get("label", {}).get("en"):
+                        errors.append("list item without English label: " + opt)
     for g, v in cat["groups"].items():
         if not v["label"].get("en"):
             errors.append("group without English label: " + g)

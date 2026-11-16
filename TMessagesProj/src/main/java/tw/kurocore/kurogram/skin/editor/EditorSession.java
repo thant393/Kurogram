@@ -9,7 +9,7 @@ import java.util.List;
  */
 public final class EditorSession {
     /** Highest roadmap phase whose controls exist in the app. Settings of later phases stay hidden until built. */
-    public static final int BUILT_PHASE = 2;
+    public static final int BUILT_PHASE = 3;
 
     public final RuleSet rules;
     public final Catalog catalog;
@@ -79,6 +79,64 @@ public final class EditorSession {
         for (Catalog.Entry e : catalog.entries()) {
             if (isShown(e)) {
                 out.add(e);
+            }
+        }
+        return out;
+    }
+
+    /**
+     * False for rules the engine cannot act on today (validated but ignored): such settings are listed disabled, never silently
+     * editable, so a theme cannot promise something the app will not do.
+     */
+    public boolean isSupported(Catalog.Entry e) {
+        RuleSet.Ref ref = rules.find(e.path);
+        if (ref == null) {
+            return true; // structure items
+        }
+        Rule r = ref.rule;
+        if (r.kind == Rule.Kind.NULL || (r.kind == Rule.Kind.ENUM && r.options.size() < 2)) {
+            return false;
+        }
+        if (ref.section == RuleSet.Section.LAYOUT && rules.isLayoutNotYetSupported(e.path.substring("layout.".length()))) {
+            return false;
+        }
+        return ref.section != RuleSet.Section.SKIN_MINOR1 || rules.isImplementedMinor1(e.path) || "schemaMinor".equals(e.path);
+    }
+
+    /** A list setting as it will be written when first customised: the rule's own smallest valid sample. */
+    public List<String> listOrDefault(String path) {
+        Object v = draft.get(path);
+        List<String> out = new ArrayList<>();
+        if (v instanceof List) {
+            for (Object o : (List<?>) v) {
+                out.add(String.valueOf(o));
+            }
+            return out;
+        }
+        RuleSet.Ref ref = rules.find(path);
+        if ("layout.bottomTabs.items".equals(path)) {
+            out.add("chats");
+            out.add("people");
+            out.add("settings");
+        } else if (ref != null && ref.rule.min > 0 && ref.rule.sample() instanceof List) {
+            for (Object o : (List<?>) ref.rule.sample()) {
+                out.add(String.valueOf(o));
+            }
+        }
+        return out;
+    }
+
+    /** Options of a list setting that are not in it yet. */
+    public List<String> listAvailable(String path) {
+        List<String> out = new ArrayList<>();
+        RuleSet.Ref ref = rules.find(path);
+        if (ref == null) {
+            return out;
+        }
+        List<String> have = listOrDefault(path);
+        for (String o : ref.rule.options) {
+            if (!have.contains(o)) {
+                out.add(o);
             }
         }
         return out;

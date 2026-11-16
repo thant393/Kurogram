@@ -2311,7 +2311,7 @@
    "group": "screen.chats",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -2328,14 +2328,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "screens.chats.listStyle",
    "group": "screen.chats",
    "level": "basic",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -2352,14 +2353,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "screens.chats.avatarSizeDp",
    "group": "screen.chats",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -2376,14 +2378,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "screens.chats.showDividers",
    "group": "screen.chats",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -2400,14 +2403,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "screens.chats.threeLines",
    "group": "screen.chats",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -2424,14 +2428,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "screens.contacts.background",
    "group": "screen.contacts",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "contacts"
    ],
@@ -2448,14 +2453,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "screens.contacts.sectionStyle",
    "group": "screen.contacts",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "contacts"
    ],
@@ -2472,14 +2478,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "screens.contacts.avatarSizeDp",
    "group": "screen.contacts",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "contacts"
    ],
@@ -2496,14 +2503,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "screens.profile.background",
    "group": "screen.profile",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "profile"
    ],
@@ -2520,14 +2528,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "screens.profile.headerStyle",
    "group": "screen.profile",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "profile"
    ],
@@ -2545,14 +2554,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "screens.profile.avatarSizeDp",
    "group": "screen.profile",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "profile"
    ],
@@ -2570,14 +2580,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "screens.profile.cardRadiusDp",
    "group": "screen.profile",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "profile"
    ],
@@ -2595,14 +2606,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "screens.settings.background",
    "group": "screen.settings",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "settings"
    ],
@@ -2619,14 +2631,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "screens.settings.groupStyle",
    "group": "screen.settings",
    "level": "basic",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "settings"
    ],
@@ -2643,14 +2656,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "screens.settings.iconStyle",
    "group": "screen.settings",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "settings"
    ],
@@ -2667,14 +2681,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "screens.settings.showDescriptions",
    "group": "screen.settings",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "settings"
    ],
@@ -2691,14 +2706,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "screens.themeStore.background",
    "group": "screen.themeStore",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "themeStore"
    ],
@@ -2715,14 +2731,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "screens.themeStore.gridColumns",
    "group": "screen.themeStore",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "themeStore"
    ],
@@ -2739,14 +2756,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "screens.themeStore.previewRadiusDp",
    "group": "screen.themeStore",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "themeStore"
    ],
@@ -2763,7 +2781,8 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "chat.bubbleIn",
@@ -3844,7 +3863,7 @@
    "group": "screen.privacy",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "privacy"
    ],
@@ -3861,14 +3880,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "screens.notifications.background",
    "group": "screen.notifications",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "notifications"
    ],
@@ -3885,14 +3905,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "screens.dataStorage.background",
    "group": "screen.dataStorage",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "dataStorage"
    ],
@@ -3909,14 +3930,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "screens.devices.background",
    "group": "screen.devices",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "devices"
    ],
@@ -3933,7 +3955,8 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "ux.transition",
@@ -4015,7 +4038,7 @@
    "group": "screen.themeStore",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "themeStore"
    ],
@@ -4032,14 +4055,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "screens.themeStore.cardRadiusDp",
    "group": "screen.themeStore",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "themeStore"
    ],
@@ -4056,14 +4080,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "screens.themeStore.cardGapDp",
    "group": "screen.themeStore",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "themeStore"
    ],
@@ -4080,14 +4105,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "screens.themeStore.titleSizeSp",
    "group": "screen.themeStore",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "themeStore"
    ],
@@ -4104,7 +4130,8 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "components.button.style",
@@ -4461,7 +4488,7 @@
    "group": "screen.chats",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -4478,14 +4505,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "screens.profile.avatarRadiusDp",
    "group": "screen.profile",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "profile"
    ],
@@ -4503,14 +4531,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "screens.profile.actionsStyle",
    "group": "screen.profile",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "profile"
    ],
@@ -4528,14 +4557,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "screens.profile.photoStyle",
    "group": "screen.profile",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "profile"
    ],
@@ -4553,14 +4583,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.settings.header",
    "group": "layout.settings",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "settings"
    ],
@@ -4577,14 +4608,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.settings.accounts",
    "group": "layout.settings",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "settings"
    ],
@@ -4601,14 +4633,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.people.storyRail",
    "group": "layout.people",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "people"
    ],
@@ -4625,14 +4658,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.people.chips",
    "group": "layout.people",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "people"
    ],
@@ -4649,14 +4683,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.settings.items",
    "group": "layout.settings",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "settings"
    ],
@@ -4673,14 +4708,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "layout.contacts.mode",
    "group": "layout.contacts",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "contacts"
    ],
@@ -4697,14 +4733,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.contacts.grid.columns",
    "group": "layout.contacts",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "contacts"
    ],
@@ -4721,14 +4758,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.contacts.grid.avatarDp",
    "group": "layout.contacts",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "contacts"
    ],
@@ -4745,14 +4783,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.contacts.row.avatarSizeDp",
    "group": "layout.contacts",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "contacts"
    ],
@@ -4769,14 +4808,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.contacts.row.heightDp",
    "group": "layout.contacts",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "contacts"
    ],
@@ -4793,14 +4833,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.contacts.row.status",
    "group": "layout.contacts",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "contacts"
    ],
@@ -4817,14 +4858,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.contacts.sort",
    "group": "layout.contacts",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "contacts"
    ],
@@ -4841,14 +4883,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.chatList.mode",
    "group": "layout.chatList",
    "level": "basic",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -4866,14 +4909,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "layout.chatList.grid.columns",
    "group": "layout.chatList",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -4890,14 +4934,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "layout.chatList.grid.avatarDp",
    "group": "layout.chatList",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -4914,14 +4959,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "layout.chatList.grid.showName",
    "group": "layout.chatList",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -4938,14 +4984,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "layout.chatList.grid.showBadge",
    "group": "layout.chatList",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -4962,14 +5009,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.chatList.row.preview.show",
    "group": "layout.chatList",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -4986,14 +5034,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "layout.chatList.row.heightDp",
    "group": "layout.chatList",
    "level": "basic",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -5010,14 +5059,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "layout.chatList.row.avatar.sizeDp",
    "group": "layout.chatList",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -5034,14 +5084,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "layout.chatList.row.avatar.shape",
    "group": "layout.chatList",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -5058,14 +5109,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "layout.chatList.row.avatar.onlineDot.sizeDp",
    "group": "layout.chatList",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -5082,14 +5134,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.chatList.row.avatar.onlineDot.color",
    "group": "layout.chatList",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -5106,14 +5159,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.chatList.row.avatar.lastActive",
    "group": "layout.chatList",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -5130,14 +5184,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.chatList.row.title.weight",
    "group": "layout.chatList",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -5154,14 +5209,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "layout.chatList.row.title.sizeSp",
    "group": "layout.chatList",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -5178,14 +5234,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "layout.chatList.row.title.unreadWeight",
    "group": "layout.chatList",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -5202,14 +5259,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.chatList.row.preview.lines",
    "group": "layout.chatList",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -5226,14 +5284,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.chatList.row.preview.sizeSp",
    "group": "layout.chatList",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -5250,14 +5309,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "layout.chatList.row.preview.color",
    "group": "layout.chatList",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -5274,14 +5334,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "layout.chatList.row.preview.unreadColor",
    "group": "layout.chatList",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -5298,14 +5359,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.chatList.row.meta.time",
    "group": "layout.chatList",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -5322,14 +5384,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "layout.chatList.row.meta.seenAvatar",
    "group": "layout.chatList",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -5347,14 +5410,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.chatList.row.meta.unreadDot",
    "group": "layout.chatList",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -5372,14 +5436,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.chatList.row.pinned",
    "group": "layout.chatList",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -5396,14 +5461,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.chatList.row.dividers",
    "group": "layout.chatList",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -5420,14 +5486,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "layout.chatList.header.collapse",
    "group": "layout.chatList",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -5444,14 +5511,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.chatList.header.left",
    "group": "layout.chatList",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -5468,14 +5536,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "layout.chatList.header.right",
    "group": "layout.chatList",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -5492,14 +5561,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "layout.chatList.storyRail.enabled",
    "group": "layout.chatList",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -5516,14 +5586,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.chatList.storyRail.avatarSizeDp",
    "group": "layout.chatList",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -5540,14 +5611,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.chatList.storyRail.showCreate",
    "group": "layout.chatList",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -5564,14 +5636,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.chatList.folders.style",
    "group": "layout.chatList",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -5588,14 +5661,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "layout.chatList.folders.position",
    "group": "layout.chatList",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -5612,14 +5686,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.chatList.folders.collapsible",
    "group": "layout.chatList",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -5636,14 +5711,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.chatList.specialRows.archive",
    "group": "layout.chatList",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -5660,14 +5736,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.drawer.content",
    "group": "layout.drawer",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -5684,14 +5761,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.chatList.searchBar",
    "group": "layout.chatList",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -5708,14 +5786,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.drawer.items",
    "group": "layout.drawer",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "chats"
    ],
@@ -5732,14 +5811,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "layout.bottomTabs.items",
    "group": "layout.bottomTabs",
    "level": "basic",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -5756,14 +5836,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "layout.bottomTabs.peopleSource",
    "group": "layout.bottomTabs",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -5780,14 +5861,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.bottomTabs.labels",
    "group": "layout.bottomTabs",
    "level": "basic",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -5804,14 +5886,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "layout.bottomTabs.labelSizeSp",
    "group": "layout.bottomTabs",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -5828,14 +5911,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "layout.bottomTabs.indicator",
    "group": "layout.bottomTabs",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -5852,14 +5936,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "layout.bottomTabs.border",
    "group": "layout.bottomTabs",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -5876,14 +5961,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "layout.bottomTabs.style",
    "group": "layout.bottomTabs",
    "level": "basic",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -5900,7 +5986,8 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "layout.chat.header.avatarLeft",
@@ -6027,7 +6114,7 @@
    "group": "layout.settings",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "settings"
    ],
@@ -6044,14 +6131,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.settings.grid.columns",
    "group": "layout.settings",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "settings"
    ],
@@ -6068,14 +6156,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.themeStore.mode",
    "group": "layout.themeStore",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "themeStore"
    ],
@@ -6092,14 +6181,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.themeStore.meta.creator",
    "group": "layout.themeStore",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "themeStore"
    ],
@@ -6116,14 +6206,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.themeStore.meta.downloads",
    "group": "layout.themeStore",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "themeStore"
    ],
@@ -6140,14 +6231,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.themeStore.meta.position",
    "group": "layout.themeStore",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "themeStore"
    ],
@@ -6164,14 +6256,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.themeStore.chips",
    "group": "layout.themeStore",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "themeStore"
    ],
@@ -6188,14 +6281,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.themeStore.search",
    "group": "layout.themeStore",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "themeStore"
    ],
@@ -6212,14 +6306,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.notifications.hiddenRows",
    "group": "layout.notifications",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "notifications"
    ],
@@ -6236,14 +6331,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.profile.hiddenRows",
    "group": "layout.profile",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "profile"
    ],
@@ -6260,14 +6356,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "layout.privacy.hiddenRows",
    "group": "layout.privacy",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "privacy"
    ],
@@ -6284,14 +6381,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "layout.dataStorage.hiddenRows",
    "group": "layout.dataStorage",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "dataStorage"
    ],
@@ -6308,7 +6406,8 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "appearance",
@@ -6392,7 +6491,7 @@
    "group": "structure",
    "level": "advanced",
    "phase": 3,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -6463,5 +6562,781 @@
    ],
    "note": "set automatically by the Builder; never shown as a control"
   }
- ]
+ ],
+ "items": {
+  "profile": {
+   "label": {
+    "en": "Profile",
+    "my": "ပရိုဖိုင်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "settings": {
+   "label": {
+    "en": "Settings",
+    "my": "ဆက်တင်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "contacts": {
+   "label": {
+    "en": "Contacts",
+    "my": "ဆက်သွယ်ရန်စာရင်း"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "calls": {
+   "label": {
+    "en": "Calls",
+    "my": "ခေါ်ဆိုမှုများ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "saved": {
+   "label": {
+    "en": "Saved",
+    "my": "သိမ်းထားသော မက်ဆေ့ချ်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "archive": {
+   "label": {
+    "en": "Archive",
+    "my": "သိမ်းဆည်းထားသော"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "kuroTheme": {
+   "label": {
+    "en": "Kuro theme",
+    "my": "Kuro theme"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "kuroSettings": {
+   "label": {
+    "en": "Kuro settings",
+    "my": "Kuro ဆက်တင်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "numberFinder": {
+   "label": {
+    "en": "Number finder",
+    "my": "နံပါတ်ရှာဖွေခြင်း"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "specialContacts": {
+   "label": {
+    "en": "Special contacts",
+    "my": "အထူးဆက်သွယ်ရန်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "onlineContacts": {
+   "label": {
+    "en": "Online contacts",
+    "my": "အွန်လိုင်းဆက်သွယ်ရန်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "contactChanges": {
+   "label": {
+    "en": "Contact changes",
+    "my": "ဆက်သွယ်ရန် ပြောင်းလဲမှု"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "account": {
+   "label": {
+    "en": "Account",
+    "my": "အကောင့်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "chatSettings": {
+   "label": {
+    "en": "Chat settings",
+    "my": "ချက်တ်ဆက်တင်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "privacy": {
+   "label": {
+    "en": "Privacy",
+    "my": "ကိုယ်ရေးလုံခြုံမှု"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "notifications": {
+   "label": {
+    "en": "Notifications",
+    "my": "အကြောင်းကြားချက်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "data": {
+   "label": {
+    "en": "Data",
+    "my": "ဒေတာနှင့် သိုလှောင်မှု"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "folders": {
+   "label": {
+    "en": "Folders",
+    "my": "Folder များ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "devices": {
+   "label": {
+    "en": "Devices",
+    "my": "စက်များ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "power": {
+   "label": {
+    "en": "Power",
+    "my": "ဘက်ထရီ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "language": {
+   "label": {
+    "en": "Language",
+    "my": "ဘာသာစကား"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "premium": {
+   "label": {
+    "en": "Premium",
+    "my": "Premium"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "stars": {
+   "label": {
+    "en": "Stars",
+    "my": "Stars"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "ton": {
+   "label": {
+    "en": "Ton",
+    "my": "TON"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "business": {
+   "label": {
+    "en": "Business",
+    "my": "စီးပွားရေး"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "gift": {
+   "label": {
+    "en": "Gift",
+    "my": "လက်ဆောင်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "askQuestion": {
+   "label": {
+    "en": "Ask question",
+    "my": "မေးခွန်းမေးရန်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "faq": {
+   "label": {
+    "en": "Faq",
+    "my": "မေးလေ့ရှိသောမေးခွန်း"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "features": {
+   "label": {
+    "en": "Features",
+    "my": "လုပ်ဆောင်ချက်များ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "privacyPolicy": {
+   "label": {
+    "en": "Privacy policy",
+    "my": "ကိုယ်ရေးလုံခြုံမှု မူဝါဒ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "menu": {
+   "label": {
+    "en": "Menu",
+    "my": "မီနူး"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "compose": {
+   "label": {
+    "en": "Compose",
+    "my": "ရေးသားရန်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "search": {
+   "label": {
+    "en": "Search",
+    "my": "ရှာဖွေရန်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "chats": {
+   "label": {
+    "en": "Chats",
+    "my": "ချက်တ်များ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "people": {
+   "label": {
+    "en": "People",
+    "my": "လူများ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "unread": {
+   "label": {
+    "en": "Unread",
+    "my": "မဖတ်ရသေးသော"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "call": {
+   "label": {
+    "en": "Call",
+    "my": "ခေါ်ဆိုရန်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "video": {
+   "label": {
+    "en": "Video",
+    "my": "ဗီဒီယို"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "more": {
+   "label": {
+    "en": "More",
+    "my": "နောက်ထပ်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "plus": {
+   "label": {
+    "en": "Plus",
+    "my": "ထပ်ထည့်ရန်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "attach": {
+   "label": {
+    "en": "Attach",
+    "my": "ဖိုင်ပူးတွဲရန်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "emoji": {
+   "label": {
+    "en": "Emoji",
+    "my": "အီမိုဂျီ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "mic": {
+   "label": {
+    "en": "Mic",
+    "my": "မိုက်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "reactions": {
+   "label": {
+    "en": "Reactions",
+    "my": "တုံ့ပြန်မှုများ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "callsVibrate": {
+   "label": {
+    "en": "Calls vibrate",
+    "my": "ခေါ်ဆိုမှု တုန်ခါမှု"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "callsRingtone": {
+   "label": {
+    "en": "Calls ringtone",
+    "my": "ခေါ်ဆိုမှု အသံ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "inappSound": {
+   "label": {
+    "en": "Inapp sound",
+    "my": "app အတွင်း အသံ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "inappVibrate": {
+   "label": {
+    "en": "Inapp vibrate",
+    "my": "app အတွင်း တုန်ခါမှု"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "inappPreview": {
+   "label": {
+    "en": "Inapp preview",
+    "my": "app အတွင်း အကျဉ်း"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "inchatSound": {
+   "label": {
+    "en": "Inchat sound",
+    "my": "ချက်တ်အတွင်း အသံ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "inappPriority": {
+   "label": {
+    "en": "Inapp priority",
+    "my": "app အတွင်း ဦးစားပေး"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "contactJoined": {
+   "label": {
+    "en": "Contact joined",
+    "my": "ဆက်သွယ်ရန် ဝင်ရောက်မှု"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "pinnedMessage": {
+   "label": {
+    "en": "Pinned message",
+    "my": "ပင်တွဲထားသော မက်ဆေ့ချ်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "notificationsService": {
+   "label": {
+    "en": "Notifications service",
+    "my": "အကြောင်းကြားချက် service"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "notificationsServiceConnection": {
+   "label": {
+    "en": "Notifications service connection",
+    "my": "service ချိတ်ဆက်မှု"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "repeat": {
+   "label": {
+    "en": "Repeat",
+    "my": "ထပ်ကြားခြင်း"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "phone": {
+   "label": {
+    "en": "Phone",
+    "my": "ဖုန်းနံပါတ်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "bio": {
+   "label": {
+    "en": "Bio",
+    "my": "ကိုယ်ရေးအကျဉ်း"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "username": {
+   "label": {
+    "en": "Username",
+    "my": "အသုံးပြုသူအမည်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "birthday": {
+   "label": {
+    "en": "Birthday",
+    "my": "မွေးနေ့"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "bizHours": {
+   "label": {
+    "en": "Biz hours",
+    "my": "လုပ်ငန်းချိန်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "bizLocation": {
+   "label": {
+    "en": "Biz location",
+    "my": "လုပ်ငန်းတည်နေရာ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "note": {
+   "label": {
+    "en": "Note",
+    "my": "မှတ်စု"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "phoneNumber": {
+   "label": {
+    "en": "Phone number",
+    "my": "ဖုန်းနံပါတ်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "lastSeen": {
+   "label": {
+    "en": "Last seen",
+    "my": "နောက်ဆုံးတွေ့ရှိချိန်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "profilePhoto": {
+   "label": {
+    "en": "Profile photo",
+    "my": "ပရိုဖိုင်ပုံ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "forwards": {
+   "label": {
+    "en": "Forwards",
+    "my": "ပို့ဆက်မှု"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "voices": {
+   "label": {
+    "en": "Voices",
+    "my": "အသံမက်ဆေ့ချ်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "noncontacts": {
+   "label": {
+    "en": "Noncontacts",
+    "my": "ဆက်သွယ်ရန်မဟုတ်သူများ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "gifts": {
+   "label": {
+    "en": "Gifts",
+    "my": "လက်ဆောင်များ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "music": {
+   "label": {
+    "en": "Music",
+    "my": "ဂီတ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "groups": {
+   "label": {
+    "en": "Groups",
+    "my": "အုပ်စုများ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "paymentsClear": {
+   "label": {
+    "en": "Payments clear",
+    "my": "ငွေပေးချေမှု ဖယ်ရှားရန်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "contactsDelete": {
+   "label": {
+    "en": "Contacts delete",
+    "my": "ဆက်သွယ်ရန် ဖျက်ရန်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "contactsSync": {
+   "label": {
+    "en": "Contacts sync",
+    "my": "ဆက်သွယ်ရန် ထပ်တူပြုရန်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "contactsSuggest": {
+   "label": {
+    "en": "Contacts suggest",
+    "my": "ဆက်သွယ်ရန် အကြံပြုချက်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "secretMap": {
+   "label": {
+    "en": "Secret map",
+    "my": "လျှို့ဝှက်မြေပုံ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "secretWebpage": {
+   "label": {
+    "en": "Secret webpage",
+    "my": "လျှို့ဝှက်ဝဘ်စာမျက်နှာ"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "storageUsage": {
+   "label": {
+    "en": "Storage usage",
+    "my": "သိုလှောင်မှု အသုံးပြုမှု"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "dataUsage": {
+   "label": {
+    "en": "Data usage",
+    "my": "ဒေတာ အသုံးပြုမှု"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "saveToGalleryPeer": {
+   "label": {
+    "en": "Save to gallery peer",
+    "my": "ပုံများ သိမ်းရန် (ကိုယ်ပိုင်)"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "saveToGalleryGroups": {
+   "label": {
+    "en": "Save to gallery groups",
+    "my": "ပုံများ သိမ်းရန် (အုပ်စု)"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "saveToGalleryChannels": {
+   "label": {
+    "en": "Save to gallery channels",
+    "my": "ပုံများ သိမ်းရန် (ချန်နယ်)"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "useLessDataForCalls": {
+   "label": {
+    "en": "Use less data for calls",
+    "my": "ခေါ်ဆိုမှုတွင် ဒေတာနည်းနည်းသုံးရန်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "proxy": {
+   "label": {
+    "en": "Proxy",
+    "my": "Proxy"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "clearDrafts": {
+   "label": {
+    "en": "Clear drafts",
+    "my": "မူကြမ်းများ ဖျက်ရန်"
+   },
+   "reviewed": [
+    "en"
+   ]
+  }
+ }
 }

@@ -224,6 +224,23 @@ public class EditorTests {
         vs.setAdvanced(true);
         check(vs.settingsFor("button").size() >= 4, "button has component settings in advanced");
         check(vs.settingsFor("bubble.in").size() >= 3, "bubble has settings");
+
+        // ---- list editing and unsupported settings
+        EditorSession ls = new EditorSession(rules, cat, ThemeDraft.fromJson(themed, rules));
+        check(ls.listOrDefault("layout.bottomTabs.items").equals(Arrays.asList("chats", "people", "settings")), "tabs default list");
+        check(ls.listOrDefault("layout.privacy.hiddenRows").isEmpty(), "hidden rows default empty");
+        check(ls.draft.set("layout.bottomTabs.items", new ArrayList<Object>(ls.listOrDefault("layout.bottomTabs.items"))) == null, "customize tabs");
+        check(ls.draft.listMove("layout.bottomTabs.items", 0, 2) == null && ls.draft.get("layout.bottomTabs.items").equals(Arrays.asList("people", "settings", "chats")), "move tab");
+        check(ls.draft.listRemove("layout.bottomTabs.items", "chats") == null, "remove to minimum");
+        check(ls.draft.listRemove("layout.bottomTabs.items", "people") != null, "below minimum count refused");
+        check(ls.listAvailable("layout.bottomTabs.items").contains("chats") && !ls.listAvailable("layout.bottomTabs.items").contains("people"), "available items");
+        check(ls.draft.listAdd("layout.bottomTabs.items", "bogus", 0) != null, "unknown item refused");
+        check(ls.draft.listAdd("layout.bottomTabs.items", "chats", 0) == null && ls.draft.listAdd("layout.bottomTabs.items", "chats", 0) != null, "duplicate refused");
+        check(cat.itemLabel("kuroTheme", "my").length() > 0 && cat.itemLabel("zzz", "en").equals("zzz"), "item labels");
+        int unsup = 0;
+        for (Catalog.Entry e : cat.entries()) if (!ls.isSupported(e)) unsup++;
+        check(unsup == 10, "unsupported entries " + unsup);
+        check(!ls.isSupported(cat.entry("layout.chat.input.style")) && !ls.isSupported(cat.entry("tokens.typography.fontFamily")) && ls.isSupported(cat.entry("layout.chatList.mode")), "support flags");
         check(BuilderText.complete(), "builder text has en and my for every key");
         check(BuilderText.get("my", "undo").length() > 0 && BuilderText.get("zz", "undo").equals(BuilderText.get("en", "undo")), "builder text fallback");
 

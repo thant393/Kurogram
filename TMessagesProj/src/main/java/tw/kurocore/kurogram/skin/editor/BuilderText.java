@@ -21,6 +21,11 @@ public final class BuilderText {
         t("scene.settings", "Settings", "ဆက်တင်");
         t("scene.chat", "Conversation", "စကားပြောခန်း");
         t("scene.controls", "Components", "အစိတ်အပိုင်းများ");
+        t("scene.drawer", "Side menu", "ဘေးမီနူး");
+        t("scene.rows", "Setting rows", "ဆက်တင်အတန်းများ");
+        t("unsupported", "Not supported by the app yet", "App က မထောက်ပံ့သေးပါ");
+        t("none", "none", "မရှိ");
+        t("customize", "Customize this list", "ဤစာရင်းကို ကိုယ်တိုင်ပြင်မည်");
         t("value", "Value", "တန်ဖိုး");
         t("live", "Real app preview", "App အစစ်ဖြင့် ကြည့်ရန်");
         t("live.on", "Real app preview is ON", "App အစစ်ဖြင့် ကြည့်နေသည်");

@@ -77,6 +77,7 @@ public final class Catalog {
     private final Map<String, Text> groups = new LinkedHashMap<>();
     private final Map<String, Text> components = new LinkedHashMap<>();
     private final Map<String, Text> screens = new LinkedHashMap<>();
+    private final Map<String, Text> items = new LinkedHashMap<>();
 
     @SuppressWarnings("unchecked")
     public static Catalog fromJson(String json) {
@@ -96,6 +97,9 @@ public final class Catalog {
         readTexts((Map<String, Object>) m.get("groups"), groups);
         readTexts((Map<String, Object>) m.get("components"), components);
         readTexts((Map<String, Object>) m.get("screens"), screens);
+        if (m.get("items") != null) {
+            readTexts((Map<String, Object>) m.get("items"), items);
+        }
         for (Object o : (List<Object>) m.get("entries")) {
             Map<String, Object> e = (Map<String, Object>) o;
             String path = (String) e.get("path");
@@ -165,6 +169,16 @@ public final class Catalog {
     public String screenLabel(String screenId, String lang) {
         Text t = screens.get(screenId);
         return t == null ? screenId : t.get(lang, screenId);
+    }
+
+    /** Name of one entry of a list setting (a tab, a menu item, a hidden row), in the person's language. */
+    public String itemLabel(String itemId, String lang) {
+        Text t = items.get(itemId);
+        return t == null ? itemId : t.get(lang, itemId);
+    }
+
+    public boolean hasItem(String id) {
+        return items.containsKey(id);
     }
 
     public boolean hasGroup(String id) {

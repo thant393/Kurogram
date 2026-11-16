@@ -107,6 +107,27 @@ GLOSS = {
 }
 
 
+ITEM_MY = {
+    "menu": "မီနူး", "compose": "ရေးသားရန်", "search": "ရှာဖွေရန်", "chats": "ချက်တ်များ", "people": "လူများ", "settings": "ဆက်တင်", "profile": "ပရိုဖိုင်",
+    "unread": "မဖတ်ရသေးသော", "call": "ခေါ်ဆိုရန်", "video": "ဗီဒီယို", "more": "နောက်ထပ်", "plus": "ထပ်ထည့်ရန်", "attach": "ဖိုင်ပူးတွဲရန်", "emoji": "အီမိုဂျီ",
+    "mic": "မိုက်", "contacts": "ဆက်သွယ်ရန်စာရင်း", "calls": "ခေါ်ဆိုမှုများ", "saved": "သိမ်းထားသော မက်ဆေ့ချ်", "archive": "သိမ်းဆည်းထားသော", "kuroTheme": "Kuro theme",
+    "kuroSettings": "Kuro ဆက်တင်", "numberFinder": "နံပါတ်ရှာဖွေခြင်း", "specialContacts": "အထူးဆက်သွယ်ရန်", "onlineContacts": "အွန်လိုင်းဆက်သွယ်ရန်",
+    "contactChanges": "ဆက်သွယ်ရန် ပြောင်းလဲမှု", "account": "အကောင့်", "chatSettings": "ချက်တ်ဆက်တင်", "privacy": "ကိုယ်ရေးလုံခြုံမှု", "notifications": "အကြောင်းကြားချက်",
+    "data": "ဒေတာနှင့် သိုလှောင်မှု", "folders": "Folder များ", "devices": "စက်များ", "power": "ဘက်ထရီ", "language": "ဘာသာစကား", "premium": "Premium", "stars": "Stars",
+    "ton": "TON", "business": "စီးပွားရေး", "gift": "လက်ဆောင်", "askQuestion": "မေးခွန်းမေးရန်", "faq": "မေးလေ့ရှိသောမေးခွန်း", "features": "လုပ်ဆောင်ချက်များ",
+    "privacyPolicy": "ကိုယ်ရေးလုံခြုံမှု မူဝါဒ", "reactions": "တုံ့ပြန်မှုများ", "callsVibrate": "ခေါ်ဆိုမှု တုန်ခါမှု", "callsRingtone": "ခေါ်ဆိုမှု အသံ",
+    "inappSound": "app အတွင်း အသံ", "inappVibrate": "app အတွင်း တုန်ခါမှု", "inappPreview": "app အတွင်း အကျဉ်း", "inchatSound": "ချက်တ်အတွင်း အသံ",
+    "inappPriority": "app အတွင်း ဦးစားပေး", "contactJoined": "ဆက်သွယ်ရန် ဝင်ရောက်မှု", "pinnedMessage": "ပင်တွဲထားသော မက်ဆေ့ချ်", "notificationsService": "အကြောင်းကြားချက် service",
+    "notificationsServiceConnection": "service ချိတ်ဆက်မှု", "repeat": "ထပ်ကြားခြင်း", "phone": "ဖုန်းနံပါတ်", "bio": "ကိုယ်ရေးအကျဉ်း", "username": "အသုံးပြုသူအမည်",
+    "birthday": "မွေးနေ့", "bizHours": "လုပ်ငန်းချိန်", "bizLocation": "လုပ်ငန်းတည်နေရာ", "note": "မှတ်စု", "phoneNumber": "ဖုန်းနံပါတ်", "lastSeen": "နောက်ဆုံးတွေ့ရှိချိန်",
+    "profilePhoto": "ပရိုဖိုင်ပုံ", "forwards": "ပို့ဆက်မှု", "voices": "အသံမက်ဆေ့ချ်", "noncontacts": "ဆက်သွယ်ရန်မဟုတ်သူများ", "gifts": "လက်ဆောင်များ", "music": "ဂီတ",
+    "groups": "အုပ်စုများ", "paymentsClear": "ငွေပေးချေမှု ဖယ်ရှားရန်", "contactsDelete": "ဆက်သွယ်ရန် ဖျက်ရန်", "contactsSync": "ဆက်သွယ်ရန် ထပ်တူပြုရန်",
+    "contactsSuggest": "ဆက်သွယ်ရန် အကြံပြုချက်", "secretMap": "လျှို့ဝှက်မြေပုံ", "secretWebpage": "လျှို့ဝှက်ဝဘ်စာမျက်နှာ", "storageUsage": "သိုလှောင်မှု အသုံးပြုမှု",
+    "dataUsage": "ဒေတာ အသုံးပြုမှု", "saveToGalleryPeer": "ပုံများ သိမ်းရန် (ကိုယ်ပိုင်)", "saveToGalleryGroups": "ပုံများ သိမ်းရန် (အုပ်စု)",
+    "saveToGalleryChannels": "ပုံများ သိမ်းရန် (ချန်နယ်)", "useLessDataForCalls": "ခေါ်ဆိုမှုတွင် ဒေတာနည်းနည်းသုံးရန်", "proxy": "Proxy", "clearDrafts": "မူကြမ်းများ ဖျက်ရန်",
+}
+
+
 def words(key):
     key = re.sub(r"(Dp|Sp)$", "", key)
     parts = re.sub(r"([a-z0-9])([A-Z])", r"\1 \2", key).split()
@@ -283,6 +304,14 @@ def main():
     for table, src in (("screens", SCREENS), ("components", COMPONENTS), ("groups", GROUPS)):
         for k, (en, my) in src.items():
             cat[table].setdefault(k, {"label": {"en": en, "my": my}, "reviewed": ["en"]})
+    items = cat.setdefault("items", {})
+    for section in ("skin", "skinMinor1", "layout"):
+        for r in man[section]:
+            path, kind = r.split("|", 1)
+            if kind.startswith("list:"):
+                for opt in kind.split(":")[1].split(","):
+                    en = label_en([opt])
+                    items.setdefault(opt, {"label": {"en": en, "my": ITEM_MY.get(opt, en)}, "reviewed": ["en"]})
     have = {e["path"] for e in cat["entries"]}
     added = 0
     for section, prefix in (("skin", ""), ("skinMinor1", ""), ("layout", "layout.")):

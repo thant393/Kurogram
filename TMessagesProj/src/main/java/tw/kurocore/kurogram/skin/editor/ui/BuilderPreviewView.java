@@ -12,6 +12,7 @@ import android.view.View;
 import org.telegram.messenger.AndroidUtilities;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import tw.kurocore.kurogram.skin.editor.EditorSession;
@@ -164,6 +165,15 @@ public class BuilderPreviewView extends View {
             case "controls":
                 drawControls(canvas, x);
                 break;
+            case "drawer":
+                drawChats(canvas, x);
+                hits.clear(); // the scrim covers the list: only the menu and the page behind it can be tapped
+                add("screenBackground", new RectF(0, 0, x.w, x.h));
+                drawDrawer(canvas, x);
+                break;
+            case "rows":
+                drawRows(canvas, x);
+                break;
             default:
                 drawChats(canvas, x);
         }
@@ -211,87 +221,215 @@ public class BuilderPreviewView extends View {
         return bh;
     }
 
+    private String item(String id) {
+        return session.catalog.itemLabel(id, session.lang());
+    }
+
+    private List<String> listOr(String path, String... def) {
+        if (session.draft.get(path) instanceof List) {
+            return session.listOrDefault(path);
+        }
+        return Arrays.asList(def);
+    }
+
     private void drawTabs(Canvas canvas, Ctx x, int tabsH) {
         float ty = x.h - tabsH;
+        boolean glass = "glass".equals(session.text("layout.bottomTabs.style", "flat"));
         int fill = session.colorChain(x.surface, "components.navigationBar.background", "components.bottomNavigation.background");
+        if (glass) {
+            fill = (fill & 0x00FFFFFF) | 0xAA000000;
+        }
         int sel = session.colorChain(x.accent, "components.navigationBar.selected");
         int unsel = session.colorChain(x.icon, "components.navigationBar.unselected");
         int pill = session.colorChain(0, "components.bottomNavigation.selectedBackground");
+        if (pill == 0 && "pill".equals(session.text("layout.bottomTabs.indicator", "none"))) {
+            pill = (sel & 0x00FFFFFF) | 0x33000000;
+        }
+        boolean labels = session.bool("layout.bottomTabs.labels", true);
         float ic = dp(session.intValue("components.bottomNavigation.iconSizeDp", 24)) / 2.6f;
         rect.set(0, ty, x.w, x.h);
         p.setColor(fill);
         canvas.drawRect(rect, p);
+        if (session.bool("layout.bottomTabs.border", false)) {
+            p.setColor(x.divider);
+            canvas.drawRect(0, ty, x.w, ty + 1, p);
+        }
         add("bottomTabs", rect);
-        String[] labels = {"Chats", "Contacts", "Calls", "Settings"};
-        for (int i = 0; i < 4; i++) {
-            float cx = x.w * (i + 0.5f) / 4f;
-            rect.set(cx - x.w / 8f, ty, cx + x.w / 8f, x.h);
+        List<String> tabs = listOr("layout.bottomTabs.items", "chats", "contacts", "calls", "settings");
+        int n = tabs.size();
+        for (int i = 0; i < n; i++) {
+            float cx = x.w * (i + 0.5f) / n;
+            rect.set(cx - x.w / (2f * n), ty, cx + x.w / (2f * n), x.h);
             if (i == 0 && pill != 0) {
                 RectF b = new RectF(cx - dp(30), ty + dp(6), cx + dp(30), ty + dp(34));
                 p.setColor(pill);
                 canvas.drawRoundRect(b, dp(14), dp(14), p);
             }
             p.setColor(i == 0 ? sel : unsel);
-            canvas.drawCircle(cx, ty + dp(20), ic, p);
-            p.setTextSize(dp(10));
-            canvas.drawText(labels[i], cx - p.measureText(labels[i]) / 2f, ty + dp(44), p);
+            canvas.drawCircle(cx, ty + (labels ? dp(20) : tabsH / 2f), ic, p);
+            if (labels) {
+                p.setTextSize(dp(session.intValue("layout.bottomTabs.labelSizeSp", 10)));
+                String l = item(tabs.get(i));
+                canvas.drawText(l, cx - p.measureText(l) / 2f, ty + dp(44), p);
+            }
             add("bottomTabs.item", rect);
         }
     }
 
+    private void headerButtons(Canvas canvas, Ctx x, float barH, List<String> left, List<String> right) {
+        p.setColor(x.icon);
+        for (int i = 0; i < left.size(); i++) {
+            canvas.drawCircle(dp(20) + i * dp(34), barH / 2f, dp(7), p);
+        }
+        for (int i = 0; i < right.size(); i++) {
+            canvas.drawCircle(x.w - dp(20) - i * dp(34), barH / 2f, dp(7), p);
+        }
+    }
+
     private void drawChats(Canvas canvas, Ctx x) {
+        int sbg = session.color("screens.chats.background", 0);
+        if (sbg != 0) {
+            rect.set(0, 0, x.w, x.h);
+            p.setColor(sbg);
+            canvas.drawRect(rect, p);
+        }
         int top = bar(canvas, x, "Kurogram");
-        int rowH = dp(session.intValue("components.cell.heightDp", 64)), tabsH = dp(56);
-        int body = session.intValue("tokens.typography.bodySizeSp", 16);
-        int cap = session.intValue("tokens.typography.captionSizeSp", 12);
-        boolean titleBold = bold("tokens.typography.fontWeight", true);
-        String[] names = {"Aye Aye", "Design team", "Ko Min", "Saved Messages", "Daw Mya"};
-        String[] msgs = {"See you tomorrow!", "New theme is ready", "ok 👍", "Notes", "Thank you"};
-        String[] times = {"21:40", "20:15", "Fri", "Thu", "Mon"};
-        int[] avatars = {0xFFE17076, 0xFF7BC862, 0xFF65AADD, 0xFFEE7AAE, 0xFFF3A93C};
-        int rows = Math.max(1, Math.min(names.length, (x.h - top - tabsH) / rowH));
-        for (int i = 0; i < rows; i++) {
-            float y = top + i * rowH;
-            rect.set(0, y, x.w, y + rowH);
+        if (session.draft.get("layout.chatList.header.left") instanceof List || session.draft.get("layout.chatList.header.right") instanceof List) {
+            rect.set(0, 0, x.w, top);
+            p.setColor(session.colorChain(x.surface, "components.appBar.background"));
+            canvas.drawRect(rect, p);
+            p.setColor(x.text);
+            p.setTextSize(dp(18));
+            p.setFakeBoldText(true);
+            canvas.drawText("Kurogram", x.w / 2f - p.measureText("Kurogram") / 2f, top / 2f + dp(6), p);
+            p.setFakeBoldText(false);
+            headerButtons(canvas, x, top, listOr("layout.chatList.header.left"), listOr("layout.chatList.header.right"));
+            add("chatList.header", rect);
+        }
+        String folders = session.text("layout.chatList.folders.style", "none");
+        if (!"none".equals(folders)) {
+            int fh = dp(36);
+            rect.set(0, top, x.w, top + fh);
             p.setColor(x.surface);
             canvas.drawRect(rect, p);
-            add("chatRow", rect);
-            float cy = y + rowH / 2f;
-            p.setColor(avatars[i]);
-            float ar = Math.min(dp(22), rowH / 2f - dp(4));
-            rect.set(dp(12), cy - ar, dp(12) + 2 * ar, cy + ar);
-            canvas.drawOval(rect, p);
-            add("chatRow.avatar", rect);
-            p.setColor(x.text);
-            p.setFakeBoldText(titleBold);
-            p.setTextSize(dp(body));
-            float tx = dp(24) + 2 * ar;
-            canvas.drawText(names[i], tx, cy - dp(4), p);
-            rect.set(tx, cy - dp(body + 4), x.w * 0.62f, cy);
-            add("chatRow.title", rect);
-            p.setFakeBoldText(false);
-            p.setColor(x.text2);
-            p.setTextSize(dp(Math.max(10, body - 2)));
-            canvas.drawText(msgs[i], tx, cy + dp(16), p);
-            rect.set(tx, cy + dp(2), x.w * 0.62f, cy + dp(22));
-            add("chatRow.preview", rect);
-            p.setTextSize(dp(cap));
-            float tw = p.measureText(times[i]);
-            canvas.drawText(times[i], x.w - dp(12) - tw, cy - dp(6), p);
-            rect.set(x.w - dp(12) - tw, cy - dp(cap + 8), x.w - dp(12), cy - dp(2));
-            add("chatRow.time", rect);
-            if (i < 2) {
-                p.setColor(i == 0 ? x.accent : x.error);
-                rect.set(x.w - dp(36), cy + dp(4), x.w - dp(12), cy + dp(24));
-                canvas.drawRoundRect(rect, dp(10), dp(10), p);
-                p.setColor(x.onAccent);
-                p.setTextSize(dp(12));
-                canvas.drawText(String.valueOf(i + 2), x.w - dp(27), cy + dp(19), p);
-                add("chatRow.badge", rect);
+            add("chatList.folders", rect);
+            String[] f = {"All", "Work", "Family"};
+            float fx = dp(12);
+            for (int i = 0; i < f.length; i++) {
+                p.setTextSize(dp(13));
+                float fw = p.measureText(f[i]) + dp(20);
+                if ("chips".equals(folders)) {
+                    p.setColor(i == 0 ? x.accent : (x.divider & 0x00FFFFFF) | 0x33000000);
+                    RectF c = new RectF(fx, top + dp(5), fx + fw, top + fh - dp(5));
+                    canvas.drawRoundRect(c, dp(13), dp(13), p);
+                }
+                p.setColor(i == 0 ? ("chips".equals(folders) ? x.onAccent : x.accent) : x.text2);
+                canvas.drawText(f[i], fx + dp(10), top + dp(23), p);
+                fx += fw + dp(6);
             }
-            if (session.bool("components.cell.dividerVisible", true)) {
-                p.setColor(session.colorChain(x.divider, "components.cell.dividerColor"));
-                canvas.drawRect(tx, y + rowH - 1, x.w, y + rowH, p);
+            top += fh;
+        }
+        boolean grid = "grid".equals(session.text("layout.chatList.mode", "list"));
+        int tabsH = dp(56);
+        int body = session.intValue("tokens.typography.bodySizeSp", 16);
+        int cap = session.intValue("tokens.typography.captionSizeSp", 12);
+        boolean titleBold = bold("layout.chatList.row.title.weight", bold("tokens.typography.fontWeight", true));
+        String[] names = {"Aye Aye", "Design team", "Ko Min", "Saved Messages", "Daw Mya", "Mg Mg"};
+        String[] msgs = {"See you tomorrow!", "New theme is ready", "ok 👍", "Notes", "Thank you", "Call me"};
+        String[] times = {"21:40", "20:15", "Fri", "Thu", "Mon", "Sun"};
+        int[] avatars = {0xFFE17076, 0xFF7BC862, 0xFF65AADD, 0xFFEE7AAE, 0xFFF3A93C, 0xFF6EC9CB};
+        if (grid) {
+            int cols = session.intValue("layout.chatList.grid.columns", 3);
+            float cw = x.w / (float) cols, ad = dp(session.intValue("layout.chatList.grid.avatarDp", 56));
+            for (int i = 0; i < names.length; i++) {
+                int cx = i % cols, cy = i / cols;
+                float px = cx * cw + cw / 2f, py = top + dp(8) + cy * (ad + dp(34)) + ad / 2f;
+                if (py + ad / 2f > x.h - tabsH) {
+                    break;
+                }
+                rect.set(px - cw / 2f, py - ad / 2f - dp(4), px + cw / 2f, py + ad / 2f + dp(30));
+                add("chatList.grid", rect);
+                p.setColor(avatars[i]);
+                rect.set(px - ad / 2f, py - ad / 2f, px + ad / 2f, py + ad / 2f);
+                canvas.drawOval(rect, p);
+                add("chatRow.avatar", rect);
+                if (session.bool("layout.chatList.grid.showName", true)) {
+                    p.setColor(x.text);
+                    p.setTextSize(dp(12));
+                    canvas.drawText(names[i], px - p.measureText(names[i]) / 2f, py + ad / 2f + dp(16), p);
+                }
+            }
+        } else {
+            int rowH = dp(session.intValue("layout.chatList.row.heightDp", session.intValue("components.cell.heightDp", 64)));
+            boolean card = "card".equals(session.text("screens.chats.listStyle", "flat")) || "glass".equals(session.text("screens.chats.listStyle", "flat"));
+            boolean showPreview = session.bool("layout.chatList.row.preview.show", true);
+            boolean dividers = session.bool("layout.chatList.row.dividers", session.bool("screens.chats.showDividers", true));
+            boolean rounded = "rounded".equals(session.text("layout.chatList.row.avatar.shape", "circle"));
+            int avDp = session.intValue("layout.chatList.row.avatar.sizeDp", session.intValue("screens.chats.avatarSizeDp", 44));
+            float side = card ? dp(10) : 0;
+            int rows = Math.max(1, Math.min(names.length, (x.h - top - tabsH) / rowH));
+            for (int i = 0; i < rows; i++) {
+                float y = top + i * rowH;
+                rect.set(side, y, x.w - side, y + rowH);
+                int rf = x.surface;
+                if ("glass".equals(session.text("screens.chats.listStyle", "flat"))) {
+                    rf = (rf & 0x00FFFFFF) | 0xB0000000;
+                }
+                p.setColor(rf);
+                if (card && (i == 0 || i == rows - 1)) {
+                    canvas.drawRoundRect(rect, dp(14), dp(14), p);
+                } else {
+                    canvas.drawRect(rect, p);
+                }
+                add("chatRow", rect);
+                float cy = y + rowH / 2f;
+                p.setColor(avatars[i]);
+                float ar = Math.min(dp(avDp) / 2f, rowH / 2f - dp(4));
+                rect.set(side + dp(12), cy - ar, side + dp(12) + 2 * ar, cy + ar);
+                if (rounded) {
+                    canvas.drawRoundRect(rect, ar * 0.4f, ar * 0.4f, p);
+                } else {
+                    canvas.drawOval(rect, p);
+                }
+                add("chatRow.avatar", rect);
+                p.setColor(x.text);
+                p.setFakeBoldText(titleBold);
+                p.setTextSize(dp(session.intValue("layout.chatList.row.title.sizeSp", body)));
+                float tx = side + dp(24) + 2 * ar;
+                canvas.drawText(names[i], tx, showPreview ? cy - dp(4) : cy + dp(5), p);
+                rect.set(tx, cy - dp(body + 4), x.w * 0.62f, cy);
+                add("chatRow.title", rect);
+                p.setFakeBoldText(false);
+                if (showPreview) {
+                    p.setColor("textPrimary".equals(session.text("layout.chatList.row.preview.color", "textSecondary")) ? x.text : x.text2);
+                    p.setTextSize(dp(session.intValue("layout.chatList.row.preview.sizeSp", Math.max(10, body - 2))));
+                    canvas.drawText(msgs[i], tx, cy + dp(16), p);
+                    rect.set(tx, cy + dp(2), x.w * 0.62f, cy + dp(22));
+                    add("chatRow.preview", rect);
+                }
+                String timePos = session.text("layout.chatList.row.meta.time", "top-right");
+                p.setColor(x.text2);
+                if (!"hidden".equals(timePos)) {
+                    p.setTextSize(dp(cap));
+                    float tw = p.measureText(times[i]);
+                    float ty2 = "bottom-right".equals(timePos) ? cy + dp(16) : cy - dp(6);
+                    canvas.drawText(times[i], x.w - side - dp(12) - tw, ty2, p);
+                    rect.set(x.w - side - dp(12) - tw, ty2 - dp(cap + 2), x.w - side - dp(12), ty2 + dp(2));
+                    add("chatRow.time", rect);
+                }
+                if (i < 2) {
+                    p.setColor(i == 0 ? x.accent : x.error);
+                    rect.set(x.w - side - dp(36), cy + dp(4), x.w - side - dp(12), cy + dp(24));
+                    canvas.drawRoundRect(rect, dp(10), dp(10), p);
+                    p.setColor(x.onAccent);
+                    p.setTextSize(dp(12));
+                    canvas.drawText(String.valueOf(i + 2), x.w - side - dp(27), cy + dp(19), p);
+                    add("chatRow.badge", rect);
+                }
+                if (dividers && !card) {
+                    p.setColor(session.colorChain(x.divider, "components.cell.dividerColor"));
+                    canvas.drawRect(tx, y + rowH - 1, x.w, y + rowH, p);
+                }
             }
         }
         drawTabs(canvas, x, tabsH);
@@ -309,46 +447,123 @@ public class BuilderPreviewView extends View {
     }
 
     private void drawSettings(Canvas canvas, Ctx x) {
+        int sbg = session.color("screens.settings.background", 0);
+        if (sbg != 0) {
+            rect.set(0, 0, x.w, x.h);
+            p.setColor(sbg);
+            canvas.drawRect(rect, p);
+        }
         int top = bar(canvas, x, "Settings");
-        boolean card = !"flat".equals(session.text("components.section.style", "card"));
+        String gs = session.text("screens.settings.groupStyle", session.text("components.section.style", "card"));
+        boolean card = !"flat".equals(gs);
         int gap = dp(session.intValue("components.section.gapDp", 16));
         int rowH = dp(session.intValue("components.cell.heightDp", 56));
         int title = session.intValue("components.cell.titleSizeSp", 15), val = session.intValue("components.cell.valueSizeSp", 12);
         boolean tb = bold("components.cell.titleWeight", false);
         float ic = dp(session.intValue("components.cell.iconSizeDp", 20)) / 2f;
         int padL = dp(session.intValue("components.cell.paddingStartDp", 16));
-        String[] titles = {"Notifications", "Privacy", "Data and storage", "Appearance", "Language"};
-        String[] subs = {"On", "Calls, last seen", "Network usage", "Theme, colours", "English"};
+        String iconStyle = session.text("screens.settings.iconStyle", "rounded");
+        boolean desc = session.bool("screens.settings.showDescriptions", true);
+        List<String> ids = listOr("layout.settings.items", "notifications", "privacy", "data", "folders", "language");
         int y0 = top + gap;
-        int rows = Math.max(1, Math.min(titles.length, (x.h - y0 - gap) / rowH));
+        int rows = Math.max(1, Math.min(ids.size(), (x.h - y0 - gap) / rowH));
         float side = card ? dp(12) : 0;
         rect.set(side, y0, x.w - side, y0 + rows * rowH);
-        p.setColor(session.colorChain(x.surface, "components.card.background"));
+        int fillC = session.colorChain(x.surface, "components.card.background");
+        if ("glass".equals(gs)) {
+            fillC = (fillC & 0x00FFFFFF) | 0xB0000000;
+        }
         float rr = card ? dp(session.intValue("components.section.radiusDp", session.intValue("tokens.shapes.cardRadiusDp", 14))) : 0;
         shadow(canvas, rect, rr, session.intValue("tokens.elevation.cardDp", 0));
-        p.setColor(x.surface);
+        p.setColor(fillC);
         canvas.drawRoundRect(rect, rr, rr, p);
         add("section", rect);
         for (int i = 0; i < rows; i++) {
             float y = y0 + i * rowH, cy = y + rowH / 2f;
             rect.set(side, y, x.w - side, y + rowH);
+            add("settingsRow", rect);
             add("cell", rect);
             p.setColor(i % 2 == 0 ? x.accent : x.icon);
-            canvas.drawCircle(side + padL + ic, cy, ic, p);
+            RectF ib = new RectF(side + padL, cy - ic, side + padL + 2 * ic, cy + ic);
+            if ("square".equals(iconStyle)) {
+                canvas.drawRect(ib, p);
+            } else if ("rounded".equals(iconStyle)) {
+                canvas.drawRoundRect(ib, ic * 0.5f, ic * 0.5f, p);
+            } else {
+                canvas.drawCircle(ib.centerX(), cy, ic * 0.7f, p);
+            }
             float tx = side + padL + 2 * ic + dp(14);
             p.setColor(x.text);
             p.setFakeBoldText(tb);
             p.setTextSize(dp(title));
-            canvas.drawText(titles[i], tx, cy - dp(2), p);
+            canvas.drawText(item(ids.get(i)), tx, desc ? cy - dp(2) : cy + dp(5), p);
             p.setFakeBoldText(false);
-            p.setColor(x.text2);
-            p.setTextSize(dp(val));
-            canvas.drawText(subs[i], tx, cy + dp(val + 3), p);
+            if (desc) {
+                p.setColor(x.text2);
+                p.setTextSize(dp(val));
+                canvas.drawText("Description", tx, cy + dp(val + 3), p);
+            }
             if (i < rows - 1 && session.bool("components.cell.dividerVisible", true)) {
                 p.setColor(session.colorChain(x.divider, "components.cell.dividerColor"));
                 float inset = dp(session.intValue("components.cell.dividerInsetDp", 60));
                 canvas.drawRect(side + inset, y + rowH - 1, x.w - side, y + rowH, p);
             }
+        }
+    }
+
+    private void drawDrawer(Canvas canvas, Ctx x) {
+        rect.set(0, 0, x.w, x.h);
+        p.setColor(0x66000000);
+        canvas.drawRect(rect, p);
+        float dw = x.w * 0.72f;
+        rect.set(0, 0, dw, x.h);
+        p.setColor(x.surface);
+        canvas.drawRect(rect, p);
+        add("drawer", rect);
+        p.setColor(x.accent);
+        canvas.drawCircle(dp(40), dp(44), dp(26), p);
+        p.setColor(x.text);
+        p.setFakeBoldText(true);
+        p.setTextSize(dp(16));
+        canvas.drawText("Aye Aye", dp(16), dp(96), p);
+        p.setFakeBoldText(false);
+        List<String> ids = listOr("layout.drawer.items", "profile", "contacts", "calls", "saved", "settings");
+        float y = dp(120);
+        for (String id : ids) {
+            if (y + dp(44) > x.h) {
+                break;
+            }
+            p.setColor(x.icon);
+            canvas.drawCircle(dp(28), y + dp(22), dp(9), p);
+            p.setColor(x.text);
+            p.setTextSize(dp(15));
+            canvas.drawText(item(id), dp(52), y + dp(27), p);
+            y += dp(44);
+        }
+    }
+
+    private void drawRows(Canvas canvas, Ctx x) {
+        int top = bar(canvas, x, "Privacy");
+        List<String> all = session.rules.find("layout.privacy.hiddenRows").rule.options;
+        List<String> hidden = listOr("layout.privacy.hiddenRows");
+        float y = top + dp(10), rowH = dp(36);
+        rect.set(dp(12), y, x.w - dp(12), x.h - dp(10));
+        p.setColor(x.surface);
+        canvas.drawRoundRect(rect, dp(14), dp(14), p);
+        add("section", rect);
+        for (String id : all) {
+            if (y + rowH > x.h - dp(10)) {
+                break;
+            }
+            boolean gone = hidden.contains(id);
+            p.setColor(gone ? x.text2 : x.text);
+            p.setAlpha(gone ? 120 : 255);
+            p.setTextSize(dp(14));
+            p.setStrikeThruText(gone);
+            canvas.drawText(item(id), dp(28), y + dp(24), p);
+            p.setStrikeThruText(false);
+            p.setAlpha(255);
+            y += rowH;
         }
     }
 

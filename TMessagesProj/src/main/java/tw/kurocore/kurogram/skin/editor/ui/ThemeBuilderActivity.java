@@ -178,7 +178,7 @@ public class ThemeBuilderActivity extends BaseFragment {
             refreshAll();
         });
         sceneBtn = button(context, "scene.chat", v -> {
-            String[] order = {"chats", "chat", "settings", "controls"};
+            String[] order = {"chats", "chat", "settings", "controls", "drawer", "rows"};
             int at = 0;
             for (int i = 0; i < order.length; i++) {
                 if (order[i].equals(session.scene())) {
@@ -389,8 +389,13 @@ public class ThemeBuilderActivity extends BaseFragment {
 
     private void addRuleRow(Context context, Catalog.Entry e, Rule rule) {
         String label = e.label.get(session.lang(), e.path);
+        if (!session.isSupported(e)) {
+            LinearLayout off = row(context, label, tr("unsupported"));
+            off.setAlpha(0.45f);
+            return;
+        }
         Object cur = session.draft.get(e.path);
-        String shown = cur == null ? tr("notSet") : String.valueOf(cur);
+        String shown = cur == null ? tr("notSet") : cur instanceof List ? listSummary(cur) : String.valueOf(cur);
         LinearLayout r = row(context, label, shown);
         if (rule.kind == Rule.Kind.COLOR || rule.kind == Rule.Kind.ARGB) {
             View sw = new View(context);
@@ -408,6 +413,8 @@ public class ThemeBuilderActivity extends BaseFragment {
                         report(session.draft.set(e.path, rule.options.get(i)));
                         changed(true);
                     }).show());
+        } else if (rule.kind == Rule.Kind.LIST) {
+            r.setOnClickListener(v -> listDialog(e, rule, label));
         } else if (rule.kind == Rule.Kind.INT || rule.kind == Rule.Kind.FLOAT) {
             addSlider(context, r, e, rule, cur);
         } else if (rule.kind == Rule.Kind.BOOL) {
@@ -469,6 +476,94 @@ public class ThemeBuilderActivity extends BaseFragment {
             }
         });
         r.addView(sb, 1, LayoutHelper.createLinear(120, LayoutHelper.WRAP_CONTENT));
+    }
+
+    private String listSummary(Object list) {
+        StringBuilder sb = new StringBuilder();
+        for (Object o : (List<?>) list) {
+            sb.append(sb.length() == 0 ? "" : ", ").append(session.catalog.itemLabel(String.valueOf(o), session.lang()));
+        }
+        return sb.length() == 0 ? tr("none") : sb.toString();
+    }
+
+    /**
+     * Ordered list settings (tabs, menu items, header buttons, hidden rows): up/down to reorder, ✕ to remove, + to add from the
+     * allowed items. Every change goes through the draft, so the rule's own limits (minimum/maximum count, allowed items) apply.
+     */
+    private void listDialog(Catalog.Entry e, Rule rule, String label) {
+        Context context = getParentActivity();
+        LinearLayout box = new LinearLayout(context);
+        box.setOrientation(LinearLayout.VERTICAL);
+        box.setPadding(AndroidUtilities.dp(16), AndroidUtilities.dp(8), AndroidUtilities.dp(16), 0);
+        ScrollView sv = new ScrollView(context);
+        sv.addView(box);
+        final AlertDialog dialog = new AlertDialog.Builder(context).setTitle(label).setView(sv)
+                .setPositiveButton(tr("done"), (d, w) -> changed(true)).setOnCancelListener(d -> changed(true)).create();
+        final Runnable[] fill = new Runnable[1];
+        fill[0] = () -> {
+            box.removeAllViews();
+            if (!(session.draft.get(e.path) instanceof List)) { // not customised yet: first change writes the defaults
+                TextView first = text(context, tr("customize"), 14, true);
+                first.setPadding(0, AndroidUtilities.dp(8), 0, AndroidUtilities.dp(8));
+                first.setOnClickListener(v -> {
+                    report(session.draft.set(e.path, new java.util.ArrayList<Object>(session.listOrDefault(e.path))));
+                    fill[0].run();
+                    preview.invalidate();
+                });
+                box.addView(first);
+                return;
+            }
+            final List<String> items = session.listOrDefault(e.path);
+            for (int i = 0; i < items.size(); i++) {
+                final int at = i;
+                LinearLayout line = new LinearLayout(context);
+                line.setGravity(Gravity.CENTER_VERTICAL);
+                TextView name = text(context, session.catalog.itemLabel(items.get(i), session.lang()), 15, false);
+                name.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
+                line.addView(name, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 1f));
+                for (String[] a : new String[][]{{"▲", "up"}, {"▼", "down"}, {"✕", "del"}}) {
+                    TextView b = text(context, a[0], 18, true);
+                    b.setPadding(AndroidUtilities.dp(12), AndroidUtilities.dp(10), AndroidUtilities.dp(12), AndroidUtilities.dp(10));
+                    b.setOnClickListener(v -> {
+                        String err = "up".equals(a[1]) ? (at > 0 ? session.draft.listMove(e.path, at, at - 1) : null)
+                                : "down".equals(a[1]) ? (at < items.size() - 1 ? session.draft.listMove(e.path, at, at + 1) : null)
+                                : session.draft.listRemove(e.path, items.get(at));
+                        report(err);
+                        fill[0].run();
+                        preview.invalidate();
+                        refreshToolbar();
+                        scheduleLive();
+                    });
+                    line.addView(b);
+                }
+                box.addView(line);
+            }
+            for (String opt : session.listAvailable(e.path)) {
+                TextView add = text(context, "＋ " + session.catalog.itemLabel(opt, session.lang()), 14, false);
+                add.setTextColor(KuroSkinManager.get().accent());
+                add.setPadding(0, AndroidUtilities.dp(8), 0, AndroidUtilities.dp(8));
+                add.setOnClickListener(v -> {
+                    report(session.draft.listAdd(e.path, opt, session.listOrDefault(e.path).size()));
+                    fill[0].run();
+                    preview.invalidate();
+                    refreshToolbar();
+                    scheduleLive();
+                });
+                box.addView(add);
+            }
+            TextView back = text(context, tr("reset"), 13, true);
+            back.setPadding(0, AndroidUtilities.dp(12), 0, AndroidUtilities.dp(8));
+            back.setOnClickListener(v -> {
+                report(session.draft.unset(e.path));
+                fill[0].run();
+                preview.invalidate();
+                refreshToolbar();
+                scheduleLive();
+            });
+            box.addView(back);
+        };
+        fill[0].run();
+        dialog.show();
     }
 
     // ------------------------------------------------------------------ colour dialog
