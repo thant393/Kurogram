@@ -138,7 +138,7 @@ public class BuilderPreviewView extends View {
                     w / 2f + (float) Math.sin(ang) * w / 2f, h / 2f + (float) Math.cos(ang) * h / 2f, wp, wp2, Shader.TileMode.CLAMP));
         } else if (gt != 0 || gm != 0 || gb != 0) {
             int a = gt != 0 ? gt : gm != 0 ? gm : gb, b = gb != 0 ? gb : gm != 0 ? gm : gt, m = gm != 0 ? gm : a;
-            Object dir = session.draft.get("tokens.gradient.direction");
+            Object dir = session.raw("tokens.gradient.direction");
             float x2 = 0, y2 = h;
             if ("horizontal".equals(dir)) {
                 x2 = w;
@@ -226,7 +226,7 @@ public class BuilderPreviewView extends View {
     }
 
     private List<String> listOr(String path, String... def) {
-        if (session.draft.get(path) instanceof List) {
+        if (session.raw(path) instanceof List) {
             return session.listOrDefault(path);
         }
         return Arrays.asList(def);

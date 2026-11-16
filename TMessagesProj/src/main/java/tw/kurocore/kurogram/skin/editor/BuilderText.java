@@ -26,6 +26,9 @@ public final class BuilderText {
         t("unsupported", "Not supported by the app yet", "App က မထောက်ပံ့သေးပါ");
         t("none", "none", "မရှိ");
         t("customize", "Customize this list", "ဤစာရင်းကို ကိုယ်တိုင်ပြင်မည်");
+        t("variant.day", "Day", "နေ့");
+        t("variant.night", "Night", "ည");
+        t("inherited", "from Day", "နေ့မှ ဆက်ခံ");
         t("value", "Value", "တန်ဖိုး");
         t("live", "Real app preview", "App အစစ်ဖြင့် ကြည့်ရန်");
         t("live.on", "Real app preview is ON", "App အစစ်ဖြင့် ကြည့်နေသည်");

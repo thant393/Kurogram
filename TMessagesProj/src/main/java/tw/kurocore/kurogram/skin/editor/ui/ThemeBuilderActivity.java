@@ -58,7 +58,7 @@ public class ThemeBuilderActivity extends BaseFragment {
     private EditorSession session;
     private BuilderPreviewView preview;
     private LinearLayout chips, list;
-    private TextView undoBtn, redoBtn, modeBtn, sceneBtn, liveBtn, hint;
+    private TextView undoBtn, redoBtn, modeBtn, sceneBtn, liveBtn, variantBtn, hint;
     private boolean live;
     private final Runnable livePush = this::pushLive;
     private final Runnable autosave = this::saveDraft;
@@ -189,6 +189,10 @@ public class ThemeBuilderActivity extends BaseFragment {
             refreshAll();
         });
         liveBtn = button(context, "live", v -> setLive(!live));
+        variantBtn = button(context, "variant.day", v -> {
+            session.setNight(!session.night());
+            refreshAll();
+        });
         TextView lang = button(context, "language", v -> {
             session.setLang("my".equals(session.lang()) ? "en" : "my");
             prefs().edit().putString(KEY_LANG, session.lang()).apply();
@@ -197,7 +201,7 @@ public class ThemeBuilderActivity extends BaseFragment {
         });
         TextView use = button(context, "use", v -> useOnPhone());
         TextView startOver = button(context, "startOver", v -> startOver());
-        for (TextView b : new TextView[]{undoBtn, redoBtn, modeBtn, sceneBtn, liveBtn, lang, use, startOver}) {
+        for (TextView b : new TextView[]{undoBtn, redoBtn, variantBtn, modeBtn, sceneBtn, liveBtn, lang, use, startOver}) {
             barRow.addView(b, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 36, 0, 0, 6, 0));
         }
         col.addView(bar, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
@@ -268,6 +272,8 @@ public class ThemeBuilderActivity extends BaseFragment {
         for (TextView b : new TextView[]{undoBtn, redoBtn, modeBtn, sceneBtn, liveBtn}) {
             b.setText(tr((String) b.getTag()));
         }
+        variantBtn.setText(tr(session.night() ? "variant.night" : "variant.day"));
+        styleButton(variantBtn, session.night());
         modeBtn.setText(tr(session.advanced() ? "basic" : "advanced"));
         sceneBtn.setText(tr("scene." + session.scene()));
         styleButton(undoBtn, false);
@@ -312,7 +318,7 @@ public class ThemeBuilderActivity extends BaseFragment {
         String lang = session.lang();
         TextView head = text(context, tr("selected") + ": " + session.catalog.componentLabel(session.selected(), lang), 15, true);
         list.addView(head, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 16, 8, 16, 4));
-        if ("global".equals(session.selected())) {
+        if ("global".equals(session.selected()) && !session.night()) {
             addAppearanceRow(context);
             addNameRow(context);
         }
@@ -394,8 +400,8 @@ public class ThemeBuilderActivity extends BaseFragment {
             off.setAlpha(0.45f);
             return;
         }
-        Object cur = session.draft.get(e.path);
-        String shown = cur == null ? tr("notSet") : cur instanceof List ? listSummary(cur) : String.valueOf(cur);
+        Object cur = session.ownValue(e.path);
+        String shown = cur == null ? (session.night() && session.raw(e.path) != null ? tr("inherited") + ": " + String.valueOf(session.raw(e.path)) : tr("notSet")) : cur instanceof List ? listSummary(cur) : String.valueOf(cur);
         LinearLayout r = row(context, label, shown);
         if (rule.kind == Rule.Kind.COLOR || rule.kind == Rule.Kind.ARGB) {
             View sw = new View(context);
@@ -410,7 +416,7 @@ public class ThemeBuilderActivity extends BaseFragment {
         } else if (rule.kind == Rule.Kind.ENUM) {
             r.setOnClickListener(v -> new AlertDialog.Builder(getParentActivity())
                     .setItems(rule.options.toArray(new String[0]), (d, i) -> {
-                        report(session.draft.set(e.path, rule.options.get(i)));
+                        report(session.setValue(e.path, rule.options.get(i)));
                         changed(true);
                     }).show());
         } else if (rule.kind == Rule.Kind.LIST) {
@@ -419,7 +425,7 @@ public class ThemeBuilderActivity extends BaseFragment {
             addSlider(context, r, e, rule, cur);
         } else if (rule.kind == Rule.Kind.BOOL) {
             r.setOnClickListener(v -> {
-                report(session.draft.set(e.path, !Boolean.TRUE.equals(cur)));
+                report(session.setValue(e.path, !Boolean.TRUE.equals(cur)));
                 changed(true);
             });
         }
@@ -427,7 +433,7 @@ public class ThemeBuilderActivity extends BaseFragment {
             TextView x = text(context, "✕", 16, true);
             x.setPadding(AndroidUtilities.dp(12), 0, AndroidUtilities.dp(4), 0);
             x.setOnClickListener(v -> {
-                report(session.draft.unset(e.path));
+                report(session.unsetValue(e.path));
                 changed(true);
             });
             r.addView(x);
@@ -453,7 +459,7 @@ public class ThemeBuilderActivity extends BaseFragment {
                 }
                 double real = min + (max - min) * v / steps;
                 Object val = isInt ? (Object) Long.valueOf(Math.round(real)) : (Object) Double.valueOf(Math.round(real * 100) / 100.0);
-                String err = session.draft.set(e.path, val, !fresh[0]);
+                String err = session.setValue(e.path, val, !fresh[0]);
                 fresh[0] = false;
                 if (err == null) {
                     value.setText(String.valueOf(val));
@@ -506,7 +512,7 @@ public class ThemeBuilderActivity extends BaseFragment {
                 TextView first = text(context, tr("customize"), 14, true);
                 first.setPadding(0, AndroidUtilities.dp(8), 0, AndroidUtilities.dp(8));
                 first.setOnClickListener(v -> {
-                    report(session.draft.set(e.path, new java.util.ArrayList<Object>(session.listOrDefault(e.path))));
+                    report(session.setValue(e.path, new java.util.ArrayList<Object>(session.listOrDefault(e.path))));
                     fill[0].run();
                     preview.invalidate();
                 });
@@ -554,7 +560,7 @@ public class ThemeBuilderActivity extends BaseFragment {
             TextView back = text(context, tr("reset"), 13, true);
             back.setPadding(0, AndroidUtilities.dp(12), 0, AndroidUtilities.dp(8));
             back.setOnClickListener(v -> {
-                report(session.draft.unset(e.path));
+                report(session.unsetValue(e.path));
                 fill[0].run();
                 preview.invalidate();
                 refreshToolbar();

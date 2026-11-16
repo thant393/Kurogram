@@ -6440,7 +6440,7 @@
    "group": "structure",
    "level": "advanced",
    "phase": 4,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -6458,7 +6458,8 @@
    "reviewed": [
     "en"
    ],
-   "note": "structure"
+   "note": "structure",
+   "previewed": true
   },
   {
    "path": "meta",

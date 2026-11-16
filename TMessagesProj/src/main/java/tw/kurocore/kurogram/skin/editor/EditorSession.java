@@ -18,6 +18,7 @@ public final class EditorSession {
     private boolean advanced;
     private String scene = "chats";
     private String selected = "global";
+    private boolean night;
 
     public EditorSession(RuleSet rules, Catalog catalog, ThemeDraft draft) {
         this.rules = rules;
@@ -39,6 +40,49 @@ public final class EditorSession {
 
     public void setAdvanced(boolean a) {
         advanced = a;
+    }
+
+    /** Which palette is being edited: day (the base document) or night (the {@code night} overlay, only what differs). */
+    public boolean night() {
+        return night;
+    }
+
+    public void setNight(boolean n) {
+        night = n;
+        selected = "global";
+    }
+
+    /** Where a setting is written in the current variant. Layout settings have no night version. */
+    public String writePath(String path) {
+        return night && !path.startsWith("layout.") ? "night." + path : path;
+    }
+
+    /** What the screen shows: the night value when editing night and it is set, else the day value (night inherits day). */
+    public Object raw(String path) {
+        if (night && !path.startsWith("layout.")) {
+            Object v = draft.get("night." + path);
+            if (v != null) {
+                return v;
+            }
+        }
+        return draft.get(path);
+    }
+
+    /** The value set in the layer being edited (null = inherited / default). */
+    public Object ownValue(String path) {
+        return draft.get(writePath(path));
+    }
+
+    public String setValue(String path, Object value, boolean continuation) {
+        return draft.set(writePath(path), value, continuation);
+    }
+
+    public String setValue(String path, Object value) {
+        return setValue(path, value, false);
+    }
+
+    public String unsetValue(String path) {
+        return draft.unset(writePath(path));
     }
 
     public String scene() {
@@ -105,7 +149,7 @@ public final class EditorSession {
 
     /** A list setting as it will be written when first customised: the rule's own smallest valid sample. */
     public List<String> listOrDefault(String path) {
-        Object v = draft.get(path);
+        Object v = raw(path);
         List<String> out = new ArrayList<>();
         if (v instanceof List) {
             for (Object o : (List<?>) v) {
@@ -143,6 +187,9 @@ public final class EditorSession {
     }
 
     private boolean isShown(Catalog.Entry e) {
+        if (night && (e.path.startsWith("layout.") || e.group.equals("structure"))) {
+            return false;
+        }
         if (e.phase > BUILT_PHASE) {
             return false;
         }
@@ -165,7 +212,7 @@ public final class EditorSession {
 
     /** Current colour at a path as 0xAARRGGBB, or {@code fallback} when the draft leaves it out. */
     public int color(String path, int fallback) {
-        Object v = draft.get(path);
+        Object v = raw(path);
         RuleSet.Ref ref = rules.find(path);
         if (!(v instanceof String) || ref == null) {
             return fallback;
@@ -179,34 +226,34 @@ public final class EditorSession {
         if (ref == null) {
             return "unknown setting " + path;
         }
-        return draft.set(path, ColorCodec.format(argb, ref.rule.kind), continuation);
+        return draft.set(writePath(path), ColorCodec.format(argb, ref.rule.kind), continuation);
     }
 
     /** Whole number setting, or {@code def} when the draft leaves it out. */
     public int intValue(String path, int def) {
-        Object v = draft.get(path);
+        Object v = raw(path);
         return v instanceof Number ? ((Number) v).intValue() : def;
     }
 
     public double number(String path, double def) {
-        Object v = draft.get(path);
+        Object v = raw(path);
         return v instanceof Number ? ((Number) v).doubleValue() : def;
     }
 
     public boolean bool(String path, boolean def) {
-        Object v = draft.get(path);
+        Object v = raw(path);
         return v instanceof Boolean ? (Boolean) v : def;
     }
 
     public String text(String path, String def) {
-        Object v = draft.get(path);
+        Object v = raw(path);
         return v instanceof String ? (String) v : def;
     }
 
     /** First colour in the list that the draft sets, else {@code def}: components fall back to the tokens, as the engine does. */
     public int colorChain(int def, String... paths) {
         for (String p : paths) {
-            if (draft.get(p) instanceof String) {
+            if (raw(p) instanceof String) {
                 int c = color(p, 0);
                 if (c != 0) {
                     return c;
@@ -217,6 +264,9 @@ public final class EditorSession {
     }
 
     public String appearance() {
+        if (night) {
+            return "dark";
+        }
         Object v = draft.get("appearance");
         return v instanceof String ? (String) v : "auto";
     }

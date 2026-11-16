@@ -1,9 +1,8 @@
 {
  "counts": {
-  "EDITABLE_PREVIEWED": 120,
+  "EDITABLE_PREVIEWED": 121,
   "EDITABLE_REAL_ONLY": 93,
-  "ENGINE_UNSUPPORTED": 11,
-  "PLANNED_P4": 1
+  "ENGINE_UNSUPPORTED": 11
  },
  "rules": [
   {
@@ -2240,7 +2239,7 @@
    "path": "night",
    "kind": "structure",
    "section": "structure",
-   "status": "PLANNED_P4",
+   "status": "EDITABLE_PREVIEWED",
    "group": "structure",
    "level": "advanced",
    "phase": 4,

@@ -241,6 +241,28 @@ public class EditorTests {
         for (Catalog.Entry e : cat.entries()) if (!ls.isSupported(e)) unsup++;
         check(unsup == 10, "unsupported entries " + unsup);
         check(!ls.isSupported(cat.entry("layout.chat.input.style")) && !ls.isSupported(cat.entry("tokens.typography.fontFamily")) && ls.isSupported(cat.entry("layout.chatList.mode")), "support flags");
+
+        // ---- night overlay
+        ThemeDraft nt = ThemeDraft.fromJson(themed, rules);
+        check(nt.set("night.tokens.colors.background", "#000000") == null, "night colour set");
+        check(nt.set("night.tokens.colors.accent", "red") != null, "night value checked by the same rule");
+        check(nt.set("night.layout.bottomTabs.labels", true) != null, "layout has no night version");
+        check(nt.set("night.tokens.nope", "#000000") != null, "unknown night path refused");
+        check("#112233".equals(nt.get("night.tokens.colors.accent")) && Json.semanticEquals(nt.toMap().get("night"), Json.parse("{\"tokens\":{\"colors\":{\"accent\":\"#112233\",\"background\":\"#000000\"}}}")), "night overlay keeps its other keys");
+        nt.undo();
+        check(Json.semanticEquals(Json.parse(themed), Json.parse(nt.toJson())), "night edit undone exactly");
+        EditorSession ns = new EditorSession(rules, cat, ThemeDraft.fromJson(themed, rules));
+        ns.setNight(true);
+        check("dark".equals(ns.appearance()), "night preview is dark");
+        check(ns.color("tokens.colors.accent", 0) == 0xFF112233, "night value wins");
+        check(ns.color("tokens.colors.divider", 5) == 5 && ns.setValue("tokens.colors.divider", "#445566") == null && "#445566".equals(ns.draft.get("night.tokens.colors.divider")), "night writes go to the overlay");
+        check(ns.draft.get("tokens.colors.divider") == null, "day untouched by night edit");
+        ns.draft.set("tokens.shapes.cardRadiusDp", 9L);
+        check(ns.intValue("tokens.shapes.cardRadiusDp", 1) == 9, "night inherits day");
+        check(ns.unsetValue("tokens.colors.accent") == null && ns.draft.get("tokens.colors.accent").equals("#0866FF") && ns.color("tokens.colors.accent", 0) == 0xFF0866FF, "unset night falls back to day");
+        check(ns.setColor("tokens.colors.surface", 0xFF202020, false) == null && "#202020".equals(ns.draft.get("night.tokens.colors.surface")) && ns.draft.get("tokens.colors.surface") == null, "setColor writes to night overlay");
+        ns.setAdvanced(true);
+        for (Catalog.Entry e : ns.allSettings()) check(!e.path.startsWith("layout.") && !e.group.equals("structure"), "night shows only skin settings " + e.path);
         check(BuilderText.complete(), "builder text has en and my for every key");
         check(BuilderText.get("my", "undo").length() > 0 && BuilderText.get("zz", "undo").equals(BuilderText.get("en", "undo")), "builder text fallback");
 

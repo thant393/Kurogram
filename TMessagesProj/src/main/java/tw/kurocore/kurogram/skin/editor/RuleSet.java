@@ -73,12 +73,23 @@ public final class RuleSet {
         return Collections.unmodifiableList(new ArrayList<>(byDocPath.values()));
     }
 
+    /**
+     * The rule for a document path. A path under {@code night.} resolves to the rule of the same path without it: the night
+     * section holds the same skin settings (never layout), listing only what differs from day.
+     */
     public Ref find(String docPath) {
-        return byDocPath.get(docPath);
+        Ref r = byDocPath.get(docPath);
+        if (r == null && docPath.startsWith("night.")) {
+            Ref day = byDocPath.get(docPath.substring("night.".length()));
+            if (day != null && day.section != Section.LAYOUT) {
+                return day;
+            }
+        }
+        return r;
     }
 
     public boolean isKnown(String docPath) {
-        return byDocPath.containsKey(docPath);
+        return find(docPath) != null;
     }
 
     /** Minor-1 rules that at least one screen reads today (the manifest's own "implemented" list). */
