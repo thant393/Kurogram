@@ -157,6 +157,45 @@ public class EditorTests {
         }
         check(sampled > 150, "sampled rules " + sampled);
 
+
+        // ---- colour codec
+        check(ColorCodec.parse("#112233", Rule.Kind.COLOR) == 0xFF112233, "col rgb");
+        check(ColorCodec.parse("#11223380", Rule.Kind.COLOR) == 0x80112233, "col rgba -> argb");
+        check(ColorCodec.parse("#80112233", Rule.Kind.ARGB) == 0x80112233, "argb passthrough");
+        check(ColorCodec.parse("red", Rule.Kind.COLOR) == 0, "bad colour -> 0");
+        for (int c0 : new int[]{0xFF0866FF, 0x80112233, 0x01FFFFFF}) {
+            check(ColorCodec.parse(ColorCodec.format(c0, Rule.Kind.COLOR), Rule.Kind.COLOR) == c0, "col round trip " + Integer.toHexString(c0));
+            check(ColorCodec.parse(ColorCodec.format(c0, Rule.Kind.ARGB), Rule.Kind.ARGB) == c0, "argb round trip " + Integer.toHexString(c0));
+        }
+
+        // ---- structure edits
+        ThemeDraft st = ThemeDraft.fromJson(themed, rules);
+        check(st.setStructure("appearance", "dark") == null && "dark".equals(st.get("appearance")), "appearance set");
+        check(st.setStructure("appearance", "blue") != null, "bad appearance refused");
+        check(st.setStructure("meta.name", "New") == null && Json.semanticEquals(((Map<String, Object>) st.toMap().get("meta")).get("extra"), Json.parse("{\"k\":[1,2]}")), "meta.name keeps meta extras");
+        check(st.setStructure("meta.name", "") != null, "empty name refused");
+        check(st.setStructure("tokens.colors.accent", "#FFFFFF") != null, "structure refuses rule paths");
+        st.undo();
+        st.undo();
+        check(Json.semanticEquals(Json.parse(themed), Json.parse(st.toJson())), "structure edits undo exactly");
+
+        // ---- session: Basic / Advanced, selection, built phase
+        EditorSession es = new EditorSession(rules, cat, ThemeDraft.fromJson(themed, rules));
+        check(es.settingsFor("global").size() > 0, "global has settings");
+        int basicN = es.allSettings().size();
+        es.setAdvanced(true);
+        check(es.allSettings().size() > basicN, "advanced shows more");
+        for (Catalog.Entry e : es.allSettings()) check(e.phase <= EditorSession.BUILT_PHASE, "only built phases shown " + e.path);
+        es.select("nope");
+        check("global".equals(es.selected()), "unknown component falls back to global");
+        check(es.setColor("tokens.colors.accent", 0xFF010203, false) == null && es.color("tokens.colors.accent", 0) == 0xFF010203, "session colour set/get");
+        check(es.setColor("tokens.colors.overlay", 0x80000000, false) == null && "#80000000".equals(es.draft.get("tokens.colors.overlay")), "overlay written as argb");
+        check(es.color("tokens.colors.divider", 0xFFABCDEF) == 0xFFABCDEF, "fallback when unset");
+        for (String comp : es.browsableComponents()) check(cat.componentLabel(comp, "my").length() > 0, "browser label " + comp);
+
+        check(BuilderText.complete(), "builder text has en and my for every key");
+        check(BuilderText.get("my", "undo").length() > 0 && BuilderText.get("zz", "undo").equals(BuilderText.get("en", "undo")), "builder text fallback");
+
         System.out.println("editor tests: " + passed + " passed, " + failed + " failed");
         System.exit(failed == 0 ? 0 : 1);
     }

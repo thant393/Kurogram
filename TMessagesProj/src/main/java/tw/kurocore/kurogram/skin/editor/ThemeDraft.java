@@ -90,6 +90,28 @@ public final class ThemeDraft {
         return write(path, Json.deepCopy(value), continuation);
     }
 
+    /**
+     * The few document keys that are not engine rules but that the Builder edits: appearance (auto|light|dark) and the
+     * text fields of meta. Same guarantees as {@link #set}: refused values change nothing.
+     */
+    public String setStructure(String path, Object value) {
+        if ("appearance".equals(path)) {
+            if (!("auto".equals(value) || "light".equals(value) || "dark".equals(value))) {
+                return "appearance must be auto, light or dark";
+            }
+        } else if ("meta.name".equals(path) || "meta.id".equals(path) || "meta.description".equals(path) || "meta.author".equals(path)) {
+            if (!(value instanceof String) || ((String) value).length() > 120) {
+                return path + " must be text of at most 120 characters";
+            }
+            if (!"meta.description".equals(path) && ((String) value).trim().isEmpty()) {
+                return path + " cannot be empty";
+            }
+        } else {
+            return "the Builder does not edit " + path;
+        }
+        return write(path, Json.deepCopy(value), false);
+    }
+
     /** Back to "not set": the app's own default applies again. Nothing else in the document is touched. */
     public String unset(String path) {
         if (rules.find(path) == null) {

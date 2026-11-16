@@ -55,9 +55,15 @@ public class ThemeUploadActivity extends BaseFragment {
     private int categoryIndex;
     private String content; // the validated file text, or null
     private boolean busy;
+    private String prefill; // a theme made in the Builder, shown as if it had been picked as a file
 
     public ThemeUploadActivity() {
         this(null);
+    }
+
+    /** Hands over a theme made in the Theme Builder; it is checked like a picked file. */
+    public void setPrefill(String json) {
+        this.prefill = json;
     }
 
     /** Opens in edit mode for one of the user's own themes. */
@@ -89,6 +95,13 @@ public class ThemeUploadActivity extends BaseFragment {
         scroll.addView(column, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
 
         int accent = tw.kurocore.kurogram.skin.KuroSkinManager.get().accent();
+
+        // ---- design visually ----
+        TextView design = label(context, 15, true, Theme.key_windowBackgroundWhiteBlueText, editing == null ? "🎨  Design a theme visually" : "🎨  Edit visually in the Theme Builder");
+        design.setTextColor(accent);
+        design.setGravity(Gravity.CENTER);
+        design.setOnClickListener(v -> openBuilder());
+        column.addView(design, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 52, 16, 12, 16, 0));
 
         // ---- the file ----
         LinearLayout fileCard = card(context);
@@ -186,10 +199,34 @@ public class ThemeUploadActivity extends BaseFragment {
             remove.setOnClickListener(v -> confirmRemove(context));
             column.addView(remove, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 52, 16, 8, 16, 24));
         }
+        if (prefill != null) {
+            checkContent("Theme Builder", prefill);
+            prefill = null;
+        }
         return fragmentView;
     }
 
     // ------------------------------------------------------------------ file
+
+    /** New theme: open the Builder on a blank draft. Editing: fetch the published file first so nothing in it is lost. */
+    private void openBuilder() {
+        if (editing == null) {
+            presentFragment(new tw.kurocore.kurogram.skin.editor.ui.ThemeBuilderActivity(null, null));
+            return;
+        }
+        setStatus("Loading the theme…", false);
+        KuroFeatures.themes().fetchVersionContent(editing.id, editing.version, null, null, text -> {
+            if (fragmentView == null) {
+                return;
+            }
+            if (text == null) {
+                setStatus("Could not load the theme. Check the connection and try again.", true);
+                return;
+            }
+            setStatus(null, false);
+            presentFragment(new tw.kurocore.kurogram.skin.editor.ui.ThemeBuilderActivity(text, editing));
+        });
+    }
 
     private void pickFile() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
@@ -274,7 +311,9 @@ public class ThemeUploadActivity extends BaseFragment {
         }
         if (titleInput.getText().length() == 0) {
             try {
-                String n = new JSONObject(trimmed).optString("name", "");
+                JSONObject root = new JSONObject(trimmed);
+                JSONObject meta = root.optJSONObject("meta");
+                String n = meta != null ? meta.optString("name", "") : root.optString("name", "");
                 if (!n.isEmpty() && n.length() <= 48) {
                     titleInput.setText(n);
                 }

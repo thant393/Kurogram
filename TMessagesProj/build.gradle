@@ -132,7 +132,19 @@ dependencies {
     implementation 'io.sentry:sentry-android:8.58.0'
 }
 
+// The Theme Builder reads the same rule manifest and catalog the CI checks; they are copied into assets at build time
+// so the app and docs/ can never disagree.
+def builderAssetsDir = file("${buildDir}/generated/builderAssets")
+tasks.register('copyBuilderAssets', Copy) {
+    from("${rootDir}/docs") {
+        include 'skin-rules.manifest.json', 'skin-editor.catalog.json'
+    }
+    into new File(builderAssetsDir, 'kuro')
+}
+tasks.matching { it.name == 'preBuild' }.configureEach { dependsOn 'copyBuilderAssets' }
+
 android {
+    sourceSets.main.assets.srcDir(builderAssetsDir)
     sourceSets.main.jniLibs.srcDirs = ['./jni/']
 
     // Optional feature implementations (git submodule, see kuro-features/README.md). Without the folder the

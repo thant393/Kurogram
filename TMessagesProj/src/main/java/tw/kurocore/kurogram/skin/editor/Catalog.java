@@ -171,6 +171,10 @@ public final class Catalog {
         return groups.containsKey(id);
     }
 
+    public List<String> componentIds() {
+        return new java.util.ArrayList<>(components.keySet());
+    }
+
     public boolean hasComponent(String id) {
         return components.containsKey(id);
     }

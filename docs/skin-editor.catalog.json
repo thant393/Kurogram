@@ -907,7 +907,7 @@
    "group": "colors",
    "level": "basic",
    "phase": 1,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -926,14 +926,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "tokens.colors.onAccent",
    "group": "colors",
    "level": "basic",
    "phase": 1,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -951,14 +952,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "tokens.colors.background",
    "group": "colors",
    "level": "basic",
    "phase": 1,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -975,14 +977,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "tokens.colors.surface",
    "group": "colors",
    "level": "basic",
    "phase": 1,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1000,14 +1003,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "tokens.colors.surfaceElevated",
    "group": "colors",
    "level": "advanced",
    "phase": 1,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1025,14 +1029,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "tokens.colors.textPrimary",
    "group": "colors",
    "level": "basic",
    "phase": 1,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1050,14 +1055,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "tokens.colors.textSecondary",
    "group": "colors",
    "level": "basic",
    "phase": 1,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1075,14 +1081,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "tokens.colors.divider",
    "group": "colors",
    "level": "advanced",
    "phase": 1,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1100,14 +1107,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "tokens.colors.icon",
    "group": "colors",
    "level": "advanced",
    "phase": 1,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1125,14 +1133,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "tokens.colors.error",
    "group": "colors",
    "level": "advanced",
    "phase": 1,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1149,14 +1158,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "tokens.colors.success",
    "group": "colors",
    "level": "advanced",
    "phase": 1,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1173,14 +1183,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "tokens.colors.overlay",
    "group": "colors",
    "level": "advanced",
    "phase": 1,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1197,14 +1208,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": false
   },
   {
    "path": "tokens.gradient.top",
    "group": "gradient",
    "level": "basic",
    "phase": 1,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1221,14 +1233,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "tokens.gradient.middle",
    "group": "gradient",
    "level": "basic",
    "phase": 1,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1245,14 +1258,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "tokens.gradient.bottom",
    "group": "gradient",
    "level": "basic",
    "phase": 1,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1269,14 +1283,15 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "tokens.gradient.direction",
    "group": "gradient",
    "level": "basic",
    "phase": 1,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -1293,7 +1308,8 @@
    },
    "reviewed": [
     "en"
-   ]
+   ],
+   "previewed": true
   },
   {
    "path": "tokens.typography.fontFamily",
@@ -6205,7 +6221,7 @@
    "group": "structure",
    "level": "basic",
    "phase": 1,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -6223,7 +6239,8 @@
    "reviewed": [
     "en"
    ],
-   "note": "structure"
+   "note": "structure",
+   "previewed": true
   },
   {
    "path": "night",
@@ -6255,7 +6272,7 @@
    "group": "structure",
    "level": "basic",
    "phase": 1,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -6273,7 +6290,8 @@
    "reviewed": [
     "en"
    ],
-   "note": "structure"
+   "note": "structure",
+   "previewed": false
   },
   {
    "path": "layout",
@@ -6305,7 +6323,7 @@
    "group": "structure",
    "level": "advanced",
    "phase": 1,
-   "built": false,
+   "built": true,
    "screens": [
     "*"
    ],
@@ -6323,7 +6341,8 @@
    "reviewed": [
     "en"
    ],
-   "note": "structure"
+   "note": "structure",
+   "previewed": false
   },
   {
    "path": "schemaMinor",
