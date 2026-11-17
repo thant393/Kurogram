@@ -185,6 +185,12 @@ public final class Catalog {
         return groups.containsKey(id);
     }
 
+    /** Label of the setting at a path, in the person's language (the path itself when it has no entry). */
+    public String entryLabel(String path, String lang) {
+        Entry e = entry(path);
+        return e == null ? path : e.label.get(lang, path);
+    }
+
     public List<String> componentIds() {
         return new java.util.ArrayList<>(components.keySet());
     }

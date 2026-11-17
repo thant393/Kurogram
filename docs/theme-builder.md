@@ -56,3 +56,17 @@ replace, `null` removes a key.
 - Editing an already published theme: the store only returns merged skins, so patches are recovered by comparing each merged skin with
   what it was built from (`StyleDiff.patch`; the inverse of merge, covered by round-trip tests). `PUT` without `styles` keeps them,
   `styles: []` removes them.
+
+## Readability
+`EditorSession.readability()` checks text/background pairs (text on background and surface, secondary text, text on the accent,
+chat bubbles) for day and night with the WCAG contrast ratio (4.5 for body text, 3 for secondary). Only pairs where the theme sets
+a colour are checked. The toolbar button shows ✓ or ⚠n; it warns, it never blocks publishing.
+
+## Burmese review
+`python3 Tools/review_my.py export review.tsv` gives a spreadsheet of every English text with its Burmese draft; a Burmese speaker fills
+the last column and `import` writes it back and marks those texts `reviewed: ["my"]`. `status` shows progress.
+
+## Coverage gate
+`Tools/check_catalog.py --final` runs in CI: every rule must have a catalog entry and a built control (none may be `PLANNED_*`).
+Remaining `EDITABLE_REAL_ONLY` settings cannot be drawn in the simulated preview (animations, motion, blur, collapsing header,
+a few lists) and are verified with the real-app preview.

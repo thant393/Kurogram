@@ -17,7 +17,19 @@ public final class BuilderText {
         t("redo", "Redo", "ရှေ့ပြန်");
         t("basic", "Basic", "ရိုးရိုး");
         t("advanced", "Advanced", "အဆင့်မြင့်");
+        t("scene", "Screen", "မျက်နှာပြင်");
         t("scene.chats", "Chats", "ချက်တ်များ");
+        t("scene.people", "People", "လူများ");
+        t("scene.contacts", "Contacts", "ဆက်သွယ်ရန်စာရင်း");
+        t("scene.profile", "Profile", "ပရိုဖိုင်");
+        t("scene.themeStore", "Theme store", "Theme စတိုး");
+        t("scene.rows.privacy", "Privacy rows", "ကိုယ်ရေးလုံခြုံမှု အတန်းများ");
+        t("scene.rows.notifications", "Notification rows", "အကြောင်းကြားချက် အတန်းများ");
+        t("scene.rows.dataStorage", "Data and storage rows", "ဒေတာနှင့် သိုလှောင်မှု အတန်းများ");
+        t("scene.rows.profile", "Profile rows", "ပရိုဖိုင် အတန်းများ");
+        t("contrast.title", "Readability", "ဖတ်ရလွယ်မှု");
+        t("contrast.ok", "Text and background colours are easy to read.", "စာသားနှင့် နောက်ခံအရောင်များ ဖတ်ရလွယ်ပါသည်။");
+        t("contrast.low", "Hard to read", "ဖတ်ရခက်သည်");
         t("scene.settings", "Settings", "ဆက်တင်");
         t("scene.chat", "Conversation", "စကားပြောခန်း");
         t("scene.controls", "Components", "အစိတ်အပိုင်းများ");
@@ -64,6 +76,10 @@ public final class BuilderText {
         t("allSettings", "All settings", "ဆက်တင်အားလုံး");
         t("language", "မြန်မာ", "English");
     }
+
+    /** Every screen the preview can show, in the order of the picker. */
+    public static final String[] SCENES = {"chats", "chat", "settings", "controls", "drawer", "people", "contacts", "profile",
+            "themeStore", "rows.privacy", "rows.notifications", "rows.dataStorage", "rows.profile"};
 
     private BuilderText() {
     }

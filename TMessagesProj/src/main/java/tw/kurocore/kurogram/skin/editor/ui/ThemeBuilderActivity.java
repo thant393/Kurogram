@@ -61,7 +61,7 @@ public class ThemeBuilderActivity extends BaseFragment {
     private EditorSession session;
     private BuilderPreviewView preview;
     private LinearLayout chips, list;
-    private TextView undoBtn, redoBtn, modeBtn, sceneBtn, liveBtn, variantBtn, lookBtn, hint;
+    private TextView undoBtn, redoBtn, modeBtn, sceneBtn, liveBtn, variantBtn, lookBtn, readBtn, hint;
     private boolean live;
     private final Runnable livePush = this::pushLive;
     private final Runnable autosave = this::saveDraft;
@@ -193,18 +193,19 @@ public class ThemeBuilderActivity extends BaseFragment {
             refreshAll();
         });
         sceneBtn = button(context, "scene.chat", v -> {
-            String[] order = {"chats", "chat", "settings", "controls", "drawer", "rows"};
-            int at = 0;
-            for (int i = 0; i < order.length; i++) {
-                if (order[i].equals(session.scene())) {
-                    at = i;
-                }
+            final String[] ids = BuilderText.SCENES;
+            String[] names = new String[ids.length];
+            for (int k = 0; k < ids.length; k++) {
+                names[k] = tr("scene." + ids[k]);
             }
-            session.setScene(order[(at + 1) % order.length]);
-            refreshAll();
+            new AlertDialog.Builder(getParentActivity()).setTitle(tr("scene")).setItems(names, (d, which) -> {
+                session.setScene(ids[which]);
+                refreshAll();
+            }).show();
         });
         liveBtn = button(context, "live", v -> setLive(!live));
         lookBtn = button(context, "look", v -> lookDialog());
+        readBtn = button(context, "contrast.title", v -> readabilityDialog());
         variantBtn = button(context, "variant.day", v -> {
             session.setNight(!session.night());
             refreshAll();
@@ -217,7 +218,7 @@ public class ThemeBuilderActivity extends BaseFragment {
         });
         TextView use = button(context, "use", v -> useOnPhone());
         TextView startOver = button(context, "startOver", v -> startOver());
-        for (TextView b : new TextView[]{undoBtn, redoBtn, lookBtn, variantBtn, modeBtn, sceneBtn, liveBtn, lang, use, startOver}) {
+        for (TextView b : new TextView[]{undoBtn, redoBtn, lookBtn, variantBtn, modeBtn, sceneBtn, liveBtn, readBtn, lang, use, startOver}) {
             barRow.addView(b, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 36, 0, 0, 6, 0));
         }
         col.addView(bar, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
@@ -291,9 +292,12 @@ public class ThemeBuilderActivity extends BaseFragment {
         variantBtn.setText(tr(session.night() ? "variant.night" : "variant.day"));
         lookBtn.setText(tr("look") + ": " + lookName());
         styleButton(lookBtn, !session.onBase());
+        int issues = session.readability().size();
+        readBtn.setText(tr("contrast.title") + (issues > 0 ? " ⚠" + issues : " ✓"));
+        styleButton(readBtn, issues > 0);
         styleButton(variantBtn, session.night());
         modeBtn.setText(tr(session.advanced() ? "basic" : "advanced"));
-        sceneBtn.setText(tr("scene." + session.scene()));
+        sceneBtn.setText(tr("scene") + ": " + tr("scene." + session.scene()));
         styleButton(undoBtn, false);
         styleButton(redoBtn, false);
         undoBtn.setAlpha(session.active().canUndo() ? 1f : 0.4f);
@@ -588,6 +592,21 @@ public class ThemeBuilderActivity extends BaseFragment {
         };
         fill[0].run();
         dialog.show();
+    }
+
+    /** Warns, never blocks: a theme with low contrast can still be published. */
+    private void readabilityDialog() {
+        List<EditorSession.Readability> list = session.readability();
+        StringBuilder sb = new StringBuilder();
+        for (EditorSession.Readability r : list) {
+            sb.append(r.night ? "🌙 " : "☀ ")
+                    .append(session.catalog.entryLabel(r.textPath, session.lang())).append(" / ")
+                    .append(session.catalog.entryLabel(r.backgroundPath, session.lang())).append(": ")
+                    .append(String.format(java.util.Locale.US, "%.1f", r.ratio)).append(" < ").append(String.format(java.util.Locale.US, "%.1f", r.minimum)).append('\n');
+        }
+        new AlertDialog.Builder(getParentActivity()).setTitle(tr("contrast.title"))
+                .setMessage(list.isEmpty() ? tr("contrast.ok") : tr("contrast.low") + ":\n\n" + sb)
+                .setPositiveButton(tr("done"), null).show();
     }
 
     private String lookName() {

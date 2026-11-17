@@ -1030,7 +1030,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "tokens.colors.textPrimary",
@@ -1184,7 +1184,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "tokens.colors.overlay",
@@ -1209,7 +1209,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "tokens.gradient.top",
@@ -1468,7 +1468,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "tokens.spacing.xs",
@@ -1520,7 +1520,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "tokens.spacing.md",
@@ -1546,7 +1546,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "tokens.spacing.lg",
@@ -1572,7 +1572,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "tokens.spacing.xl",
@@ -2429,7 +2429,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "screens.contacts.background",
@@ -2454,7 +2454,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "screens.contacts.sectionStyle",
@@ -2479,7 +2479,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "screens.contacts.avatarSizeDp",
@@ -2504,7 +2504,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "screens.profile.background",
@@ -2529,7 +2529,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "screens.profile.headerStyle",
@@ -2555,7 +2555,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "screens.profile.avatarSizeDp",
@@ -2581,7 +2581,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "screens.profile.cardRadiusDp",
@@ -2607,7 +2607,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "screens.settings.background",
@@ -2732,7 +2732,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "screens.themeStore.gridColumns",
@@ -2757,7 +2757,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "screens.themeStore.previewRadiusDp",
@@ -2782,7 +2782,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "chat.bubbleIn",
@@ -3156,7 +3156,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "components.cell.paddingStartDp",
@@ -3381,7 +3381,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "components.section.style",
@@ -3481,7 +3481,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "components.section.headerWeight",
@@ -3506,7 +3506,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "components.section.headerColor",
@@ -3531,7 +3531,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "components.section.infoSizeSp",
@@ -3881,7 +3881,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "screens.notifications.background",
@@ -3906,7 +3906,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "screens.dataStorage.background",
@@ -3931,7 +3931,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "screens.devices.background",
@@ -4056,7 +4056,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "screens.themeStore.cardRadiusDp",
@@ -4081,7 +4081,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "screens.themeStore.cardGapDp",
@@ -4106,7 +4106,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "screens.themeStore.titleSizeSp",
@@ -4131,7 +4131,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "components.button.style",
@@ -4256,7 +4256,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "chat.inputRadiusDp",
@@ -4456,7 +4456,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "chat.reactionRadiusDp",
@@ -4481,7 +4481,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "screens.chats.tabsRadiusDp",
@@ -4506,7 +4506,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "screens.profile.avatarRadiusDp",
@@ -4532,7 +4532,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "screens.profile.actionsStyle",
@@ -4558,7 +4558,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "screens.profile.photoStyle",
@@ -4584,7 +4584,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.settings.header",
@@ -4609,7 +4609,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.settings.accounts",
@@ -4634,7 +4634,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.people.storyRail",
@@ -4659,7 +4659,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.people.chips",
@@ -4684,7 +4684,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.settings.items",
@@ -4734,7 +4734,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.contacts.grid.columns",
@@ -4759,7 +4759,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.contacts.grid.avatarDp",
@@ -4784,7 +4784,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.contacts.row.avatarSizeDp",
@@ -4809,7 +4809,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.contacts.row.heightDp",
@@ -4834,7 +4834,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.contacts.row.status",
@@ -4859,7 +4859,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.contacts.sort",
@@ -4884,7 +4884,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.chatList.mode",
@@ -5010,7 +5010,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.chatList.row.preview.show",
@@ -5135,7 +5135,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.chatList.row.avatar.onlineDot.color",
@@ -5160,7 +5160,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.chatList.row.avatar.lastActive",
@@ -5185,7 +5185,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.chatList.row.title.weight",
@@ -5260,7 +5260,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.chatList.row.preview.lines",
@@ -5285,7 +5285,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.chatList.row.preview.sizeSp",
@@ -5360,7 +5360,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.chatList.row.meta.time",
@@ -5411,7 +5411,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.chatList.row.meta.unreadDot",
@@ -5437,7 +5437,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.chatList.row.pinned",
@@ -5462,7 +5462,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.chatList.row.dividers",
@@ -5587,7 +5587,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.chatList.storyRail.avatarSizeDp",
@@ -5612,7 +5612,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.chatList.storyRail.showCreate",
@@ -5637,7 +5637,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.chatList.folders.style",
@@ -5687,7 +5687,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.chatList.folders.collapsible",
@@ -5712,7 +5712,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.chatList.specialRows.archive",
@@ -5737,7 +5737,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.drawer.content",
@@ -5787,7 +5787,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.drawer.items",
@@ -6132,7 +6132,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.settings.grid.columns",
@@ -6157,7 +6157,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.themeStore.mode",
@@ -6182,7 +6182,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.themeStore.meta.creator",
@@ -6207,7 +6207,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.themeStore.meta.downloads",
@@ -6232,7 +6232,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.themeStore.meta.position",
@@ -6257,7 +6257,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.themeStore.chips",
@@ -6282,7 +6282,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.themeStore.search",
@@ -6307,7 +6307,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.notifications.hiddenRows",
@@ -6332,7 +6332,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.profile.hiddenRows",
@@ -6357,7 +6357,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "layout.privacy.hiddenRows",
@@ -6407,7 +6407,7 @@
    "reviewed": [
     "en"
    ],
-   "previewed": false
+   "previewed": true
   },
   {
    "path": "appearance",

@@ -108,6 +108,65 @@ public final class EditorSession {
         return mergedJson(styleId, wayId);
     }
 
+    /** One text/background pair that is hard to read. */
+    public static final class Readability {
+        public final String textPath, backgroundPath;
+        public final boolean night;
+        public final double ratio, minimum;
+
+        Readability(String t, String b, boolean night, double ratio, double min) {
+            this.textPath = t;
+            this.backgroundPath = b;
+            this.night = night;
+            this.ratio = ratio;
+            this.minimum = min;
+        }
+    }
+
+    // pairs checked: text colour, background colour, lowest acceptable ratio (WCAG: 4.5 body text, 3 for secondary/large text)
+    private static final String[][] PAIRS = {
+            {"tokens.colors.textPrimary", "tokens.colors.background", "4.5"},
+            {"tokens.colors.textPrimary", "tokens.colors.surface", "4.5"},
+            {"tokens.colors.textSecondary", "tokens.colors.surface", "3"},
+            {"tokens.colors.onAccent", "tokens.colors.accent", "4.5"},
+            {"chat.bubbleInText", "chat.bubbleIn", "4.5"},
+            {"chat.bubbleOutText", "chat.bubbleOut", "4.5"},
+    };
+
+    /**
+     * Pairs of the look being edited that are hard to read, for day and night. Only pairs where the theme sets at least one of the
+     * two colours are checked: a missing colour falls back to the app's own, which is not the theme's doing.
+     */
+    public List<Readability> readability() {
+        List<Readability> out = new ArrayList<>();
+        boolean was = night;
+        try {
+            for (int pass = 0; pass < 2; pass++) {
+                night = pass == 1;
+                int[] dayDef = {0xFF14213D, 0xFFF2F2F7, 0xFFFFFFFF}, nightDef = {0xFFFFFFFF, 0xFF0F0F10, 0xFF1C1C2E};
+                for (String[] pair : PAIRS) {
+                    if (raw(pair[0]) == null && raw(pair[1]) == null) {
+                        continue;
+                    }
+                    int fgDef = night ? nightDef[0] : dayDef[0];
+                    int bgDef = pair[1].endsWith("background") ? (night ? nightDef[1] : dayDef[1]) : (night ? nightDef[2] : dayDef[2]);
+                    if (pair[0].endsWith("onAccent")) {
+                        fgDef = 0xFFFFFFFF;
+                        bgDef = 0xFF3390EC;
+                    }
+                    int fg = color(pair[0], fgDef), bg = color(pair[1], bgDef);
+                    double min = Double.parseDouble(pair[2]), r = Contrast.ratio(fg, bg);
+                    if (r < min) {
+                        out.add(new Readability(pair[0], pair[1], night, r, min));
+                    }
+                }
+            }
+        } finally {
+            night = was;
+        }
+        return out;
+    }
+
     public boolean isDirty() {
         return draft.isDirty() || styles.isDirty();
     }

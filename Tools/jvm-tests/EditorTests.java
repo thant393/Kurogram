@@ -323,6 +323,25 @@ public class EditorTests {
         check(ss.isDirty(), "session dirty");
         ss.setAdvanced(true);
         for (Catalog.Entry e : ss.allSettings()) check(!e.group.equals("structure"), "no structure settings inside a look " + e.path);
+
+        // ---- readability
+        check(Math.abs(Contrast.ratio(0xFF000000, 0xFFFFFFFF) - 21.0) < 0.01 && Math.abs(Contrast.ratio(0xFFFFFFFF, 0xFFFFFFFF) - 1.0) < 0.01, "contrast extremes");
+        check(Contrast.ratio(0x80000000, 0xFFFFFFFF) < Contrast.ratio(0xFF000000, 0xFFFFFFFF), "translucent text is mixed with the background");
+        EditorSession rs = new EditorSession(rules, cat, ThemeDraft.fromJson("{\"schemaVersion\":2,\"meta\":{\"id\":\"r\",\"name\":\"R\"}}", rules));
+        check(rs.readability().isEmpty(), "nothing set, nothing to blame");
+        rs.setColor("tokens.colors.textPrimary", 0xFFEEEEEE, false);
+        rs.setColor("tokens.colors.background", 0xFFFFFFFF, false);
+        check(rs.readability().size() >= 1 && !rs.readability().get(0).night, "light text on white is flagged");
+        rs.setColor("tokens.colors.textPrimary", 0xFF111111, false);
+        rs.setNight(true);
+        rs.setColor("tokens.colors.textPrimary", 0xFF202020, false);
+        rs.setColor("tokens.colors.background", 0xFF101010, false);
+        rs.setNight(false);
+        boolean nightFlag = false;
+        for (EditorSession.Readability rd : rs.readability()) nightFlag |= rd.night;
+        check(nightFlag, "night pair flagged separately");
+        check(!rs.night(), "readability leaves the editor state alone");
+        for (String id : BuilderText.SCENES) check(!BuilderText.get("en", "scene." + id).equals("scene." + id) && !BuilderText.get("my", "scene." + id).equals("scene." + id), "scene text " + id);
         check(BuilderText.complete(), "builder text has en and my for every key");
         check(BuilderText.get("my", "undo").length() > 0 && BuilderText.get("zz", "undo").equals(BuilderText.get("en", "undo")), "builder text fallback");
 

@@ -18,7 +18,7 @@ jobs:
         run: python3 Tools/check_rules.py
       - name: Check Theme Builder catalog covers every rule
         # fails when an engine rule has no catalog entry (UNMAPPED) or the catalog points at a rule that does not exist
-        run: python3 Tools/check_catalog.py
+        run: python3 Tools/check_catalog.py --final
       - uses: actions/setup-java@v5
         with:
           java-version: '21'
