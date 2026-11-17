@@ -30,7 +30,7 @@ public final class ThemeDraft {
     private final Deque<Edit> redo = new ArrayDeque<>();
     private Edit open; // the group currently being recorded, or null
 
-    private ThemeDraft(RuleSet rules, Map<String, Object> doc) {
+    ThemeDraft(RuleSet rules, Map<String, Object> doc) {
         this.rules = rules;
         this.root = doc;
         this.original = (Map<String, Object>) Json.deepCopy(doc);

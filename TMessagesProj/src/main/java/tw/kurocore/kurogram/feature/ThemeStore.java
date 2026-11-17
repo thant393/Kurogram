@@ -70,6 +70,20 @@ public interface ThemeStore extends KuroFeature {
         }
     }
 
+    /**
+     * Owner sets the styles and colourways of a theme (a JSON list; "[]" removes them). The store checks that every style and
+     * colourway makes a valid skin over the theme's current file.
+     */
+    default void updateThemeStyles(String themeId, long accountId, String stylesJson, StickerStoreApi.ResultCallback callback) {
+        try {
+            org.json.JSONObject body = new org.json.JSONObject();
+            body.put("styles", new org.json.JSONArray(stylesJson));
+            StickerStoreApi.send("PUT", "api/v1/themes/" + themeId + "?account_id=" + accountId, body, callback);
+        } catch (Exception e) {
+            callback.onError("Couldn't build the request");
+        }
+    }
+
     /** Owner takes the theme out of the store (hidden, not erased). */
     default void unpublishTheme(String themeId, long accountId, StickerStoreApi.ResultCallback callback) {
         StickerStoreApi.send("DELETE", "api/v1/themes/" + themeId + "?account_id=" + accountId, null, callback);

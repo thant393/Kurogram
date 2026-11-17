@@ -29,6 +29,11 @@ public final class BuilderText {
         t("variant.day", "Day", "နေ့");
         t("variant.night", "Night", "ည");
         t("inherited", "from Day", "နေ့မှ ဆက်ခံ");
+        t("look", "Look", "ပုံစံ");
+        t("look.base", "Base theme", "အခြေခံ theme");
+        t("look.newStyle", "New style", "ပုံစံသစ်");
+        t("look.newWay", "New colourway", "အရောင်စုံသစ်");
+        t("look.limit", "Limit reached", "ကန့်သတ်ချက်ပြည့်ပါပြီ");
         t("value", "Value", "တန်ဖိုး");
         t("live", "Real app preview", "App အစစ်ဖြင့် ကြည့်ရန်");
         t("live.on", "Real app preview is ON", "App အစစ်ဖြင့် ကြည့်နေသည်");

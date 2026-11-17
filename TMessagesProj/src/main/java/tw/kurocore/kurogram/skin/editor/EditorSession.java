@@ -14,6 +14,8 @@ public final class EditorSession {
     public final RuleSet rules;
     public final Catalog catalog;
     public final ThemeDraft draft;
+    public final StyleSet styles;
+    private String styleId, wayId; // which look is being edited: the base file, a style, or a colourway of a style
     private String lang = "en";
     private boolean advanced;
     private String scene = "chats";
@@ -21,9 +23,93 @@ public final class EditorSession {
     private boolean night;
 
     public EditorSession(RuleSet rules, Catalog catalog, ThemeDraft draft) {
+        this(rules, catalog, draft, new StyleSet(rules));
+    }
+
+    public EditorSession(RuleSet rules, Catalog catalog, ThemeDraft draft, StyleSet styles) {
         this.rules = rules;
         this.catalog = catalog;
         this.draft = draft;
+        this.styles = styles;
+    }
+
+    // ---- which look is being edited
+    public String styleId() {
+        return styleId;
+    }
+
+    public String wayId() {
+        return wayId;
+    }
+
+    public boolean onBase() {
+        return styleId == null;
+    }
+
+    /** Edit the base file (null, null), a style (id, null) or one colourway of a style. An unknown target means the base. */
+    public void setTarget(String sid, String wid) {
+        if (sid == null || !styles.has(sid, wid)) {
+            styleId = null;
+            wayId = null;
+        } else {
+            styleId = sid;
+            wayId = wid;
+        }
+        selected = "global";
+    }
+
+    /** The draft that edits write to: the colourway's patch, the style's content, or the base file. */
+    public ThemeDraft active() {
+        ThemeDraft d = styleId == null ? null : styles.draftFor(styleId, wayId);
+        return d == null ? draft : d;
+    }
+
+    /** What the theme looks like for a target: its own layer first, then its style, then the base. */
+    private Object lookupAt(String sid, String wid, String path) {
+        ThemeDraft[] layers = {wid == null ? null : styles.draftFor(sid, wid), sid == null ? null : styles.draftFor(sid, null), draft};
+        for (ThemeDraft l : layers) {
+            if (l != null) {
+                Object v = l.get(path);
+                if (v != null) {
+                    return v == Json.NULL ? null : v;
+                }
+            }
+        }
+        return null;
+    }
+
+    /** Fills the colourway swatches from the colours it ends up with, so the store can show them. */
+    public void refreshSwatches() {
+        String[] paths = {"tokens.colors.accent", "tokens.colors.background", "tokens.colors.surface"};
+        for (StyleSet.Style s : styles.styles()) {
+            for (StyleSet.Way w : s.ways) {
+                for (int i = 0; i < 3; i++) {
+                    Object v = lookupAt(s.id, w.id, paths[i]);
+                    w.swatch[i] = v instanceof String && ((String) v).length() >= 7 ? ((String) v).substring(0, 7).toUpperCase() : null;
+                }
+            }
+        }
+    }
+
+    /** The complete skin for a target, exactly as the store would serve it: base, then the style, then the colourway. */
+    public String mergedJson(String sid, String wid) {
+        java.util.Map<String, Object> m = draft.toMap();
+        if (sid != null && styles.draftFor(sid, null) != null) {
+            m = StyleDiff.merge(m, styles.draftFor(sid, null).toMap());
+            if (wid != null && styles.draftFor(sid, wid) != null) {
+                m = StyleDiff.merge(m, styles.draftFor(sid, wid).toMap());
+            }
+        }
+        return Json.writePretty(m);
+    }
+
+    /** What the person is looking at right now (used for the real-app preview and "use on this phone"). */
+    public String effectiveJson() {
+        return mergedJson(styleId, wayId);
+    }
+
+    public boolean isDirty() {
+        return draft.isDirty() || styles.isDirty();
     }
 
     public String lang() {
@@ -60,21 +146,22 @@ public final class EditorSession {
     /** What the screen shows: the night value when editing night and it is set, else the day value (night inherits day). */
     public Object raw(String path) {
         if (night && !path.startsWith("layout.")) {
-            Object v = draft.get("night." + path);
+            Object v = lookupAt(styleId, wayId, "night." + path);
             if (v != null) {
                 return v;
             }
         }
-        return draft.get(path);
+        return lookupAt(styleId, wayId, path);
     }
 
     /** The value set in the layer being edited (null = inherited / default). */
     public Object ownValue(String path) {
-        return draft.get(writePath(path));
+        Object v = active().get(writePath(path));
+        return v == Json.NULL ? null : v;
     }
 
     public String setValue(String path, Object value, boolean continuation) {
-        return draft.set(writePath(path), value, continuation);
+        return active().set(writePath(path), value, continuation);
     }
 
     public String setValue(String path, Object value) {
@@ -82,7 +169,7 @@ public final class EditorSession {
     }
 
     public String unsetValue(String path) {
-        return draft.unset(writePath(path));
+        return active().unset(writePath(path));
     }
 
     public String scene() {
@@ -190,6 +277,9 @@ public final class EditorSession {
         if (night && (e.path.startsWith("layout.") || e.group.equals("structure"))) {
             return false;
         }
+        if (!onBase() && e.group.equals("structure")) {
+            return false; // name, light/dark and format belong to the theme itself, not to a look
+        }
         if (e.phase > BUILT_PHASE) {
             return false;
         }
@@ -226,7 +316,7 @@ public final class EditorSession {
         if (ref == null) {
             return "unknown setting " + path;
         }
-        return draft.set(writePath(path), ColorCodec.format(argb, ref.rule.kind), continuation);
+        return active().set(writePath(path), ColorCodec.format(argb, ref.rule.kind), continuation);
     }
 
     /** Whole number setting, or {@code def} when the draft leaves it out. */

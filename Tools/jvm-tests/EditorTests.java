@@ -263,6 +263,66 @@ public class EditorTests {
         check(ns.setColor("tokens.colors.surface", 0xFF202020, false) == null && "#202020".equals(ns.draft.get("night.tokens.colors.surface")) && ns.draft.get("tokens.colors.surface") == null, "setColor writes to night overlay");
         ns.setAdvanced(true);
         for (Catalog.Entry e : ns.allSettings()) check(!e.path.startsWith("layout.") && !e.group.equals("structure"), "night shows only skin settings " + e.path);
+
+        // ---- styles and colourways
+        Map<String, Object> baseDoc = Json.parseObject(themed);
+        Map<String, Object> look = Json.parseObject("{\"tokens\":{\"colors\":{\"accent\":\"#FF0000\",\"futureColor\":null},\"shapes\":{\"cardRadiusDp\":4}},\"night\":{\"tokens\":{\"colors\":{\"accent\":\"#AA0000\"}}}}");
+        Map<String, Object> mergedDoc = StyleDiff.merge(baseDoc, look);
+        check(mergedDoc.get("x-vendor") != null && !((Map<String, Object>) ((Map<String, Object>) mergedDoc.get("tokens")).get("colors")).containsKey("futureColor"), "merge: null removes, others stay");
+        check(Json.semanticEquals(Json.parse(themed), Json.parse(Json.write(baseDoc))), "merge leaves its inputs alone");
+        Map<String, Object> back = StyleDiff.patch(baseDoc, mergedDoc);
+        check(Json.semanticEquals(StyleDiff.merge(baseDoc, back), mergedDoc), "patch is the inverse of merge");
+        check(StyleDiff.patch(baseDoc, Json.parseObject(themed)).isEmpty(), "no difference -> empty patch");
+        for (String f : files) {
+            Map<String, Object> a = Json.parseObject(read(f)), b = StyleDiff.merge(a, Json.parseObject("{\"tokens\":{\"colors\":{\"accent\":\"#010101\"}}}"));
+            check(Json.semanticEquals(StyleDiff.merge(a, StyleDiff.patch(a, b)), b), "patch/merge round trip " + f);
+        }
+
+        StyleSet set = new StyleSet(rules);
+        String sid = set.addStyle("Rounded Look");
+        check("rounded-look".equals(sid) && "rounded-look-2".equals(set.addStyle("Rounded Look")), "style ids are unique slugs");
+        check(set.addStyle("!!!") != null && set.style("style") != null, "empty slug falls back");
+        String wid = set.addColorway(sid, "Ocean");
+        check("ocean".equals(wid) && set.draftFor(sid, wid) != null && set.draftFor(sid, null) != null && set.draftFor("zz", null) == null, "colourway drafts");
+        for (int i = 0; i < 20; i++) set.addStyle("s" + i);
+        check(set.styles().size() == StyleSet.MAX_STYLES, "style limit " + set.styles().size());
+        check(set.draftFor(sid, wid).set("tokens.colors.accent", "#0A84FF") == null, "patch edited through rules");
+        check(set.draftFor(sid, wid).set("tokens.colors.accent", "blue") != null, "patch edits are checked");
+        String sj = set.toJson();
+        check(sj.contains("\"patch\"") && !sj.contains("\"content\""), "only what is set is written");
+        StyleSet again = StyleSet.fromJson(sj, rules);
+        check(Json.semanticEquals(Json.parse(sj), Json.parse(again.toJson())) && !again.isDirty(), "styles round trip, clean after load");
+        again.draftFor(sid, wid).set("tokens.shapes.cardRadiusDp", 6L);
+        check(again.isDirty(), "styles dirty after edit");
+        check(again.remove(sid, wid) && again.way(sid, wid) == null && again.rename(sid, null, "Renamed") && "Renamed".equals(again.style(sid).name), "remove and rename");
+
+        // ---- session layers: colourway over style over base
+        EditorSession ss = new EditorSession(rules, cat, ThemeDraft.fromJson(themed, rules), new StyleSet(rules));
+        String sty = ss.styles.addStyle("Round");
+        String cw = ss.styles.addColorway(sty, "Red");
+        check(ss.onBase() && ss.active() == ss.draft, "base is edited by default");
+        ss.setTarget(sty, null);
+        check(ss.setValue("tokens.shapes.cardRadiusDp", 3L) == null && ss.draft.get("tokens.shapes.cardRadiusDp") == null, "style edit stays in the style");
+        ss.setTarget(sty, cw);
+        check(ss.setColor("tokens.colors.accent", 0xFFFF0000, false) == null && "#FF0000".equals(ss.styles.draftFor(sty, cw).get("tokens.colors.accent")), "colourway edit goes to its patch");
+        check("#0866FF".equals(ss.draft.get("tokens.colors.accent")), "base untouched by colourway edit");
+        check(ss.intValue("tokens.shapes.cardRadiusDp", 0) == 3 && ss.color("tokens.colors.accent", 0) == 0xFFFF0000, "colourway sees style and its own colours");
+        ss.draft.set("tokens.colors.divider", "#112244");
+        check(ss.color("tokens.colors.divider", 0) == 0xFF112244, "and inherits the base");
+        check(ss.ownValue("tokens.shapes.cardRadiusDp") == null, "inherited is not 'own'");
+        ss.setTarget("nope", null);
+        check(ss.onBase(), "unknown look falls back to base");
+        ss.setTarget(sty, cw);
+        Map<String, Object> eff = Json.parseObject(ss.mergedJson(sty, cw));
+        check("#FF0000".equals(((Map<String, Object>) ((Map<String, Object>) eff.get("tokens")).get("colors")).get("accent"))
+                && Json.semanticEquals(eff.get("x-vendor"), baseDoc.get("x-vendor")), "merged json = what the store serves");
+        ss.refreshSwatches();
+        check("#FF0000".equals(ss.styles.way(sty, cw).swatch[0]), "swatch from the colourway's accent");
+        check(ss.active().canUndo(), "undo belongs to the edited look");
+        ss.active().undo();
+        check(ss.isDirty(), "session dirty");
+        ss.setAdvanced(true);
+        for (Catalog.Entry e : ss.allSettings()) check(!e.group.equals("structure"), "no structure settings inside a look " + e.path);
         check(BuilderText.complete(), "builder text has en and my for every key");
         check(BuilderText.get("my", "undo").length() > 0 && BuilderText.get("zz", "undo").equals(BuilderText.get("en", "undo")), "builder text fallback");
 

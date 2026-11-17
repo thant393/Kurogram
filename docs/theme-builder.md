@@ -38,3 +38,21 @@ the Builder is complete. Engine wiring is recorded as `unverified` per rule unti
 ## Adding a rule later
 Add it to the engine and manifest as usual, then `python3 Tools/gen_catalog.py` (adds a draft entry only; never alters existing ones),
 refine the entry, run `check_catalog.py --write`.
+
+## Day / Night
+The `night` section holds the same settings as the base (never layout) and lists only what differs. In the Builder the Day/Night
+switch decides where an edit is written (`night.<path>`); night inherits day, ✕ falls back to day. The preview uses the dark palette.
+
+## Styles and colourways
+A theme can carry `styles` next to its skin file (store-side, not inside the skin JSON): each style has `content`, a partial skin
+merged over the base (shapes, layout…), and colourways with a `patch` merged over that (usually colours). The store serves one
+complete skin per combination (`backend skin_styles.apply`), merge rules: objects merge deeply, the patch wins, arrays and scalars
+replace, `null` removes a key.
+- The Builder edits one look at a time (**Look** button): base, a style, or a colourway. Each style/colourway is its own `ThemeDraft`
+  (same rule checks, undo and preservation). Reading a value goes colourway → style → base; writing goes only to the selected look.
+- Publishing: `POST/PUT /themes` accept an optional `styles` list (8 styles, 12 colourways each, 48 KB, no `meta`/`schemaVersion`/
+  `extends` in patches). Every style and every colourway must make a complete valid skin over the theme's own file, or the request is
+  refused with the combination named. The app sends the theme first and its styles right after.
+- Editing an already published theme: the store only returns merged skins, so patches are recovered by comparing each merged skin with
+  what it was built from (`StyleDiff.patch`; the inverse of merge, covered by round-trip tests). `PUT` without `styles` keeps them,
+  `styles: []` removes them.

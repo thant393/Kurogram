@@ -55,10 +55,15 @@ public class ThemeUploadActivity extends BaseFragment {
     private int categoryIndex;
     private String content; // the validated file text, or null
     private boolean busy;
+    private String prefillStyles; // styles made in the Builder (JSON list), published right after the theme
     private String prefill; // a theme made in the Builder, shown as if it had been picked as a file
 
     public ThemeUploadActivity() {
         this(null);
+    }
+
+    public void setPrefillStyles(String stylesJson) {
+        this.prefillStyles = stylesJson;
     }
 
     /** Hands over a theme made in the Theme Builder; it is checked like a picked file. */
@@ -223,9 +228,87 @@ public class ThemeUploadActivity extends BaseFragment {
                 setStatus("Could not load the theme. Check the connection and try again.", true);
                 return;
             }
-            setStatus(null, false);
-            presentFragment(new tw.kurocore.kurogram.skin.editor.ui.ThemeBuilderActivity(text, editing));
+            if (editing.styles.isEmpty()) {
+                setStatus(null, false);
+                presentFragment(new tw.kurocore.kurogram.skin.editor.ui.ThemeBuilderActivity(text, editing));
+            } else {
+                recoverStyles(text);
+            }
         });
+    }
+
+    /**
+     * The store serves merged skins, never the patches, so the styles of a published theme are rebuilt by comparing each merged
+     * skin with the one it was built from: style = difference to the base, colourway = difference to its style.
+     */
+    private void recoverStyles(final String baseText) {
+        final java.util.List<String[]> wanted = new java.util.ArrayList<>(); // {styleId, colourwayId or null}
+        for (ThemeInfo.Style st : editing.styles) {
+            wanted.add(new String[]{st.id, null});
+            for (ThemeInfo.Way w : st.colorways) {
+                wanted.add(new String[]{st.id, w.id});
+            }
+        }
+        final java.util.Map<String, String> got = new java.util.HashMap<>();
+        final Runnable[] next = new Runnable[1];
+        next[0] = () -> {
+            if (fragmentView == null) {
+                return;
+            }
+            int at = got.size();
+            if (at < wanted.size()) {
+                String[] w = wanted.get(at);
+                setStatus("Loading styles… " + (at + 1) + "/" + wanted.size(), false);
+                KuroFeatures.themes().fetchVersionContent(editing.id, editing.version, w[0], w[1], text -> {
+                    if (text == null) {
+                        setStatus("Could not load the theme's styles. Check the connection and try again.", true);
+                        return;
+                    }
+                    got.put(w[0] + "/" + (w[1] == null ? "" : w[1]), text);
+                    next[0].run();
+                });
+                return;
+            }
+            try {
+                java.util.Map<String, Object> base = tw.kurocore.kurogram.skin.editor.Json.parseObject(baseText);
+                java.util.List<Object> styles = new java.util.ArrayList<>();
+                for (ThemeInfo.Style st : editing.styles) {
+                    java.util.Map<String, Object> merged = tw.kurocore.kurogram.skin.editor.Json.parseObject(got.get(st.id + "/"));
+                    java.util.Map<String, Object> sm = new java.util.LinkedHashMap<>();
+                    sm.put("id", st.id);
+                    sm.put("name", st.name);
+                    java.util.Map<String, Object> content = tw.kurocore.kurogram.skin.editor.StyleDiff.patch(base, merged);
+                    if (!content.isEmpty()) {
+                        sm.put("content", content);
+                    }
+                    java.util.List<Object> ways = new java.util.ArrayList<>();
+                    for (ThemeInfo.Way w : st.colorways) {
+                        java.util.Map<String, Object> full = tw.kurocore.kurogram.skin.editor.Json.parseObject(got.get(st.id + "/" + w.id));
+                        java.util.Map<String, Object> wm = new java.util.LinkedHashMap<>();
+                        wm.put("id", w.id);
+                        wm.put("name", w.name);
+                        if (w.swatch != 0) wm.put("swatch", String.format("#%06X", w.swatch & 0xFFFFFF));
+                        if (w.swatch2 != 0) wm.put("swatch2", String.format("#%06X", w.swatch2 & 0xFFFFFF));
+                        if (w.swatch3 != 0) wm.put("swatch3", String.format("#%06X", w.swatch3 & 0xFFFFFF));
+                        java.util.Map<String, Object> patch = tw.kurocore.kurogram.skin.editor.StyleDiff.patch(merged, full);
+                        if (!patch.isEmpty()) {
+                            wm.put("patch", patch);
+                        }
+                        ways.add(wm);
+                    }
+                    if (!ways.isEmpty()) {
+                        sm.put("colorways", ways);
+                    }
+                    styles.add(sm);
+                }
+                setStatus(null, false);
+                presentFragment(new tw.kurocore.kurogram.skin.editor.ui.ThemeBuilderActivity(baseText, editing,
+                        tw.kurocore.kurogram.skin.editor.Json.write(styles)));
+            } catch (RuntimeException e) {
+                setStatus("Could not read the theme's styles.", true);
+            }
+        };
+        next[0].run();
     }
 
     private void pickFile() {
@@ -362,10 +445,38 @@ public class ThemeUploadActivity extends BaseFragment {
         }
         AndroidUtilities.hideKeyboard(titleInput);
         setBusy(true);
+        final String stylesJson = prefillStyles;
         StickerStoreApi.ResultCallback done = new StickerStoreApi.ResultCallback() {
             @Override
             public void onSuccess(JSONObject response) {
                 if (fragmentView == null) return;
+                if (stylesJson == null) {
+                    finished();
+                    return;
+                }
+                // the theme is saved; now its styles (the store checks each one against the saved file)
+                String id = editing != null ? editing.id : response == null ? "" : response.optString("id", "");
+                KuroFeatures.themes().updateThemeStyles(id, me.id, stylesJson, new StickerStoreApi.ResultCallback() {
+                    @Override
+                    public void onSuccess(JSONObject r) {
+                        if (fragmentView == null) return;
+                        finished();
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        if (fragmentView == null) return;
+                        // the theme itself is already in the store: say so, so nobody uploads it twice
+                        Toast.makeText(getParentActivity(), "Theme saved, but its styles were not: " + message
+                                + " (open it from your profile > Edit to try again)", Toast.LENGTH_LONG).show();
+                        setBusy(false);
+                        ProfileTabView.notifyPackUploaded();
+                        finishFragment();
+                    }
+                });
+            }
+
+            private void finished() {
                 setBusy(false);
                 ProfileTabView.notifyPackUploaded();
                 Toast.makeText(getParentActivity(), editing == null ? "Theme uploaded" : "Saved", Toast.LENGTH_SHORT).show();

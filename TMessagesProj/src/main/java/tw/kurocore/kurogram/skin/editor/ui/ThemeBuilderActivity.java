@@ -37,6 +37,7 @@ import tw.kurocore.kurogram.skin.editor.ColorCodec;
 import tw.kurocore.kurogram.skin.editor.EditorSession;
 import tw.kurocore.kurogram.skin.editor.Rule;
 import tw.kurocore.kurogram.skin.editor.RuleSet;
+import tw.kurocore.kurogram.skin.editor.StyleSet;
 import tw.kurocore.kurogram.skin.editor.ThemeDraft;
 import tw.kurocore.kurogram.stickerstore.ThemeUploadActivity;
 
@@ -50,15 +51,17 @@ public class ThemeBuilderActivity extends BaseFragment {
     private static final String PREFS = "kuro_theme_builder";
     private static final String KEY_DRAFT = "draft";
     private static final String KEY_LANG = "lang";
+    private static final String KEY_STYLES = "styles";
     private static final String TEMPLATE = "{\"schemaVersion\":2,\"meta\":{\"id\":\"my-theme\",\"name\":\"My Theme\"},\"tokens\":{\"colors\":{\"accent\":\"#3390EC\"}}}";
 
     private final String startJson; // an existing theme to edit, or null
     private final tw.kurocore.kurogram.stickerstore.ThemeInfo editing; // its store entry when editing
+    private final String startStyles; // the styles of a theme being edited (JSON list) or null
     private final PreviewGuard guard = new PreviewGuard();
     private EditorSession session;
     private BuilderPreviewView preview;
     private LinearLayout chips, list;
-    private TextView undoBtn, redoBtn, modeBtn, sceneBtn, liveBtn, variantBtn, hint;
+    private TextView undoBtn, redoBtn, modeBtn, sceneBtn, liveBtn, variantBtn, lookBtn, hint;
     private boolean live;
     private final Runnable livePush = this::pushLive;
     private final Runnable autosave = this::saveDraft;
@@ -68,8 +71,13 @@ public class ThemeBuilderActivity extends BaseFragment {
     }
 
     public ThemeBuilderActivity(String existingThemeJson, tw.kurocore.kurogram.stickerstore.ThemeInfo editing) {
+        this(existingThemeJson, editing, null);
+    }
+
+    public ThemeBuilderActivity(String existingThemeJson, tw.kurocore.kurogram.stickerstore.ThemeInfo editing, String stylesJson) {
         this.startJson = existingThemeJson;
         this.editing = editing;
+        this.startStyles = stylesJson;
     }
 
     // ------------------------------------------------------------------ setup
@@ -105,7 +113,14 @@ public class ThemeBuilderActivity extends BaseFragment {
             } catch (RuntimeException bad) { // a damaged saved draft must not lock the Builder
                 draft = ThemeDraft.fromJson(TEMPLATE, rules);
             }
-            session = new EditorSession(rules, catalog, draft);
+            StyleSet styleSet;
+            try {
+                String sj = startJson != null ? startStyles : prefs().getString(KEY_STYLES, null);
+                styleSet = StyleSet.fromJson(sj, rules);
+            } catch (RuntimeException bad) {
+                styleSet = new StyleSet(rules);
+            }
+            session = new EditorSession(rules, catalog, draft, styleSet);
             session.setLang(prefs().getString(KEY_LANG, "en"));
             return super.onFragmentCreate();
         } catch (Throwable t) {
@@ -166,11 +181,11 @@ public class ThemeBuilderActivity extends BaseFragment {
         barRow.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(6), AndroidUtilities.dp(8), AndroidUtilities.dp(6));
         bar.addView(barRow);
         undoBtn = button(context, "undo", v -> {
-            session.draft.undo();
+            session.active().undo();
             changed(false);
         });
         redoBtn = button(context, "redo", v -> {
-            session.draft.redo();
+            session.active().redo();
             changed(false);
         });
         modeBtn = button(context, "advanced", v -> {
@@ -189,6 +204,7 @@ public class ThemeBuilderActivity extends BaseFragment {
             refreshAll();
         });
         liveBtn = button(context, "live", v -> setLive(!live));
+        lookBtn = button(context, "look", v -> lookDialog());
         variantBtn = button(context, "variant.day", v -> {
             session.setNight(!session.night());
             refreshAll();
@@ -201,7 +217,7 @@ public class ThemeBuilderActivity extends BaseFragment {
         });
         TextView use = button(context, "use", v -> useOnPhone());
         TextView startOver = button(context, "startOver", v -> startOver());
-        for (TextView b : new TextView[]{undoBtn, redoBtn, variantBtn, modeBtn, sceneBtn, liveBtn, lang, use, startOver}) {
+        for (TextView b : new TextView[]{undoBtn, redoBtn, lookBtn, variantBtn, modeBtn, sceneBtn, liveBtn, lang, use, startOver}) {
             barRow.addView(b, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 36, 0, 0, 6, 0));
         }
         col.addView(bar, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
@@ -273,13 +289,15 @@ public class ThemeBuilderActivity extends BaseFragment {
             b.setText(tr((String) b.getTag()));
         }
         variantBtn.setText(tr(session.night() ? "variant.night" : "variant.day"));
+        lookBtn.setText(tr("look") + ": " + lookName());
+        styleButton(lookBtn, !session.onBase());
         styleButton(variantBtn, session.night());
         modeBtn.setText(tr(session.advanced() ? "basic" : "advanced"));
         sceneBtn.setText(tr("scene." + session.scene()));
         styleButton(undoBtn, false);
         styleButton(redoBtn, false);
-        undoBtn.setAlpha(session.draft.canUndo() ? 1f : 0.4f);
-        redoBtn.setAlpha(session.draft.canRedo() ? 1f : 0.4f);
+        undoBtn.setAlpha(session.active().canUndo() ? 1f : 0.4f);
+        redoBtn.setAlpha(session.active().canRedo() ? 1f : 0.4f);
         styleButton(modeBtn, session.advanced());
         styleButton(sceneBtn, false);
         styleButton(liveBtn, live);
@@ -508,7 +526,7 @@ public class ThemeBuilderActivity extends BaseFragment {
         final Runnable[] fill = new Runnable[1];
         fill[0] = () -> {
             box.removeAllViews();
-            if (!(session.draft.get(e.path) instanceof List)) { // not customised yet: first change writes the defaults
+            if (!(session.active().get(session.writePath(e.path)) instanceof List)) { // not customised yet: first change writes the defaults
                 TextView first = text(context, tr("customize"), 14, true);
                 first.setPadding(0, AndroidUtilities.dp(8), 0, AndroidUtilities.dp(8));
                 first.setOnClickListener(v -> {
@@ -531,9 +549,9 @@ public class ThemeBuilderActivity extends BaseFragment {
                     TextView b = text(context, a[0], 18, true);
                     b.setPadding(AndroidUtilities.dp(12), AndroidUtilities.dp(10), AndroidUtilities.dp(12), AndroidUtilities.dp(10));
                     b.setOnClickListener(v -> {
-                        String err = "up".equals(a[1]) ? (at > 0 ? session.draft.listMove(e.path, at, at - 1) : null)
-                                : "down".equals(a[1]) ? (at < items.size() - 1 ? session.draft.listMove(e.path, at, at + 1) : null)
-                                : session.draft.listRemove(e.path, items.get(at));
+                        String err = "up".equals(a[1]) ? (at > 0 ? session.active().listMove(e.path, at, at - 1) : null)
+                                : "down".equals(a[1]) ? (at < items.size() - 1 ? session.active().listMove(e.path, at, at + 1) : null)
+                                : session.active().listRemove(e.path, items.get(at));
                         report(err);
                         fill[0].run();
                         preview.invalidate();
@@ -549,7 +567,7 @@ public class ThemeBuilderActivity extends BaseFragment {
                 add.setTextColor(KuroSkinManager.get().accent());
                 add.setPadding(0, AndroidUtilities.dp(8), 0, AndroidUtilities.dp(8));
                 add.setOnClickListener(v -> {
-                    report(session.draft.listAdd(e.path, opt, session.listOrDefault(e.path).size()));
+                    report(session.active().listAdd(e.path, opt, session.listOrDefault(e.path).size()));
                     fill[0].run();
                     preview.invalidate();
                     refreshToolbar();
@@ -570,6 +588,130 @@ public class ThemeBuilderActivity extends BaseFragment {
         };
         fill[0].run();
         dialog.show();
+    }
+
+    private String lookName() {
+        if (session.onBase()) {
+            return tr("look.base");
+        }
+        StyleSet.Style s = session.styles.style(session.styleId());
+        if (s == null) {
+            return tr("look.base");
+        }
+        StyleSet.Way w = session.wayId() == null ? null : session.styles.way(s.id, session.wayId());
+        return w == null ? s.name : s.name + " / " + w.name;
+    }
+
+    /**
+     * Styles and colourways: the theme's own file is the base look; a style changes parts of it (shapes, layout…), a colourway
+     * changes a style's colours. Choosing one makes every edit go to that look only; everything else is inherited.
+     */
+    private void lookDialog() {
+        Context context = getParentActivity();
+        LinearLayout box = new LinearLayout(context);
+        box.setOrientation(LinearLayout.VERTICAL);
+        box.setPadding(AndroidUtilities.dp(16), AndroidUtilities.dp(8), AndroidUtilities.dp(16), 0);
+        ScrollView sv = new ScrollView(context);
+        sv.addView(box);
+        final AlertDialog dialog = new AlertDialog.Builder(context).setTitle(tr("look")).setView(sv)
+                .setPositiveButton(tr("done"), null).create();
+        final Runnable[] fill = new Runnable[1];
+        fill[0] = () -> {
+            box.removeAllViews();
+            addLookRow(box, tr("look.base"), null, null, dialog, fill);
+            for (StyleSet.Style s : session.styles.styles()) {
+                addLookRow(box, "◆ " + s.name, s.id, null, dialog, fill);
+                for (StyleSet.Way w : s.ways) {
+                    addLookRow(box, "      ● " + w.name, s.id, w.id, dialog, fill);
+                }
+                TextView addWay = text(context, "      ＋ " + tr("look.newWay"), 13, false);
+                addWay.setTextColor(KuroSkinManager.get().accent());
+                addWay.setPadding(0, AndroidUtilities.dp(6), 0, AndroidUtilities.dp(6));
+                addWay.setOnClickListener(v -> askName(tr("look.newWay"), "", n -> {
+                    String id = session.styles.addColorway(s.id, n);
+                    if (id == null) {
+                        report(tr("look.limit"));
+                    } else {
+                        session.setTarget(s.id, id);
+                        changed(true);
+                        refreshAll();
+                    }
+                    fill[0].run();
+                }));
+                box.addView(addWay);
+            }
+            TextView add = text(context, "＋ " + tr("look.newStyle"), 14, true);
+            add.setTextColor(KuroSkinManager.get().accent());
+            add.setPadding(0, AndroidUtilities.dp(12), 0, AndroidUtilities.dp(8));
+            add.setOnClickListener(v -> askName(tr("look.newStyle"), "", n -> {
+                String id = session.styles.addStyle(n);
+                if (id == null) {
+                    report(tr("look.limit"));
+                } else {
+                    session.setTarget(id, null);
+                    changed(true);
+                    refreshAll();
+                }
+                fill[0].run();
+            }));
+            box.addView(add);
+        };
+        fill[0].run();
+        dialog.show();
+    }
+
+    private void addLookRow(LinearLayout box, String label, String sid, String wid, AlertDialog dialog, Runnable[] fill) {
+        Context context = box.getContext();
+        LinearLayout line = new LinearLayout(context);
+        line.setGravity(Gravity.CENTER_VERTICAL);
+        boolean current = java.util.Objects.equals(sid, session.styleId()) && java.util.Objects.equals(wid, session.wayId());
+        TextView name = text(context, (current ? "✓ " : "") + label, 15, current);
+        name.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
+        name.setPadding(0, AndroidUtilities.dp(10), 0, AndroidUtilities.dp(10));
+        name.setOnClickListener(v -> {
+            session.setTarget(sid, wid);
+            dialog.dismiss();
+            changed(true);
+            refreshAll();
+            scheduleLive();
+        });
+        line.addView(name, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 1f));
+        if (sid != null) {
+            TextView ren = text(context, "✎", 18, true);
+            ren.setPadding(AndroidUtilities.dp(12), 0, AndroidUtilities.dp(12), 0);
+            ren.setOnClickListener(v -> askName(tr("name"), label.replace("◆ ", "").replace("      ● ", ""), n -> {
+                session.styles.rename(sid, wid, n);
+                changed(true);
+                fill[0].run();
+            }));
+            TextView del = text(context, "✕", 18, true);
+            del.setPadding(AndroidUtilities.dp(12), 0, AndroidUtilities.dp(4), 0);
+            del.setOnClickListener(v -> {
+                if (java.util.Objects.equals(sid, session.styleId())) {
+                    session.setTarget(null, null);
+                }
+                session.styles.remove(sid, wid);
+                changed(true);
+                refreshAll();
+                fill[0].run();
+            });
+            line.addView(ren);
+            line.addView(del);
+        }
+        box.addView(line);
+    }
+
+    private interface NameCallback {
+        void got(String name);
+    }
+
+    private void askName(String title, String initial, NameCallback cb) {
+        final android.widget.EditText input = new android.widget.EditText(getParentActivity());
+        input.setText(initial);
+        input.setSingleLine(true);
+        new AlertDialog.Builder(getParentActivity()).setTitle(title).setView(input)
+                .setPositiveButton(tr("done"), (d, w) -> cb.got(input.getText().toString().trim()))
+                .setNegativeButton(tr("cancel"), null).show();
     }
 
     // ------------------------------------------------------------------ colour dialog
@@ -697,7 +839,7 @@ public class ThemeBuilderActivity extends BaseFragment {
     private void saveDraft() {
         try {
             if (session != null) {
-                prefs().edit().putString(KEY_DRAFT, session.draft.toJson()).apply();
+                prefs().edit().putString(KEY_DRAFT, session.draft.toJson()).putString(KEY_STYLES, session.styles.toJson()).apply();
             }
         } catch (Throwable t) {
             FileLog.e(t);
@@ -707,7 +849,7 @@ public class ThemeBuilderActivity extends BaseFragment {
     private void startOver() {
         new AlertDialog.Builder(getParentActivity()).setMessage(tr("startOver") + "?")
                 .setPositiveButton(tr("done"), (d, w) -> {
-                    prefs().edit().remove(KEY_DRAFT).apply();
+                    prefs().edit().remove(KEY_DRAFT).remove(KEY_STYLES).apply();
                     setLive(false);
                     session = new EditorSession(session.rules, session.catalog, ThemeDraft.fromJson(TEMPLATE, session.rules));
                     session.setLang(prefs().getString(KEY_LANG, "en"));
@@ -739,7 +881,7 @@ public class ThemeBuilderActivity extends BaseFragment {
         if (!live) {
             return;
         }
-        String err = guard.show(session.draft.toJson());
+        String err = guard.show(session.effectiveJson());
         if (err != null) {
             live = false;
             refreshToolbar();
@@ -758,7 +900,7 @@ public class ThemeBuilderActivity extends BaseFragment {
     // ------------------------------------------------------------------ leave / use / publish
 
     private void confirmLeave() {
-        if (!session.draft.isDirty() || getParentActivity() == null) {
+        if (!session.isDirty() || getParentActivity() == null) {
             finishFragment();
             return;
         }
@@ -771,7 +913,7 @@ public class ThemeBuilderActivity extends BaseFragment {
 
     @Override
     public boolean onBackPressed(boolean invoked) {
-        if (invoked && session != null && session.draft.isDirty() && getParentActivity() != null) {
+        if (invoked && session != null && session.isDirty() && getParentActivity() != null) {
             confirmLeave();
             return false;
         }
@@ -779,19 +921,18 @@ public class ThemeBuilderActivity extends BaseFragment {
     }
 
     /** The engine's own parser has the last word. Returns the JSON, or null after telling the person why not. */
-    private String validated() {
-        String json = session.draft.toJson();
+    private String validated(String json, String what) {
         try {
             SkinSpec.parse(json);
             return json;
         } catch (IllegalArgumentException e) {
-            Toast.makeText(getParentActivity(), tr("invalid") + e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getParentActivity(), tr("invalid") + (what == null ? "" : what + ": ") + e.getMessage(), Toast.LENGTH_LONG).show();
             return null;
         }
     }
 
     private void useOnPhone() {
-        final String json = validated();
+        final String json = validated(session.effectiveJson(), null);
         if (json == null) {
             return;
         }
@@ -808,14 +949,29 @@ public class ThemeBuilderActivity extends BaseFragment {
     }
 
     private void next() {
-        final String json = validated();
+        final String json = validated(session.draft.toJson(), null);
         if (json == null) {
             return;
         }
+        // every style and colourway must also make a valid skin on its own (the store checks the same on upload)
+        for (StyleSet.Style s : session.styles.styles()) {
+            if (validated(session.mergedJson(s.id, null), s.name) == null) {
+                return;
+            }
+            for (StyleSet.Way w : s.ways) {
+                if (validated(session.mergedJson(s.id, w.id), s.name + " / " + w.name) == null) {
+                    return;
+                }
+            }
+        }
         endLive();
+        session.refreshSwatches();
         saveDraft();
         ThemeUploadActivity upload = editing == null ? new ThemeUploadActivity() : new ThemeUploadActivity(editing);
         upload.setPrefill(json);
+        if (!session.styles.isEmpty() || session.styles.isDirty()) {
+            upload.setPrefillStyles(session.styles.toJson());
+        }
         presentFragment(upload);
     }
 }
