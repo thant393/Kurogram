@@ -25,7 +25,7 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 D = lambda p: os.path.join(ROOT, p)
-LANGS = ("en", "my")
+LANGS = ("en",)
 
 
 def main():
@@ -113,8 +113,6 @@ def main():
     print("rules: %d   catalog entries: %d" % (len(rows), len(entries)))
     for k in sorted(count):
         print("  %-20s %d" % (k, count[k]))
-    my = sum(1 for e in cat["entries"] if e["label"].get("my"))
-    print("  Burmese labels: %d / %d (not reviewed by a native speaker unless listed in 'reviewed')" % (my, len(cat["entries"])))
     if a.write:
         with open(D("docs/skin-editor.coverage.json"), "w", encoding="utf-8") as f:
             json.dump({"counts": count, "rules": rows}, f, indent=1)

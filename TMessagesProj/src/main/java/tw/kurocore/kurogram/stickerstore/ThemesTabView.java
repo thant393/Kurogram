@@ -106,7 +106,7 @@ public class ThemesTabView extends FrameLayout {
         return true;
     }
 
-    /** Totals of the themes loaded so far, for the creator dashboard. */
+    /** Totals of all the creator's themes (the list keeps loading pages in owner mode), for the creator dashboard. */
     public interface StatsListener {
         void onStats(int themes, long downloads, long likes);
     }
@@ -447,6 +447,9 @@ public class ThemesTabView extends FrameLayout {
                 progressView.setVisibility(GONE);
                 adapter.notifyDataSetChanged();
                 fireStats();
+                if (ownerMode && hasMore) {
+                    loadNextPage(); // a creator's own list is small: load it all so the dashboard totals are complete
+                }
                 if (themes.isEmpty() && !ownerMode) {
                     infoView.setText(query.isEmpty() && category == null ? emptyText : category != null && query.isEmpty() ? "No themes in this category yet" : "No themes match \"" + query + "\"");
                     infoView.setVisibility(VISIBLE);

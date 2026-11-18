@@ -20,7 +20,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MANIFEST = os.path.join(ROOT, "docs/skin-rules.manifest.json")
 CATALOG = os.path.join(ROOT, "docs/skin-editor.catalog.json")
 
-LANGS = ["en", "my"]
+LANGS = ["en"]
 
 SCREENS = {
     "chats": ("Chats", "ချက်တ်စာရင်း"), "chat": ("Chat", "ချက်တ်ဖန်သားပြင်"), "contacts": ("Contacts", "ဆက်သွယ်ရန်စာရင်း"),
@@ -337,6 +337,15 @@ def main():
                                "note": "set automatically by the Builder; never shown as a control"})
         added += 1
     with open(CATALOG, "w", encoding="utf-8") as f:
+        def _strip(o):
+            if isinstance(o, dict):
+                o.pop("my", None)
+                for v in o.values():
+                    _strip(v)
+            elif isinstance(o, list):
+                for v in o:
+                    _strip(v)
+        _strip(cat)
         json.dump(cat, f, ensure_ascii=False, indent=1)
         f.write("\n")
     print("catalog entries: %d (added %d)" % (len(cat["entries"]), added))

@@ -45,6 +45,12 @@ public class BuilderPreviewView extends View {
     private Listener listener;
     private boolean editMode = true; // Edit: tapping selects and the selection is outlined. Preview: neither.
     private int deviceWidthDp = 360;
+    private static final float CONTENT_FACTOR = 2.2f; // Preview mode lays the list screens out this many screens tall
+    private float scrollY;
+    private float lastY, downY;
+    private boolean moved;
+    private Runnable navigated;
+    private boolean drawingThumb;
 
     public BuilderPreviewView(Context context, EditorSession session) {
         super(context);
@@ -59,12 +65,61 @@ public class BuilderPreviewView extends View {
         invalidate();
     }
 
+    /** Called after a tap in Preview mode moved to another screen, so the owner can refresh its own labels. */
+    public void setNavigatedListener(Runnable r) {
+        navigated = r;
+    }
+
+    /** Preview mode taps: the bottom tabs switch screen and a chat row opens the conversation, like the real app. */
+    private void previewTap(float tx, float ty) {
+        float vh = getHeight();
+        float cy = ty + scrollY;
+        if ("chats".equals(session.scene()) && ty > vh - dp(56)) {
+            cy = ty + (vh * CONTENT_FACTOR - vh);
+        } else if (ty < dp(session.intValue("components.appBar.heightDp", 52))) {
+            cy = ty;
+        }
+        int tabIndex = -1, idx = 0;
+        String hitId = null;
+        float bestArea = Float.MAX_VALUE;
+        for (Hit h : hits) {
+            if ("bottomTabs.item".equals(h.id)) {
+                if (h.r.contains(tx, cy)) {
+                    tabIndex = idx;
+                }
+                idx++;
+            }
+            if (h.r.contains(tx, cy) && h.r.width() * h.r.height() <= bestArea) {
+                bestArea = h.r.width() * h.r.height();
+                hitId = h.id;
+            }
+        }
+        String to = null;
+        if (tabIndex >= 0) {
+            List<String> tabs = listOr("layout.bottomTabs.items", "chats", "contacts", "calls", "settings");
+            String t = tabs.get(tabIndex);
+            to = "chats".equals(t) ? "chats" : "contacts".equals(t) ? "contacts" : "settings".equals(t) ? "settings"
+                    : "calls".equals(t) || "people".equals(t) ? "people" : "profile".equals(t) ? "profile" : null;
+        } else if (hitId != null && hitId.startsWith("chatRow")) {
+            to = "chat";
+        }
+        if (to != null && !to.equals(session.scene())) {
+            session.setScene(to);
+            scrollY = 0;
+            invalidate();
+            if (navigated != null) {
+                navigated.run();
+            }
+        }
+    }
+
     public void setListener(Listener l) {
         listener = l;
     }
 
     public void setEditMode(boolean edit) {
         editMode = edit;
+        scrollY = 0;
         invalidate();
     }
 
@@ -126,9 +181,11 @@ public class BuilderPreviewView extends View {
             Canvas c = new Canvas(bmp);
             float sc = (float) outWidthPx / w;
             c.scale(sc, sc);
+            drawingThumb = true;
             onDraw(c);
             return bmp;
         } finally {
+            drawingThumb = false;
             session.setScene(prevScene);
             session.select(prevSel);
             editMode = prevEdit;
@@ -174,8 +231,57 @@ public class BuilderPreviewView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        int vw = getWidth(), vh = getHeight();
+        if (!scrollable()) {
+            scrollY = 0;
+            drawScene(canvas, vh);
+            return;
+        }
+        // Preview mode on a list screen: the screen is drawn taller than the view and slides under the bars,
+        // which stay pinned (the top bar always, the tab bar on Chats).
+        int ch = (int) (vh * CONTENT_FACTOR);
+        scrollY = Math.max(0, Math.min(scrollY, ch - vh));
+        canvas.save();
+        canvas.clipRect(0, 0, vw, vh);
+        canvas.translate(0, -scrollY);
+        drawScene(canvas, ch);
+        canvas.restore();
+        List<Hit> mainHits = new ArrayList<>(hits);
+        if (scrollY > 0) {
+            canvas.save();
+            canvas.clipRect(0, 0, vw, dp(session.intValue("components.appBar.heightDp", 52)));
+            drawScene(canvas, ch);
+            canvas.restore();
+            if ("chats".equals(session.scene())) {
+                int band = dp(56);
+                canvas.save();
+                canvas.clipRect(0, vh - band, vw, vh);
+                canvas.translate(0, -(ch - vh));
+                drawScene(canvas, ch);
+                canvas.restore();
+            }
+        }
         hits.clear();
-        int w = getWidth(), h = getHeight();
+        hits.addAll(mainHits);
+    }
+
+    private boolean scrollable() {
+        if (editMode || drawingThumb || session == null) {
+            return false;
+        }
+        switch (session.scene()) {
+            case "chat":
+            case "drawer":
+            case "controls":
+                return false;
+            default:
+                return true;
+        }
+    }
+
+    private void drawScene(Canvas canvas, int h) {
+        hits.clear();
+        int w = getWidth();
         boolean dark = "dark".equals(session.appearance());
         int bg = c("background", 0xFFF2F2F7, 0xFF0F0F10), surface = c("surface", 0xFFFFFFFF, 0xFF1C1C1E);
         int text = c("textPrimary", 0xFF14213D, 0xFFFFFFFF), text2 = c("textSecondary", 0xFF7A8499, 0xFF98989F);
@@ -1250,7 +1356,35 @@ public class BuilderPreviewView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent e) {
         if (!editMode) {
-            return false; // Preview mode: the screen is not ours to intercept
+            // Preview mode: dragging scrolls the list screens; taps do nothing
+            if (!scrollable()) {
+                if (e.getAction() == MotionEvent.ACTION_UP) {
+                    previewTap(e.getX(), e.getY());
+                }
+                return e.getAction() == MotionEvent.ACTION_DOWN || e.getAction() == MotionEvent.ACTION_UP;
+            }
+            switch (e.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    lastY = downY = e.getY();
+                    moved = false;
+                    getParent().requestDisallowInterceptTouchEvent(true);
+                    return true;
+                case MotionEvent.ACTION_UP:
+                    if (!moved) {
+                        previewTap(e.getX(), e.getY());
+                    }
+                    return true;
+                case MotionEvent.ACTION_MOVE:
+                    if (Math.abs(e.getY() - downY) > dp(8)) {
+                        moved = true;
+                    }
+                    scrollY -= e.getY() - lastY;
+                    lastY = e.getY();
+                    invalidate();
+                    return true;
+                default:
+                    return true;
+            }
         }
         if (e.getAction() == MotionEvent.ACTION_UP) {
             String best = "screenBackground";

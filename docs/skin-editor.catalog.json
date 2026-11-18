@@ -1,14 +1,12 @@
 {
  "catalogVersion": 1,
  "languages": [
-  "en",
-  "my"
+  "en"
  ],
  "screens": {
   "chats": {
    "label": {
-    "en": "Chats",
-    "my": "ချက်တ်စာရင်း"
+    "en": "Chats"
    },
    "reviewed": [
     "en"
@@ -16,8 +14,7 @@
   },
   "chat": {
    "label": {
-    "en": "Chat",
-    "my": "ချက်တ်ဖန်သားပြင်"
+    "en": "Chat"
    },
    "reviewed": [
     "en"
@@ -25,8 +22,7 @@
   },
   "contacts": {
    "label": {
-    "en": "Contacts",
-    "my": "ဆက်သွယ်ရန်စာရင်း"
+    "en": "Contacts"
    },
    "reviewed": [
     "en"
@@ -34,8 +30,7 @@
   },
   "people": {
    "label": {
-    "en": "People",
-    "my": "လူများ"
+    "en": "People"
    },
    "reviewed": [
     "en"
@@ -43,8 +38,7 @@
   },
   "unread": {
    "label": {
-    "en": "Unread",
-    "my": "မဖတ်ရသေးသော"
+    "en": "Unread"
    },
    "reviewed": [
     "en"
@@ -52,8 +46,7 @@
   },
   "settings": {
    "label": {
-    "en": "Settings",
-    "my": "ဆက်တင်များ"
+    "en": "Settings"
    },
    "reviewed": [
     "en"
@@ -61,8 +54,7 @@
   },
   "kuroSettings": {
    "label": {
-    "en": "Kuro settings",
-    "my": "Kuro ဆက်တင်များ"
+    "en": "Kuro settings"
    },
    "reviewed": [
     "en"
@@ -70,8 +62,7 @@
   },
   "profile": {
    "label": {
-    "en": "Profile",
-    "my": "ပရိုဖိုင်"
+    "en": "Profile"
    },
    "reviewed": [
     "en"
@@ -79,8 +70,7 @@
   },
   "themeStore": {
    "label": {
-    "en": "Theme store",
-    "my": "Theme စတိုး"
+    "en": "Theme store"
    },
    "reviewed": [
     "en"
@@ -88,8 +78,7 @@
   },
   "privacy": {
    "label": {
-    "en": "Privacy",
-    "my": "ကိုယ်ရေးလုံခြုံမှု"
+    "en": "Privacy"
    },
    "reviewed": [
     "en"
@@ -97,8 +86,7 @@
   },
   "notifications": {
    "label": {
-    "en": "Notifications",
-    "my": "အကြောင်းကြားချက်များ"
+    "en": "Notifications"
    },
    "reviewed": [
     "en"
@@ -106,8 +94,7 @@
   },
   "dataStorage": {
    "label": {
-    "en": "Data and storage",
-    "my": "ဒေတာနှင့် သိုလှောင်မှု"
+    "en": "Data and storage"
    },
    "reviewed": [
     "en"
@@ -115,8 +102,7 @@
   },
   "devices": {
    "label": {
-    "en": "Devices",
-    "my": "စက်များ"
+    "en": "Devices"
    },
    "reviewed": [
     "en"
@@ -126,8 +112,7 @@
  "components": {
   "global": {
    "label": {
-    "en": "Whole app",
-    "my": "app တစ်ခုလုံး"
+    "en": "Whole app"
    },
    "reviewed": [
     "en"
@@ -135,8 +120,7 @@
   },
   "screenBackground": {
    "label": {
-    "en": "Screen background",
-    "my": "မျက်နှာပြင်နောက်ခံ"
+    "en": "Screen background"
    },
    "reviewed": [
     "en"
@@ -144,8 +128,7 @@
   },
   "appBar": {
    "label": {
-    "en": "Top bar",
-    "my": "အပေါ်ဘား"
+    "en": "Top bar"
    },
    "reviewed": [
     "en"
@@ -153,8 +136,7 @@
   },
   "bottomTabs": {
    "label": {
-    "en": "Bottom tabs",
-    "my": "အောက်ခြေ tab များ"
+    "en": "Bottom tabs"
    },
    "reviewed": [
     "en"
@@ -162,8 +144,7 @@
   },
   "bottomTabs.item": {
    "label": {
-    "en": "Bottom tab item",
-    "my": "အောက်ခြေ tab တစ်ခု"
+    "en": "Bottom tab item"
    },
    "reviewed": [
     "en"
@@ -171,8 +152,7 @@
   },
   "fab": {
    "label": {
-    "en": "Compose button",
-    "my": "ရေးသားခလုတ်"
+    "en": "Compose button"
    },
    "reviewed": [
     "en"
@@ -180,8 +160,7 @@
   },
   "drawer": {
    "label": {
-    "en": "Side menu",
-    "my": "ဘေးမီနူး"
+    "en": "Side menu"
    },
    "reviewed": [
     "en"
@@ -189,8 +168,7 @@
   },
   "card": {
    "label": {
-    "en": "Card",
-    "my": "ကတ်"
+    "en": "Card"
    },
    "reviewed": [
     "en"
@@ -198,8 +176,7 @@
   },
   "section": {
    "label": {
-    "en": "Section",
-    "my": "အပိုင်း"
+    "en": "Section"
    },
    "reviewed": [
     "en"
@@ -207,8 +184,7 @@
   },
   "cell": {
    "label": {
-    "en": "List row",
-    "my": "စာရင်းအတန်း"
+    "en": "List row"
    },
    "reviewed": [
     "en"
@@ -216,8 +192,7 @@
   },
   "switch": {
    "label": {
-    "en": "Switch",
-    "my": "ခလုတ်ဖွင့်ပိတ်"
+    "en": "Switch"
    },
    "reviewed": [
     "en"
@@ -225,8 +200,7 @@
   },
   "button": {
    "label": {
-    "en": "Button",
-    "my": "ခလုတ်"
+    "en": "Button"
    },
    "reviewed": [
     "en"
@@ -234,8 +208,7 @@
   },
   "input": {
    "label": {
-    "en": "Input field",
-    "my": "ရိုက်ထည့်ရန်ကွက်"
+    "en": "Input field"
    },
    "reviewed": [
     "en"
@@ -243,8 +216,7 @@
   },
   "dialog": {
    "label": {
-    "en": "Dialog",
-    "my": "ဒိုင်ယာလော့"
+    "en": "Dialog"
    },
    "reviewed": [
     "en"
@@ -252,8 +224,7 @@
   },
   "search": {
    "label": {
-    "en": "Search field",
-    "my": "ရှာဖွေရန်ကွက်"
+    "en": "Search field"
    },
    "reviewed": [
     "en"
@@ -261,8 +232,7 @@
   },
   "session": {
    "label": {
-    "en": "Device row",
-    "my": "စက်အတန်း"
+    "en": "Device row"
    },
    "reviewed": [
     "en"
@@ -270,8 +240,7 @@
   },
   "chatRow": {
    "label": {
-    "en": "Chat row",
-    "my": "ချက်တ်အတန်း"
+    "en": "Chat row"
    },
    "reviewed": [
     "en"
@@ -279,8 +248,7 @@
   },
   "chatRow.avatar": {
    "label": {
-    "en": "Chat avatar",
-    "my": "ချက်တ်ပရိုဖိုင်ပုံ"
+    "en": "Chat avatar"
    },
    "reviewed": [
     "en"
@@ -288,8 +256,7 @@
   },
   "chatRow.title": {
    "label": {
-    "en": "Chat title",
-    "my": "ချက်တ်အမည်"
+    "en": "Chat title"
    },
    "reviewed": [
     "en"
@@ -297,8 +264,7 @@
   },
   "chatRow.preview": {
    "label": {
-    "en": "Message preview",
-    "my": "မက်ဆေ့ချ်အကျဉ်း"
+    "en": "Message preview"
    },
    "reviewed": [
     "en"
@@ -306,8 +272,7 @@
   },
   "chatRow.time": {
    "label": {
-    "en": "Time and status",
-    "my": "အချိန်နှင့် အခြေအနေ"
+    "en": "Time and status"
    },
    "reviewed": [
     "en"
@@ -315,8 +280,7 @@
   },
   "chatRow.badge": {
    "label": {
-    "en": "Unread badge",
-    "my": "မဖတ်ရသေးသော အရေအတွက်"
+    "en": "Unread badge"
    },
    "reviewed": [
     "en"
@@ -324,8 +288,7 @@
   },
   "chatList.header": {
    "label": {
-    "en": "Chat list header",
-    "my": "ချက်တ်စာရင်း ခေါင်းပိုင်း"
+    "en": "Chat list header"
    },
    "reviewed": [
     "en"
@@ -333,8 +296,7 @@
   },
   "chatList.storyRail": {
    "label": {
-    "en": "Story row",
-    "my": "Story တန်း"
+    "en": "Story row"
    },
    "reviewed": [
     "en"
@@ -342,8 +304,7 @@
   },
   "chatList.folders": {
    "label": {
-    "en": "Folders bar",
-    "my": "Folder ဘား"
+    "en": "Folders bar"
    },
    "reviewed": [
     "en"
@@ -351,8 +312,7 @@
   },
   "chatList.search": {
    "label": {
-    "en": "Chat search",
-    "my": "ချက်တ်ရှာဖွေခြင်း"
+    "en": "Chat search"
    },
    "reviewed": [
     "en"
@@ -360,8 +320,7 @@
   },
   "chatList.grid": {
    "label": {
-    "en": "Chat grid",
-    "my": "ချက်တ်ဇယားကွက်"
+    "en": "Chat grid"
    },
    "reviewed": [
     "en"
@@ -369,8 +328,7 @@
   },
   "settingsRow": {
    "label": {
-    "en": "Settings row",
-    "my": "ဆက်တင်အတန်း"
+    "en": "Settings row"
    },
    "reviewed": [
     "en"
@@ -378,8 +336,7 @@
   },
   "settingsHeader": {
    "label": {
-    "en": "Settings header",
-    "my": "ဆက်တင် ခေါင်းပိုင်း"
+    "en": "Settings header"
    },
    "reviewed": [
     "en"
@@ -387,8 +344,7 @@
   },
   "contactRow": {
    "label": {
-    "en": "Contact row",
-    "my": "ဆက်သွယ်ရန်အတန်း"
+    "en": "Contact row"
    },
    "reviewed": [
     "en"
@@ -396,8 +352,7 @@
   },
   "contactsGrid": {
    "label": {
-    "en": "Contacts grid",
-    "my": "ဆက်သွယ်ရန် ဇယားကွက်"
+    "en": "Contacts grid"
    },
    "reviewed": [
     "en"
@@ -405,8 +360,7 @@
   },
   "peopleRail": {
    "label": {
-    "en": "People row",
-    "my": "လူများတန်း"
+    "en": "People row"
    },
    "reviewed": [
     "en"
@@ -414,8 +368,7 @@
   },
   "profileHeader": {
    "label": {
-    "en": "Profile header",
-    "my": "ပရိုဖိုင် ခေါင်းပိုင်း"
+    "en": "Profile header"
    },
    "reviewed": [
     "en"
@@ -423,8 +376,7 @@
   },
   "infoCard": {
    "label": {
-    "en": "Profile info card",
-    "my": "ပရိုဖိုင်အချက်အလက်ကတ်"
+    "en": "Profile info card"
    },
    "reviewed": [
     "en"
@@ -432,8 +384,7 @@
   },
   "themeCard": {
    "label": {
-    "en": "Theme card",
-    "my": "Theme ကတ်"
+    "en": "Theme card"
    },
    "reviewed": [
     "en"
@@ -441,8 +392,7 @@
   },
   "bubble.in": {
    "label": {
-    "en": "Incoming bubble",
-    "my": "ဝင်လာသော မက်ဆေ့ချ်ဘူး"
+    "en": "Incoming bubble"
    },
    "reviewed": [
     "en"
@@ -450,8 +400,7 @@
   },
   "bubble.out": {
    "label": {
-    "en": "Outgoing bubble",
-    "my": "ပို့သော မက်ဆေ့ချ်ဘူး"
+    "en": "Outgoing bubble"
    },
    "reviewed": [
     "en"
@@ -459,8 +408,7 @@
   },
   "chatHeader": {
    "label": {
-    "en": "Chat header",
-    "my": "ချက်တ် ခေါင်းပိုင်း"
+    "en": "Chat header"
    },
    "reviewed": [
     "en"
@@ -468,8 +416,7 @@
   },
   "chatInput": {
    "label": {
-    "en": "Message input",
-    "my": "မက်ဆေ့ချ်ရိုက်ကွက်"
+    "en": "Message input"
    },
    "reviewed": [
     "en"
@@ -477,8 +424,7 @@
   },
   "datePill": {
    "label": {
-    "en": "Date label",
-    "my": "ရက်စွဲအမှတ်အသား"
+    "en": "Date label"
    },
    "reviewed": [
     "en"
@@ -486,8 +432,7 @@
   },
   "chatPanel": {
    "label": {
-    "en": "Chat menu and panels",
-    "my": "ချက်တ်မီနူးနှင့် panel များ"
+    "en": "Chat menu and panels"
    },
    "reviewed": [
     "en"
@@ -497,8 +442,7 @@
  "groups": {
   "structure": {
    "label": {
-    "en": "Theme",
-    "my": "Theme"
+    "en": "Theme"
    },
    "reviewed": [
     "en"
@@ -506,8 +450,7 @@
   },
   "colors": {
    "label": {
-    "en": "Colours",
-    "my": "အရောင်များ"
+    "en": "Colours"
    },
    "reviewed": [
     "en"
@@ -515,8 +458,7 @@
   },
   "gradient": {
    "label": {
-    "en": "Gradient",
-    "my": "အရောင်ဖျော့ဆင်း"
+    "en": "Gradient"
    },
    "reviewed": [
     "en"
@@ -524,8 +466,7 @@
   },
   "typography": {
    "label": {
-    "en": "Text",
-    "my": "စာသား"
+    "en": "Text"
    },
    "reviewed": [
     "en"
@@ -533,8 +474,7 @@
   },
   "spacing": {
    "label": {
-    "en": "Spacing",
-    "my": "အကွာအဝေး"
+    "en": "Spacing"
    },
    "reviewed": [
     "en"
@@ -542,8 +482,7 @@
   },
   "shapes": {
    "label": {
-    "en": "Shapes",
-    "my": "ပုံသဏ္ဍာန်"
+    "en": "Shapes"
    },
    "reviewed": [
     "en"
@@ -551,8 +490,7 @@
   },
   "elevation": {
    "label": {
-    "en": "Elevation",
-    "my": "အမြင့်အရိပ်"
+    "en": "Elevation"
    },
    "reviewed": [
     "en"
@@ -560,8 +498,7 @@
   },
   "chat": {
    "label": {
-    "en": "Chat",
-    "my": "ချက်တ်"
+    "en": "Chat"
    },
    "reviewed": [
     "en"
@@ -569,8 +506,7 @@
   },
   "effects": {
    "label": {
-    "en": "Effects",
-    "my": "Effect များ"
+    "en": "Effects"
    },
    "reviewed": [
     "en"
@@ -578,8 +514,7 @@
   },
   "ux": {
    "label": {
-    "en": "Motion and touch",
-    "my": "လှုပ်ရှားမှုနှင့် ထိတွေ့မှု"
+    "en": "Motion and touch"
    },
    "reviewed": [
     "en"
@@ -587,8 +522,7 @@
   },
   "assets": {
    "label": {
-    "en": "Assets",
-    "my": "ပုံနှင့်ဖောင့်များ"
+    "en": "Assets"
    },
    "reviewed": [
     "en"
@@ -596,8 +530,7 @@
   },
   "comp.appBar": {
    "label": {
-    "en": "Top bar",
-    "my": "အပေါ်ဘား"
+    "en": "Top bar"
    },
    "reviewed": [
     "en"
@@ -605,8 +538,7 @@
   },
   "comp.navigationBar": {
    "label": {
-    "en": "Navigation bar",
-    "my": "လမ်းညွှန်ဘား"
+    "en": "Navigation bar"
    },
    "reviewed": [
     "en"
@@ -614,8 +546,7 @@
   },
   "comp.bottomNavigation": {
    "label": {
-    "en": "Bottom navigation",
-    "my": "အောက်ခြေလမ်းညွှန်"
+    "en": "Bottom navigation"
    },
    "reviewed": [
     "en"
@@ -623,8 +554,7 @@
   },
   "comp.card": {
    "label": {
-    "en": "Cards",
-    "my": "ကတ်များ"
+    "en": "Cards"
    },
    "reviewed": [
     "en"
@@ -632,8 +562,7 @@
   },
   "comp.button": {
    "label": {
-    "en": "Buttons",
-    "my": "ခလုတ်များ"
+    "en": "Buttons"
    },
    "reviewed": [
     "en"
@@ -641,8 +570,7 @@
   },
   "comp.input": {
    "label": {
-    "en": "Input fields",
-    "my": "ရိုက်ထည့်ကွက်များ"
+    "en": "Input fields"
    },
    "reviewed": [
     "en"
@@ -650,8 +578,7 @@
   },
   "comp.dialog": {
    "label": {
-    "en": "Dialogs",
-    "my": "ဒိုင်ယာလော့များ"
+    "en": "Dialogs"
    },
    "reviewed": [
     "en"
@@ -659,8 +586,7 @@
   },
   "comp.cell": {
    "label": {
-    "en": "List rows",
-    "my": "စာရင်းအတန်းများ"
+    "en": "List rows"
    },
    "reviewed": [
     "en"
@@ -668,8 +594,7 @@
   },
   "comp.section": {
    "label": {
-    "en": "Sections",
-    "my": "အပိုင်းများ"
+    "en": "Sections"
    },
    "reviewed": [
     "en"
@@ -677,8 +602,7 @@
   },
   "comp.switch": {
    "label": {
-    "en": "Switches",
-    "my": "ဖွင့်ပိတ်ခလုတ်များ"
+    "en": "Switches"
    },
    "reviewed": [
     "en"
@@ -686,8 +610,7 @@
   },
   "comp.search": {
    "label": {
-    "en": "Search fields",
-    "my": "ရှာဖွေရန်ကွက်များ"
+    "en": "Search fields"
    },
    "reviewed": [
     "en"
@@ -695,8 +618,7 @@
   },
   "comp.fab": {
    "label": {
-    "en": "Compose button",
-    "my": "ရေးသားခလုတ်"
+    "en": "Compose button"
    },
    "reviewed": [
     "en"
@@ -704,8 +626,7 @@
   },
   "comp.session": {
    "label": {
-    "en": "Device rows",
-    "my": "စက်အတန်းများ"
+    "en": "Device rows"
    },
    "reviewed": [
     "en"
@@ -713,8 +634,7 @@
   },
   "screen.chats": {
    "label": {
-    "en": "Chats screen",
-    "my": "ချက်တ်စာရင်း screen"
+    "en": "Chats screen"
    },
    "reviewed": [
     "en"
@@ -722,8 +642,7 @@
   },
   "screen.contacts": {
    "label": {
-    "en": "Contacts screen",
-    "my": "ဆက်သွယ်ရန် screen"
+    "en": "Contacts screen"
    },
    "reviewed": [
     "en"
@@ -731,8 +650,7 @@
   },
   "screen.profile": {
    "label": {
-    "en": "Profile screen",
-    "my": "ပရိုဖိုင် screen"
+    "en": "Profile screen"
    },
    "reviewed": [
     "en"
@@ -740,8 +658,7 @@
   },
   "screen.settings": {
    "label": {
-    "en": "Settings screen",
-    "my": "ဆက်တင် screen"
+    "en": "Settings screen"
    },
    "reviewed": [
     "en"
@@ -749,8 +666,7 @@
   },
   "screen.themeStore": {
    "label": {
-    "en": "Theme store screen",
-    "my": "Theme စတိုး screen"
+    "en": "Theme store screen"
    },
    "reviewed": [
     "en"
@@ -758,8 +674,7 @@
   },
   "screen.privacy": {
    "label": {
-    "en": "Privacy screen",
-    "my": "ကိုယ်ရေးလုံခြုံမှု screen"
+    "en": "Privacy screen"
    },
    "reviewed": [
     "en"
@@ -767,8 +682,7 @@
   },
   "screen.notifications": {
    "label": {
-    "en": "Notifications screen",
-    "my": "အကြောင်းကြားချက် screen"
+    "en": "Notifications screen"
    },
    "reviewed": [
     "en"
@@ -776,8 +690,7 @@
   },
   "screen.dataStorage": {
    "label": {
-    "en": "Data and storage screen",
-    "my": "ဒေတာနှင့် သိုလှောင်မှု screen"
+    "en": "Data and storage screen"
    },
    "reviewed": [
     "en"
@@ -785,8 +698,7 @@
   },
   "screen.devices": {
    "label": {
-    "en": "Devices screen",
-    "my": "စက်များ screen"
+    "en": "Devices screen"
    },
    "reviewed": [
     "en"
@@ -794,8 +706,7 @@
   },
   "layout.chatList": {
    "label": {
-    "en": "Chat list layout",
-    "my": "ချက်တ်စာရင်း ဖွဲ့စည်းပုံ"
+    "en": "Chat list layout"
    },
    "reviewed": [
     "en"
@@ -803,8 +714,7 @@
   },
   "layout.bottomTabs": {
    "label": {
-    "en": "Bottom tabs layout",
-    "my": "အောက်ခြေ tab ဖွဲ့စည်းပုံ"
+    "en": "Bottom tabs layout"
    },
    "reviewed": [
     "en"
@@ -812,8 +722,7 @@
   },
   "layout.drawer": {
    "label": {
-    "en": "Side menu layout",
-    "my": "ဘေးမီနူး ဖွဲ့စည်းပုံ"
+    "en": "Side menu layout"
    },
    "reviewed": [
     "en"
@@ -821,8 +730,7 @@
   },
   "layout.settings": {
    "label": {
-    "en": "Settings layout",
-    "my": "ဆက်တင် ဖွဲ့စည်းပုံ"
+    "en": "Settings layout"
    },
    "reviewed": [
     "en"
@@ -830,8 +738,7 @@
   },
   "layout.contacts": {
    "label": {
-    "en": "Contacts layout",
-    "my": "ဆက်သွယ်ရန် ဖွဲ့စည်းပုံ"
+    "en": "Contacts layout"
    },
    "reviewed": [
     "en"
@@ -839,8 +746,7 @@
   },
   "layout.people": {
    "label": {
-    "en": "People layout",
-    "my": "လူများ ဖွဲ့စည်းပုံ"
+    "en": "People layout"
    },
    "reviewed": [
     "en"
@@ -848,8 +754,7 @@
   },
   "layout.themeStore": {
    "label": {
-    "en": "Theme store layout",
-    "my": "Theme စတိုး ဖွဲ့စည်းပုံ"
+    "en": "Theme store layout"
    },
    "reviewed": [
     "en"
@@ -857,8 +762,7 @@
   },
   "layout.chat": {
    "label": {
-    "en": "Chat layout",
-    "my": "ချက်တ် ဖွဲ့စည်းပုံ"
+    "en": "Chat layout"
    },
    "reviewed": [
     "en"
@@ -866,8 +770,7 @@
   },
   "layout.profile": {
    "label": {
-    "en": "Profile rows",
-    "my": "ပရိုဖိုင်အတန်းများ"
+    "en": "Profile rows"
    },
    "reviewed": [
     "en"
@@ -875,8 +778,7 @@
   },
   "layout.privacy": {
    "label": {
-    "en": "Privacy rows",
-    "my": "ကိုယ်ရေးလုံခြုံမှုအတန်းများ"
+    "en": "Privacy rows"
    },
    "reviewed": [
     "en"
@@ -884,8 +786,7 @@
   },
   "layout.notifications": {
    "label": {
-    "en": "Notification rows",
-    "my": "အကြောင်းကြားချက်အတန်းများ"
+    "en": "Notification rows"
    },
    "reviewed": [
     "en"
@@ -893,8 +794,7 @@
   },
   "layout.dataStorage": {
    "label": {
-    "en": "Data and storage rows",
-    "my": "ဒေတာနှင့် သိုလှောင်မှု အတန်းများ"
+    "en": "Data and storage rows"
    },
    "reviewed": [
     "en"
@@ -917,12 +817,10 @@
     "button"
    ],
    "label": {
-    "en": "Accent",
-    "my": "အဓိကအရောင်"
+    "en": "Accent"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -943,12 +841,10 @@
     "button"
    ],
    "label": {
-    "en": "On accent",
-    "my": "on အဓိကအရောင်"
+    "en": "On accent"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -968,12 +864,10 @@
     "screenBackground"
    ],
    "label": {
-    "en": "Background",
-    "my": "နောက်ခံ"
+    "en": "Background"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -994,12 +888,10 @@
     "section"
    ],
    "label": {
-    "en": "Surface",
-    "my": "မျက်နှာပြင်"
+    "en": "Surface"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1020,12 +912,10 @@
     "dialog"
    ],
    "label": {
-    "en": "Surface elevated",
-    "my": "မျက်နှာပြင် မြင့်တက်သော"
+    "en": "Surface elevated"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1046,12 +936,10 @@
     "cell"
    ],
    "label": {
-    "en": "Text primary",
-    "my": "စာသား အဓိက"
+    "en": "Text primary"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1072,12 +960,10 @@
     "chatRow.time"
    ],
    "label": {
-    "en": "Text secondary",
-    "my": "စာသား ဒုတိယ"
+    "en": "Text secondary"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1098,12 +984,10 @@
     "cell"
    ],
    "label": {
-    "en": "Divider",
-    "my": "ပိုင်းခြားမျဉ်း"
+    "en": "Divider"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1124,12 +1008,10 @@
     "appBar"
    ],
    "label": {
-    "en": "Icon",
-    "my": "အိုင်ကွန်"
+    "en": "Icon"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1149,12 +1031,10 @@
     "chatRow.badge"
    ],
    "label": {
-    "en": "Error",
-    "my": "အမှား"
+    "en": "Error"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1174,12 +1054,10 @@
     "chatRow.badge"
    ],
    "label": {
-    "en": "Success",
-    "my": "အောင်မြင်မှု"
+    "en": "Success"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1199,12 +1077,10 @@
     "dialog"
    ],
    "label": {
-    "en": "Overlay",
-    "my": "ဖုံးအုပ်အလွှာ"
+    "en": "Overlay"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1224,12 +1100,10 @@
     "screenBackground"
    ],
    "label": {
-    "en": "Top",
-    "my": "အပေါ်"
+    "en": "Top"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1249,12 +1123,10 @@
     "screenBackground"
    ],
    "label": {
-    "en": "Middle",
-    "my": "အလယ်"
+    "en": "Middle"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1274,12 +1146,10 @@
     "screenBackground"
    ],
    "label": {
-    "en": "Bottom",
-    "my": "အောက်"
+    "en": "Bottom"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1299,12 +1169,10 @@
     "screenBackground"
    ],
    "label": {
-    "en": "Direction",
-    "my": "ဦးတည်ချက်"
+    "en": "Direction"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1326,12 +1194,10 @@
     "cell"
    ],
    "label": {
-    "en": "Font family",
-    "my": "ဖောင့် မျိုးစုံ"
+    "en": "Font family"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1352,12 +1218,10 @@
     "cell"
    ],
    "label": {
-    "en": "Body size (sp)",
-    "my": "ခန္ဓာကိုယ်စာသား အရွယ်အစား (sp)"
+    "en": "Body size (sp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1379,12 +1243,10 @@
     "cell"
    ],
    "label": {
-    "en": "Title size (sp)",
-    "my": "ခေါင်းစဉ် အရွယ်အစား (sp)"
+    "en": "Title size (sp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1404,12 +1266,10 @@
     "chatRow.time"
    ],
    "label": {
-    "en": "Caption size (sp)",
-    "my": "ကပ်ရှင် အရွယ်အစား (sp)"
+    "en": "Caption size (sp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1431,12 +1291,10 @@
     "cell"
    ],
    "label": {
-    "en": "Font weight",
-    "my": "ဖောင့် အထူ"
+    "en": "Font weight"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1458,12 +1316,10 @@
     "cell"
    ],
    "label": {
-    "en": "Line height multiplier",
-    "my": "စာကြောင်း အမြင့် multiplier"
+    "en": "Line height multiplier"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1484,12 +1340,10 @@
     "dialog"
    ],
    "label": {
-    "en": "Xs",
-    "my": "xs"
+    "en": "Xs"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1510,12 +1364,10 @@
     "dialog"
    ],
    "label": {
-    "en": "Sm",
-    "my": "sm"
+    "en": "Sm"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1536,12 +1388,10 @@
     "dialog"
    ],
    "label": {
-    "en": "Md",
-    "my": "md"
+    "en": "Md"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1562,12 +1412,10 @@
     "dialog"
    ],
    "label": {
-    "en": "Lg",
-    "my": "lg"
+    "en": "Lg"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1588,12 +1436,10 @@
     "dialog"
    ],
    "label": {
-    "en": "Xl",
-    "my": "xl"
+    "en": "Xl"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1614,12 +1460,10 @@
     "section"
    ],
    "label": {
-    "en": "Card radius (dp)",
-    "my": "ကတ် ထောင့်ကွေးမှု (dp)"
+    "en": "Card radius (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1639,12 +1483,10 @@
     "button"
    ],
    "label": {
-    "en": "Button radius (dp)",
-    "my": "ခလုတ် ထောင့်ကွေးမှု (dp)"
+    "en": "Button radius (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1664,12 +1506,10 @@
     "input"
    ],
    "label": {
-    "en": "Input radius (dp)",
-    "my": "ရိုက်ထည့်ကွက် ထောင့်ကွေးမှု (dp)"
+    "en": "Input radius (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1689,12 +1529,10 @@
     "dialog"
    ],
    "label": {
-    "en": "Dialog radius (dp)",
-    "my": "ဒိုင်ယာလော့ ထောင့်ကွေးမှု (dp)"
+    "en": "Dialog radius (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1715,12 +1553,10 @@
     "bubble.out"
    ],
    "label": {
-    "en": "Bubble radius (dp)",
-    "my": "မက်ဆေ့ချ်ဘူး ထောင့်ကွေးမှု (dp)"
+    "en": "Bubble radius (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1741,12 +1577,10 @@
     "dialog"
    ],
    "label": {
-    "en": "Card (dp)",
-    "my": "ကတ် (dp)"
+    "en": "Card (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1767,12 +1601,10 @@
     "dialog"
    ],
    "label": {
-    "en": "Dialog (dp)",
-    "my": "ဒိုင်ယာလော့ (dp)"
+    "en": "Dialog (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1792,12 +1624,10 @@
     "appBar"
    ],
    "label": {
-    "en": "Background",
-    "my": "နောက်ခံ"
+    "en": "Background"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1817,12 +1647,10 @@
     "appBar"
    ],
    "label": {
-    "en": "Foreground",
-    "my": "foreground"
+    "en": "Foreground"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1842,12 +1670,10 @@
     "appBar"
    ],
    "label": {
-    "en": "Height (dp)",
-    "my": "အမြင့် (dp)"
+    "en": "Height (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1867,12 +1693,10 @@
     "bottomTabs"
    ],
    "label": {
-    "en": "Background",
-    "my": "နောက်ခံ"
+    "en": "Background"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1892,12 +1716,10 @@
     "bottomTabs"
    ],
    "label": {
-    "en": "Selected",
-    "my": "selected"
+    "en": "Selected"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1917,12 +1739,10 @@
     "bottomTabs"
    ],
    "label": {
-    "en": "Unselected",
-    "my": "unselected"
+    "en": "Unselected"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1943,12 +1763,10 @@
     "bottomTabs.item"
    ],
    "label": {
-    "en": "Background",
-    "my": "နောက်ခံ"
+    "en": "Background"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1969,12 +1787,10 @@
     "bottomTabs.item"
    ],
    "label": {
-    "en": "Selected background",
-    "my": "selected နောက်ခံ"
+    "en": "Selected background"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -1995,12 +1811,10 @@
     "bottomTabs.item"
    ],
    "label": {
-    "en": "Icon size (dp)",
-    "my": "အိုင်ကွန် အရွယ်အစား (dp)"
+    "en": "Icon size (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2020,12 +1834,10 @@
     "card"
    ],
    "label": {
-    "en": "Background",
-    "my": "နောက်ခံ"
+    "en": "Background"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2045,12 +1857,10 @@
     "card"
    ],
    "label": {
-    "en": "Border color",
-    "my": "ဘောင် အရောင်"
+    "en": "Border color"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2070,12 +1880,10 @@
     "card"
    ],
    "label": {
-    "en": "Border width (dp)",
-    "my": "ဘောင် အကျယ် (dp)"
+    "en": "Border width (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2095,12 +1903,10 @@
     "button"
    ],
    "label": {
-    "en": "Background",
-    "my": "နောက်ခံ"
+    "en": "Background"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2120,12 +1926,10 @@
     "button"
    ],
    "label": {
-    "en": "Foreground",
-    "my": "foreground"
+    "en": "Foreground"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2145,12 +1949,10 @@
     "button"
    ],
    "label": {
-    "en": "Height (dp)",
-    "my": "အမြင့် (dp)"
+    "en": "Height (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2170,12 +1972,10 @@
     "input"
    ],
    "label": {
-    "en": "Background",
-    "my": "နောက်ခံ"
+    "en": "Background"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2195,12 +1995,10 @@
     "input"
    ],
    "label": {
-    "en": "Foreground",
-    "my": "foreground"
+    "en": "Foreground"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2220,12 +2018,10 @@
     "input"
    ],
    "label": {
-    "en": "Hint",
-    "my": "အရိပ်အမြွက်"
+    "en": "Hint"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2245,12 +2041,10 @@
     "dialog"
    ],
    "label": {
-    "en": "Background",
-    "my": "နောက်ခံ"
+    "en": "Background"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2270,12 +2064,10 @@
     "dialog"
    ],
    "label": {
-    "en": "Scrim",
-    "my": "scrim"
+    "en": "Scrim"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2295,12 +2087,10 @@
     "chatRow"
    ],
    "label": {
-    "en": "Layout",
-    "my": "ဖွဲ့စည်းပုံ"
+    "en": "Layout"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2319,12 +2109,10 @@
     "screenBackground"
    ],
    "label": {
-    "en": "Background",
-    "my": "နောက်ခံ"
+    "en": "Background"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2344,12 +2132,10 @@
     "chatRow"
    ],
    "label": {
-    "en": "List style",
-    "my": "စာရင်း ပုံစံ"
+    "en": "List style"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2369,12 +2155,10 @@
     "chatRow.avatar"
    ],
    "label": {
-    "en": "Avatar size (dp)",
-    "my": "ပရိုဖိုင်ပုံ အရွယ်အစား (dp)"
+    "en": "Avatar size (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2394,12 +2178,10 @@
     "chatRow"
    ],
    "label": {
-    "en": "Show dividers",
-    "my": "ပြမည် ပိုင်းခြားမျဉ်းများ"
+    "en": "Show dividers"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2419,12 +2201,10 @@
     "chatRow"
    ],
    "label": {
-    "en": "Three lines",
-    "my": "three စာကြောင်းများ"
+    "en": "Three lines"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2444,12 +2224,10 @@
     "screenBackground"
    ],
    "label": {
-    "en": "Background",
-    "my": "နောက်ခံ"
+    "en": "Background"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2469,12 +2247,10 @@
     "contactRow"
    ],
    "label": {
-    "en": "Section style",
-    "my": "အပိုင်း ပုံစံ"
+    "en": "Section style"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2494,12 +2270,10 @@
     "contactRow"
    ],
    "label": {
-    "en": "Avatar size (dp)",
-    "my": "ပရိုဖိုင်ပုံ အရွယ်အစား (dp)"
+    "en": "Avatar size (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2519,12 +2293,10 @@
     "screenBackground"
    ],
    "label": {
-    "en": "Background",
-    "my": "နောက်ခံ"
+    "en": "Background"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2545,12 +2317,10 @@
     "infoCard"
    ],
    "label": {
-    "en": "Header style",
-    "my": "ခေါင်းပိုင်း ပုံစံ"
+    "en": "Header style"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2571,12 +2341,10 @@
     "infoCard"
    ],
    "label": {
-    "en": "Avatar size (dp)",
-    "my": "ပရိုဖိုင်ပုံ အရွယ်အစား (dp)"
+    "en": "Avatar size (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2597,12 +2365,10 @@
     "infoCard"
    ],
    "label": {
-    "en": "Card radius (dp)",
-    "my": "ကတ် ထောင့်ကွေးမှု (dp)"
+    "en": "Card radius (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2622,12 +2388,10 @@
     "screenBackground"
    ],
    "label": {
-    "en": "Background",
-    "my": "နောက်ခံ"
+    "en": "Background"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2647,12 +2411,10 @@
     "settingsRow"
    ],
    "label": {
-    "en": "Group style",
-    "my": "အုပ်စု ပုံစံ"
+    "en": "Group style"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2672,12 +2434,10 @@
     "settingsRow"
    ],
    "label": {
-    "en": "Icon style",
-    "my": "အိုင်ကွန် ပုံစံ"
+    "en": "Icon style"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2697,12 +2457,10 @@
     "settingsRow"
    ],
    "label": {
-    "en": "Show descriptions",
-    "my": "ပြမည် ဖော်ပြချက်များ"
+    "en": "Show descriptions"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2722,12 +2480,10 @@
     "screenBackground"
    ],
    "label": {
-    "en": "Background",
-    "my": "နောက်ခံ"
+    "en": "Background"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2747,12 +2503,10 @@
     "themeCard"
    ],
    "label": {
-    "en": "Grid columns",
-    "my": "ဇယားကွက် ကော်လံ"
+    "en": "Grid columns"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2772,12 +2526,10 @@
     "themeCard"
    ],
    "label": {
-    "en": "Preview radius (dp)",
-    "my": "မက်ဆေ့ချ်အကျဉ်း ထောင့်ကွေးမှု (dp)"
+    "en": "Preview radius (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2797,12 +2549,10 @@
     "bubble.in"
    ],
    "label": {
-    "en": "Bubble in",
-    "my": "မက်ဆေ့ချ်ဘူး ဝင်လာ"
+    "en": "Bubble in"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2822,12 +2572,10 @@
     "bubble.out"
    ],
    "label": {
-    "en": "Bubble out",
-    "my": "မက်ဆေ့ချ်ဘူး ပို့"
+    "en": "Bubble out"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2847,12 +2595,10 @@
     "bubble.in"
    ],
    "label": {
-    "en": "Bubble in text",
-    "my": "မက်ဆေ့ချ်ဘူး ဝင်လာ စာသား"
+    "en": "Bubble in text"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2872,12 +2618,10 @@
     "bubble.out"
    ],
    "label": {
-    "en": "Bubble out text",
-    "my": "မက်ဆေ့ချ်ဘူး ပို့ စာသား"
+    "en": "Bubble out text"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2898,12 +2642,10 @@
     "bubble.out"
    ],
    "label": {
-    "en": "Bubble radius (dp)",
-    "my": "မက်ဆေ့ချ်ဘူး ထောင့်ကွေးမှု (dp)"
+    "en": "Bubble radius (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2924,12 +2666,10 @@
     "bubble.out"
    ],
    "label": {
-    "en": "Font size (sp)",
-    "my": "ဖောင့် အရွယ်အစား (sp)"
+    "en": "Font size (sp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2949,12 +2689,10 @@
     "global"
    ],
    "label": {
-    "en": "Wallpaper",
-    "my": "နောက်ခံပုံ"
+    "en": "Wallpaper"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2973,12 +2711,10 @@
     "global"
    ],
    "label": {
-    "en": "Font",
-    "my": "ဖောင့်"
+    "en": "Font"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -2997,12 +2733,10 @@
     "global"
    ],
    "label": {
-    "en": "Icon pack",
-    "my": "အိုင်ကွန် pack"
+    "en": "Icon pack"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3021,12 +2755,10 @@
     "global"
    ],
    "label": {
-    "en": "Blur",
-    "my": "မှုန်ဝါး"
+    "en": "Blur"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3046,12 +2778,10 @@
     "global"
    ],
    "label": {
-    "en": "Glass",
-    "my": "ဖန်"
+    "en": "Glass"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3071,12 +2801,10 @@
     "global"
    ],
    "label": {
-    "en": "Animations",
-    "my": "လှုပ်ရှားမှု"
+    "en": "Animations"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3096,12 +2824,10 @@
     "global"
    ],
    "label": {
-    "en": "Reduced motion",
-    "my": "လျှော့ထား လှုပ်ရှားမှု"
+    "en": "Reduced motion"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3121,12 +2847,10 @@
     "cell"
    ],
    "label": {
-    "en": "Height (dp)",
-    "my": "အမြင့် (dp)"
+    "en": "Height (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3146,12 +2870,10 @@
     "cell"
    ],
    "label": {
-    "en": "Two line height (dp)",
-    "my": "two စာကြောင်း အမြင့် (dp)"
+    "en": "Two line height (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3171,12 +2893,10 @@
     "cell"
    ],
    "label": {
-    "en": "Padding start (dp)",
-    "my": "အတွင်းအကွာ အစ (dp)"
+    "en": "Padding start (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3196,12 +2916,10 @@
     "cell"
    ],
    "label": {
-    "en": "Title size (sp)",
-    "my": "ခေါင်းစဉ် အရွယ်အစား (sp)"
+    "en": "Title size (sp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3221,12 +2939,10 @@
     "cell"
    ],
    "label": {
-    "en": "Value size (sp)",
-    "my": "value အရွယ်အစား (sp)"
+    "en": "Value size (sp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3246,12 +2962,10 @@
     "cell"
    ],
    "label": {
-    "en": "Title weight",
-    "my": "ခေါင်းစဉ် အထူ"
+    "en": "Title weight"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3271,12 +2985,10 @@
     "cell"
    ],
    "label": {
-    "en": "Icon size (dp)",
-    "my": "အိုင်ကွန် အရွယ်အစား (dp)"
+    "en": "Icon size (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3296,12 +3008,10 @@
     "cell"
    ],
    "label": {
-    "en": "Divider visible",
-    "my": "ပိုင်းခြားမျဉ်း မြင်ရမည်"
+    "en": "Divider visible"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3321,12 +3031,10 @@
     "cell"
    ],
    "label": {
-    "en": "Divider inset (dp)",
-    "my": "ပိုင်းခြားမျဉ်း အတွင်းကွာ (dp)"
+    "en": "Divider inset (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3346,12 +3054,10 @@
     "cell"
    ],
    "label": {
-    "en": "Divider color",
-    "my": "ပိုင်းခြားမျဉ်း အရောင်"
+    "en": "Divider color"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3371,12 +3077,10 @@
     "cell"
    ],
    "label": {
-    "en": "Pressed color",
-    "my": "ဖိထားသော အရောင်"
+    "en": "Pressed color"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3396,12 +3100,10 @@
     "section"
    ],
    "label": {
-    "en": "Style",
-    "my": "ပုံစံ"
+    "en": "Style"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3421,12 +3123,10 @@
     "section"
    ],
    "label": {
-    "en": "Radius (dp)",
-    "my": "ထောင့်ကွေးမှု (dp)"
+    "en": "Radius (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3446,12 +3146,10 @@
     "section"
    ],
    "label": {
-    "en": "Gap (dp)",
-    "my": "ကွာဟချက် (dp)"
+    "en": "Gap (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3471,12 +3169,10 @@
     "section"
    ],
    "label": {
-    "en": "Header size (sp)",
-    "my": "ခေါင်းပိုင်း အရွယ်အစား (sp)"
+    "en": "Header size (sp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3496,12 +3192,10 @@
     "section"
    ],
    "label": {
-    "en": "Header weight",
-    "my": "ခေါင်းပိုင်း အထူ"
+    "en": "Header weight"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3521,12 +3215,10 @@
     "section"
    ],
    "label": {
-    "en": "Header color",
-    "my": "ခေါင်းပိုင်း အရောင်"
+    "en": "Header color"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3546,12 +3238,10 @@
     "section"
    ],
    "label": {
-    "en": "Info size (sp)",
-    "my": "info အရွယ်အစား (sp)"
+    "en": "Info size (sp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3571,12 +3261,10 @@
     "switch"
    ],
    "label": {
-    "en": "Track on",
-    "my": "လမ်းကြောင်း on"
+    "en": "Track on"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3596,12 +3284,10 @@
     "switch"
    ],
    "label": {
-    "en": "Track off",
-    "my": "လမ်းကြောင်း off"
+    "en": "Track off"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3621,12 +3307,10 @@
     "switch"
    ],
    "label": {
-    "en": "Thumb on",
-    "my": "လက်မ on"
+    "en": "Thumb on"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3646,12 +3330,10 @@
     "switch"
    ],
    "label": {
-    "en": "Thumb off",
-    "my": "လက်မ off"
+    "en": "Thumb off"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3671,12 +3353,10 @@
     "search"
    ],
    "label": {
-    "en": "Background",
-    "my": "နောက်ခံ"
+    "en": "Background"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3696,12 +3376,10 @@
     "search"
    ],
    "label": {
-    "en": "Radius (dp)",
-    "my": "ထောင့်ကွေးမှု (dp)"
+    "en": "Radius (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3721,12 +3399,10 @@
     "search"
    ],
    "label": {
-    "en": "Hint color",
-    "my": "အရိပ်အမြွက် အရောင်"
+    "en": "Hint color"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3746,12 +3422,10 @@
     "search"
    ],
    "label": {
-    "en": "Icon color",
-    "my": "အိုင်ကွန် အရောင်"
+    "en": "Icon color"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3771,12 +3445,10 @@
     "fab"
    ],
    "label": {
-    "en": "Size (dp)",
-    "my": "အရွယ်အစား (dp)"
+    "en": "Size (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3796,12 +3468,10 @@
     "fab"
    ],
    "label": {
-    "en": "Radius (dp)",
-    "my": "ထောင့်ကွေးမှု (dp)"
+    "en": "Radius (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3821,12 +3491,10 @@
     "session"
    ],
    "label": {
-    "en": "Avatar radius (dp)",
-    "my": "ပရိုဖိုင်ပုံ ထောင့်ကွေးမှု (dp)"
+    "en": "Avatar radius (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3846,12 +3514,10 @@
     "session"
    ],
    "label": {
-    "en": "Name size (sp)",
-    "my": "အမည် အရွယ်အစား (sp)"
+    "en": "Name size (sp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3871,12 +3537,10 @@
     "screenBackground"
    ],
    "label": {
-    "en": "Background",
-    "my": "နောက်ခံ"
+    "en": "Background"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3896,12 +3560,10 @@
     "screenBackground"
    ],
    "label": {
-    "en": "Background",
-    "my": "နောက်ခံ"
+    "en": "Background"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3921,12 +3583,10 @@
     "screenBackground"
    ],
    "label": {
-    "en": "Background",
-    "my": "နောက်ခံ"
+    "en": "Background"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3946,12 +3606,10 @@
     "screenBackground"
    ],
    "label": {
-    "en": "Background",
-    "my": "နောက်ခံ"
+    "en": "Background"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3971,12 +3629,10 @@
     "global"
    ],
    "label": {
-    "en": "Transition",
-    "my": "ကူးပြောင်းမှု"
+    "en": "Transition"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -3996,12 +3652,10 @@
     "global"
    ],
    "label": {
-    "en": "Ripple",
-    "my": "ထိတွေ့လှိုင်း"
+    "en": "Ripple"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4021,12 +3675,10 @@
     "global"
    ],
    "label": {
-    "en": "Animation scale",
-    "my": "လှုပ်ရှားမှု အတိုင်းအတာ"
+    "en": "Animation scale"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4046,12 +3698,10 @@
     "themeCard"
    ],
    "label": {
-    "en": "Preview aspect",
-    "my": "မက်ဆေ့ချ်အကျဉ်း အချိုး"
+    "en": "Preview aspect"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4071,12 +3721,10 @@
     "themeCard"
    ],
    "label": {
-    "en": "Card radius (dp)",
-    "my": "ကတ် ထောင့်ကွေးမှု (dp)"
+    "en": "Card radius (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4096,12 +3744,10 @@
     "themeCard"
    ],
    "label": {
-    "en": "Card gap (dp)",
-    "my": "ကတ် ကွာဟချက် (dp)"
+    "en": "Card gap (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4121,12 +3767,10 @@
     "themeCard"
    ],
    "label": {
-    "en": "Title size (sp)",
-    "my": "ခေါင်းစဉ် အရွယ်အစား (sp)"
+    "en": "Title size (sp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4146,12 +3790,10 @@
     "button"
    ],
    "label": {
-    "en": "Style",
-    "my": "ပုံစံ"
+    "en": "Style"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4171,12 +3813,10 @@
     "chatInput"
    ],
    "label": {
-    "en": "Send button",
-    "my": "ပို့ရန် ခလုတ်"
+    "en": "Send button"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4196,12 +3836,10 @@
     "datePill"
    ],
    "label": {
-    "en": "Date background",
-    "my": "ရက်စွဲ နောက်ခံ"
+    "en": "Date background"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4221,12 +3859,10 @@
     "datePill"
    ],
    "label": {
-    "en": "Date text",
-    "my": "ရက်စွဲ စာသား"
+    "en": "Date text"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4246,12 +3882,10 @@
     "chatHeader"
    ],
    "label": {
-    "en": "Header radius (dp)",
-    "my": "ခေါင်းပိုင်း ထောင့်ကွေးမှု (dp)"
+    "en": "Header radius (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4271,12 +3905,10 @@
     "chatInput"
    ],
    "label": {
-    "en": "Input radius (dp)",
-    "my": "ရိုက်ထည့်ကွက် ထောင့်ကွေးမှု (dp)"
+    "en": "Input radius (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4296,12 +3928,10 @@
     "chatPanel"
    ],
    "label": {
-    "en": "Panel radius (dp)",
-    "my": "panel ထောင့်ကွေးမှု (dp)"
+    "en": "Panel radius (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4321,12 +3951,10 @@
     "chatInput"
    ],
    "label": {
-    "en": "Button radius (dp)",
-    "my": "ခလုတ် ထောင့်ကွေးမှု (dp)"
+    "en": "Button radius (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4346,12 +3974,10 @@
     "datePill"
    ],
    "label": {
-    "en": "Date radius (dp)",
-    "my": "ရက်စွဲ ထောင့်ကွေးမှု (dp)"
+    "en": "Date radius (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4371,12 +3997,10 @@
     "screenBackground"
    ],
    "label": {
-    "en": "Wallpaper color",
-    "my": "နောက်ခံပုံ အရောင်"
+    "en": "Wallpaper color"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4396,12 +4020,10 @@
     "screenBackground"
    ],
    "label": {
-    "en": "Wallpaper color2",
-    "my": "နောက်ခံပုံ color2"
+    "en": "Wallpaper color2"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4421,12 +4043,10 @@
     "screenBackground"
    ],
    "label": {
-    "en": "Wallpaper angle",
-    "my": "နောက်ခံပုံ ထောင့်"
+    "en": "Wallpaper angle"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4446,12 +4066,10 @@
     "chatPanel"
    ],
    "label": {
-    "en": "Menu radius (dp)",
-    "my": "မီနူး ထောင့်ကွေးမှု (dp)"
+    "en": "Menu radius (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4471,12 +4089,10 @@
     "chatPanel"
    ],
    "label": {
-    "en": "Reaction radius (dp)",
-    "my": "တုံ့ပြန်မှု ထောင့်ကွေးမှု (dp)"
+    "en": "Reaction radius (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4496,12 +4112,10 @@
     "chatList.folders"
    ],
    "label": {
-    "en": "Tabs radius (dp)",
-    "my": "tab များ ထောင့်ကွေးမှု (dp)"
+    "en": "Tabs radius (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4522,12 +4136,10 @@
     "infoCard"
    ],
    "label": {
-    "en": "Avatar radius (dp)",
-    "my": "ပရိုဖိုင်ပုံ ထောင့်ကွေးမှု (dp)"
+    "en": "Avatar radius (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4548,12 +4160,10 @@
     "infoCard"
    ],
    "label": {
-    "en": "Actions style",
-    "my": "actions ပုံစံ"
+    "en": "Actions style"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4574,12 +4184,10 @@
     "infoCard"
    ],
    "label": {
-    "en": "Photo style",
-    "my": "photo ပုံစံ"
+    "en": "Photo style"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4599,12 +4207,10 @@
     "settingsHeader"
    ],
    "label": {
-    "en": "Header",
-    "my": "ခေါင်းပိုင်း"
+    "en": "Header"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4624,12 +4230,10 @@
     "settingsHeader"
    ],
    "label": {
-    "en": "Accounts",
-    "my": "အကောင့်များ"
+    "en": "Accounts"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4649,12 +4253,10 @@
     "peopleRail"
    ],
    "label": {
-    "en": "Story rail",
-    "my": "Story တန်း"
+    "en": "Story rail"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4674,12 +4276,10 @@
     "peopleRail"
    ],
    "label": {
-    "en": "Chips",
-    "my": "chip များ"
+    "en": "Chips"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4699,12 +4299,10 @@
     "settingsRow"
    ],
    "label": {
-    "en": "Items",
-    "my": "ပစ္စည်းများ"
+    "en": "Items"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4724,12 +4322,10 @@
     "contactsGrid"
    ],
    "label": {
-    "en": "Mode",
-    "my": "မုဒ်"
+    "en": "Mode"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4749,12 +4345,10 @@
     "contactsGrid"
    ],
    "label": {
-    "en": "Grid columns",
-    "my": "ဇယားကွက် ကော်လံ"
+    "en": "Grid columns"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4774,12 +4368,10 @@
     "contactsGrid"
    ],
    "label": {
-    "en": "Grid avatar (dp)",
-    "my": "ဇယားကွက် ပရိုဖိုင်ပုံ (dp)"
+    "en": "Grid avatar (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4799,12 +4391,10 @@
     "contactRow"
    ],
    "label": {
-    "en": "Row avatar size (dp)",
-    "my": "အတန်း ပရိုဖိုင်ပုံ အရွယ်အစား (dp)"
+    "en": "Row avatar size (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4824,12 +4414,10 @@
     "contactRow"
    ],
    "label": {
-    "en": "Row height (dp)",
-    "my": "အတန်း အမြင့် (dp)"
+    "en": "Row height (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4849,12 +4437,10 @@
     "contactRow"
    ],
    "label": {
-    "en": "Row status",
-    "my": "အတန်း အခြေအနေ"
+    "en": "Row status"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4874,12 +4460,10 @@
     "contactRow"
    ],
    "label": {
-    "en": "Sort",
-    "my": "စီရန်"
+    "en": "Sort"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4900,12 +4484,10 @@
     "chatList.grid"
    ],
    "label": {
-    "en": "Mode",
-    "my": "မုဒ်"
+    "en": "Mode"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4925,12 +4507,10 @@
     "chatList.grid"
    ],
    "label": {
-    "en": "Grid columns",
-    "my": "ဇယားကွက် ကော်လံ"
+    "en": "Grid columns"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4950,12 +4530,10 @@
     "chatList.grid"
    ],
    "label": {
-    "en": "Grid avatar (dp)",
-    "my": "ဇယားကွက် ပရိုဖိုင်ပုံ (dp)"
+    "en": "Grid avatar (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -4975,12 +4553,10 @@
     "chatList.grid"
    ],
    "label": {
-    "en": "Grid show name",
-    "my": "ဇယားကွက် ပြမည် အမည်"
+    "en": "Grid show name"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5000,12 +4576,10 @@
     "chatList.grid"
    ],
    "label": {
-    "en": "Grid show badge",
-    "my": "ဇယားကွက် ပြမည် အရေအတွက်အမှတ်အသား"
+    "en": "Grid show badge"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5025,12 +4599,10 @@
     "chatRow.preview"
    ],
    "label": {
-    "en": "Row preview show",
-    "my": "အတန်း မက်ဆေ့ချ်အကျဉ်း ပြမည်"
+    "en": "Row preview show"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5050,12 +4622,10 @@
     "chatRow"
    ],
    "label": {
-    "en": "Row height (dp)",
-    "my": "အတန်း အမြင့် (dp)"
+    "en": "Row height (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5075,12 +4645,10 @@
     "chatRow.avatar"
    ],
    "label": {
-    "en": "Row avatar size (dp)",
-    "my": "အတန်း ပရိုဖိုင်ပုံ အရွယ်အစား (dp)"
+    "en": "Row avatar size (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5100,12 +4668,10 @@
     "chatRow.avatar"
    ],
    "label": {
-    "en": "Row avatar shape",
-    "my": "အတန်း ပရိုဖိုင်ပုံ ပုံသဏ္ဍာန်"
+    "en": "Row avatar shape"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5125,12 +4691,10 @@
     "chatRow.avatar"
    ],
    "label": {
-    "en": "Row avatar online dot size (dp)",
-    "my": "အတန်း ပရိုဖိုင်ပုံ အွန်လိုင်း အစက် အရွယ်အစား (dp)"
+    "en": "Row avatar online dot size (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5150,12 +4714,10 @@
     "chatRow.avatar"
    ],
    "label": {
-    "en": "Row avatar online dot color",
-    "my": "အတန်း ပရိုဖိုင်ပုံ အွန်လိုင်း အစက် အရောင်"
+    "en": "Row avatar online dot color"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5175,12 +4737,10 @@
     "chatRow.avatar"
    ],
    "label": {
-    "en": "Row avatar last active",
-    "my": "အတန်း ပရိုဖိုင်ပုံ နောက်ဆုံး အသုံးပြုချိန်"
+    "en": "Row avatar last active"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5200,12 +4760,10 @@
     "chatRow.title"
    ],
    "label": {
-    "en": "Row title weight",
-    "my": "အတန်း ခေါင်းစဉ် အထူ"
+    "en": "Row title weight"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5225,12 +4783,10 @@
     "chatRow.title"
    ],
    "label": {
-    "en": "Row title size (sp)",
-    "my": "အတန်း ခေါင်းစဉ် အရွယ်အစား (sp)"
+    "en": "Row title size (sp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5250,12 +4806,10 @@
     "chatRow.title"
    ],
    "label": {
-    "en": "Row title unread weight",
-    "my": "အတန်း ခေါင်းစဉ် မဖတ်ရသေး အထူ"
+    "en": "Row title unread weight"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5275,12 +4829,10 @@
     "chatRow.preview"
    ],
    "label": {
-    "en": "Row preview lines",
-    "my": "အတန်း မက်ဆေ့ချ်အကျဉ်း စာကြောင်းများ"
+    "en": "Row preview lines"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5300,12 +4852,10 @@
     "chatRow.preview"
    ],
    "label": {
-    "en": "Row preview size (sp)",
-    "my": "အတန်း မက်ဆေ့ချ်အကျဉ်း အရွယ်အစား (sp)"
+    "en": "Row preview size (sp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5325,12 +4875,10 @@
     "chatRow.preview"
    ],
    "label": {
-    "en": "Row preview color",
-    "my": "အတန်း မက်ဆေ့ချ်အကျဉ်း အရောင်"
+    "en": "Row preview color"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5350,12 +4898,10 @@
     "chatRow.preview"
    ],
    "label": {
-    "en": "Row preview unread color",
-    "my": "အတန်း မက်ဆေ့ချ်အကျဉ်း မဖတ်ရသေး အရောင်"
+    "en": "Row preview unread color"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5375,12 +4921,10 @@
     "chatRow.time"
    ],
    "label": {
-    "en": "Row meta time",
-    "my": "အတန်း အချက်အလက် အချိန်"
+    "en": "Row meta time"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5401,12 +4945,10 @@
     "chatRow.badge"
    ],
    "label": {
-    "en": "Row meta seen avatar",
-    "my": "အတန်း အချက်အလက် ဖတ်ပြီး ပရိုဖိုင်ပုံ"
+    "en": "Row meta seen avatar"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5427,12 +4969,10 @@
     "chatRow.badge"
    ],
    "label": {
-    "en": "Row meta unread dot",
-    "my": "အတန်း အချက်အလက် မဖတ်ရသေး အစက်"
+    "en": "Row meta unread dot"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5452,12 +4992,10 @@
     "chatRow"
    ],
    "label": {
-    "en": "Row pinned",
-    "my": "အတန်း ပင်တွဲထား"
+    "en": "Row pinned"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5477,12 +5015,10 @@
     "chatRow"
    ],
    "label": {
-    "en": "Row dividers",
-    "my": "အတန်း ပိုင်းခြားမျဉ်းများ"
+    "en": "Row dividers"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5502,12 +5038,10 @@
     "chatList.header"
    ],
    "label": {
-    "en": "Header collapse",
-    "my": "ခေါင်းပိုင်း ခေါက်ရန်"
+    "en": "Header collapse"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5527,12 +5061,10 @@
     "chatList.header"
    ],
    "label": {
-    "en": "Header left",
-    "my": "ခေါင်းပိုင်း ဘယ်"
+    "en": "Header left"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5552,12 +5084,10 @@
     "chatList.header"
    ],
    "label": {
-    "en": "Header right",
-    "my": "ခေါင်းပိုင်း ညာ"
+    "en": "Header right"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5577,12 +5107,10 @@
     "chatList.storyRail"
    ],
    "label": {
-    "en": "Story rail enabled",
-    "my": "Story တန်း enabled"
+    "en": "Story rail enabled"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5602,12 +5130,10 @@
     "chatList.storyRail"
    ],
    "label": {
-    "en": "Story rail avatar size (dp)",
-    "my": "Story တန်း ပရိုဖိုင်ပုံ အရွယ်အစား (dp)"
+    "en": "Story rail avatar size (dp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5627,12 +5153,10 @@
     "chatList.storyRail"
    ],
    "label": {
-    "en": "Story rail show create",
-    "my": "Story တန်း ပြမည် ဖန်တီးရန်"
+    "en": "Story rail show create"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5652,12 +5176,10 @@
     "chatList.folders"
    ],
    "label": {
-    "en": "Folders style",
-    "my": "Folder များ ပုံစံ"
+    "en": "Folders style"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5677,12 +5199,10 @@
     "chatList.folders"
    ],
    "label": {
-    "en": "Folders position",
-    "my": "Folder များ နေရာ"
+    "en": "Folders position"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5702,12 +5222,10 @@
     "chatList.folders"
    ],
    "label": {
-    "en": "Folders collapsible",
-    "my": "Folder များ collapsible"
+    "en": "Folders collapsible"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5727,12 +5245,10 @@
     "chatRow"
    ],
    "label": {
-    "en": "Special rows archive",
-    "my": "အထူး အတန်းများ သိမ်းဆည်းထား"
+    "en": "Special rows archive"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5752,12 +5268,10 @@
     "drawer"
    ],
    "label": {
-    "en": "Content",
-    "my": "အကြောင်းအရာ"
+    "en": "Content"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5777,12 +5291,10 @@
     "chatList.search"
    ],
    "label": {
-    "en": "Search bar",
-    "my": "ရှာဖွေရန် ဘား"
+    "en": "Search bar"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5802,12 +5314,10 @@
     "drawer"
    ],
    "label": {
-    "en": "Items",
-    "my": "ပစ္စည်းများ"
+    "en": "Items"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5827,12 +5337,10 @@
     "bottomTabs.item"
    ],
    "label": {
-    "en": "Items",
-    "my": "ပစ္စည်းများ"
+    "en": "Items"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5852,12 +5360,10 @@
     "bottomTabs"
    ],
    "label": {
-    "en": "People source",
-    "my": "people source"
+    "en": "People source"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5877,12 +5383,10 @@
     "bottomTabs"
    ],
    "label": {
-    "en": "Labels",
-    "my": "အညွှန်းများ"
+    "en": "Labels"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5902,12 +5406,10 @@
     "bottomTabs"
    ],
    "label": {
-    "en": "Label size (sp)",
-    "my": "label အရွယ်အစား (sp)"
+    "en": "Label size (sp)"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5927,12 +5429,10 @@
     "bottomTabs"
    ],
    "label": {
-    "en": "Indicator",
-    "my": "အညွှန်း"
+    "en": "Indicator"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5952,12 +5452,10 @@
     "bottomTabs"
    ],
    "label": {
-    "en": "Border",
-    "my": "ဘောင်"
+    "en": "Border"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -5977,12 +5475,10 @@
     "bottomTabs"
    ],
    "label": {
-    "en": "Style",
-    "my": "ပုံစံ"
+    "en": "Style"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -6002,12 +5498,10 @@
     "chatHeader"
    ],
    "label": {
-    "en": "Header avatar left",
-    "my": "ခေါင်းပိုင်း ပရိုဖိုင်ပုံ ဘယ်"
+    "en": "Header avatar left"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -6026,12 +5520,10 @@
     "chatHeader"
    ],
    "label": {
-    "en": "Header actions",
-    "my": "ခေါင်းပိုင်း actions"
+    "en": "Header actions"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -6050,12 +5542,10 @@
     "chatInput"
    ],
    "label": {
-    "en": "Input style",
-    "my": "ရိုက်ထည့်ကွက် ပုံစံ"
+    "en": "Input style"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -6074,12 +5564,10 @@
     "chatInput"
    ],
    "label": {
-    "en": "Input leading",
-    "my": "ရိုက်ထည့်ကွက် leading"
+    "en": "Input leading"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -6098,12 +5586,10 @@
     "chatInput"
    ],
    "label": {
-    "en": "Input trailing",
-    "my": "ရိုက်ထည့်ကွက် trailing"
+    "en": "Input trailing"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -6122,12 +5608,10 @@
     "settingsRow"
    ],
    "label": {
-    "en": "Mode",
-    "my": "မုဒ်"
+    "en": "Mode"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -6147,12 +5631,10 @@
     "settingsRow"
    ],
    "label": {
-    "en": "Grid columns",
-    "my": "ဇယားကွက် ကော်လံ"
+    "en": "Grid columns"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -6172,12 +5654,10 @@
     "themeCard"
    ],
    "label": {
-    "en": "Mode",
-    "my": "မုဒ်"
+    "en": "Mode"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -6197,12 +5677,10 @@
     "themeCard"
    ],
    "label": {
-    "en": "Meta creator",
-    "my": "အချက်အလက် ဖန်တီးသူ"
+    "en": "Meta creator"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -6222,12 +5700,10 @@
     "themeCard"
    ],
    "label": {
-    "en": "Meta downloads",
-    "my": "အချက်အလက် ဒေါင်းလုဒ်များ"
+    "en": "Meta downloads"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -6247,12 +5723,10 @@
     "themeCard"
    ],
    "label": {
-    "en": "Meta position",
-    "my": "အချက်အလက် နေရာ"
+    "en": "Meta position"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -6272,12 +5746,10 @@
     "themeCard"
    ],
    "label": {
-    "en": "Chips",
-    "my": "chip များ"
+    "en": "Chips"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -6297,12 +5769,10 @@
     "themeCard"
    ],
    "label": {
-    "en": "Search",
-    "my": "ရှာဖွေရန်"
+    "en": "Search"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -6322,12 +5792,10 @@
     "section"
    ],
    "label": {
-    "en": "Hidden rows",
-    "my": "ဖျောက်ထားသော အတန်းများ"
+    "en": "Hidden rows"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -6347,12 +5815,10 @@
     "infoCard"
    ],
    "label": {
-    "en": "Hidden rows",
-    "my": "ဖျောက်ထားသော အတန်းများ"
+    "en": "Hidden rows"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -6372,12 +5838,10 @@
     "section"
    ],
    "label": {
-    "en": "Hidden rows",
-    "my": "ဖျောက်ထားသော အတန်းများ"
+    "en": "Hidden rows"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -6397,12 +5861,10 @@
     "section"
    ],
    "label": {
-    "en": "Hidden rows",
-    "my": "ဖျောက်ထားသော အတန်းများ"
+    "en": "Hidden rows"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -6422,12 +5884,10 @@
     "global"
    ],
    "label": {
-    "en": "Light / Dark",
-    "my": "အလင်း / အမှောင်"
+    "en": "Light / Dark"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -6448,12 +5908,10 @@
     "global"
    ],
    "label": {
-    "en": "Night colours",
-    "my": "ညအရောင်များ"
+    "en": "Night colours"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -6474,12 +5932,10 @@
     "global"
    ],
    "label": {
-    "en": "Name and description",
-    "my": "အမည်နှင့် ဖော်ပြချက်"
+    "en": "Name and description"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -6500,12 +5956,10 @@
     "global"
    ],
    "label": {
-    "en": "Layout section",
-    "my": "ဖွဲ့စည်းပုံ အပိုင်း"
+    "en": "Layout section"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -6525,12 +5979,10 @@
     "global"
    ],
    "label": {
-    "en": "Format version",
-    "my": "ဖော်မတ်ဗားရှင်း"
+    "en": "Format version"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -6551,12 +6003,10 @@
     "global"
    ],
    "label": {
-    "en": "Format minor version",
-    "my": "ဖော်မတ် minor ဗားရှင်း"
+    "en": "Format minor version"
    },
    "description": {
-    "en": "",
-    "my": ""
+    "en": ""
    },
    "reviewed": [
     "en"
@@ -6567,8 +6017,7 @@
  "items": {
   "profile": {
    "label": {
-    "en": "Profile",
-    "my": "ပရိုဖိုင်"
+    "en": "Profile"
    },
    "reviewed": [
     "en"
@@ -6576,8 +6025,7 @@
   },
   "settings": {
    "label": {
-    "en": "Settings",
-    "my": "ဆက်တင်"
+    "en": "Settings"
    },
    "reviewed": [
     "en"
@@ -6585,8 +6033,7 @@
   },
   "contacts": {
    "label": {
-    "en": "Contacts",
-    "my": "ဆက်သွယ်ရန်စာရင်း"
+    "en": "Contacts"
    },
    "reviewed": [
     "en"
@@ -6594,8 +6041,7 @@
   },
   "calls": {
    "label": {
-    "en": "Calls",
-    "my": "ခေါ်ဆိုမှုများ"
+    "en": "Calls"
    },
    "reviewed": [
     "en"
@@ -6603,8 +6049,7 @@
   },
   "saved": {
    "label": {
-    "en": "Saved",
-    "my": "သိမ်းထားသော မက်ဆေ့ချ်"
+    "en": "Saved"
    },
    "reviewed": [
     "en"
@@ -6612,8 +6057,7 @@
   },
   "archive": {
    "label": {
-    "en": "Archive",
-    "my": "သိမ်းဆည်းထားသော"
+    "en": "Archive"
    },
    "reviewed": [
     "en"
@@ -6621,8 +6065,7 @@
   },
   "kuroTheme": {
    "label": {
-    "en": "Kuro theme",
-    "my": "Kuro theme"
+    "en": "Kuro theme"
    },
    "reviewed": [
     "en"
@@ -6630,8 +6073,7 @@
   },
   "kuroSettings": {
    "label": {
-    "en": "Kuro settings",
-    "my": "Kuro ဆက်တင်"
+    "en": "Kuro settings"
    },
    "reviewed": [
     "en"
@@ -6639,8 +6081,7 @@
   },
   "numberFinder": {
    "label": {
-    "en": "Number finder",
-    "my": "နံပါတ်ရှာဖွေခြင်း"
+    "en": "Number finder"
    },
    "reviewed": [
     "en"
@@ -6648,8 +6089,7 @@
   },
   "specialContacts": {
    "label": {
-    "en": "Special contacts",
-    "my": "အထူးဆက်သွယ်ရန်"
+    "en": "Special contacts"
    },
    "reviewed": [
     "en"
@@ -6657,8 +6097,7 @@
   },
   "onlineContacts": {
    "label": {
-    "en": "Online contacts",
-    "my": "အွန်လိုင်းဆက်သွယ်ရန်"
+    "en": "Online contacts"
    },
    "reviewed": [
     "en"
@@ -6666,8 +6105,7 @@
   },
   "contactChanges": {
    "label": {
-    "en": "Contact changes",
-    "my": "ဆက်သွယ်ရန် ပြောင်းလဲမှု"
+    "en": "Contact changes"
    },
    "reviewed": [
     "en"
@@ -6675,8 +6113,7 @@
   },
   "account": {
    "label": {
-    "en": "Account",
-    "my": "အကောင့်"
+    "en": "Account"
    },
    "reviewed": [
     "en"
@@ -6684,8 +6121,7 @@
   },
   "chatSettings": {
    "label": {
-    "en": "Chat settings",
-    "my": "ချက်တ်ဆက်တင်"
+    "en": "Chat settings"
    },
    "reviewed": [
     "en"
@@ -6693,8 +6129,7 @@
   },
   "privacy": {
    "label": {
-    "en": "Privacy",
-    "my": "ကိုယ်ရေးလုံခြုံမှု"
+    "en": "Privacy"
    },
    "reviewed": [
     "en"
@@ -6702,8 +6137,7 @@
   },
   "notifications": {
    "label": {
-    "en": "Notifications",
-    "my": "အကြောင်းကြားချက်"
+    "en": "Notifications"
    },
    "reviewed": [
     "en"
@@ -6711,8 +6145,7 @@
   },
   "data": {
    "label": {
-    "en": "Data",
-    "my": "ဒေတာနှင့် သိုလှောင်မှု"
+    "en": "Data"
    },
    "reviewed": [
     "en"
@@ -6720,8 +6153,7 @@
   },
   "folders": {
    "label": {
-    "en": "Folders",
-    "my": "Folder များ"
+    "en": "Folders"
    },
    "reviewed": [
     "en"
@@ -6729,8 +6161,7 @@
   },
   "devices": {
    "label": {
-    "en": "Devices",
-    "my": "စက်များ"
+    "en": "Devices"
    },
    "reviewed": [
     "en"
@@ -6738,8 +6169,7 @@
   },
   "power": {
    "label": {
-    "en": "Power",
-    "my": "ဘက်ထရီ"
+    "en": "Power"
    },
    "reviewed": [
     "en"
@@ -6747,8 +6177,7 @@
   },
   "language": {
    "label": {
-    "en": "Language",
-    "my": "ဘာသာစကား"
+    "en": "Language"
    },
    "reviewed": [
     "en"
@@ -6756,8 +6185,7 @@
   },
   "premium": {
    "label": {
-    "en": "Premium",
-    "my": "Premium"
+    "en": "Premium"
    },
    "reviewed": [
     "en"
@@ -6765,8 +6193,7 @@
   },
   "stars": {
    "label": {
-    "en": "Stars",
-    "my": "Stars"
+    "en": "Stars"
    },
    "reviewed": [
     "en"
@@ -6774,8 +6201,7 @@
   },
   "ton": {
    "label": {
-    "en": "Ton",
-    "my": "TON"
+    "en": "Ton"
    },
    "reviewed": [
     "en"
@@ -6783,8 +6209,7 @@
   },
   "business": {
    "label": {
-    "en": "Business",
-    "my": "စီးပွားရေး"
+    "en": "Business"
    },
    "reviewed": [
     "en"
@@ -6792,8 +6217,7 @@
   },
   "gift": {
    "label": {
-    "en": "Gift",
-    "my": "လက်ဆောင်"
+    "en": "Gift"
    },
    "reviewed": [
     "en"
@@ -6801,8 +6225,7 @@
   },
   "askQuestion": {
    "label": {
-    "en": "Ask question",
-    "my": "မေးခွန်းမေးရန်"
+    "en": "Ask question"
    },
    "reviewed": [
     "en"
@@ -6810,8 +6233,7 @@
   },
   "faq": {
    "label": {
-    "en": "Faq",
-    "my": "မေးလေ့ရှိသောမေးခွန်း"
+    "en": "Faq"
    },
    "reviewed": [
     "en"
@@ -6819,8 +6241,7 @@
   },
   "features": {
    "label": {
-    "en": "Features",
-    "my": "လုပ်ဆောင်ချက်များ"
+    "en": "Features"
    },
    "reviewed": [
     "en"
@@ -6828,8 +6249,7 @@
   },
   "privacyPolicy": {
    "label": {
-    "en": "Privacy policy",
-    "my": "ကိုယ်ရေးလုံခြုံမှု မူဝါဒ"
+    "en": "Privacy policy"
    },
    "reviewed": [
     "en"
@@ -6837,8 +6257,7 @@
   },
   "menu": {
    "label": {
-    "en": "Menu",
-    "my": "မီနူး"
+    "en": "Menu"
    },
    "reviewed": [
     "en"
@@ -6846,8 +6265,7 @@
   },
   "compose": {
    "label": {
-    "en": "Compose",
-    "my": "ရေးသားရန်"
+    "en": "Compose"
    },
    "reviewed": [
     "en"
@@ -6855,8 +6273,7 @@
   },
   "search": {
    "label": {
-    "en": "Search",
-    "my": "ရှာဖွေရန်"
+    "en": "Search"
    },
    "reviewed": [
     "en"
@@ -6864,8 +6281,7 @@
   },
   "chats": {
    "label": {
-    "en": "Chats",
-    "my": "ချက်တ်များ"
+    "en": "Chats"
    },
    "reviewed": [
     "en"
@@ -6873,8 +6289,7 @@
   },
   "people": {
    "label": {
-    "en": "People",
-    "my": "လူများ"
+    "en": "People"
    },
    "reviewed": [
     "en"
@@ -6882,8 +6297,7 @@
   },
   "unread": {
    "label": {
-    "en": "Unread",
-    "my": "မဖတ်ရသေးသော"
+    "en": "Unread"
    },
    "reviewed": [
     "en"
@@ -6891,8 +6305,7 @@
   },
   "call": {
    "label": {
-    "en": "Call",
-    "my": "ခေါ်ဆိုရန်"
+    "en": "Call"
    },
    "reviewed": [
     "en"
@@ -6900,8 +6313,7 @@
   },
   "video": {
    "label": {
-    "en": "Video",
-    "my": "ဗီဒီယို"
+    "en": "Video"
    },
    "reviewed": [
     "en"
@@ -6909,8 +6321,7 @@
   },
   "more": {
    "label": {
-    "en": "More",
-    "my": "နောက်ထပ်"
+    "en": "More"
    },
    "reviewed": [
     "en"
@@ -6918,8 +6329,7 @@
   },
   "plus": {
    "label": {
-    "en": "Plus",
-    "my": "ထပ်ထည့်ရန်"
+    "en": "Plus"
    },
    "reviewed": [
     "en"
@@ -6927,8 +6337,7 @@
   },
   "attach": {
    "label": {
-    "en": "Attach",
-    "my": "ဖိုင်ပူးတွဲရန်"
+    "en": "Attach"
    },
    "reviewed": [
     "en"
@@ -6936,8 +6345,7 @@
   },
   "emoji": {
    "label": {
-    "en": "Emoji",
-    "my": "အီမိုဂျီ"
+    "en": "Emoji"
    },
    "reviewed": [
     "en"
@@ -6945,8 +6353,7 @@
   },
   "mic": {
    "label": {
-    "en": "Mic",
-    "my": "မိုက်"
+    "en": "Mic"
    },
    "reviewed": [
     "en"
@@ -6954,8 +6361,7 @@
   },
   "reactions": {
    "label": {
-    "en": "Reactions",
-    "my": "တုံ့ပြန်မှုများ"
+    "en": "Reactions"
    },
    "reviewed": [
     "en"
@@ -6963,8 +6369,7 @@
   },
   "callsVibrate": {
    "label": {
-    "en": "Calls vibrate",
-    "my": "ခေါ်ဆိုမှု တုန်ခါမှု"
+    "en": "Calls vibrate"
    },
    "reviewed": [
     "en"
@@ -6972,8 +6377,7 @@
   },
   "callsRingtone": {
    "label": {
-    "en": "Calls ringtone",
-    "my": "ခေါ်ဆိုမှု အသံ"
+    "en": "Calls ringtone"
    },
    "reviewed": [
     "en"
@@ -6981,8 +6385,7 @@
   },
   "inappSound": {
    "label": {
-    "en": "Inapp sound",
-    "my": "app အတွင်း အသံ"
+    "en": "Inapp sound"
    },
    "reviewed": [
     "en"
@@ -6990,8 +6393,7 @@
   },
   "inappVibrate": {
    "label": {
-    "en": "Inapp vibrate",
-    "my": "app အတွင်း တုန်ခါမှု"
+    "en": "Inapp vibrate"
    },
    "reviewed": [
     "en"
@@ -6999,8 +6401,7 @@
   },
   "inappPreview": {
    "label": {
-    "en": "Inapp preview",
-    "my": "app အတွင်း အကျဉ်း"
+    "en": "Inapp preview"
    },
    "reviewed": [
     "en"
@@ -7008,8 +6409,7 @@
   },
   "inchatSound": {
    "label": {
-    "en": "Inchat sound",
-    "my": "ချက်တ်အတွင်း အသံ"
+    "en": "Inchat sound"
    },
    "reviewed": [
     "en"
@@ -7017,8 +6417,7 @@
   },
   "inappPriority": {
    "label": {
-    "en": "Inapp priority",
-    "my": "app အတွင်း ဦးစားပေး"
+    "en": "Inapp priority"
    },
    "reviewed": [
     "en"
@@ -7026,8 +6425,7 @@
   },
   "contactJoined": {
    "label": {
-    "en": "Contact joined",
-    "my": "ဆက်သွယ်ရန် ဝင်ရောက်မှု"
+    "en": "Contact joined"
    },
    "reviewed": [
     "en"
@@ -7035,8 +6433,7 @@
   },
   "pinnedMessage": {
    "label": {
-    "en": "Pinned message",
-    "my": "ပင်တွဲထားသော မက်ဆေ့ချ်"
+    "en": "Pinned message"
    },
    "reviewed": [
     "en"
@@ -7044,8 +6441,7 @@
   },
   "notificationsService": {
    "label": {
-    "en": "Notifications service",
-    "my": "အကြောင်းကြားချက် service"
+    "en": "Notifications service"
    },
    "reviewed": [
     "en"
@@ -7053,8 +6449,7 @@
   },
   "notificationsServiceConnection": {
    "label": {
-    "en": "Notifications service connection",
-    "my": "service ချိတ်ဆက်မှု"
+    "en": "Notifications service connection"
    },
    "reviewed": [
     "en"
@@ -7062,8 +6457,7 @@
   },
   "repeat": {
    "label": {
-    "en": "Repeat",
-    "my": "ထပ်ကြားခြင်း"
+    "en": "Repeat"
    },
    "reviewed": [
     "en"
@@ -7071,8 +6465,7 @@
   },
   "phone": {
    "label": {
-    "en": "Phone",
-    "my": "ဖုန်းနံပါတ်"
+    "en": "Phone"
    },
    "reviewed": [
     "en"
@@ -7080,8 +6473,7 @@
   },
   "bio": {
    "label": {
-    "en": "Bio",
-    "my": "ကိုယ်ရေးအကျဉ်း"
+    "en": "Bio"
    },
    "reviewed": [
     "en"
@@ -7089,8 +6481,7 @@
   },
   "username": {
    "label": {
-    "en": "Username",
-    "my": "အသုံးပြုသူအမည်"
+    "en": "Username"
    },
    "reviewed": [
     "en"
@@ -7098,8 +6489,7 @@
   },
   "birthday": {
    "label": {
-    "en": "Birthday",
-    "my": "မွေးနေ့"
+    "en": "Birthday"
    },
    "reviewed": [
     "en"
@@ -7107,8 +6497,7 @@
   },
   "bizHours": {
    "label": {
-    "en": "Biz hours",
-    "my": "လုပ်ငန်းချိန်"
+    "en": "Biz hours"
    },
    "reviewed": [
     "en"
@@ -7116,8 +6505,7 @@
   },
   "bizLocation": {
    "label": {
-    "en": "Biz location",
-    "my": "လုပ်ငန်းတည်နေရာ"
+    "en": "Biz location"
    },
    "reviewed": [
     "en"
@@ -7125,8 +6513,7 @@
   },
   "note": {
    "label": {
-    "en": "Note",
-    "my": "မှတ်စု"
+    "en": "Note"
    },
    "reviewed": [
     "en"
@@ -7134,8 +6521,7 @@
   },
   "phoneNumber": {
    "label": {
-    "en": "Phone number",
-    "my": "ဖုန်းနံပါတ်"
+    "en": "Phone number"
    },
    "reviewed": [
     "en"
@@ -7143,8 +6529,7 @@
   },
   "lastSeen": {
    "label": {
-    "en": "Last seen",
-    "my": "နောက်ဆုံးတွေ့ရှိချိန်"
+    "en": "Last seen"
    },
    "reviewed": [
     "en"
@@ -7152,8 +6537,7 @@
   },
   "profilePhoto": {
    "label": {
-    "en": "Profile photo",
-    "my": "ပရိုဖိုင်ပုံ"
+    "en": "Profile photo"
    },
    "reviewed": [
     "en"
@@ -7161,8 +6545,7 @@
   },
   "forwards": {
    "label": {
-    "en": "Forwards",
-    "my": "ပို့ဆက်မှု"
+    "en": "Forwards"
    },
    "reviewed": [
     "en"
@@ -7170,8 +6553,7 @@
   },
   "voices": {
    "label": {
-    "en": "Voices",
-    "my": "အသံမက်ဆေ့ချ်"
+    "en": "Voices"
    },
    "reviewed": [
     "en"
@@ -7179,8 +6561,7 @@
   },
   "noncontacts": {
    "label": {
-    "en": "Noncontacts",
-    "my": "ဆက်သွယ်ရန်မဟုတ်သူများ"
+    "en": "Noncontacts"
    },
    "reviewed": [
     "en"
@@ -7188,8 +6569,7 @@
   },
   "gifts": {
    "label": {
-    "en": "Gifts",
-    "my": "လက်ဆောင်များ"
+    "en": "Gifts"
    },
    "reviewed": [
     "en"
@@ -7197,8 +6577,7 @@
   },
   "music": {
    "label": {
-    "en": "Music",
-    "my": "ဂီတ"
+    "en": "Music"
    },
    "reviewed": [
     "en"
@@ -7206,8 +6585,7 @@
   },
   "groups": {
    "label": {
-    "en": "Groups",
-    "my": "အုပ်စုများ"
+    "en": "Groups"
    },
    "reviewed": [
     "en"
@@ -7215,8 +6593,7 @@
   },
   "paymentsClear": {
    "label": {
-    "en": "Payments clear",
-    "my": "ငွေပေးချေမှု ဖယ်ရှားရန်"
+    "en": "Payments clear"
    },
    "reviewed": [
     "en"
@@ -7224,8 +6601,7 @@
   },
   "contactsDelete": {
    "label": {
-    "en": "Contacts delete",
-    "my": "ဆက်သွယ်ရန် ဖျက်ရန်"
+    "en": "Contacts delete"
    },
    "reviewed": [
     "en"
@@ -7233,8 +6609,7 @@
   },
   "contactsSync": {
    "label": {
-    "en": "Contacts sync",
-    "my": "ဆက်သွယ်ရန် ထပ်တူပြုရန်"
+    "en": "Contacts sync"
    },
    "reviewed": [
     "en"
@@ -7242,8 +6617,7 @@
   },
   "contactsSuggest": {
    "label": {
-    "en": "Contacts suggest",
-    "my": "ဆက်သွယ်ရန် အကြံပြုချက်"
+    "en": "Contacts suggest"
    },
    "reviewed": [
     "en"
@@ -7251,8 +6625,7 @@
   },
   "secretMap": {
    "label": {
-    "en": "Secret map",
-    "my": "လျှို့ဝှက်မြေပုံ"
+    "en": "Secret map"
    },
    "reviewed": [
     "en"
@@ -7260,8 +6633,7 @@
   },
   "secretWebpage": {
    "label": {
-    "en": "Secret webpage",
-    "my": "လျှို့ဝှက်ဝဘ်စာမျက်နှာ"
+    "en": "Secret webpage"
    },
    "reviewed": [
     "en"
@@ -7269,8 +6641,7 @@
   },
   "storageUsage": {
    "label": {
-    "en": "Storage usage",
-    "my": "သိုလှောင်မှု အသုံးပြုမှု"
+    "en": "Storage usage"
    },
    "reviewed": [
     "en"
@@ -7278,8 +6649,7 @@
   },
   "dataUsage": {
    "label": {
-    "en": "Data usage",
-    "my": "ဒေတာ အသုံးပြုမှု"
+    "en": "Data usage"
    },
    "reviewed": [
     "en"
@@ -7287,8 +6657,7 @@
   },
   "saveToGalleryPeer": {
    "label": {
-    "en": "Save to gallery peer",
-    "my": "ပုံများ သိမ်းရန် (ကိုယ်ပိုင်)"
+    "en": "Save to gallery peer"
    },
    "reviewed": [
     "en"
@@ -7296,8 +6665,7 @@
   },
   "saveToGalleryGroups": {
    "label": {
-    "en": "Save to gallery groups",
-    "my": "ပုံများ သိမ်းရန် (အုပ်စု)"
+    "en": "Save to gallery groups"
    },
    "reviewed": [
     "en"
@@ -7305,8 +6673,7 @@
   },
   "saveToGalleryChannels": {
    "label": {
-    "en": "Save to gallery channels",
-    "my": "ပုံများ သိမ်းရန် (ချန်နယ်)"
+    "en": "Save to gallery channels"
    },
    "reviewed": [
     "en"
@@ -7314,8 +6681,7 @@
   },
   "useLessDataForCalls": {
    "label": {
-    "en": "Use less data for calls",
-    "my": "ခေါ်ဆိုမှုတွင် ဒေတာနည်းနည်းသုံးရန်"
+    "en": "Use less data for calls"
    },
    "reviewed": [
     "en"
@@ -7323,8 +6689,7 @@
   },
   "proxy": {
    "label": {
-    "en": "Proxy",
-    "my": "Proxy"
+    "en": "Proxy"
    },
    "reviewed": [
     "en"
@@ -7332,8 +6697,7 @@
   },
   "clearDrafts": {
    "label": {
-    "en": "Clear drafts",
-    "my": "မူကြမ်းများ ဖျက်ရန်"
+    "en": "Clear drafts"
    },
    "reviewed": [
     "en"

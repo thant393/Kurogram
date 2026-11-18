@@ -52,7 +52,6 @@ import tw.kurocore.kurogram.stickerstore.ThemePublisher;
 public class ThemeBuilderActivity extends BaseFragment {
     private static final String PREFS = "kuro_theme_builder";
     private static final String KEY_DRAFT = "draft";
-    private static final String KEY_LANG = "lang";
     private static final String KEY_STYLES = "styles";
     private static final String TEMPLATE = "{\"schemaVersion\":2,\"meta\":{\"id\":\"my-theme\",\"name\":\"My Theme\"},\"tokens\":{\"colors\":{\"accent\":\"#3390EC\"}}}";
 
@@ -168,7 +167,6 @@ public class ThemeBuilderActivity extends BaseFragment {
                 styleSet = new StyleSet(rules);
             }
             session = new EditorSession(rules, catalog, draft, styleSet);
-            session.setLang(prefs().getString(KEY_LANG, "en"));
             return super.onFragmentCreate();
         } catch (Throwable t) {
             FileLog.e(t);
@@ -213,7 +211,6 @@ public class ThemeBuilderActivity extends BaseFragment {
         more.addSubItem(12, tr("rename"));
         more.addSubItem(13, tr("device"));
         levelItem = more.addSubItem(14, tr("menu.advanced"));
-        more.addSubItem(15, tr("language"));
         readItem = more.addSubItem(16, tr("contrast.title"));
         liveItem = more.addSubItem(17, tr("live"));
         more.addSubItem(18, tr("use"));
@@ -251,11 +248,6 @@ public class ThemeBuilderActivity extends BaseFragment {
                         break;
                     case 14:
                         session.setAdvanced(!session.advanced());
-                        refreshAll();
-                        break;
-                    case 15:
-                        session.setLang("my".equals(session.lang()) ? "en" : "my");
-                        prefs().edit().putString(KEY_LANG, session.lang()).apply();
                         refreshAll();
                         break;
                     case 16:
@@ -314,6 +306,7 @@ public class ThemeBuilderActivity extends BaseFragment {
         screenClip.setClipToOutline(true);
         preview = new BuilderPreviewView(context, session);
         preview.setListener(this::onPicked);
+        preview.setNavigatedListener(this::refreshAll);
         screenClip.addView(preview, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT));
         phone.addView(screenClip, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT));
         phoneHolder.addView(phone, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL, 0, 52, 0, 0));
@@ -1854,7 +1847,6 @@ public class ThemeBuilderActivity extends BaseFragment {
                     inspecting = false;
                     globalPanel = false;
                     session = new EditorSession(session.rules, session.catalog, ThemeDraft.fromJson(TEMPLATE, session.rules));
-                    session.setLang(prefs().getString(KEY_LANG, "en"));
                     preview.setSession(session);
                     applySheet(false);
                     refreshAll();

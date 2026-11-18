@@ -13,7 +13,6 @@ design document; this file is the working reference kept next to the code.
 - **Catalog = presentation only.** `docs/skin-editor.catalog.json` gives each rule a group, Basic/Advanced level, the components that
   open it when tapped, the screens that show it, the phase that builds its control, and text in every language.
 - **Bilingual from the start.** Every label/description/component/group has `en` and `my`. Lookup falls back language → English →
-  raw id. Burmese entries are generated from a glossary and listed as *not reviewed* (`reviewed: ["en"]`) until a native speaker confirms.
 - **No manual JSON.** The only way to change the draft is through rule-checked commands; invalid values are refused with a reason and
   change nothing (and add no undo step).
 
@@ -61,10 +60,6 @@ replace, `null` removes a key.
 `EditorSession.readability()` checks text/background pairs (text on background and surface, secondary text, text on the accent,
 chat bubbles) for day and night with the WCAG contrast ratio (4.5 for body text, 3 for secondary). Only pairs where the theme sets
 a colour are checked. The toolbar button shows ✓ or ⚠n; it warns, it never blocks publishing.
-
-## Burmese review
-`python3 Tools/review_my.py export review.tsv` gives a spreadsheet of every English text with its Burmese draft; a Burmese speaker fills
-the last column and `import` writes it back and marks those texts `reviewed: ["my"]`. `status` shows progress.
 
 ## Coverage gate
 `Tools/check_catalog.py --final` runs in CI: every rule must have a catalog entry and a built control (none may be `PLANNED_*`).

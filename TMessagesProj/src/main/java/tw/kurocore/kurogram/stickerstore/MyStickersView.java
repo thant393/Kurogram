@@ -289,6 +289,9 @@ public class MyStickersView extends FrameLayout {
                 rebuildDisplay();
                 adapter.notifyDataSetChanged();
                 fireStats();
+                if (ownerMode && hasMore) {
+                    loadNextPage(); // a creator's own list is small: load it all so the dashboard totals are complete
+                }
                 if (display.isEmpty() && ownerMode) {
                     infoView.setVisibility(GONE);
                     listView.setVisibility(VISIBLE);

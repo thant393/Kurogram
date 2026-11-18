@@ -58,8 +58,8 @@ public class EditorTests {
         Catalog cat = Catalog.fromJson(read("docs/skin-editor.catalog.json"));
         for (RuleSet.Ref ref : rules.all()) check(cat.entry(ref.docPath) != null, "catalog has " + ref.docPath);
         Catalog.Entry any = cat.entries().get(0);
-        check(any.label.get("my", "?").length() > 0 && any.label.get("zz", "?").equals(any.label.get("en", "?")), "locale fallback lang->en");
-        check(cat.componentLabel("chatRow", "my").length() > 0, "component label my");
+        check(any.label.get("en", "?").length() > 0 && any.label.get("zz", "?").equals(any.label.get("en", "?")), "locale fallback lang->en");
+        check(cat.componentLabel("chatRow", "en").length() > 0, "component label my");
         check(cat.forComponent("chatRow").size() > 0, "chatRow has settings");
 
         // ---- round trip of every shipped theme: load -> toJson -> semantic equal; no edits => not dirty
@@ -191,7 +191,7 @@ public class EditorTests {
         check(es.setColor("tokens.colors.accent", 0xFF010203, false) == null && es.color("tokens.colors.accent", 0) == 0xFF010203, "session colour set/get");
         check(es.setColor("tokens.colors.overlay", 0x80000000, false) == null && "#80000000".equals(es.draft.get("tokens.colors.overlay")), "overlay written as argb");
         check(es.color("tokens.colors.divider", 0xFFABCDEF) == 0xFFABCDEF, "fallback when unset");
-        for (String comp : es.browsableComponents()) check(cat.componentLabel(comp, "my").length() > 0, "browser label " + comp);
+        for (String comp : es.browsableComponents()) check(cat.componentLabel(comp, "en").length() > 0, "browser label " + comp);
 
 
         // ---- every numeric rule: its bounds are accepted, one step outside is refused (what the sliders rely on)
@@ -236,7 +236,7 @@ public class EditorTests {
         check(ls.listAvailable("layout.bottomTabs.items").contains("chats") && !ls.listAvailable("layout.bottomTabs.items").contains("people"), "available items");
         check(ls.draft.listAdd("layout.bottomTabs.items", "bogus", 0) != null, "unknown item refused");
         check(ls.draft.listAdd("layout.bottomTabs.items", "chats", 0) == null && ls.draft.listAdd("layout.bottomTabs.items", "chats", 0) != null, "duplicate refused");
-        check(cat.itemLabel("kuroTheme", "my").length() > 0 && cat.itemLabel("zzz", "en").equals("zzz"), "item labels");
+        check(cat.itemLabel("kuroTheme", "en").length() > 0 && cat.itemLabel("zzz", "en").equals("zzz"), "item labels");
         int unsup = 0;
         for (Catalog.Entry e : cat.entries()) if (!ls.isSupported(e)) unsup++;
         check(unsup == 10, "unsupported entries " + unsup);
@@ -341,9 +341,9 @@ public class EditorTests {
         for (EditorSession.Readability rd : rs.readability()) nightFlag |= rd.night;
         check(nightFlag, "night pair flagged separately");
         check(!rs.night(), "readability leaves the editor state alone");
-        for (String id : BuilderText.SCENES) check(!BuilderText.get("en", "scene." + id).equals("scene." + id) && !BuilderText.get("my", "scene." + id).equals("scene." + id), "scene text " + id);
+        for (String id : BuilderText.SCENES) check(!BuilderText.get("en", "scene." + id).equals("scene." + id), "scene text " + id);
         check(BuilderText.complete(), "builder text has en and my for every key");
-        check(BuilderText.get("my", "undo").length() > 0 && BuilderText.get("zz", "undo").equals(BuilderText.get("en", "undo")), "builder text fallback");
+        check(BuilderText.get("en", "undo").length() > 0 && BuilderText.get("zz", "undo").equals(BuilderText.get("en", "undo")), "builder text fallback");
 
 
         // ---- Theme Studio model
