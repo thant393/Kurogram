@@ -39,7 +39,7 @@ import tw.kurocore.kurogram.skin.editor.Rule;
 import tw.kurocore.kurogram.skin.editor.RuleSet;
 import tw.kurocore.kurogram.skin.editor.StyleSet;
 import tw.kurocore.kurogram.skin.editor.ThemeDraft;
-import tw.kurocore.kurogram.stickerstore.ThemeUploadActivity;
+import tw.kurocore.kurogram.stickerstore.ThemePublisher;
 
 /**
  * The no-code Theme Builder. A simulated preview at the top (tap a part to select it), the settings of the selected part
@@ -61,7 +61,16 @@ public class ThemeBuilderActivity extends BaseFragment {
     private EditorSession session;
     private BuilderPreviewView preview;
     private LinearLayout chips, list;
-    private TextView undoBtn, redoBtn, modeBtn, sceneBtn, liveBtn, variantBtn, lookBtn, readBtn, hint;
+    private TextView undoBtn, redoBtn, sceneBtn, variantBtn, lookBtn, hint;
+    private TextView modeItem, readItem, liveItem; // entries of the three-dots menu whose words change
+    private boolean publishing;
+
+    // soft pastel palette: fill, stronger tone of the same colour, and the two text colours
+    private static final int[] PASTEL = {0xFFE9E3FF, 0xFFDDF5E6, 0xFFFFE5D9, 0xFFDCEEFF, 0xFFFFE0EC, 0xFFFFF3CC};
+    private static final int[] DEEP = {0xFF8E7CF0, 0xFF5CBF8A, 0xFFF09A72, 0xFF5AA9E6, 0xFFEE7FA6, 0xFFE6B422};
+    private static final int INK = 0xFF3B3558;
+    private static final int SOFT = 0xFF8A84A3;
+    private static final int PAGE = 0xFFF7F4FF;
     private boolean live;
     private final Runnable livePush = this::pushLive;
     private final Runnable autosave = this::saveDraft;
@@ -154,7 +163,18 @@ public class ThemeBuilderActivity extends BaseFragment {
     public View createView(Context context) {
         actionBar.setBackButtonImage(R.drawable.ic_ab_back);
         actionBar.setTitle(tr("title"));
-        actionBar.createMenu().addItem(1, tr("next"));
+        org.telegram.ui.ActionBar.ActionBarMenu menu = actionBar.createMenu();
+        menu.addItem(1, tr("next"));
+        org.telegram.ui.ActionBar.ActionBarMenuItem more = menu.addItem(2, R.drawable.ic_ab_other);
+        modeItem = more.addSubItem(11, tr("menu.advanced"));
+        more.addSubItem(12, tr("language"));
+        readItem = more.addSubItem(13, tr("contrast.title"));
+        liveItem = more.addSubItem(14, tr("live"));
+        more.addSubItem(15, tr("use"));
+        more.addSubItem(16, tr("startOver"));
+        if (editing != null) {
+            more.addSubItem(17, tr("removeStore"));
+        }
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
@@ -162,37 +182,39 @@ public class ThemeBuilderActivity extends BaseFragment {
                     confirmLeave();
                 } else if (id == 1) {
                     next();
+                } else if (id == 11) {
+                    session.setAdvanced(!session.advanced());
+                    refreshAll();
+                } else if (id == 12) {
+                    session.setLang("my".equals(session.lang()) ? "en" : "my");
+                    prefs().edit().putString(KEY_LANG, session.lang()).apply();
+                    actionBar.setTitle(tr("title"));
+                    refreshAll();
+                } else if (id == 13) {
+                    readabilityDialog();
+                } else if (id == 14) {
+                    setLive(!live);
+                } else if (id == 15) {
+                    useOnPhone();
+                } else if (id == 16) {
+                    startOver();
+                } else if (id == 17) {
+                    removeFromStore();
                 }
             }
         });
 
         FrameLayout root = new FrameLayout(context);
-        root.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
+        root.setBackgroundColor(PAGE);
         fragmentView = root;
         LinearLayout col = new LinearLayout(context);
         col.setOrientation(LinearLayout.VERTICAL);
         root.addView(col, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
-        // toolbar
-        HorizontalScrollView bar = new HorizontalScrollView(context);
-        bar.setHorizontalScrollBarEnabled(false);
-        LinearLayout barRow = new LinearLayout(context);
-        barRow.setOrientation(LinearLayout.HORIZONTAL);
-        barRow.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(6), AndroidUtilities.dp(8), AndroidUtilities.dp(6));
-        bar.addView(barRow);
-        undoBtn = button(context, "undo", v -> {
-            session.active().undo();
-            changed(false);
-        });
-        redoBtn = button(context, "redo", v -> {
-            session.active().redo();
-            changed(false);
-        });
-        modeBtn = button(context, "advanced", v -> {
-            session.setAdvanced(!session.advanced());
-            refreshAll();
-        });
-        sceneBtn = button(context, "scene.chat", v -> {
+        // three big, friendly choices; everything else lives in the three-dots menu
+        LinearLayout pills = new LinearLayout(context);
+        pills.setOrientation(LinearLayout.HORIZONTAL);
+        sceneBtn = pill(context, v -> {
             final String[] ids = BuilderText.SCENES;
             String[] names = new String[ids.length];
             for (int k = 0; k < ids.length; k++) {
@@ -203,51 +225,74 @@ public class ThemeBuilderActivity extends BaseFragment {
                 refreshAll();
             }).show();
         });
-        liveBtn = button(context, "live", v -> setLive(!live));
-        lookBtn = button(context, "look", v -> lookDialog());
-        readBtn = button(context, "contrast.title", v -> readabilityDialog());
-        variantBtn = button(context, "variant.day", v -> {
+        variantBtn = pill(context, v -> {
             session.setNight(!session.night());
             refreshAll();
         });
-        TextView lang = button(context, "language", v -> {
-            session.setLang("my".equals(session.lang()) ? "en" : "my");
-            prefs().edit().putString(KEY_LANG, session.lang()).apply();
-            actionBar.setTitle(tr("title"));
-            refreshAll();
-        });
-        TextView use = button(context, "use", v -> useOnPhone());
-        TextView startOver = button(context, "startOver", v -> startOver());
-        for (TextView b : new TextView[]{undoBtn, redoBtn, lookBtn, variantBtn, modeBtn, sceneBtn, liveBtn, readBtn, lang, use, startOver}) {
-            barRow.addView(b, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 36, 0, 0, 6, 0));
+        lookBtn = pill(context, v -> lookDialog());
+        TextView[] three = {sceneBtn, variantBtn, lookBtn};
+        for (int k = 0; k < three.length; k++) {
+            pills.addView(three[k], LayoutHelper.createLinear(0, 42, 1f, k == 0 ? 0 : 8, 0, 0, 0));
         }
-        col.addView(bar, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+        col.addView(pills, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 14, 10, 14, 0));
 
+        // the preview sits on a soft rounded card
+        FrameLayout card = new FrameLayout(context);
+        GradientDrawable cardBg = new GradientDrawable();
+        cardBg.setColor(0xFFFFFFFF);
+        cardBg.setCornerRadius(AndroidUtilities.dp(24));
+        card.setBackground(cardBg);
+        card.setClipToOutline(true);
+        card.setElevation(AndroidUtilities.dp(3));
         preview = new BuilderPreviewView(context, session);
         preview.setListener(id -> {
             session.select(id);
+            refreshChips();
             refreshPanel();
             preview.invalidate();
         });
-        col.addView(preview, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 12, 0, 12, 0));
+        card.addView(preview, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+        col.addView(card, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 14, 10, 14, 0));
 
+        // hint on the left, undo / redo on the right
+        LinearLayout under = new LinearLayout(context);
+        under.setOrientation(LinearLayout.HORIZONTAL);
+        under.setGravity(Gravity.CENTER_VERTICAL);
         hint = new TextView(context);
         hint.setTextSize(12);
-        hint.setGravity(Gravity.CENTER);
-        hint.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGrayText));
-        col.addView(hint, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 12, 4, 12, 4));
+        hint.setTextColor(SOFT);
+        hint.setMaxLines(2);
+        hint.setOnClickListener(v -> {
+            if (!session.readability().isEmpty()) {
+                readabilityDialog();
+            }
+        });
+        under.addView(hint, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 1f, 4, 0, 8, 0));
+        undoBtn = round(context, "↶", v -> {
+            session.active().undo();
+            changed(false);
+        });
+        redoBtn = round(context, "↷", v -> {
+            session.active().redo();
+            changed(false);
+        });
+        under.addView(undoBtn, LayoutHelper.createLinear(38, 38, 0, 0, 8, 0));
+        under.addView(redoBtn, LayoutHelper.createLinear(38, 38));
+        col.addView(under, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 14, 8, 14, 6));
 
         HorizontalScrollView chipScroll = new HorizontalScrollView(context);
         chipScroll.setHorizontalScrollBarEnabled(false);
         chips = new LinearLayout(context);
         chips.setOrientation(LinearLayout.HORIZONTAL);
-        chips.setPadding(AndroidUtilities.dp(8), 0, AndroidUtilities.dp(8), AndroidUtilities.dp(4));
+        chips.setPadding(AndroidUtilities.dp(14), AndroidUtilities.dp(2), AndroidUtilities.dp(14), AndroidUtilities.dp(6));
         chipScroll.addView(chips);
         col.addView(chipScroll, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
 
         ScrollView scroll = new ScrollView(context);
+        scroll.setVerticalScrollBarEnabled(false);
         list = new LinearLayout(context);
         list.setOrientation(LinearLayout.VERTICAL);
+        list.setPadding(0, 0, 0, AndroidUtilities.dp(24));
         scroll.addView(list, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
         col.addView(scroll, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 0, 1f));
 
@@ -255,25 +300,45 @@ public class ThemeBuilderActivity extends BaseFragment {
         return fragmentView;
     }
 
-    private TextView button(Context context, String key, View.OnClickListener l) {
+    /** A wide soft pill; the three main choices. */
+    private TextView pill(Context context, View.OnClickListener l) {
         TextView t = new TextView(context);
         t.setTextSize(13);
         t.setGravity(Gravity.CENTER);
         t.setTypeface(AndroidUtilities.bold());
-        t.setPadding(AndroidUtilities.dp(12), 0, AndroidUtilities.dp(12), 0);
-        t.setTag(key);
+        t.setSingleLine(true);
+        t.setEllipsize(android.text.TextUtils.TruncateAt.END);
+        t.setPadding(AndroidUtilities.dp(10), 0, AndroidUtilities.dp(10), 0);
         t.setOnClickListener(l);
-        t.setText(tr(key));
         return t;
     }
 
-    private void styleButton(TextView t, boolean on) {
-        int accent = KuroSkinManager.get().accent();
+    private TextView round(Context context, String glyph, View.OnClickListener l) {
+        TextView t = new TextView(context);
+        t.setText(glyph);
+        t.setTextSize(18);
+        t.setGravity(Gravity.CENTER);
+        t.setOnClickListener(l);
+        return t;
+    }
+
+    private static GradientDrawable shape(int fill, int radiusDp, int stroke) {
         GradientDrawable d = new GradientDrawable();
-        d.setCornerRadius(AndroidUtilities.dp(18));
-        d.setColor(on ? accent : (accent & 0x00FFFFFF) | 0x22000000);
-        t.setBackground(d);
-        t.setTextColor(on ? 0xFFFFFFFF : accent);
+        d.setColor(fill);
+        d.setCornerRadius(AndroidUtilities.dp(radiusDp));
+        if (stroke != 0) {
+            d.setStroke(AndroidUtilities.dp(2), stroke);
+        }
+        return d;
+    }
+
+    /** Soft fill in the pastel of {@code idx}; selected ones get a stronger outline. */
+    private void soft(View t, int idx, boolean selected, int radiusDp) {
+        int i = ((idx % PASTEL.length) + PASTEL.length) % PASTEL.length;
+        t.setBackground(shape(PASTEL[i], radiusDp, selected ? DEEP[i] : 0));
+        if (t instanceof TextView) {
+            ((TextView) t).setTextColor(INK);
+        }
     }
 
     // ------------------------------------------------------------------ refresh
@@ -286,30 +351,29 @@ public class ThemeBuilderActivity extends BaseFragment {
     }
 
     private void refreshToolbar() {
-        for (TextView b : new TextView[]{undoBtn, redoBtn, modeBtn, sceneBtn, liveBtn}) {
-            b.setText(tr((String) b.getTag()));
-        }
-        variantBtn.setText(tr(session.night() ? "variant.night" : "variant.day"));
-        lookBtn.setText(tr("look") + ": " + lookName());
-        styleButton(lookBtn, !session.onBase());
+        sceneBtn.setText("📱 " + tr("scene." + session.scene()));
+        soft(sceneBtn, 3, false, 21);
+        variantBtn.setText(session.night() ? "🌙 " + tr("variant.night") : "☀️ " + tr("variant.day"));
+        soft(variantBtn, session.night() ? 0 : 5, session.night(), 21);
+        lookBtn.setText("🎨 " + lookName());
+        soft(lookBtn, 4, !session.onBase(), 21);
+        soft(undoBtn, 0, false, 19);
+        soft(redoBtn, 0, false, 19);
+        undoBtn.setAlpha(session.active().canUndo() ? 1f : 0.35f);
+        redoBtn.setAlpha(session.active().canRedo() ? 1f : 0.35f);
         int issues = session.readability().size();
-        readBtn.setText(tr("contrast.title") + (issues > 0 ? " ⚠" + issues : " ✓"));
-        styleButton(readBtn, issues > 0);
-        styleButton(variantBtn, session.night());
-        modeBtn.setText(tr(session.advanced() ? "basic" : "advanced"));
-        sceneBtn.setText(tr("scene") + ": " + tr("scene." + session.scene()));
-        styleButton(undoBtn, false);
-        styleButton(redoBtn, false);
-        undoBtn.setAlpha(session.active().canUndo() ? 1f : 0.4f);
-        redoBtn.setAlpha(session.active().canRedo() ? 1f : 0.4f);
-        styleButton(modeBtn, session.advanced());
-        styleButton(sceneBtn, false);
-        styleButton(liveBtn, live);
-        hint.setText(tr(live ? "live.on" : "simulated"));
+        if (modeItem != null) {
+            modeItem.setText(tr(session.advanced() ? "menu.basic" : "menu.advanced"));
+            readItem.setText(tr("contrast.title") + (issues > 0 ? "  ⚠ " + issues : "  ✓"));
+            liveItem.setText(tr("live") + (live ? "  ✓" : ""));
+        }
+        hint.setText(live ? tr("live.on") : issues > 0 ? "⚠ " + tr("contrast.low") + " (" + issues + ")" : tr("simulated"));
+        hint.setTextColor(!live && issues > 0 ? 0xFFD9822B : SOFT);
     }
 
     private void refreshChips() {
         chips.removeAllViews();
+        chipIndex = 0;
         Context context = chips.getContext();
         addChip(context, "global", session.catalog.componentLabel("global", session.lang()));
         for (String id : session.browsableComponents()) {
@@ -319,27 +383,32 @@ public class ThemeBuilderActivity extends BaseFragment {
         }
     }
 
+    private int chipIndex;
+
     private void addChip(Context context, String id, String label) {
         TextView t = new TextView(context);
         t.setText(label);
-        t.setTextSize(13);
-        t.setPadding(AndroidUtilities.dp(12), AndroidUtilities.dp(6), AndroidUtilities.dp(12), AndroidUtilities.dp(6));
-        styleButton(t, id.equals(session.selected()));
+        t.setTextSize(14);
+        t.setSingleLine(true);
+        boolean on = id.equals(session.selected());
+        t.setTypeface(on ? AndroidUtilities.bold() : android.graphics.Typeface.DEFAULT);
+        t.setPadding(AndroidUtilities.dp(16), AndroidUtilities.dp(9), AndroidUtilities.dp(16), AndroidUtilities.dp(9));
+        soft(t, chipIndex++, on, 18);
         t.setOnClickListener(v -> {
             session.select(id);
             refreshChips();
             refreshPanel();
             preview.invalidate();
         });
-        chips.addView(t, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, 0, 0, 6, 0));
+        chips.addView(t, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, 0, 0, 8, 0));
     }
 
     private void refreshPanel() {
         list.removeAllViews();
         Context context = list.getContext();
         String lang = session.lang();
-        TextView head = text(context, tr("selected") + ": " + session.catalog.componentLabel(session.selected(), lang), 15, true);
-        list.addView(head, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 16, 8, 16, 4));
+        TextView head = text(context, "✨ " + session.catalog.componentLabel(session.selected(), lang), 19, true);
+        list.addView(head, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 20, 6, 20, 10));
         if ("global".equals(session.selected()) && !session.night()) {
             addAppearanceRow(context);
             addNameRow(context);
@@ -364,7 +433,7 @@ public class ThemeBuilderActivity extends BaseFragment {
         TextView t = new TextView(context);
         t.setText(s);
         t.setTextSize(sp);
-        t.setTextColor(Theme.getColor(bold ? Theme.key_windowBackgroundWhiteBlackText : Theme.key_windowBackgroundWhiteGrayText));
+        t.setTextColor(bold ? INK : SOFT);
         if (bold) {
             t.setTypeface(AndroidUtilities.bold());
         }
@@ -375,17 +444,20 @@ public class ThemeBuilderActivity extends BaseFragment {
         LinearLayout r = new LinearLayout(context);
         r.setOrientation(LinearLayout.HORIZONTAL);
         r.setGravity(Gravity.CENTER_VERTICAL);
-        r.setPadding(AndroidUtilities.dp(16), AndroidUtilities.dp(10), AndroidUtilities.dp(16), AndroidUtilities.dp(10));
-        r.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite));
+        r.setMinimumHeight(AndroidUtilities.dp(64));
+        r.setPadding(AndroidUtilities.dp(18), AndroidUtilities.dp(12), AndroidUtilities.dp(14), AndroidUtilities.dp(12));
+        r.setBackground(new android.graphics.drawable.RippleDrawable(android.content.res.ColorStateList.valueOf(0x22000000),
+                shape(0xFFFFFFFF, 20, 0), shape(0xFFFFFFFF, 20, 0)));
         LinearLayout words = new LinearLayout(context);
         words.setOrientation(LinearLayout.VERTICAL);
-        words.addView(text(context, label, 15, false));
-        ((TextView) words.getChildAt(0)).setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
+        words.addView(text(context, label, 16, true));
         if (sub != null && !sub.isEmpty()) {
-            words.addView(text(context, sub, 12, false));
+            words.addView(text(context, sub, 13, false), LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, 0, 2, 0, 0));
+        } else {
+            words.addView(text(context, "", 13, false));
         }
         r.addView(words, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 1f));
-        list.addView(r, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 0, 0, 1));
+        list.addView(r, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 14, 0, 14, 10));
         return r;
     }
 
@@ -433,7 +505,7 @@ public class ThemeBuilderActivity extends BaseFragment {
             d.setColor(c);
             d.setStroke(AndroidUtilities.dp(1), 0x55888888);
             sw.setBackground(d);
-            r.addView(sw, LayoutHelper.createLinear(28, 28, 8, 0, 8, 0));
+            r.addView(sw, LayoutHelper.createLinear(34, 34, 8, 0, 8, 0));
             r.setOnClickListener(v -> colorDialog(e, rule, label));
         } else if (rule.kind == Rule.Kind.ENUM) {
             r.setOnClickListener(v -> new AlertDialog.Builder(getParentActivity())
@@ -452,8 +524,8 @@ public class ThemeBuilderActivity extends BaseFragment {
             });
         }
         if (cur != null) {
-            TextView x = text(context, "✕", 16, true);
-            x.setPadding(AndroidUtilities.dp(12), 0, AndroidUtilities.dp(4), 0);
+            TextView x = text(context, "✕", 16, false);
+            x.setPadding(AndroidUtilities.dp(12), AndroidUtilities.dp(8), AndroidUtilities.dp(6), AndroidUtilities.dp(8));
             x.setOnClickListener(v -> {
                 report(session.unsetValue(e.path));
                 changed(true);
@@ -503,7 +575,7 @@ public class ThemeBuilderActivity extends BaseFragment {
                 fresh[0] = true;
             }
         });
-        r.addView(sb, 1, LayoutHelper.createLinear(120, LayoutHelper.WRAP_CONTENT));
+        r.addView(sb, 1, LayoutHelper.createLinear(130, LayoutHelper.WRAP_CONTENT));
     }
 
     private String listSummary(Object list) {
@@ -983,14 +1055,86 @@ public class ThemeBuilderActivity extends BaseFragment {
                 }
             }
         }
+        if (ThemePublisher.nameOf(json).isEmpty()) {
+            session.select("global");
+            refreshAll();
+            Toast.makeText(getParentActivity(), tr("needName"), Toast.LENGTH_LONG).show();
+            return;
+        }
         endLive();
         session.refreshSwatches();
         saveDraft();
-        ThemeUploadActivity upload = editing == null ? new ThemeUploadActivity() : new ThemeUploadActivity(editing);
-        upload.setPrefill(json);
-        if (!session.styles.isEmpty() || session.styles.isDirty()) {
-            upload.setPrefillStyles(session.styles.toJson());
+        final String stylesJson = !session.styles.isEmpty() || session.styles.isDirty() ? session.styles.toJson() : null;
+        final String finalJson = json;
+        new AlertDialog.Builder(getParentActivity())
+                .setTitle(ThemePublisher.nameOf(json))
+                .setMessage(tr(editing == null ? "publishAsk" : "updateAsk"))
+                .setPositiveButton(tr(editing == null ? "publish" : "update"), (d, w) -> publish(finalJson, stylesJson))
+                .setNegativeButton(tr("cancel"), null).show();
+    }
+
+    private AlertDialog busyDialog(String message) {
+        AlertDialog dlg = new AlertDialog.Builder(getParentActivity()).setMessage(message).setCancelable(false).create();
+        dlg.show();
+        return dlg;
+    }
+
+    private void publish(String json, String stylesJson) {
+        if (publishing) {
+            return;
         }
-        presentFragment(upload);
+        publishing = true;
+        final AlertDialog dlg = busyDialog(tr("publishing"));
+        ThemePublisher.publish(currentAccount, editing, json, stylesJson, new ThemePublisher.Callback() {
+            @Override
+            public void done(String warning) {
+                publishing = false;
+                dlg.dismiss();
+                if (fragmentView == null) {
+                    return;
+                }
+                if (warning != null) {
+                    Toast.makeText(getParentActivity(), tr("stylesWarn") + warning, Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getParentActivity(), tr("published"), Toast.LENGTH_SHORT).show();
+                }
+                prefs().edit().remove(KEY_DRAFT).remove(KEY_STYLES).apply(); // it is in the store now; the next new theme starts fresh
+                finishFragment();
+            }
+
+            @Override
+            public void failed(String message) {
+                publishing = false;
+                dlg.dismiss();
+                if (fragmentView != null) {
+                    Toast.makeText(getParentActivity(), message, Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
+    private void removeFromStore() {
+        new AlertDialog.Builder(getParentActivity()).setTitle(tr("removeStore")).setMessage(tr("removeAsk"))
+                .setPositiveButton(tr("done"), (d, w) -> {
+                    final AlertDialog dlg = busyDialog(tr("publishing"));
+                    ThemePublisher.remove(currentAccount, editing, new ThemePublisher.Callback() {
+                        @Override
+                        public void done(String warning) {
+                            dlg.dismiss();
+                            if (fragmentView != null) {
+                                Toast.makeText(getParentActivity(), tr("removed"), Toast.LENGTH_SHORT).show();
+                                finishFragment();
+                            }
+                        }
+
+                        @Override
+                        public void failed(String message) {
+                            dlg.dismiss();
+                            if (fragmentView != null) {
+                                Toast.makeText(getParentActivity(), message, Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+                }).setNegativeButton(tr("cancel"), null).show();
     }
 }

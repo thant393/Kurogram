@@ -75,6 +75,19 @@ public final class BuilderText {
         t("refused", "Change refused: ", "ပြောင်း၍မရပါ: ");
         t("allSettings", "All settings", "ဆက်တင်အားလုံး");
         t("language", "မြန်မာ", "English");
+        t("menu.advanced", "Show advanced settings", "အဆင့်မြင့် ဆက်တင်များ ပြမည်");
+        t("menu.basic", "Show basic settings only", "ရိုးရိုး ဆက်တင်များသာ ပြမည်");
+        t("publish", "Publish", "တင်မည်");
+        t("update", "Update", "ပြင်ပြီးတင်မည်");
+        t("publishAsk", "Publish this theme to the store?", "ဤ theme ကို စတိုးသို့ တင်မလား?");
+        t("updateAsk", "Publish your changes as a new version?", "ပြင်ထားသည်များကို version အသစ်အဖြစ် တင်မလား?");
+        t("publishing", "Please wait…", "ခဏစောင့်ပါ…");
+        t("published", "Done! Your theme is in the store.", "ပြီးပါပြီ! သင့် theme ကို စတိုးတွင် တင်ပြီး။");
+        t("stylesWarn", "Theme saved, but its styles were not: ", "Theme သိမ်းပြီး၊ သို့သော် ပုံစံများ မသိမ်းနိုင်ပါ: ");
+        t("needName", "Give your theme a name first (Whole app > Theme name).", "Theme အမည်ပေးပါ (App တစ်ခုလုံး > Theme အမည်)။");
+        t("removeStore", "Remove from store", "စတိုးမှ ဖယ်ရှားမည်");
+        t("removeAsk", "It will disappear from the store. People who already applied it keep it.", "စတိုးမှ ပျောက်သွားမည်။ သုံးထားပြီးသူများတွင် ဆက်ရှိမည်။");
+        t("removed", "Removed from the store", "စတိုးမှ ဖယ်ရှားပြီး");
     }
 
     /** Every screen the preview can show, in the order of the picker. */
