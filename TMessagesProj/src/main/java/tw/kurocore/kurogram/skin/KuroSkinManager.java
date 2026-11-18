@@ -101,6 +101,15 @@ public final class KuroSkinManager {
         return tokens;
     }
 
+    /** The applied skin file as saved, or null while the built-in look is in use (a temporary preview is never in here). */
+    public String activeJson() {
+        try {
+            return prefs().getString(KEY_JSON, null);
+        } catch (RuntimeException e) {
+            return null;
+        }
+    }
+
     private synchronized SkinSpec load() {
         if (!loaded) {
             if (ApplicationLoader.applicationContext == null) {

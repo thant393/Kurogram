@@ -396,6 +396,24 @@ public class EditorTests {
             check(StudioModel.suggestText(0xFF000000) == 0xFFFFFFFF && StudioModel.suggestText(0xFFFFFFFF) == 0xFF000000, "suggested text colour reads");
         }
 
+
+        // ---- presets and clone
+        {
+            for (Presets.Preset pr : Presets.all()) {
+                String pj = Presets.toJson(pr);
+                ThemeDraft pd = ThemeDraft.fromJson(pj, rules);
+                EditorSession ps = new EditorSession(rules, cat, pd);
+                check("dark".equals(ps.appearance()) == pr.dark, "preset appearance " + pr.id);
+                check(ps.readability().isEmpty(), "preset reads well " + pr.id);
+                check(ps.color("tokens.colors.accent", 0) != 0, "preset accent " + pr.id);
+                check(Json.semanticEquals(Json.parse(pd.toJson()), Json.parse(pj)), "preset round trip " + pr.id);
+            }
+            String cl = Presets.cloneOf("{\"schemaVersion\":2,\"meta\":{\"id\":\"a\",\"name\":\"Mine\",\"extra\":1},\"zzUnknown\":{\"k\":2}}");
+            check(cl != null && cl.contains("Mine (copy)") && cl.contains("\"a-copy\"") && cl.contains("zzUnknown") && cl.contains("extra"), "clone keeps everything, renames");
+            check(Presets.cloneOf(Presets.cloneOf(cl)).contains("Mine (copy)") && !Presets.cloneOf(cl).contains("(copy) (copy)"), "clone of a clone is not stacked");
+            check(Presets.cloneOf("not json") == null, "clone of garbage is null");
+        }
+
         System.out.println("editor tests: " + passed + " passed, " + failed + " failed");
         System.exit(failed == 0 ? 0 : 1);
     }

@@ -89,6 +89,17 @@ public class BuilderPreviewView extends View {
         setMeasuredDimension(width, height);
     }
 
+    /** Where the selected part is drawn (view pixels), or null when it is not on this screen. */
+    public android.graphics.RectF selectedBounds() {
+        String sel = session.selected();
+        for (int i = hits.size() - 1; i >= 0; i--) {
+            if (hits.get(i).id.equals(sel)) {
+                return new android.graphics.RectF(hits.get(i).r);
+            }
+        }
+        return null;
+    }
+
     /** Ids of the components drawn last, in drawing order without repeats: the layers of the current screen. */
     public List<String> visibleComponents() {
         List<String> out = new ArrayList<>();

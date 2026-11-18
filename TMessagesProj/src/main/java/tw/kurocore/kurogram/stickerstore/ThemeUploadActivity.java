@@ -25,8 +25,24 @@ public class ThemeUploadActivity extends BaseFragment {
     private final ThemeInfo editing;
     private TextView statusView, retry;
 
+    private final boolean duplicate; // open a copy as a new theme instead of editing the published one
+
     public ThemeUploadActivity(ThemeInfo editing) {
+        this(editing, false);
+    }
+
+    public ThemeUploadActivity(ThemeInfo editing, boolean duplicate) {
         this.editing = editing;
+        this.duplicate = duplicate;
+    }
+
+    /** What the Studio opens: the file itself, or its copy (own id, "(copy)" in the name) when duplicating. */
+    private String studioText(String published) {
+        if (!duplicate) {
+            return published;
+        }
+        String copy = tw.kurocore.kurogram.skin.editor.Presets.cloneOf(published);
+        return copy != null ? copy : published;
     }
 
     @Override
@@ -80,7 +96,7 @@ public class ThemeUploadActivity extends BaseFragment {
 
     /** Fetches the published file first so nothing in it is lost, then opens the Builder in place of this screen. */
     private void openBuilder() {
-        setStatus("Opening your theme\u2026", false);
+        setStatus(duplicate ? "Making a copy\u2026" : "Opening your theme\u2026", false);
         KuroFeatures.themes().fetchVersionContent(editing.id, editing.version, null, null, text -> {
             if (fragmentView == null) {
                 return;
@@ -90,7 +106,7 @@ public class ThemeUploadActivity extends BaseFragment {
                 return;
             }
             if (editing.styles.isEmpty()) {
-                presentFragment(new tw.kurocore.kurogram.skin.editor.ui.ThemeBuilderActivity(text, editing), true);
+                presentFragment(new tw.kurocore.kurogram.skin.editor.ui.ThemeBuilderActivity(studioText(text), duplicate ? null : editing), true);
             } else {
                 recoverStyles(text);
             }
@@ -161,7 +177,7 @@ public class ThemeUploadActivity extends BaseFragment {
                     }
                     styles.add(sm);
                 }
-                presentFragment(new tw.kurocore.kurogram.skin.editor.ui.ThemeBuilderActivity(baseText, editing,
+                presentFragment(new tw.kurocore.kurogram.skin.editor.ui.ThemeBuilderActivity(studioText(baseText), duplicate ? null : editing,
                         tw.kurocore.kurogram.skin.editor.Json.write(styles)), true);
             } catch (RuntimeException e) {
                 setStatus("Could not read the theme's styles.", true);

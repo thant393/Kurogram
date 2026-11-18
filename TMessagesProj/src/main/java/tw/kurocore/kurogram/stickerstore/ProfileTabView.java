@@ -42,7 +42,7 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
     private final FrameLayout contentFrame;
     private ThemesTabView themesView;
     private MyStickersView stickersView;
-    private final ImageView fab;
+    private TextView statCount, statCountLabel, statDownloads, statLikes;
     private int selectedTab = TAB_THEMES;
     private boolean segmentedReady;
     private int seenUploadVersion;
@@ -52,7 +52,6 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
     private GradientDrawable contentBg;
     private View headerCard;
     private GradientDrawable avatarRingDrawable;
-    private GradientDrawable fabBgDrawable;
     private TextView usernameViewRef;
     private View contentCard;
 
@@ -72,7 +71,7 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
         this.fragment = fragment;
         this.currentAccount = currentAccount;
         this.ownerId = ownerId;
-        final boolean self = ownerId == UserConfig.getInstance(currentAccount).getClientUserId();
+        this.self = ownerId == UserConfig.getInstance(currentAccount).getClientUserId();
         // A touch darker than the theme's grey so the white surfaces read clearly against it.
         tw.kurocore.kurogram.skin.KuroUi.applyBackground(this, tw.kurocore.kurogram.skin.KuroUi.t().profileBackground);
 
@@ -161,6 +160,22 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
             card.addView(phoneView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL));
         }
 
+        // Creator dashboard: totals of what this person has published (own profile only; visitors see the plain profile)
+        if (self) {
+            LinearLayout stats = new LinearLayout(context);
+            stats.setOrientation(LinearLayout.HORIZONTAL);
+            stats.setGravity(Gravity.CENTER);
+            statCount = new TextView(context);
+            statCountLabel = new TextView(context);
+            statDownloads = new TextView(context);
+            statLikes = new TextView(context);
+            stats.addView(statBox(context, statCount, statCountLabel, "Themes"), LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 1f));
+            stats.addView(statBox(context, statDownloads, null, "Downloads"), LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 1f));
+            stats.addView(statBox(context, statLikes, null, "Likes"), LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 1f));
+            card.addView(stats, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 4, 12, 4, 0));
+            showStats(0, 0, 0);
+        }
+
         // Lower half: one rounded white surface (same shape as the header card) holding the
         // segmented control and the content, so the screen reads as two matching cards.
         LinearLayout contentCard = new LinearLayout(context);
@@ -190,35 +205,50 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
 
         // Themes: this owner's store themes (created lazily the first time the tab shows).
         // Stickers: the user's uploaded packs (created lazily the first time the tab shows).
-        // Circular "+" button: opens the upload screen.
-        fab = new ImageView(context);
-        fab.setImageResource(R.drawable.kuro_plus);
-        fab.setScaleType(ImageView.ScaleType.CENTER);
-        fab.setColorFilter(0xFFFFFFFF);
-        GradientDrawable fabBg = new GradientDrawable();
-        fabBg.setShape(GradientDrawable.RECTANGLE);
-        fabBg.setCornerRadius(AndroidUtilities.dp(tw.kurocore.kurogram.skin.KuroUi.floatingRadiusDp(28)));
-        fabBgDrawable = fabBg;
-        fabBg.setColor(tw.kurocore.kurogram.skin.KuroSkinManager.get().accent());
-        fab.setBackground(fabBg);
-        fab.setElevation(AndroidUtilities.dp(8));
-        fab.setOutlineProvider(new ViewOutlineProvider() {
-            @Override
-            public void getOutline(View view, Outline outline) {
-                outline.setOval(0, 0, view.getWidth(), view.getHeight());
-            }
-        });
-        fab.setContentDescription("Upload");
-        fab.setOnClickListener(v -> {
-            if (fragment != null && fragment.getParentActivity() != null) {
-                fragment.presentFragment(selectedTab == TAB_THEMES ? new tw.kurocore.kurogram.skin.editor.ui.ThemeBuilderActivity(null, null) : new StickerUploadActivity());
-            }
-        });
-        addView(fab, LayoutHelper.createFrame(56, 56, Gravity.BOTTOM | Gravity.RIGHT, 0, 0, 20, 28));
-        fab.setVisibility(self ? VISIBLE : GONE);
-
         seenUploadVersion = uploadVersion;
         showTab(TAB_THEMES);
+    }
+
+    private LinearLayout statBox(Context context, TextView number, TextView labelHolder, String label) {
+        LinearLayout box = new LinearLayout(context);
+        box.setOrientation(LinearLayout.VERTICAL);
+        box.setGravity(Gravity.CENTER_HORIZONTAL);
+        number.setTextSize(18);
+        number.setTypeface(AndroidUtilities.bold());
+        number.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
+        number.setGravity(Gravity.CENTER);
+        TextView l = labelHolder != null ? labelHolder : new TextView(context);
+        l.setText(label);
+        l.setTextSize(12);
+        l.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGrayText));
+        l.setGravity(Gravity.CENTER);
+        box.addView(number);
+        box.addView(l);
+        return box;
+    }
+
+    private void showStats(int count, long downloads, long likes) {
+        if (statCount == null) {
+            return;
+        }
+        statCount.setText(CountFormat.format(count));
+        statCountLabel.setText(selectedTab == TAB_THEMES ? "Themes" : "Stickers");
+        statDownloads.setText(CountFormat.format((int) Math.min(Integer.MAX_VALUE, downloads)));
+        statLikes.setText(CountFormat.format((int) Math.min(Integer.MAX_VALUE, likes)));
+    }
+
+    private final boolean self;
+    private long[] themeStats = {0, 0, 0}, stickerStats = {0, 0, 0};
+
+    private void newItem() {
+        if (fragment == null || fragment.getParentActivity() == null) {
+            return;
+        }
+        if (selectedTab == TAB_THEMES) {
+            QuickStartSheet.show(fragment);
+        } else {
+            fragment.presentFragment(new StickerUploadActivity());
+        }
     }
 
     private void showTab(int index) {
@@ -229,18 +259,36 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
         if (index == TAB_THEMES) {
             if (themesView == null) {
                 themesView = new ThemesTabView(getContext(), fragment, ownerId, ownerId == UserConfig.getInstance(currentAccount).getClientUserId()
-                        ? "No themes uploaded yet.\nTap + to add one." : "No themes uploaded yet.");
+                        ? "No themes yet." : "No themes uploaded yet.");
                 themesView.setInset(true);
+                if (self) {
+                    themesView.setOwnerMode(this::newItem, (n, d, l) -> {
+                        themeStats = new long[]{n, d, l};
+                        if (selectedTab == TAB_THEMES) {
+                            showStats(n, d, l);
+                        }
+                    });
+                }
                 themesView.setBottomInset(AndroidUtilities.dp(92) + bottomInset);
             }
             contentFrame.addView(themesView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         } else {
             if (stickersView == null) {
                 stickersView = new MyStickersView(getContext(), fragment, ownerId);
+                if (self) {
+                    stickersView.setOwnerMode(this::newItem, (n, d, l) -> {
+                        stickerStats = new long[]{n, d, l};
+                        if (selectedTab == TAB_STICKERS) {
+                            showStats(n, d, l);
+                        }
+                    });
+                }
                 stickersView.setBottomInset(AndroidUtilities.dp(92) + bottomInset);
             }
             contentFrame.addView(stickersView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         }
+        long[] st = index == TAB_THEMES ? themeStats : stickerStats;
+        showStats((int) st[0], st[1], st[2]);
         contentFrame.setAlpha(0f);
         contentFrame.animate().alpha(1f).setDuration(tw.kurocore.kurogram.skin.KuroUi.anim(150)).start();
     }
@@ -271,7 +319,6 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
         contentCard.setElevation(AndroidUtilities.dp(cardElevationDp()));
         int accent = tw.kurocore.kurogram.skin.KuroSkinManager.get().accent();
         if (avatarRingDrawable != null) avatarRingDrawable.setStroke(AndroidUtilities.dp(2.5f), accent);
-        if (fabBgDrawable != null) fabBgDrawable.setColor(accent);
         if (usernameViewRef != null) usernameViewRef.setTextColor(accent);
         segmented.select(selectedTab, false);
         headerCard.invalidateOutline();
@@ -317,9 +364,6 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
     /** Room to leave at the bottom so content (and the + button) never sit under the floating tab bar. */
     public void setBottomInset(int px) {
         bottomInset = px;
-        MarginLayoutParams lp = (MarginLayoutParams) fab.getLayoutParams();
-        lp.bottomMargin = px + AndroidUtilities.dp(24);
-        fab.setLayoutParams(lp);
         if (stickersView != null) {
             stickersView.setBottomInset(AndroidUtilities.dp(92) + px);
         }

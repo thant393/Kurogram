@@ -56,6 +56,20 @@ public class ThemeBuilderActivity extends BaseFragment {
     private static final String KEY_STYLES = "styles";
     private static final String TEMPLATE = "{\"schemaVersion\":2,\"meta\":{\"id\":\"my-theme\",\"name\":\"My Theme\"},\"tokens\":{\"colors\":{\"accent\":\"#3390EC\"}}}";
 
+    /** A blank theme: what "start from scratch" opens. */
+    public static String blankTheme() {
+        return TEMPLATE;
+    }
+
+    /** True when an unfinished draft from an earlier session is saved on this phone. */
+    public static boolean hasDraft() {
+        try {
+            return ApplicationLoader.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getString(KEY_DRAFT, null) != null;
+        } catch (RuntimeException e) {
+            return false;
+        }
+    }
+
     private final String startJson; // an existing theme to edit, or null
     private final tw.kurocore.kurogram.stickerstore.ThemeInfo editing; // its store entry when editing
     private final String startStyles; // the styles of a theme being edited (JSON list) or null
@@ -73,10 +87,19 @@ public class ThemeBuilderActivity extends BaseFragment {
     private boolean wide;
     private boolean editMode = true;
     private FrameLayout root;
-    private LinearLayout col, sheet, sectionRow, modeBox, list;
-    private ScrollView canvasArea, inspScroll;
+    private LinearLayout col, sheet, sectionRow, list;
+    private FrameLayout canvasArea;
+    private ScrollView inspScroll;
     private HorizontalScrollView sectionScroll;
-    private TextView undoBtn, redoBtn, dayBtn, editBtn, viewBtn, warnBanner, liveBtn, hint, sheetTitle, sheetPlace;
+    private TextView dayBtn, editBtn, viewBtn, warnChip, liveBtn, hint, sheetTitle, sheetPlace, screensTab;
+    private org.telegram.ui.ActionBar.ActionBarMenuItem undoItem, redoItem;
+    private LinearLayout idleBar, pill;
+    private FrameLayout canvasFrame;
+    private LinearLayout phoneHolder;
+    private FrameLayout phone;
+    private boolean inspecting;   // a part (or the global colours) is open in the inspector; otherwise the 3-tab bar shows
+    private boolean globalPanel;  // the inspector shows only the quick global colours
+    private static final String[] GLOBAL_COLORS = {"tokens.colors.accent", "tokens.colors.background", "tokens.colors.surface", "tokens.colors.textPrimary"};
     private TextView levelItem, readItem, liveItem, lookItem; // entries of the three-dots menu whose words change
     private int sheetState; // 0 collapsed, 1 half, 2 full
     private android.animation.ValueAnimator sheetAnim;
@@ -180,7 +203,10 @@ public class ThemeBuilderActivity extends BaseFragment {
     public View createView(Context context) {
         wide = AndroidUtilities.displaySize.x >= AndroidUtilities.dp(840);
         actionBar.setBackButtonImage(R.drawable.ic_ab_back);
+        actionBar.setTitleActionRunnable(this::renameDialog);
         org.telegram.ui.ActionBar.ActionBarMenu menu = actionBar.createMenu();
+        undoItem = menu.addItem(3, "\u21B6");
+        redoItem = menu.addItem(4, "\u21B7");
         menu.addItem(1, tr("next"));
         org.telegram.ui.ActionBar.ActionBarMenuItem more = menu.addItem(2, R.drawable.ic_ab_other);
         more.addSubItem(11, tr("search"));
@@ -190,12 +216,12 @@ public class ThemeBuilderActivity extends BaseFragment {
         more.addSubItem(15, tr("language"));
         readItem = more.addSubItem(16, tr("contrast.title"));
         liveItem = more.addSubItem(17, tr("live"));
-        lookItem = more.addSubItem(21, tr("look"));
         more.addSubItem(18, tr("use"));
         more.addSubItem(19, tr("startOver"));
         if (editing != null) {
             more.addSubItem(20, tr("removeStore"));
         }
+        lookItem = more.addSubItem(21, tr("look"));
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
@@ -205,6 +231,14 @@ public class ThemeBuilderActivity extends BaseFragment {
                         break;
                     case 1:
                         next();
+                        break;
+                    case 3:
+                        session.active().undo();
+                        changed(false);
+                        break;
+                    case 4:
+                        session.active().redo();
+                        changed(false);
                         break;
                     case 11:
                         searchDialog();
@@ -260,62 +294,21 @@ public class ThemeBuilderActivity extends BaseFragment {
         col.setOrientation(LinearLayout.VERTICAL);
         root.addView(col, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.TOP | Gravity.START, 0, 0, wide ? PANEL_DP : 0, 0));
 
-        // tool strip: undo, redo, day/night, Edit | Preview, screens, layers
-        LinearLayout strip = new LinearLayout(context);
-        strip.setOrientation(LinearLayout.HORIZONTAL);
-        strip.setGravity(Gravity.CENTER_VERTICAL);
-        undoBtn = iconButton(context, "↶", tr("undo"), v -> {
-            session.active().undo();
-            changed(false);
-        });
-        redoBtn = iconButton(context, "↷", tr("redo"), v -> {
-            session.active().redo();
-            changed(false);
-        });
-        dayBtn = iconButton(context, "☀", tr("variant.day"), v -> {
-            String keep = session.selected();
-            session.setNight(!session.night());
-            session.select(keep);
-            refreshAll();
-        });
-        modeBox = new LinearLayout(context);
-        modeBox.setOrientation(LinearLayout.HORIZONTAL);
-        modeBox.setBackground(shape(0xFFE9EBEE, 19, 0));
-        modeBox.setPadding(AndroidUtilities.dp(3), AndroidUtilities.dp(3), AndroidUtilities.dp(3), AndroidUtilities.dp(3));
-        editBtn = modeButton(context, "✎", tr("mode.edit"), true);
-        viewBtn = modeButton(context, "▶", tr("mode.preview"), false);
-        modeBox.addView(editBtn, LayoutHelper.createLinear(38, 32));
-        modeBox.addView(viewBtn, LayoutHelper.createLinear(38, 32));
-        TextView screensBtn = iconButton(context, "▦", tr("screens"), v -> screensDialog());
-        TextView layersBtn = iconButton(context, "☰", tr("layers"), v -> layersDialog());
-        strip.addView(undoBtn, LayoutHelper.createLinear(38, 38, 0, 0, 6, 0));
-        strip.addView(redoBtn, LayoutHelper.createLinear(38, 38, 0, 0, 10, 0));
-        strip.addView(dayBtn, LayoutHelper.createLinear(38, 38, 0, 0, 10, 0));
-        strip.addView(modeBox, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, 0, 0, 10, 0));
-        strip.addView(screensBtn, LayoutHelper.createLinear(38, 38, 0, 0, 6, 0));
-        strip.addView(layersBtn, LayoutHelper.createLinear(38, 38));
-        col.addView(strip, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL, 12, 8, 12, 4));
-
-        warnBanner = new TextView(context);
-        warnBanner.setTextSize(13);
-        warnBanner.setTextColor(0xFF8A5A00);
-        warnBanner.setBackground(shape(0xFFFFF4E5, 12, 0));
-        warnBanner.setPadding(AndroidUtilities.dp(12), AndroidUtilities.dp(8), AndroidUtilities.dp(12), AndroidUtilities.dp(8));
-        warnBanner.setOnClickListener(v -> warningsDialog());
-        col.addView(warnBanner, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 14, 4, 14, 0));
-
-        // the canvas: a phone frame in the middle, scrollable when the sheet leaves little room
-        canvasArea = new ScrollView(context);
-        canvasArea.setVerticalScrollBarEnabled(false);
-        canvasArea.setFillViewport(true);
-        LinearLayout canvasBox = new LinearLayout(context);
-        canvasBox.setOrientation(LinearLayout.VERTICAL);
-        canvasBox.setGravity(Gravity.CENTER);
-        canvasArea.addView(canvasBox, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
-        FrameLayout phone = new FrameLayout(context);
+        // the canvas: a phone frame that is scaled / shifted so the selected part is never under the sheet
+        canvasArea = new FrameLayout(context);
+        canvasArea.setClipChildren(true);
+        phoneHolder = new LinearLayout(context);
+        phoneHolder.setOrientation(LinearLayout.VERTICAL);
+        phoneHolder.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+        phone = new FrameLayout(context);
         phone.setBackground(shape(0xFF1F2328, 30, 0));
         phone.setPadding(AndroidUtilities.dp(6), AndroidUtilities.dp(6), AndroidUtilities.dp(6), AndroidUtilities.dp(6));
         phone.setElevation(AndroidUtilities.dp(6));
+        phone.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, or, ob) -> {
+            if (b - t != ob - ot || r - l != or - ol) {
+                fitCanvas(false);
+            }
+        });
         FrameLayout screenClip = new FrameLayout(context);
         screenClip.setBackground(shape(0xFFFFFFFF, 24, 0));
         screenClip.setClipToOutline(true);
@@ -323,47 +316,137 @@ public class ThemeBuilderActivity extends BaseFragment {
         preview.setListener(this::onPicked);
         screenClip.addView(preview, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT));
         phone.addView(screenClip, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT));
-        canvasBox.addView(phone, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL, 0, 6, 0, 0));
+        phoneHolder.addView(phone, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL, 0, 52, 0, 0));
+        canvasArea.addView(phoneHolder, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP));
+        canvasArea.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, or, ob) -> {
+            if (b - t != ob - ot || r - l != or - ol) {
+                fitCanvas(false);
+            }
+        });
+        col.addView(canvasArea, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 0, 1f));
+
+        // floating pill over the canvas: Day/Night and Edit | Preview
+        pill = new LinearLayout(context);
+        pill.setOrientation(LinearLayout.HORIZONTAL);
+        pill.setGravity(Gravity.CENTER_VERTICAL);
+        pill.setBackground(shape(0xFFFFFFFF, 22, LINE));
+        pill.setElevation(AndroidUtilities.dp(4));
+        pill.setPadding(AndroidUtilities.dp(4), AndroidUtilities.dp(4), AndroidUtilities.dp(4), AndroidUtilities.dp(4));
+        dayBtn = pillButton(context, "\u2600", tr("variant.day"), v -> {
+            String keep = session.selected();
+            session.setNight(!session.night());
+            session.select(keep);
+            refreshAll();
+        });
+        editBtn = pillButton(context, "\u270E", tr("mode.edit"), v -> setEditMode(true));
+        viewBtn = pillButton(context, "\u25B6", tr("mode.preview"), v -> setEditMode(false));
+        View divider = new View(context);
+        divider.setBackgroundColor(LINE);
+        pill.addView(dayBtn, LayoutHelper.createLinear(38, 36));
+        pill.addView(divider, LayoutHelper.createLinear(1, 20, 4, 0, 4, 0));
+        pill.addView(editBtn, LayoutHelper.createLinear(38, 36));
+        pill.addView(viewBtn, LayoutHelper.createLinear(38, 36));
+        root.addView(pill, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP | Gravity.END, 0, 8, 12 + (wide ? PANEL_DP : 0), 0));
+
+        // a small badge instead of a banner: it opens the details only when tapped
+        warnChip = new TextView(context);
+        warnChip.setTextSize(13);
+        warnChip.setTypeface(AndroidUtilities.bold());
+        warnChip.setTextColor(0xFF8A5A00);
+        warnChip.setGravity(Gravity.CENTER);
+        warnChip.setBackground(shape(0xFFFFF0D6, 18, 0xFFF2C46B));
+        warnChip.setElevation(AndroidUtilities.dp(3));
+        warnChip.setPadding(AndroidUtilities.dp(12), 0, AndroidUtilities.dp(12), 0);
+        warnChip.setOnClickListener(v -> warningsDialog());
+        root.addView(warnChip, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, 36, Gravity.TOP | Gravity.START, 12, 10, 0, 0));
+
         hint = new TextView(context);
         hint.setTextSize(12);
-        hint.setGravity(Gravity.CENTER);
         hint.setTextColor(SOFT);
-        canvasBox.addView(hint, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 16, 10, 16, 12));
+        hint.setGravity(Gravity.CENTER);
+        hint.setBackground(shape(0xE6FFFFFF, 14, 0));
+        hint.setPadding(AndroidUtilities.dp(12), AndroidUtilities.dp(5), AndroidUtilities.dp(12), AndroidUtilities.dp(5));
         liveBtn = new TextView(context);
         liveBtn.setTextSize(14);
         liveBtn.setTypeface(AndroidUtilities.bold());
         liveBtn.setGravity(Gravity.CENTER);
+        liveBtn.setElevation(AndroidUtilities.dp(3));
         liveBtn.setPadding(AndroidUtilities.dp(18), 0, AndroidUtilities.dp(18), 0);
         liveBtn.setOnClickListener(v -> setLive(!live));
-        canvasBox.addView(liveBtn, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 42, Gravity.CENTER_HORIZONTAL, 0, 0, 0, 16));
-        col.addView(canvasArea, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 0, 1f));
+        FrameLayout.LayoutParams hp = LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0, wide ? PANEL_DP : 0, 14);
+        canvasArea.addView(hint, hp);
+        canvasArea.addView(liveBtn, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, 42, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0, 0, 14));
 
         buildSheet(context);
+        buildIdleBar(context);
         refreshAll();
         applySheet(false);
         return fragmentView;
     }
 
-    private TextView iconButton(Context context, String glyph, String description, View.OnClickListener l) {
+    private TextView pillButton(Context context, String glyph, String description, View.OnClickListener l) {
         TextView t = new TextView(context);
         t.setText(glyph);
-        t.setTextSize(18);
-        t.setTextColor(INK);
+        t.setTextSize(16);
         t.setGravity(Gravity.CENTER);
-        t.setBackground(shape(0xFFFFFFFF, 19, LINE));
         t.setContentDescription(description);
         t.setOnClickListener(l);
         return t;
     }
 
-    private TextView modeButton(Context context, String glyph, String description, boolean edit) {
+    /** What shows while nothing is selected: quick global colours, the screen switcher, and the layers. */
+    private void buildIdleBar(Context context) {
+        idleBar = new LinearLayout(context);
+        idleBar.setOrientation(LinearLayout.HORIZONTAL);
+        GradientDrawable bg = new GradientDrawable();
+        bg.setColor(0xFFFFFFFF);
+        float r = AndroidUtilities.dp(22);
+        bg.setCornerRadii(new float[]{r, r, r, r, 0, 0, 0, 0});
+        idleBar.setBackground(bg);
+        idleBar.setElevation(AndroidUtilities.dp(10));
+        idleBar.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(6), AndroidUtilities.dp(8), AndroidUtilities.dp(6));
+        TextView colours = idleTab(context, "\uD83C\uDFA8", tr("globalColors"), v -> openGlobalColors());
+        screensTab = idleTab(context, "\u25A6", "", v -> screensDialog());
+        TextView layers = idleTab(context, "\u2630", tr("layers"), v -> layersDialog());
+        idleBar.addView(colours, LayoutHelper.createLinear(0, LayoutHelper.MATCH_PARENT, 1f));
+        idleBar.addView(screensTab, LayoutHelper.createLinear(0, LayoutHelper.MATCH_PARENT, 1f));
+        idleBar.addView(layers, LayoutHelper.createLinear(0, LayoutHelper.MATCH_PARENT, 1f));
+        root.addView(idleBar, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, IDLE_DP, Gravity.BOTTOM, 0, 0, wide ? PANEL_DP : 0, 0));
+    }
+
+    private TextView idleTab(Context context, String glyph, String label, View.OnClickListener l) {
         TextView t = new TextView(context);
-        t.setText(glyph);
-        t.setTextSize(15);
+        t.setText(glyph + "\n" + label);
+        t.setTextSize(12);
         t.setGravity(Gravity.CENTER);
-        t.setContentDescription(description);
-        t.setOnClickListener(v -> setEditMode(edit));
+        t.setTextColor(INK);
+        t.setSingleLine(false);
+        t.setMaxLines(2);
+        t.setOnClickListener(l);
         return t;
+    }
+
+    private void openGlobalColors() {
+        session.select("global");
+        inspecting = true;
+        globalPanel = true;
+        if (!wide) {
+            sheetState = 1;
+        }
+        applySheet(true);
+        refreshPanel();
+        preview.invalidate();
+    }
+
+    /** Deselects: the inspector closes and the 3-tab bar comes back. */
+    private void closeInspector() {
+        inspecting = false;
+        globalPanel = false;
+        session.select("global");
+        applySheet(true);
+        refreshPanel();
+        preview.invalidate();
+        fitCanvas(true);
     }
 
     private static GradientDrawable shape(int fill, int radiusDp, int stroke) {
@@ -456,6 +539,15 @@ public class ThemeBuilderActivity extends BaseFragment {
         menuBtn.setContentDescription(tr("more"));
         menuBtn.setOnClickListener(v -> partMenu(v));
         titleRow.addView(menuBtn, LayoutHelper.createLinear(44, 44));
+        TextView closeBtn = new TextView(context);
+        closeBtn.setText("\u2715");
+        closeBtn.setTextSize(17);
+        closeBtn.setTextColor(INK);
+        closeBtn.setGravity(Gravity.CENTER);
+        closeBtn.setContentDescription(tr("close"));
+        closeBtn.setBackground(shape(0xFFF1F2F4, 18, 0));
+        closeBtn.setOnClickListener(v -> closeInspector());
+        titleRow.addView(closeBtn, LayoutHelper.createLinear(36, 36, 4, 0, 6, 0));
         header.addView(titleRow);
         sheet.addView(header, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
         if (!wide) {
@@ -522,6 +614,8 @@ public class ThemeBuilderActivity extends BaseFragment {
         }
     }
 
+    private static final int IDLE_DP = 64;
+
     private int sheetHeightFor(int state) {
         int rh = Math.max(root.getHeight(), AndroidUtilities.dp(480));
         if (state == 0) {
@@ -538,7 +632,7 @@ public class ThemeBuilderActivity extends BaseFragment {
         lp.height = px;
         sheet.setLayoutParams(lp);
         LinearLayout.LayoutParams cp = (LinearLayout.LayoutParams) canvasArea.getLayoutParams();
-        cp.bottomMargin = editMode ? px : 0;
+        cp.bottomMargin = editMode && inspecting ? px : editMode ? AndroidUtilities.dp(IDLE_DP) : 0;
         canvasArea.setLayoutParams(cp);
         boolean open = px > sheetHeightFor(0) + AndroidUtilities.dp(20);
         sectionScroll.setVisibility(open ? View.VISIBLE : View.GONE);
@@ -564,16 +658,26 @@ public class ThemeBuilderActivity extends BaseFragment {
         sheetAnim.start();
     }
 
+    /** Shows the right bottom element: nothing in Preview mode, the 3-tab bar when idle, the inspector when a part is open. */
     private void applySheet(boolean animate) {
         if (sheet == null) {
             return;
         }
-        sheet.setVisibility(editMode ? View.VISIBLE : View.GONE);
+        boolean showSheet = editMode && (inspecting || wide);
+        sheet.setVisibility(showSheet ? View.VISIBLE : View.GONE);
+        idleBar.setVisibility(editMode && !inspecting ? View.VISIBLE : View.GONE);
         if (!wide) {
-            setSheetState(sheetState, animate);
+            if (inspecting) {
+                setSheetState(Math.max(sheetState, 0), animate);
+            } else {
+                setSheetHeight(sheetHeightFor(0)); // keeps the canvas margin right for the idle bar
+            }
         } else {
-            ((LinearLayout.LayoutParams) canvasArea.getLayoutParams()).bottomMargin = 0;
+            LinearLayout.LayoutParams cp = (LinearLayout.LayoutParams) canvasArea.getLayoutParams();
+            cp.bottomMargin = editMode && !inspecting ? AndroidUtilities.dp(IDLE_DP) : 0;
+            canvasArea.setLayoutParams(cp);
         }
+        fitCanvas(animate);
     }
 
     private void setEditMode(boolean edit) {
@@ -589,39 +693,88 @@ public class ThemeBuilderActivity extends BaseFragment {
         refreshToolbar();
     }
 
+    /**
+     * Keeps what matters in view: the whole phone when nothing is selected, or the selected part when the inspector is open.
+     * The phone is shifted up first and shrunk only when the part is taller than the room left above the sheet.
+     */
+    private void fitCanvas(boolean animate) {
+        if (phone == null || canvasArea.getHeight() == 0 || phone.getHeight() == 0) {
+            return;
+        }
+        final float top = AndroidUtilities.dp(52);          // the pill's room, where the phone starts
+        float avail = canvasArea.getHeight() - top - AndroidUtilities.dp(10);
+        float phoneH = phone.getHeight();
+        float a = 0, b = phoneH;
+        android.graphics.RectF sel = editMode && inspecting && !"global".equals(session.selected()) && !"screenBackground".equals(session.selected())
+                ? preview.selectedBounds() : null;
+        if (sel != null) {
+            float pad = AndroidUtilities.dp(6);
+            a = pad + sel.top - AndroidUtilities.dp(8);
+            b = pad + sel.bottom + AndroidUtilities.dp(8);
+        }
+        float s = 1f, ty = 0f;
+        if (sel == null) {
+            s = Math.min(1f, avail / phoneH);
+        } else if (b > avail) {
+            if (b - a <= avail) {
+                ty = avail - b;
+            } else {
+                s = Math.max(0.5f, avail / (b - a));
+                ty = Math.min(0f, avail - b * s);
+            }
+        }
+        phone.setPivotX(phone.getWidth() / 2f);
+        phone.setPivotY(0f);
+        if (animate) {
+            phone.animate().scaleX(s).scaleY(s).translationY(ty).setDuration(180).start();
+        } else {
+            phone.animate().cancel();
+            phone.setScaleX(s);
+            phone.setScaleY(s);
+            phone.setTranslationY(ty);
+        }
+    }
+
     // ------------------------------------------------------------------ refresh
 
     private void refreshAll() {
         refreshToolbar();
         refreshPanel();
         preview.invalidate();
+        if (phone != null) {
+            phone.post(() -> fitCanvas(false));
+        }
     }
 
     private void refreshToolbar() {
         actionBar.setTitle(themeName());
         actionBar.setSubtitle(tr(editing != null ? "draft.published" : "draft.saved") + (session.onBase() ? "" : "  \u00B7  " + lookName()));
-        dayBtn.setText(session.night() ? "🌙" : "☀");
+        dayBtn.setText(session.night() ? "\uD83C\uDF19" : "\u2600");
         dayBtn.setContentDescription(tr(session.night() ? "variant.night" : "variant.day"));
-        dayBtn.setBackground(shape(session.night() ? 0xFF1F2328 : 0xFFFFFFFF, 19, LINE));
+        dayBtn.setBackground(shape(session.night() ? 0xFF1F2328 : 0xFFFFFFFF, 18, 0));
         dayBtn.setTextColor(session.night() ? 0xFFFFFFFF : INK);
-        undoBtn.setAlpha(session.active().canUndo() ? 1f : 0.35f);
-        redoBtn.setAlpha(session.active().canRedo() ? 1f : 0.35f);
+        undoItem.setAlpha(session.active().canUndo() ? 1f : 0.35f);
+        redoItem.setAlpha(session.active().canRedo() ? 1f : 0.35f);
         for (TextView b : new TextView[]{editBtn, viewBtn}) {
             boolean on = (b == editBtn) == editMode;
-            b.setTextColor(on ? INK : SOFT);
-            b.setBackground(on ? shape(0xFFFFFFFF, 16, 0) : null);
+            b.setTextColor(on ? 0xFFFFFFFF : SOFT);
+            b.setBackground(on ? shape(BLUE, 18, 0) : null);
         }
         int issues = session.readability().size();
-        warnBanner.setVisibility(issues > 0 && editMode ? View.VISIBLE : View.GONE);
-        warnBanner.setText("⚠ " + tr("contrast.low") + " · " + issues + "   " + tr("warn.review") + " ›");
+        warnChip.setVisibility(issues > 0 && editMode ? View.VISIBLE : View.GONE);
+        warnChip.setText("\u26A0 " + issues);
+        warnChip.setContentDescription(tr("contrast.low"));
         if (levelItem != null) {
             levelItem.setText(tr(session.advanced() ? "menu.basic" : "menu.advanced"));
-            readItem.setText(tr("contrast.title") + (issues > 0 ? "  ⚠ " + issues : "  ✓"));
-            liveItem.setText(tr("live") + (live ? "  ✓" : ""));
+            readItem.setText(tr("contrast.title") + (issues > 0 ? "  \u26A0 " + issues : "  \u2713"));
+            liveItem.setText(tr("live") + (live ? "  \u2713" : ""));
+            lookItem.setText(tr("look") + ": " + lookName());
         }
-        hint.setText(live ? tr("live.on") : editMode ? tr("tapHint") : tr("previewHint"));
+        screensTab.setText("\u25A6\n" + tr("scene." + session.scene()) + " \u25BE");
+        hint.setText(live ? tr("live.on") : tr("tapHint"));
+        hint.setVisibility(editMode && !inspecting && !live ? View.VISIBLE : View.GONE);
         liveBtn.setVisibility(editMode ? View.GONE : View.VISIBLE);
-        liveBtn.setText(live ? "■  " + tr("live.off") : "▶  " + tr("live"));
+        liveBtn.setText(live ? "\u25A0  " + tr("live.off") : "\u25B6  " + tr("live"));
         liveBtn.setTextColor(live ? 0xFFFFFFFF : BLUE);
         liveBtn.setBackground(shape(live ? BLUE : 0xFFFFFFFF, 21, live ? 0 : BLUE));
     }
@@ -645,11 +798,18 @@ public class ThemeBuilderActivity extends BaseFragment {
     private void onPicked(String id) {
         session.select(id);
         focusPath = null;
+        inspecting = true;
+        globalPanel = false;
         if (!wide && sheetState == 0) {
-            setSheetState(1, true);
+            sheetState = 1;
         }
+        applySheet(true);
         refreshPanel();
+        refreshToolbar();
         preview.invalidate();
+        if (phone != null) {
+            phone.post(() -> fitCanvas(true));
+        }
     }
 
     /** Where the selected part is: screen, then its parent part when it has one. */
@@ -670,8 +830,29 @@ public class ThemeBuilderActivity extends BaseFragment {
         Context context = list.getContext();
         String lang = session.lang();
         String sel = session.selected();
-        sheetTitle.setText(session.catalog.componentLabel(sel, lang));
-        sheetPlace.setText(placeOf(sel));
+        final boolean quick = globalPanel || (wide && !inspecting);
+        sheetTitle.setText(quick ? tr("globalColors") : session.catalog.componentLabel(sel, lang));
+        sheetPlace.setText(quick ? tr("scene." + session.scene()) : placeOf(sel));
+        if (quick) {
+            focusRow = null;
+            sectionRow.removeAllViews();
+            for (String path : GLOBAL_COLORS) {
+                Catalog.Entry e = session.catalog.entry(path);
+                RuleSet.Ref ref = session.rules.find(path);
+                if (e != null && ref != null) {
+                    addRuleRow(context, e, ref.rule);
+                }
+            }
+            LinearLayout moreBox = rowBox(context);
+            headLine(context, moreBox, tr("moreGlobal"), null);
+            moreBox.setOnClickListener(v -> {
+                globalPanel = false;
+                inspecting = true;
+                session.select("global");
+                refreshAll();
+            });
+            return;
+        }
 
         final boolean globalRows = "global".equals(sel) && !session.night();
         List<Catalog.Entry> entries = new java.util.ArrayList<>();
@@ -989,18 +1170,32 @@ public class ThemeBuilderActivity extends BaseFragment {
         return dlg;
     }
 
+    private static final String[] MAIN_SCREENS = {"chats", "chat", "settings", "people", "contacts", "profile", "drawer", "themeStore"};
+    private static final String[] SUB_SCREENS = {"rows.privacy", "rows.notifications", "rows.dataStorage", "rows.profile", "controls"};
+
     private void screensDialog() {
+        boolean sub = java.util.Arrays.asList(SUB_SCREENS).contains(session.scene());
+        screensDialog(sub ? 1 : 0);
+    }
+
+    /** Two tabs of thumbnails, drawn from the same draft, so each shows what that screen looks like with the theme as it is now. */
+    private void screensDialog(final int tab) {
         Context context = getParentActivity();
-        final String[] ids = BuilderText.SCENES;
+        final String[] ids = tab == 0 ? MAIN_SCREENS : SUB_SCREENS;
         LinearLayout box = new LinearLayout(context);
         box.setOrientation(LinearLayout.VERTICAL);
         box.setPadding(AndroidUtilities.dp(14), AndroidUtilities.dp(6), AndroidUtilities.dp(14), AndroidUtilities.dp(10));
-        box.addView(text(context, tr("screens"), 17, true), LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 4, 0, 4, 10));
         final Dialog[] dlg = new Dialog[1];
+        box.addView(segmented(context, new String[]{tr("screens.main"), tr("screens.sub")}, tab, i -> {
+            if (i != tab) {
+                Dialog old = dlg[0];
+                screensDialog(i);
+                old.dismiss();
+            }
+        }), LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 4, 0, 12));
         int cols = wide ? 5 : 3;
         int thumbW = AndroidUtilities.dp(wide ? 110 : 96);
         LinearLayout rowLayout = null;
-        // thumbnails are drawn from the same draft, so they show what each screen looks like with the theme as it is now
         for (int i = 0; i < ids.length; i++) {
             if (i % cols == 0) {
                 rowLayout = new LinearLayout(context);
@@ -1029,7 +1224,10 @@ public class ThemeBuilderActivity extends BaseFragment {
             card.addView(name, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 4, 0, 0));
             card.setOnClickListener(v -> {
                 session.setScene(id);
+                inspecting = false;
+                globalPanel = false;
                 dlg[0].dismiss();
+                applySheet(false);
                 refreshAll();
             });
             rowLayout.addView(card, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 1f, 3, 0, 3, 0));
@@ -1049,11 +1247,30 @@ public class ThemeBuilderActivity extends BaseFragment {
         box.setPadding(AndroidUtilities.dp(10), AndroidUtilities.dp(6), AndroidUtilities.dp(10), AndroidUtilities.dp(14));
         final Dialog[] dlg = new Dialog[1];
         final Runnable[] fill = new Runnable[1];
+        final boolean[] lockedOpen = {false};
         fill[0] = () -> {
             box.removeAllViews();
-            box.addView(text(context, tr("scene." + session.scene()) + "  ·  " + tr("layers"), 17, true),
+            box.addView(text(context, tr("scene." + session.scene()) + "  \u00B7  " + tr("layers"), 17, true),
                     LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 8, 0, 8, 8));
-            addLayer(context, box, tree, 0, dlg, fill);
+            java.util.List<String> locked = new java.util.ArrayList<>();
+            addLayer(context, box, tree, 0, dlg, fill, locked);
+            if (!locked.isEmpty()) { // parts that cannot be edited stay out of the way, folded at the bottom
+                TextView head = text(context, (lockedOpen[0] ? "\u25BE " : "\u25B8 ") + tr("locked") + " (" + locked.size() + ")", 13, false);
+                head.setPadding(AndroidUtilities.dp(10), AndroidUtilities.dp(14), AndroidUtilities.dp(10), AndroidUtilities.dp(8));
+                head.setOnClickListener(v -> {
+                    lockedOpen[0] = !lockedOpen[0];
+                    fill[0].run();
+                });
+                box.addView(head);
+                if (lockedOpen[0]) {
+                    for (String id : locked) {
+                        TextView t = text(context, session.catalog.componentLabel(id, session.lang()), 14, false);
+                        t.setTextColor(0xFFA4A9B3);
+                        t.setPadding(AndroidUtilities.dp(26), AndroidUtilities.dp(8), AndroidUtilities.dp(10), AndroidUtilities.dp(8));
+                        box.addView(t);
+                    }
+                }
+            }
         };
         fill[0].run();
         ScrollView sv = new ScrollView(context);
@@ -1062,16 +1279,37 @@ public class ThemeBuilderActivity extends BaseFragment {
         dlg[0].show();
     }
 
-    private void addLayer(final Context context, LinearLayout box, final StudioModel.Node n, int depth, final Dialog[] dlg, final Runnable[] fill) {
+    /** Whether this layer or anything under it can be edited. */
+    private static boolean hasEditable(StudioModel.Node n) {
+        if (n.editable) {
+            return true;
+        }
+        for (StudioModel.Node k : n.kids) {
+            if (hasEditable(k)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void addLayer(final Context context, LinearLayout box, final StudioModel.Node n, int depth, final Dialog[] dlg, final Runnable[] fill, java.util.List<String> locked) {
+        if (!hasEditable(n)) {
+            collectIds(n, locked);
+            return;
+        }
         LinearLayout line = new LinearLayout(context);
         line.setOrientation(LinearLayout.HORIZONTAL);
         line.setGravity(Gravity.CENTER_VERTICAL);
-        boolean current = n.id.equals(session.selected());
+        boolean current = n.id.equals(session.selected()) && inspecting;
         line.setBackground(current ? shape(BLUE_SOFT, 10, 0) : null);
         line.setPadding(AndroidUtilities.dp(8 + depth * 18), 0, AndroidUtilities.dp(8), 0);
-        TextView arrow = text(context, n.kids.isEmpty() ? "" : collapsedLayers.contains(n.id) ? "▸" : "▾", 16, false);
+        boolean hasKids = false;
+        for (StudioModel.Node k : n.kids) {
+            hasKids |= hasEditable(k);
+        }
+        TextView arrow = text(context, !hasKids ? "" : collapsedLayers.contains(n.id) ? "\u25B8" : "\u25BE", 16, false);
         arrow.setGravity(Gravity.CENTER);
-        if (!n.kids.isEmpty()) {
+        if (hasKids) {
             arrow.setOnClickListener(v -> {
                 if (!collapsedLayers.remove(n.id)) {
                     collapsedLayers.add(n.id);
@@ -1083,12 +1321,8 @@ public class ThemeBuilderActivity extends BaseFragment {
         TextView name = text(context, session.catalog.componentLabel(n.id, session.lang()), 15, n.editable);
         name.setTextColor(n.editable ? INK : 0xFFA4A9B3);
         line.addView(name, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 1f));
-        if (!n.editable) {
-            line.addView(text(context, tr("structural"), 11, false));
-        }
         if (n.editable) {
             line.setOnClickListener(v -> {
-                session.select(n.id);
                 dlg[0].dismiss();
                 onPicked(n.id);
             });
@@ -1096,8 +1330,15 @@ public class ThemeBuilderActivity extends BaseFragment {
         box.addView(line, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 44));
         if (!collapsedLayers.contains(n.id)) {
             for (StudioModel.Node k : n.kids) {
-                addLayer(context, box, k, depth + 1, dlg, fill);
+                addLayer(context, box, k, depth + 1, dlg, fill, locked);
             }
+        }
+    }
+
+    private static void collectIds(StudioModel.Node n, java.util.List<String> out) {
+        out.add(n.id);
+        for (StudioModel.Node k : n.kids) {
+            collectIds(k, out);
         }
     }
 
@@ -1258,8 +1499,11 @@ public class ThemeBuilderActivity extends BaseFragment {
             section = StudioModel.sectionOf(e, ref.rule);
         }
         focusPath = path;
+        inspecting = true;
+        globalPanel = false;
         setEditMode(true);
         setSheetState(2, true);
+        applySheet(true);
         refreshAll();
     }
 
@@ -1594,7 +1838,7 @@ public class ThemeBuilderActivity extends BaseFragment {
 
     private void saveDraft() {
         try {
-            if (session != null) {
+            if (session != null && editing == null && session.isDirty()) { // only a new theme has a draft; a published one is saved by publishing
                 prefs().edit().putString(KEY_DRAFT, session.draft.toJson()).putString(KEY_STYLES, session.styles.toJson()).apply();
             }
         } catch (Throwable t) {
@@ -1607,9 +1851,12 @@ public class ThemeBuilderActivity extends BaseFragment {
                 .setPositiveButton(tr("done"), (d, w) -> {
                     prefs().edit().remove(KEY_DRAFT).remove(KEY_STYLES).apply();
                     setLive(false);
+                    inspecting = false;
+                    globalPanel = false;
                     session = new EditorSession(session.rules, session.catalog, ThemeDraft.fromJson(TEMPLATE, session.rules));
                     session.setLang(prefs().getString(KEY_LANG, "en"));
                     preview.setSession(session);
+                    applySheet(false);
                     refreshAll();
                 }).setNegativeButton(tr("cancel"), null).show();
     }
@@ -1763,7 +2010,9 @@ public class ThemeBuilderActivity extends BaseFragment {
                 } else {
                     Toast.makeText(getParentActivity(), tr("published"), Toast.LENGTH_SHORT).show();
                 }
-                prefs().edit().remove(KEY_DRAFT).remove(KEY_STYLES).apply(); // it is in the store now; the next new theme starts fresh
+                if (editing == null) {
+                    prefs().edit().remove(KEY_DRAFT).remove(KEY_STYLES).apply(); // it is in the store now; the next new theme starts fresh
+                }
                 finishFragment();
             }
 

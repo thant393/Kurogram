@@ -43,6 +43,62 @@ public class MyStickersView extends FrameLayout {
     private boolean loading;
     private boolean hasMore = true;
     private int generation;
+    private boolean ownerMode; // the signed-in user's own page: a "new pack" tile first, and stats
+    private Runnable onCreate;
+    private ThemesTabView.StatsListener statsListener;
+
+    public void setOwnerMode(Runnable create, ThemesTabView.StatsListener stats) {
+        ownerMode = create != null;
+        onCreate = create;
+        statsListener = stats;
+        adapter.notifyDataSetChanged();
+        if (ownerMode && display.isEmpty() && infoView.getVisibility() == GONE) {
+            listView.setVisibility(VISIBLE);
+        }
+        fireStats();
+    }
+
+    private void fireStats() {
+        if (statsListener == null) {
+            return;
+        }
+        long d = 0, l = 0;
+        for (StickerPackInfo p : packs) {
+            d += p.downloads;
+            l += p.totalLikes;
+        }
+        statsListener.onStats(packs.size(), d, l);
+    }
+
+    private int offset() {
+        return ownerMode ? 1 : 0;
+    }
+
+    private View createTile(Context context) {
+        android.widget.LinearLayout tile = new android.widget.LinearLayout(context);
+        tile.setOrientation(android.widget.LinearLayout.VERTICAL);
+        tile.setGravity(Gravity.CENTER);
+        int accent = tw.kurocore.kurogram.skin.KuroUi.accent();
+        android.graphics.drawable.GradientDrawable bg = new android.graphics.drawable.GradientDrawable();
+        bg.setCornerRadius(AndroidUtilities.dp(StoreLook.cardRadiusDp()));
+        bg.setColor(0x14000000 | (accent & 0xFFFFFF));
+        bg.setStroke(AndroidUtilities.dp(1.5f), accent, AndroidUtilities.dp(6), AndroidUtilities.dp(4));
+        tile.setBackground(bg);
+        TextView plus = new TextView(context);
+        plus.setText("+");
+        plus.setTextSize(30);
+        plus.setTextColor(accent);
+        plus.setGravity(Gravity.CENTER);
+        tile.addView(plus, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT));
+        TextView label = new TextView(context);
+        label.setText("New Sticker Pack");
+        label.setTextSize(12);
+        label.setTypeface(AndroidUtilities.bold());
+        label.setTextColor(accent);
+        label.setGravity(Gravity.CENTER);
+        tile.addView(label, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, 6, 2, 6, 0));
+        return tile;
+    }
 
     public MyStickersView(Context context, BaseFragment fragment, long ownerTelegramId) {
         super(context);
@@ -59,7 +115,12 @@ public class MyStickersView extends FrameLayout {
         adapter = new RecyclerListView.SelectionAdapter() {
             @Override
             public int getItemCount() {
-                return display.size();
+                return display.size() + offset();
+            }
+
+            @Override
+            public int getItemViewType(int position) {
+                return ownerMode && position == 0 ? 1 : 0;
             }
 
             @Override
@@ -69,6 +130,13 @@ public class MyStickersView extends FrameLayout {
 
             @Override
             public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                if (viewType == 1) {
+                    View tile = createTile(parent.getContext());
+                    RecyclerView.LayoutParams tlp = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, AndroidUtilities.dp(132));
+                    tlp.setMargins(AndroidUtilities.dp(6), AndroidUtilities.dp(6), AndroidUtilities.dp(6), AndroidUtilities.dp(6));
+                    tile.setLayoutParams(tlp);
+                    return new RecyclerListView.Holder(tile);
+                }
                 StickerPackGridCell cell = new StickerPackGridCell(parent.getContext()).setInset(true);
                 // three columns, same card height as the Stickers tab
                 RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, AndroidUtilities.dp(132));
@@ -79,7 +147,10 @@ public class MyStickersView extends FrameLayout {
 
             @Override
             public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-                ((StickerPackGridCell) holder.itemView).setPack(display.get(position), fragment.getCurrentAccount());
+                if (holder.getItemViewType() == 1) {
+                    return;
+                }
+                ((StickerPackGridCell) holder.itemView).setPack(display.get(position - offset()), fragment.getCurrentAccount());
                 ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
                 int m = AndroidUtilities.dp(4);
                 lp.setMargins(m, m, m, m);
@@ -90,8 +161,15 @@ public class MyStickersView extends FrameLayout {
         addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
         listView.setOnItemClickListener((view, position) -> {
-            if (position >= 0 && position < display.size() && fragment.getParentActivity() != null) {
-                StickerPackInfo info = display.get(position);
+            if (ownerMode && position == 0) {
+                if (onCreate != null) {
+                    onCreate.run();
+                }
+                return;
+            }
+            int at = position - offset();
+            if (at >= 0 && at < display.size() && fragment.getParentActivity() != null) {
+                StickerPackInfo info = display.get(at);
                 if (custom.contains(info)) {
                     // Made by this user on Telegram but not in the store yet: one tap to upload it.
                     fragment.presentFragment(new StickerUploadActivity(info.shortName));
@@ -209,8 +287,12 @@ public class MyStickersView extends FrameLayout {
                 progressView.setVisibility(GONE);
                 rebuildDisplay();
                 adapter.notifyDataSetChanged();
-                if (display.isEmpty()) {
-                    showInfo("You haven't uploaded any sticker packs yet.\nTap + to add one.");
+                fireStats();
+                if (display.isEmpty() && ownerMode) {
+                    infoView.setVisibility(GONE);
+                    listView.setVisibility(VISIBLE);
+                } else if (display.isEmpty()) {
+                    showInfo("No sticker packs uploaded yet.");
                 } else {
                     infoView.setVisibility(GONE);
                     listView.setVisibility(VISIBLE);

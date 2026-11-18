@@ -75,6 +75,12 @@ public final class BuilderText {
         t("refused", "Change refused: ", "ပြောင်း၍မရပါ: ");
         t("allSettings", "All settings", "ဆက်တင်အားလုံး");
         t("language", "မြန်မာ", "English");
+        t("globalColors", "Global Colors", "အရောင်ပေါင်းစုံ (အားလုံး)");
+        t("moreGlobal", "More whole-app settings", "App တစ်ခုလုံး ဆက်တင်များ");
+        t("close", "Close", "ပိတ်မည်");
+        t("locked", "Locked", "ပြင်၍မရသော");
+        t("screens.main", "Main screens", "အဓိက မျက်နှာပြင်များ");
+        t("screens.sub", "Sub-screens", "အပိုင်းခွဲ မျက်နှာပြင်များ");
         t("search.other","On another screen","အခြားမျက်နှာပြင်တွင်");
         t("section.appearance", "Appearance", "အသွင်အပြင်");
         t("section.layout", "Layout", "အနေအထား");

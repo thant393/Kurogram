@@ -26,6 +26,33 @@ public class ThemeCardView extends FrameLayout {
     private final TextView statsView;
 
     private boolean inset;
+    private TextView menuButton;
+
+    /** The three-dots button of the owner's own themes (null = none, as for everyone else's). */
+    public interface OwnerMenu {
+        void open(View anchor);
+    }
+
+    public void setOwnerMenu(final OwnerMenu menu) {
+        if (menu == null) {
+            if (menuButton != null) {
+                menuButton.setVisibility(GONE);
+            }
+            return;
+        }
+        if (menuButton == null) {
+            menuButton = new TextView(getContext());
+            menuButton.setText("\u22EE");
+            menuButton.setTextSize(20);
+            menuButton.setTextColor(0xFFFFFFFF);
+            menuButton.setGravity(Gravity.CENTER);
+            menuButton.setBackground(oval(0x88000000));
+            menuButton.setContentDescription("Theme options");
+            addView(menuButton, LayoutHelper.createFrame(34, 34, Gravity.TOP | Gravity.RIGHT, 0, 4, 4, 0));
+        }
+        menuButton.setVisibility(VISIBLE);
+        menuButton.setOnClickListener(v -> menu.open(v));
+    }
 
     /** Use the inset fill when this card sits on the profile's surface card. */
     public ThemeCardView setInset(boolean inset) {
