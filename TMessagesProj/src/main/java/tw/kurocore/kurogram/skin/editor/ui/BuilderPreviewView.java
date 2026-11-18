@@ -43,6 +43,8 @@ public class BuilderPreviewView extends View {
     private final RectF rect = new RectF();
     private final List<Hit> hits = new ArrayList<>();
     private Listener listener;
+    private boolean editMode = true; // Edit: tapping selects and the selection is outlined. Preview: neither.
+    private int deviceWidthDp = 360;
 
     public BuilderPreviewView(Context context, EditorSession session) {
         super(context);
@@ -61,10 +63,66 @@ public class BuilderPreviewView extends View {
         listener = l;
     }
 
+    public void setEditMode(boolean edit) {
+        editMode = edit;
+        invalidate();
+    }
+
+    public boolean isEditMode() {
+        return editMode;
+    }
+
+    /** The phone width the screen is laid out for (dp values stay dp); never wider than the room there is. */
+    public void setDeviceWidthDp(int dp) {
+        deviceWidthDp = dp;
+        requestLayout();
+    }
+
+    public int deviceWidthDp() {
+        return deviceWidthDp;
+    }
+
     @Override
     protected void onMeasure(int w, int h) {
-        int width = MeasureSpec.getSize(w);
-        setMeasuredDimension(width, Math.min(AndroidUtilities.dp(340), width));
+        int width = Math.min(MeasureSpec.getSize(w), AndroidUtilities.dp(deviceWidthDp));
+        int height = Math.max(AndroidUtilities.dp(340), Math.min(AndroidUtilities.dp(580), (int) (width * 1.7f)));
+        setMeasuredDimension(width, height);
+    }
+
+    /** Ids of the components drawn last, in drawing order without repeats: the layers of the current screen. */
+    public List<String> visibleComponents() {
+        List<String> out = new ArrayList<>();
+        for (Hit h : hits) {
+            if (!out.contains(h.id)) {
+                out.add(h.id);
+            }
+        }
+        return out;
+    }
+
+    /** A small picture of another screen drawn from the same draft; the screen being edited is put back afterwards. */
+    public android.graphics.Bitmap thumbnail(String sceneId, int outWidthPx) {
+        int w = getWidth(), h = getHeight();
+        if (w == 0 || h == 0) {
+            return null;
+        }
+        String prevScene = session.scene(), prevSel = session.selected();
+        boolean prevEdit = editMode;
+        editMode = false;
+        try {
+            session.setScene(sceneId);
+            android.graphics.Bitmap bmp = android.graphics.Bitmap.createBitmap(outWidthPx, Math.max(1, outWidthPx * h / w), android.graphics.Bitmap.Config.ARGB_8888);
+            Canvas c = new Canvas(bmp);
+            float sc = (float) outWidthPx / w;
+            c.scale(sc, sc);
+            onDraw(c);
+            return bmp;
+        } finally {
+            session.setScene(prevScene);
+            session.select(prevSel);
+            editMode = prevEdit;
+            invalidate();
+        }
     }
 
     private int c(String name, int light, int dark) {
@@ -199,15 +257,34 @@ public class BuilderPreviewView extends View {
                 drawChats(canvas, x);
         }
 
-        // selection outline
+        // selection: a thin blue frame just outside the part, with four corner handles; none in Preview mode
         String sel = session.selected();
-        for (int i = hits.size() - 1; i >= 0; i--) {
-            Hit hit = hits.get(i);
-            if (hit.id.equals(sel) && !"global".equals(sel)) {
-                outline.setColor(0xFFFF2D87);
-                rect.set(hit.r);
-                rect.inset(-dp(1), -dp(1));
-                canvas.drawRoundRect(rect, dp(4), dp(4), outline);
+        if (editMode && !"global".equals(sel)) {
+            for (int i = hits.size() - 1; i >= 0; i--) {
+                Hit hit = hits.get(i);
+                if (hit.id.equals(sel)) {
+                    boolean whole = "screenBackground".equals(sel);
+                    rect.set(hit.r);
+                    rect.inset(whole ? dp(1.5f) : -dp(2), whole ? dp(1.5f) : -dp(2));
+                    p.setStyle(Paint.Style.FILL);
+                    p.setColor(0x142F80ED);
+                    canvas.drawRoundRect(rect, dp(4), dp(4), p);
+                    outline.setPathEffect(null);
+                    outline.setColor(0xFF2F80ED);
+                    canvas.drawRoundRect(rect, dp(4), dp(4), outline);
+                    if (!whole) {
+                        float hr = dp(3.5f);
+                        float[][] corners = {{rect.left, rect.top}, {rect.right, rect.top}, {rect.left, rect.bottom}, {rect.right, rect.bottom}};
+                        for (float[] cpt : corners) {
+                            p.setColor(0xFFFFFFFF);
+                            canvas.drawCircle(cpt[0], cpt[1], hr, p);
+                            outline.setStrokeWidth(dp(1.5f));
+                            canvas.drawCircle(cpt[0], cpt[1], hr, outline);
+                        }
+                        outline.setStrokeWidth(dp(2));
+                    }
+                    break;
+                }
             }
         }
     }
@@ -1161,6 +1238,9 @@ public class BuilderPreviewView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
+        if (!editMode) {
+            return false; // Preview mode: the screen is not ours to intercept
+        }
         if (e.getAction() == MotionEvent.ACTION_UP) {
             String best = "screenBackground";
             float bestArea = Float.MAX_VALUE;

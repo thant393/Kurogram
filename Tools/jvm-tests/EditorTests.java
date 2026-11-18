@@ -345,6 +345,57 @@ public class EditorTests {
         check(BuilderText.complete(), "builder text has en and my for every key");
         check(BuilderText.get("my", "undo").length() > 0 && BuilderText.get("zz", "undo").equals(BuilderText.get("en", "undo")), "builder text fallback");
 
+
+        // ---- Theme Studio model
+        {
+            EditorSession stu = new EditorSession(rules, cat, ThemeDraft.fromJson("{\"schemaVersion\":2,\"meta\":{\"id\":\"s\",\"name\":\"S\"}}", rules));
+            stu.setAdvanced(true);
+            int sectioned = 0;
+            for (Catalog.Entry e : stu.allSettings()) {
+                RuleSet.Ref ref = rules.find(e.path);
+                StudioModel.Section sec = StudioModel.sectionOf(e, ref == null ? null : ref.rule);
+                check(sec != null, "section for " + e.path);
+                if (ref != null && (ref.rule.kind == Rule.Kind.COLOR || ref.rule.kind == Rule.Kind.ARGB) && !e.path.toLowerCase().contains("font"))
+                    check(sec == StudioModel.Section.APPEARANCE, "colour is appearance " + e.path);
+                sectioned++;
+            }
+            check(sectioned > 100, "sections cover the settings");
+            for (StudioModel.Section k : StudioModel.Section.values())
+                check(!BuilderText.get("en", StudioModel.sectionKey(k)).equals(StudioModel.sectionKey(k)), "section text " + k);
+            // layers: dotted ids hang under their shown parent, everything else under the screen background
+            StudioModel.Node tree = StudioModel.layers(stu, Arrays.asList("screenBackground", "appBar", "chatRow", "chatRow.avatar", "chatRow.title", "bottomTabs", "bottomTabs.item"));
+            check("screenBackground".equals(tree.id), "layers root");
+            StudioModel.Node chatRow = null, tabs = null;
+            for (StudioModel.Node k : tree.kids) { if (k.id.equals("chatRow")) chatRow = k; if (k.id.equals("bottomTabs")) tabs = k; }
+            check(chatRow != null && chatRow.kids.size() == 2, "chat row owns avatar and title");
+            check(tabs != null && tabs.kids.size() == 1 && tabs.kids.get(0).id.equals("bottomTabs.item"), "tab item under tabs");
+            StudioModel.Node orphan = StudioModel.layers(stu, Arrays.asList("chatRow.avatar")).kids.get(0);
+            check(orphan.id.equals("chatRow.avatar"), "child without shown parent hangs under the screen");
+            // reset touches only the component asked, as one undo step
+            String chatTitleP = null, tabP = null;
+            for (Catalog.Entry e : cat.forComponent("chatRow.title")) { RuleSet.Ref r2 = rules.find(e.path); if (r2 != null && r2.rule.kind == Rule.Kind.COLOR && stu.isSupported(e)) { chatTitleP = e.path; break; } }
+            for (Catalog.Entry e : cat.forComponent("fab")) { RuleSet.Ref r2 = rules.find(e.path); if (r2 != null && r2.rule.kind == Rule.Kind.COLOR && stu.isSupported(e) && !e.targets.contains("chatRow.title")) { tabP = e.path; break; } }
+            check(chatTitleP != null && tabP != null, "found colour settings for reset test " + chatTitleP + " " + tabP);
+            if (chatTitleP != null && tabP != null) {
+                check(stu.setColor(chatTitleP, 0xFF112233, false) == null, "set title colour");
+                check(stu.setColor(tabP, 0xFF445566, false) == null, "set fab colour");
+                int undoBefore = 0; while (stu.active().canUndo()) { stu.active().undo(); undoBefore++; }
+                while (stu.active().canRedo()) stu.active().redo();
+                int removed = StudioModel.resetComponent(stu, "chatRow.title", null);
+                check(removed >= 1 && stu.ownValue(chatTitleP) == null, "reset removes the component's values");
+                check(stu.ownValue(tabP) != null, "reset leaves other components alone");
+                stu.active().undo();
+                check(stu.ownValue(chatTitleP) != null, "reset is one undo step");
+                // copy / paste
+                java.util.Map<String, Object> copied = StudioModel.copyStyle(stu, "fab");
+                check(copied.containsKey(tabP), "copy takes set values");
+                check(StudioModel.pasteStyle(stu, "chatRow.preview", java.util.Collections.<String, Object>singletonMap("components.nothing", "x")) == 0, "paste ignores settings the target lacks");
+            }
+            // warnings
+            check(StudioModel.componentOfPath(cat, "no.such.path").equals("global"), "unknown path goes to the whole app");
+            check(StudioModel.suggestText(0xFF000000) == 0xFFFFFFFF && StudioModel.suggestText(0xFFFFFFFF) == 0xFF000000, "suggested text colour reads");
+        }
+
         System.out.println("editor tests: " + passed + " passed, " + failed + " failed");
         System.exit(failed == 0 ? 0 : 1);
     }
