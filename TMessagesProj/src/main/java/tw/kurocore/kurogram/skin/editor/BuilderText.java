@@ -81,6 +81,16 @@ public final class BuilderText {
         t("screens.main", "Main screens");
         t("screens.fromSettings", "Opened from Settings");
         t("activities", "Activities");
+        t("chip.0", "Accent");
+        t("chip.1", "Background");
+        t("chip.2", "Cards");
+        t("chip.3", "Text");
+        t("chip.4", "Top bar");
+        t("chipAbout.0", "Changes: buttons, the selected tab, unread badges and links");
+        t("chipAbout.1", "Changes: the page behind everything");
+        t("chipAbout.2", "Changes: chat rows, settings rows and cards");
+        t("chipAbout.3", "Changes: names and titles");
+        t("chipAbout.4", "Changes: the bar at the top of each screen");
         t("screens.sub", "Sub-screens");
         t("search.other", "On another screen");
         t("section.appearance", "Appearance");
@@ -116,7 +126,7 @@ public final class BuilderText {
         t("warn.suggest", "Use suggested colour");
         t("warn.line", "is hard to read on");
         t("structural", "Not editable");
-        t("tapHint", "Tap a part of the screen to edit it");
+        t("tapHint", "Tap a colour below, or tap any part of the phone");
         t("previewHint", "Preview mode: nothing is selected");
         t("sheet.none", "Nothing to edit here in this mode.");
         t("beginner", "Beginner");

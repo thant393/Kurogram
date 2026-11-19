@@ -402,12 +402,23 @@ public class ThemeBuilderActivity extends BaseFragment {
         idleBar.setBackground(bg);
         idleBar.setElevation(AndroidUtilities.dp(10));
         idleBar.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(6), AndroidUtilities.dp(8), AndroidUtilities.dp(6));
-        TextView colours = idleTab(context, "\uD83C\uDFA8", tr("globalColors"), v -> openGlobalColors());
+        for (int i = 0; i < CHIP_PATHS.length; i++) {
+            final int idx = i;
+            LinearLayout chip = new LinearLayout(context);
+            chip.setOrientation(LinearLayout.VERTICAL);
+            chip.setGravity(Gravity.CENTER);
+            View sw = new View(context);
+            chipSwatch[i] = sw;
+            chip.addView(sw, LayoutHelper.createLinear(34, 34));
+            TextView lab = text(context, tr("chip." + i), 11, false);
+            lab.setGravity(Gravity.CENTER);
+            lab.setMaxLines(1);
+            chip.addView(lab, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, 0, 4, 0, 0));
+            chip.setOnClickListener(v -> openChip(idx));
+            idleBar.addView(chip, LayoutHelper.createLinear(0, LayoutHelper.MATCH_PARENT, 1f));
+        }
         screensTab = idleTab(context, "\u25A6", "", v -> screensDialog());
-        TextView layers = idleTab(context, "\u2630", tr("layers"), v -> layersDialog());
-        idleBar.addView(colours, LayoutHelper.createLinear(0, LayoutHelper.MATCH_PARENT, 1f));
         idleBar.addView(screensTab, LayoutHelper.createLinear(0, LayoutHelper.MATCH_PARENT, 1f));
-        idleBar.addView(layers, LayoutHelper.createLinear(0, LayoutHelper.MATCH_PARENT, 1f));
         root.addView(idleBar, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, IDLE_DP, Gravity.BOTTOM, 0, 0, wide ? PANEL_DP : 0, 0));
     }
 
@@ -423,10 +434,13 @@ public class ThemeBuilderActivity extends BaseFragment {
         return t;
     }
 
-    private void openGlobalColors() {
+    /** A colour chip was tapped: only that colour is offered, and the parts of the phone it changes light up. */
+    private void openChip(int idx) {
         session.select("global");
         inspecting = true;
         globalPanel = true;
+        quickPath = CHIP_PATHS[idx];
+        preview.setHighlight(CHIP_PARTS[idx]);
         if (!wide) {
             sheetState = 1;
         }
@@ -435,10 +449,18 @@ public class ThemeBuilderActivity extends BaseFragment {
         preview.invalidate();
     }
 
+    private int chipColor(int idx) {
+        boolean dark = session.night();
+        int[][] def = {{0xFF3390EC, 0xFF3390EC}, {0xFFF2F2F7, 0xFF0F0F10}, {0xFFFFFFFF, 0xFF1C1C1E}, {0xFF14213D, 0xFFFFFFFF}, {0xFFFFFFFF, 0xFF1C1C1E}};
+        return session.color(CHIP_PATHS[idx], def[idx][dark ? 1 : 0]) | 0xFF000000;
+    }
+
     /** Deselects: the inspector closes and the 3-tab bar comes back. */
     private void closeInspector() {
         inspecting = false;
         globalPanel = false;
+        quickPath = null;
+        preview.setHighlight(null);
         session.select("global");
         applySheet(true);
         refreshPanel();
@@ -611,7 +633,17 @@ public class ThemeBuilderActivity extends BaseFragment {
         }
     }
 
-    private static final int IDLE_DP = 64;
+    private static final int IDLE_DP = 92;
+    /** The five colours a beginner changes, what each one touches in the app, and the parts of the phone to light up. */
+    private static final String[] CHIP_PATHS = {"tokens.colors.accent", "tokens.colors.background", "tokens.colors.surface", "tokens.colors.textPrimary", "components.appBar.background"};
+    private static final String[][] CHIP_PARTS = {
+            {"fab", "bottomTabs.item", "chatRow.badge", "button", "switch"},
+            {"screenBackground"},
+            {"chatRow", "settingsRow", "card", "section", "infoCard", "themeCard", "contactRow"},
+            {"chatRow.title"},
+            {"appBar"}};
+    private final View[] chipSwatch = new View[5];
+    private String quickPath;
 
     private int sheetHeightFor(int state) {
         int rh = Math.max(root.getHeight(), AndroidUtilities.dp(480));
@@ -767,7 +799,14 @@ public class ThemeBuilderActivity extends BaseFragment {
             liveItem.setText(tr("live") + (live ? "  \u2713" : ""));
             lookItem.setText(tr("look") + ": " + lookName());
         }
-        screensTab.setText("\u25A6\n" + tr("activities") + " \u25BE");
+        screensTab.setText("\u25A6\n" + tr("scene." + session.scene()) + " \u25BE");
+        for (int i = 0; i < chipSwatch.length; i++) {
+            android.graphics.drawable.GradientDrawable g = new android.graphics.drawable.GradientDrawable();
+            g.setShape(android.graphics.drawable.GradientDrawable.OVAL);
+            g.setColor(chipColor(i));
+            g.setStroke(AndroidUtilities.dp(1.5f), LINE);
+            chipSwatch[i].setBackground(g);
+        }
         hint.setText(live ? tr("live.on") : tr("tapHint"));
         hint.setVisibility(editMode && !inspecting && !live ? View.VISIBLE : View.GONE);
         liveBtn.setVisibility(editMode ? View.GONE : View.VISIBLE);
@@ -798,6 +837,8 @@ public class ThemeBuilderActivity extends BaseFragment {
         focusPath = null;
         inspecting = true;
         globalPanel = false;
+        quickPath = null;
+        preview.setHighlight(null);
         if (!wide && sheetState == 0) {
             sheetState = 1;
         }
@@ -834,7 +875,13 @@ public class ThemeBuilderActivity extends BaseFragment {
         if (quick) {
             focusRow = null;
             sectionRow.removeAllViews();
-            for (String path : GLOBAL_COLORS) {
+            String[] paths = quickPath != null ? new String[]{quickPath} : GLOBAL_COLORS;
+            if (quickPath != null) {
+                int ci = java.util.Arrays.asList(CHIP_PATHS).indexOf(quickPath);
+                sheetTitle.setText(tr("chip." + ci));
+                sheetPlace.setText(tr("chipAbout." + ci));
+            }
+            for (String path : paths) {
                 Catalog.Entry e = session.catalog.entry(path);
                 RuleSet.Ref ref = session.rules.find(path);
                 if (e != null && ref != null) {

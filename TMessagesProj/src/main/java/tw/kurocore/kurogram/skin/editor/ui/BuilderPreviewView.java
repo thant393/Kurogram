@@ -46,6 +46,7 @@ public class BuilderPreviewView extends View {
     private boolean editMode = true; // Edit: tapping selects and the selection is outlined. Preview: neither.
     private int deviceWidthDp = 360;
     private static final float CONTENT_FACTOR = 2.2f; // Preview mode lays the list screens out this many screens tall
+    private String[] highlight;
     private float scrollY;
     private float lastY, downY;
     private boolean moved;
@@ -120,6 +121,12 @@ public class BuilderPreviewView extends View {
     public void setEditMode(boolean edit) {
         editMode = edit;
         scrollY = 0;
+        invalidate();
+    }
+
+    /** Lights up every drawn part with one of these ids (null clears it): shows what a colour will change. */
+    public void setHighlight(String[] ids) {
+        highlight = ids;
         invalidate();
     }
 
@@ -372,6 +379,24 @@ public class BuilderPreviewView extends View {
                 break;
             default:
                 drawChats(canvas, x);
+        }
+
+        if (editMode && highlight != null) {
+            p.setStyle(Paint.Style.FILL);
+            p.setColor(0x262F80ED);
+            outline.setColor(0xFF2F80ED);
+            for (Hit hit : hits) {
+                for (String id : highlight) {
+                    if (id.equals(hit.id) && !"screenBackground".equals(id)) {
+                        canvas.drawRoundRect(hit.r, dp(4), dp(4), p);
+                        canvas.drawRoundRect(hit.r, dp(4), dp(4), outline);
+                    }
+                }
+            }
+            if (java.util.Arrays.asList(highlight).contains("screenBackground")) {
+                rect.set(0, 0, w, h);
+                canvas.drawRect(rect, p);
+            }
         }
 
         // selection: a thin blue frame just outside the part, with four corner handles; none in Preview mode
