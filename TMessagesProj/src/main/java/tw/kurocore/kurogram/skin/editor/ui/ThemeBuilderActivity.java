@@ -211,9 +211,7 @@ public class ThemeBuilderActivity extends BaseFragment {
         redoItem = menu.addItem(4, "\u21B7");
         menu.addItem(1, tr("next"));
         org.telegram.ui.ActionBar.ActionBarMenuItem more = menu.addItem(2, R.drawable.ic_ab_other);
-        more.addSubItem(11, tr("search"));
         more.addSubItem(12, tr("rename"));
-        more.addSubItem(13, tr("device"));
         levelItem = more.addSubItem(14, tr("menu.advanced"));
         readItem = more.addSubItem(16, tr("contrast.title"));
         liveItem = more.addSubItem(17, tr("live"));
@@ -920,31 +918,23 @@ public class ThemeBuilderActivity extends BaseFragment {
         if (!sections.contains(section)) {
             section = sections.get(0);
         }
-        if (sections.size() > 1) {
-            String[] labels = new String[sections.size()];
-            int at = 0;
-            for (int i = 0; i < labels.length; i++) {
-                labels[i] = tr(StudioModel.sectionKey(sections.get(i)));
-                if (sections.get(i) == section) {
-                    at = i;
-                }
-            }
-            final List<StudioModel.Section> shown = sections;
-            sectionRow.addView(segmented(context, labels, at, i -> {
-                section = shown.get(i);
-                focusPath = null;
-                refreshPanel();
-            }), LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT));
-        }
+        // Sketchware style: every property of the selected part in one list, grouped under small headings
         focusRow = null;
-        if (globalRows && section == StudioModel.Section.APPEARANCE) {
-            addAppearanceRow(context);
-            addNameRow(context);
-        }
-        for (Catalog.Entry e : entries) {
-            RuleSet.Ref ref = session.rules.find(e.path);
-            if (StudioModel.sectionOf(e, ref.rule) == section) {
-                addRuleRow(context, e, ref.rule);
+        for (StudioModel.Section sec : sections) {
+            if (sections.size() > 1) {
+                TextView h = text(context, tr(StudioModel.sectionKey(sec)).toUpperCase(), 11, true);
+                h.setTextColor(SOFT);
+                list.addView(h, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 18, 12, 18, 2));
+            }
+            if (globalRows && sec == StudioModel.Section.APPEARANCE) {
+                addAppearanceRow(context);
+                addNameRow(context);
+            }
+            for (Catalog.Entry e : entries) {
+                RuleSet.Ref ref = session.rules.find(e.path);
+                if (StudioModel.sectionOf(e, ref.rule) == sec) {
+                    addRuleRow(context, e, ref.rule);
+                }
             }
         }
         if (focusRow != null) {

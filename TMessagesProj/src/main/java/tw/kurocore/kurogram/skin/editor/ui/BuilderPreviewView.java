@@ -425,6 +425,17 @@ public class BuilderPreviewView extends View {
                         }
                         outline.setStrokeWidth(dp(2));
                     }
+                    // name tag, like a design tool: says which part this is
+                    String tag = session.catalog.componentLabel(sel, session.lang());
+                    p.setTextSize(dp(10));
+                    p.setFakeBoldText(true);
+                    float tw = p.measureText(tag) + dp(10), th = dp(16);
+                    float tx = Math.max(0, Math.min(rect.left, w - tw)), ty = rect.top - th - dp(1) >= 0 ? rect.top - th - dp(1) : rect.bottom + dp(1);
+                    p.setColor(0xFF2F80ED);
+                    canvas.drawRoundRect(tx, ty, tx + tw, ty + th, dp(4), dp(4), p);
+                    p.setColor(0xFFFFFFFF);
+                    canvas.drawText(tag, tx + dp(5), ty + th - dp(4.5f), p);
+                    p.setFakeBoldText(false);
                     break;
                 }
             }
