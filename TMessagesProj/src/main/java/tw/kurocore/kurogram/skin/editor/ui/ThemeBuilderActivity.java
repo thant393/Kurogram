@@ -75,6 +75,9 @@ public class ThemeBuilderActivity extends BaseFragment {
     private final PreviewGuard guard = new PreviewGuard();
     private EditorSession session;
     private BuilderPreviewView preview;
+    private FrameLayout screenClip;
+    private RealScreenHost realHost;
+    private String realScene;
     private static final int PANEL_DP = 340;
     private static final int INK = 0xFF1F2328;
     private static final int SOFT = 0xFF6B7280;
@@ -180,6 +183,7 @@ public class ThemeBuilderActivity extends BaseFragment {
 
     @Override
     public void onFragmentDestroy() {
+        dropReal();
         endLive();
         saveDraft();
         super.onFragmentDestroy();
@@ -301,7 +305,7 @@ public class ThemeBuilderActivity extends BaseFragment {
                 fitCanvas(false);
             }
         });
-        FrameLayout screenClip = new FrameLayout(context);
+        screenClip = new FrameLayout(context);
         screenClip.setBackground(shape(0xFFFFFFFF, 24, 0));
         screenClip.setClipToOutline(true);
         preview = new BuilderPreviewView(context, session);
@@ -767,6 +771,7 @@ public class ThemeBuilderActivity extends BaseFragment {
         hint.setText(live ? tr("live.on") : tr("tapHint"));
         hint.setVisibility(editMode && !inspecting && !live ? View.VISIBLE : View.GONE);
         liveBtn.setVisibility(editMode ? View.GONE : View.VISIBLE);
+        syncReal();
         liveBtn.setText(live ? "\u25A0  " + tr("live.off") : "\u25B6  " + tr("live"));
         liveBtn.setTextColor(live ? 0xFFFFFFFF : BLUE);
         liveBtn.setBackground(shape(live ? BLUE : 0xFFFFFFFF, 21, live ? 0 : BLUE));
@@ -1867,6 +1872,33 @@ public class ThemeBuilderActivity extends BaseFragment {
     }
 
     // ------------------------------------------------------------------ real-app preview (always temporary)
+
+    /** In Preview mode with the real-app preview on, the phone shows the app's own screen where one exists. */
+    private void syncReal() {
+        boolean want = !editMode && live && RealScreenHost.supports(session.scene()) && getParentActivity() != null;
+        if (!want || (realHost != null && !session.scene().equals(realScene))) {
+            dropReal();
+        }
+        if (want && realHost == null) {
+            try {
+                realHost = new RealScreenHost(getParentActivity(), session.scene());
+                realScene = session.scene();
+                screenClip.addView(realHost, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+            } catch (Throwable t) {
+                realHost = null;
+                Toast.makeText(getParentActivity(), "Real screen preview isn't available here.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void dropReal() {
+        if (realHost != null) {
+            screenClip.removeView(realHost);
+            realHost.release();
+            realHost = null;
+            realScene = null;
+        }
+    }
 
     private void setLive(boolean on) {
         live = on;
