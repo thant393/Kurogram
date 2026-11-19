@@ -22,11 +22,11 @@ public final class BuilderText {
         t("scene.people", "People");
         t("scene.contacts", "Contacts");
         t("scene.profile", "Profile");
-        t("scene.themeStore", "Theme store");
-        t("scene.rows.privacy", "Privacy rows");
-        t("scene.rows.notifications", "Notification rows");
-        t("scene.rows.dataStorage", "Data and storage rows");
-        t("scene.rows.profile", "Profile rows");
+        t("scene.themeStore", "Kuro Themes");
+        t("scene.rows.privacy", "Privacy & Security");
+        t("scene.rows.notifications", "Notifications");
+        t("scene.rows.dataStorage", "Data and Storage");
+        t("scene.rows.profile", "Edit Profile");
         t("contrast.title", "Readability");
         t("contrast.ok", "Text and background colours are easy to read.");
         t("contrast.low", "Hard to read");
@@ -79,6 +79,8 @@ public final class BuilderText {
         t("close", "Close");
         t("locked", "Locked");
         t("screens.main", "Main screens");
+        t("screens.fromSettings", "Opened from Settings");
+        t("activities", "Activities");
         t("screens.sub", "Sub-screens");
         t("search.other", "On another screen");
         t("section.appearance", "Appearance");

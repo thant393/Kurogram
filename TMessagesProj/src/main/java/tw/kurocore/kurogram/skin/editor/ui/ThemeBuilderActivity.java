@@ -763,7 +763,7 @@ public class ThemeBuilderActivity extends BaseFragment {
             liveItem.setText(tr("live") + (live ? "  \u2713" : ""));
             lookItem.setText(tr("look") + ": " + lookName());
         }
-        screensTab.setText("\u25A6\n" + tr("scene." + session.scene()) + " \u25BE");
+        screensTab.setText("\u25A6\n" + tr("activities") + " \u25BE");
         hint.setText(live ? tr("live.on") : tr("tapHint"));
         hint.setVisibility(editMode && !inspecting && !live ? View.VISIBLE : View.GONE);
         liveBtn.setVisibility(editMode ? View.GONE : View.VISIBLE);
@@ -1163,8 +1163,12 @@ public class ThemeBuilderActivity extends BaseFragment {
         return dlg;
     }
 
-    private static final String[] MAIN_SCREENS = {"chats", "chat", "settings", "people", "contacts", "profile", "drawer", "themeStore"};
-    private static final String[] SUB_SCREENS = {"rows.privacy", "rows.notifications", "rows.dataStorage", "rows.profile", "controls"};
+    /** The app's own screens, in the order of the real app. */
+    private static final String[] MAIN_SCREENS = {"chats", "chat", "contacts", "profile", "settings", "themeStore"};
+    /** Screens that open from inside Settings (each is its own activity in the app). */
+    private static final String[] SETTINGS_SCREENS = {"rows.privacy", "rows.notifications", "rows.dataStorage", "rows.profile"};
+    /** Screens made for Kuro themes only. */
+    private static final String[] SUB_SCREENS = {"people", "drawer", "controls"};
 
     private void screensDialog() {
         boolean sub = java.util.Arrays.asList(SUB_SCREENS).contains(session.scene());
@@ -1174,7 +1178,6 @@ public class ThemeBuilderActivity extends BaseFragment {
     /** Two tabs of thumbnails, drawn from the same draft, so each shows what that screen looks like with the theme as it is now. */
     private void screensDialog(final int tab) {
         Context context = getParentActivity();
-        final String[] ids = tab == 0 ? MAIN_SCREENS : SUB_SCREENS;
         LinearLayout box = new LinearLayout(context);
         box.setOrientation(LinearLayout.VERTICAL);
         box.setPadding(AndroidUtilities.dp(14), AndroidUtilities.dp(6), AndroidUtilities.dp(14), AndroidUtilities.dp(10));
@@ -1186,6 +1189,21 @@ public class ThemeBuilderActivity extends BaseFragment {
                 old.dismiss();
             }
         }), LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 4, 0, 12));
+        if (tab == 0) {
+            sceneGrid(context, box, MAIN_SCREENS, dlg);
+            box.addView(text(context, tr("screens.fromSettings"), 13, true), LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 4, 8, 0, 8));
+            sceneGrid(context, box, SETTINGS_SCREENS, dlg);
+        } else {
+            sceneGrid(context, box, SUB_SCREENS, dlg);
+        }
+        ScrollView sv = new ScrollView(context);
+        sv.addView(box);
+        dlg[0] = panel(sv);
+        dlg[0].show();
+        preview.invalidate();
+    }
+
+    private void sceneGrid(Context context, LinearLayout box, String[] ids, Dialog[] dlg) {
         int cols = wide ? 5 : 3;
         int thumbW = AndroidUtilities.dp(wide ? 110 : 96);
         LinearLayout rowLayout = null;
@@ -1225,11 +1243,6 @@ public class ThemeBuilderActivity extends BaseFragment {
             });
             rowLayout.addView(card, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 1f, 3, 0, 3, 0));
         }
-        ScrollView sv = new ScrollView(context);
-        sv.addView(box);
-        dlg[0] = panel(sv);
-        dlg[0].show();
-        preview.invalidate();
     }
 
     private void layersDialog() {

@@ -140,7 +140,7 @@ public class BuilderPreviewView extends View {
     @Override
     protected void onMeasure(int w, int h) {
         int width = Math.min(MeasureSpec.getSize(w), AndroidUtilities.dp(deviceWidthDp));
-        int height = Math.max(AndroidUtilities.dp(340), Math.min(AndroidUtilities.dp(580), (int) (width * 1.7f)));
+        int height = Math.max(AndroidUtilities.dp(340), Math.min(AndroidUtilities.dp(720), (int) (width * 2.05f)));
         setMeasuredDimension(width, height);
     }
 
