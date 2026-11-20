@@ -45,7 +45,7 @@ public class BuilderPreviewView extends View {
     private Listener listener;
     private boolean editMode = true; // Edit: tapping selects and the selection is outlined. Preview: neither.
     private int deviceWidthDp = 360;
-    private static final float CONTENT_FACTOR = 2.2f; // Preview mode lays the list screens out this many screens tall
+    private static final float CONTENT_FACTOR = 1.8f; // list screens are laid out this many screens tall so they can be scrolled
     private String[] highlight;
     private float scrollY;
     private float lastY, downY;
@@ -75,7 +75,7 @@ public class BuilderPreviewView extends View {
     private void previewTap(float tx, float ty) {
         float vh = getHeight();
         float cy = ty + scrollY;
-        if ("chats".equals(session.scene()) && ty > vh - dp(56)) {
+        if (hasTabs() && ty > vh - dp(72)) {
             cy = ty + (vh * CONTENT_FACTOR - vh);
         } else if (ty < dp(session.intValue("components.appBar.heightDp", 52))) {
             cy = ty;
@@ -151,15 +151,33 @@ public class BuilderPreviewView extends View {
         setMeasuredDimension(width, height);
     }
 
-    /** Where the selected part is drawn (view pixels), or null when it is not on this screen. */
-    public android.graphics.RectF selectedBounds() {
-        String sel = session.selected();
-        for (int i = hits.size() - 1; i >= 0; i--) {
-            if (hits.get(i).id.equals(sel)) {
-                return new android.graphics.RectF(hits.get(i).r);
+    private String lastSelId = "";
+    private int selOcc;
+
+    /** The drawn copy of the selected part that was tapped (a list has many chat rows, only the tapped one is framed). */
+    private Hit pickSelected(String sel) {
+        if (!sel.equals(lastSelId)) {
+            lastSelId = sel;
+            selOcc = 0;
+        }
+        int n = 0;
+        Hit last = null;
+        for (Hit h : hits) {
+            if (h.id.equals(sel)) {
+                if (n == selOcc) {
+                    return h;
+                }
+                n++;
+                last = h;
             }
         }
-        return null;
+        return last;
+    }
+
+    /** Where the selected part is drawn (view pixels), or null when it is not on this screen. */
+    public android.graphics.RectF selectedBounds() {
+        Hit h = pickSelected(session.selected());
+        return h == null ? null : new android.graphics.RectF(h.r);
     }
 
     /** Ids of the components drawn last, in drawing order without repeats: the layers of the current screen. */
@@ -259,11 +277,12 @@ public class BuilderPreviewView extends View {
             canvas.clipRect(0, 0, vw, dp(session.intValue("components.appBar.heightDp", 52)));
             drawScene(canvas, ch);
             canvas.restore();
-            if ("chats".equals(session.scene())) {
-                int band = dp(56);
+            if (hasTabs()) {
                 canvas.save();
-                canvas.clipRect(0, vh - band, vw, vh);
                 canvas.translate(0, -(ch - vh));
+                android.graphics.Path clip = new android.graphics.Path();
+                clip.addRoundRect(tabBar(vw, ch), dp(30), dp(30), android.graphics.Path.Direction.CW);
+                canvas.clipPath(clip);
                 drawScene(canvas, ch);
                 canvas.restore();
             }
@@ -272,8 +291,18 @@ public class BuilderPreviewView extends View {
         hits.addAll(mainHits);
     }
 
+    private boolean hasTabs() {
+        String s = session.scene();
+        return "chats".equals(s) || "contacts".equals(s) || "settings".equals(s) || "profile".equals(s);
+    }
+
+    /** The floating bottom bar, like the real app: a rounded pill with a margin all round. */
+    private RectF tabBar(float w, float h) {
+        return new RectF(dp(34), h - dp(72), w - dp(34), h - dp(12));
+    }
+
     private boolean scrollable() {
-        if (editMode || drawingThumb || session == null) {
+        if (drawingThumb || session == null) {
             return false;
         }
         switch (session.scene()) {
@@ -402,8 +431,9 @@ public class BuilderPreviewView extends View {
         // selection: a thin blue frame just outside the part, with four corner handles; none in Preview mode
         String sel = session.selected();
         if (editMode && !"global".equals(sel)) {
-            for (int i = hits.size() - 1; i >= 0; i--) {
-                Hit hit = hits.get(i);
+            Hit chosen = pickSelected(sel);
+            for (int i = 0; i < (chosen == null ? 0 : 1); i++) {
+                Hit hit = chosen;
                 if (hit.id.equals(sel)) {
                     boolean whole = "screenBackground".equals(sel);
                     rect.set(hit.r);
@@ -539,6 +569,22 @@ public class BuilderPreviewView extends View {
                 c.drawCircle(cx - s * 0.15f, cy - s * 0.15f, s * 0.65f, ip);
                 c.drawLine(cx + s * 0.35f, cy + s * 0.35f, cx + s * 0.9f, cy + s * 0.9f, ip);
                 break;
+            case "camera":
+                c.drawRoundRect(new RectF(cx - s, cy - s * 0.7f, cx + s, cy + s * 0.8f), s * 0.3f, s * 0.3f, ip);
+                c.drawCircle(cx, cy + s * 0.05f, s * 0.38f, ip);
+                break;
+            case "edit":
+                c.drawLine(cx - s * 0.7f, cy + s * 0.7f, cx + s * 0.6f, cy - s * 0.6f, ip);
+                c.drawLine(cx - s * 0.7f, cy + s * 0.7f, cx - s * 0.75f, cy + s * 0.95f, ip);
+                c.drawLine(cx + s * 0.35f, cy - s * 0.85f, cx + s * 0.85f, cy - s * 0.35f, ip);
+                break;
+            case "adduser":
+                c.drawCircle(cx - s * 0.2f, cy - s * 0.3f, s * 0.4f, ip);
+                path.addArc(new RectF(cx - s * 0.85f, cy + s * 0.1f, cx + s * 0.45f, cy + s * 1.2f), 200, 140);
+                c.drawPath(path, ip);
+                c.drawLine(cx + s * 0.55f, cy - s * 0.1f, cx + s * 1.0f, cy - s * 0.1f, ip);
+                c.drawLine(cx + s * 0.78f, cy - s * 0.33f, cx + s * 0.78f, cy + s * 0.13f, ip);
+                break;
             case "more":
                 ip.setStyle(Paint.Style.FILL);
                 for (int i = -1; i <= 1; i++) {
@@ -551,48 +597,78 @@ public class BuilderPreviewView extends View {
         }
     }
 
-    private void drawTabs(Canvas canvas, Ctx x, int tabsH) {
-        float ty = x.h - tabsH;
+    private void drawTabs(Canvas canvas, Ctx x, String active) {
+        RectF bar = tabBar(x.w, x.h);
         boolean glass = "glass".equals(session.text("layout.bottomTabs.style", "flat"));
         int fill = session.colorChain(x.surface, "components.navigationBar.background", "components.bottomNavigation.background");
         if (glass) {
-            fill = (fill & 0x00FFFFFF) | 0xAA000000;
+            fill = (fill & 0x00FFFFFF) | 0xCC000000;
         }
         int sel = session.colorChain(x.accent, "components.navigationBar.selected");
         int unsel = session.colorChain(x.icon, "components.navigationBar.unselected");
         int pill = session.colorChain(0, "components.bottomNavigation.selectedBackground");
-        if (pill == 0 && "pill".equals(session.text("layout.bottomTabs.indicator", "none"))) {
-            pill = (sel & 0x00FFFFFF) | 0x33000000;
+        if (pill == 0) {
+            pill = (sel & 0x00FFFFFF) | 0x26000000;
         }
         boolean labels = session.bool("layout.bottomTabs.labels", true);
         float ic = dp(session.intValue("components.bottomNavigation.iconSizeDp", 24)) / 2.6f;
-        rect.set(0, ty, x.w, x.h);
+        RectF shadow = new RectF(bar);
+        shadow.inset(-dp(1), -dp(1));
+        shadow.offset(0, dp(1.5f));
+        p.setColor(0x26000000);
+        canvas.drawRoundRect(shadow, dp(31), dp(31), p);
         p.setColor(fill);
-        canvas.drawRect(rect, p);
+        canvas.drawRoundRect(bar, dp(30), dp(30), p);
         if (session.bool("layout.bottomTabs.border", false)) {
-            p.setColor(x.divider);
-            canvas.drawRect(0, ty, x.w, ty + 1, p);
+            outlineFill(canvas, bar, dp(30), x.divider, 1);
         }
-        add("bottomTabs", rect);
-        List<String> tabs = listOr("layout.bottomTabs.items", "chats", "contacts", "calls", "settings");
+        add("bottomTabs", bar);
+        List<String> tabs = listOr("layout.bottomTabs.items", "chats", "contacts", "settings", "profile");
         int n = tabs.size();
+        float cw = bar.width() / n;
         for (int i = 0; i < n; i++) {
-            float cx = x.w * (i + 0.5f) / n;
-            rect.set(cx - x.w / (2f * n), ty, cx + x.w / (2f * n), x.h);
-            if (i == 0 && pill != 0) {
-                RectF b = new RectF(cx - dp(30), ty + dp(6), cx + dp(30), ty + dp(34));
+            boolean on = tabs.get(i).equals(active);
+            float cx = bar.left + cw * (i + 0.5f);
+            rect.set(bar.left + cw * i, bar.top, bar.left + cw * (i + 1), bar.bottom);
+            if (on) {
+                RectF b = new RectF(cx - cw / 2f + dp(4), bar.top + dp(5), cx + cw / 2f - dp(4), bar.bottom - dp(5));
                 p.setColor(pill);
-                canvas.drawRoundRect(b, dp(14), dp(14), p);
+                canvas.drawRoundRect(b, dp(24), dp(24), p);
             }
-            p.setColor(i == 0 ? sel : unsel);
-            icon(canvas, tabs.get(i), cx, ty + (labels ? dp(20) : tabsH / 2f), ic * 1.1f, i == 0 ? sel : unsel);
+            float icy = bar.top + (labels ? dp(21) : bar.height() / 2f);
+            icon(canvas, tabs.get(i), cx, icy, ic * 1.1f, on ? sel : unsel);
             if (labels) {
+                p.setStyle(Paint.Style.FILL);
+                p.setColor(on ? sel : unsel);
+                p.setFakeBoldText(on);
                 p.setTextSize(dp(session.intValue("layout.bottomTabs.labelSizeSp", 10)));
                 String l = item(tabs.get(i));
-                canvas.drawText(l, cx - p.measureText(l) / 2f, ty + dp(44), p);
+                canvas.drawText(l, cx - p.measureText(l) / 2f, bar.top + dp(45), p);
+                p.setFakeBoldText(false);
             }
             add("bottomTabs.item", rect);
         }
+    }
+
+    private void fab(Canvas canvas, Ctx x, boolean camera) {
+        float fs = dp(session.intValue("components.fab.sizeDp", 52));
+        float fx = x.w - dp(16) - fs, fy = x.h - dp(72) - dp(16) - fs;
+        if (camera) {
+            float cs = dp(40), cx = fx + (fs - cs) / 2f, cy = fy - dp(12) - cs;
+            rect.set(cx, cy, cx + cs, cy + cs);
+            p.setColor(0x22000000);
+            canvas.drawOval(new RectF(cx - dp(1), cy, cx + cs + dp(1), cy + cs + dp(2)), p);
+            p.setColor(x.surface);
+            canvas.drawOval(rect, p);
+            icon(canvas, "camera", cx + cs / 2f, cy + cs / 2f, dp(9), x.accent);
+            add("fab", rect);
+        }
+        rect.set(fx, fy, fx + fs, fy + fs);
+        p.setColor(x.accent);
+        round(canvas, rect, dp(session.intValue("components.fab.radiusDp", 26)));
+        icon(canvas, camera ? "edit" : "adduser", fx + fs / 2, fy + fs / 2, dp(10), x.onAccent);
+        rect.set(fx, fy, fx + fs, fy + fs);
+        add("fab", rect);
     }
 
     private void headerButtons(Canvas canvas, Ctx x, float barH, List<String> left, List<String> right) {
@@ -653,6 +729,7 @@ public class BuilderPreviewView extends View {
             RectF sb = new RectF(dp(12), top + dp(4), x.w - dp(12), top + sh - dp(4));
             p.setColor((x.divider & 0x00FFFFFF) | 0x40000000);
             canvas.drawRoundRect(sb, dp(18), dp(18), p);
+            add("chatList.search", sb);
             p.setColor(x.text2);
             p.setTextSize(dp(14));
             canvas.drawText("Search Chats", dp(44), top + sh / 2f + dp(5), p);
@@ -683,14 +760,14 @@ public class BuilderPreviewView extends View {
             top += fh;
         }
         boolean grid = "grid".equals(session.text("layout.chatList.mode", "list"));
-        int tabsH = dp(56);
+        int tabsH = 0; // the bottom bar floats over the list
         int body = session.intValue("tokens.typography.bodySizeSp", 16);
         int cap = session.intValue("tokens.typography.captionSizeSp", 12);
         boolean titleBold = bold("layout.chatList.row.title.weight", bold("tokens.typography.fontWeight", true));
-        String[] names = {"Aye Aye", "Design team", "Ko Min", "Saved Messages", "Daw Mya", "Mg Mg"};
-        String[] msgs = {"See you tomorrow!", "New theme is ready", "ok 👍", "Notes", "Thank you", "Call me"};
-        String[] times = {"21:40", "20:15", "Fri", "Thu", "Mon", "Sun"};
-        int[] avatars = {0xFFE17076, 0xFF7BC862, 0xFF65AADD, 0xFFEE7AAE, 0xFFF3A93C, 0xFF6EC9CB};
+        String[] names = {"Aye Aye", "Design team", "Ko Min", "Saved Messages", "Daw Mya", "Mg Mg", "Su Su", "Project chat", "Thura", "Zaw Zaw", "Hla Hla", "Family", "Nandar", "News channel"};
+        String[] msgs = {"See you tomorrow!", "New theme is ready", "ok 👍", "Notes", "Thank you", "Call me", "On my way", "Meeting at 3", "Sent a photo", "Got it", "Good night", "Dinner at 7?", "Thanks!", "New post"};
+        String[] times = {"21:40", "20:15", "Fri", "Thu", "Mon", "Sun", "Sat", "Fri", "Thu", "Wed", "Tue", "Mon", "Sun", "Sat"};
+        int[] avatars = {0xFFE17076, 0xFF7BC862, 0xFF65AADD, 0xFFEE7AAE, 0xFFF3A93C, 0xFF6EC9CB, 0xFFB694F9, 0xFFE17076, 0xFF7BC862, 0xFF65AADD, 0xFFEE7AAE, 0xFFF3A93C, 0xFF6EC9CB, 0xFFB694F9};
         if (grid) {
             int cols = session.intValue("layout.chatList.grid.columns", 3);
             float cw = x.w / (float) cols, ad = dp(session.intValue("layout.chatList.grid.avatarDp", 56));
@@ -816,18 +893,8 @@ public class BuilderPreviewView extends View {
                 }
             }
         }
-        drawTabs(canvas, x, tabsH);
-        float fs = dp(session.intValue("components.fab.sizeDp", 52));
-        float fx = x.w - dp(16) - fs, fy = x.h - tabsH - dp(16) - fs;
-        rect.set(fx, fy, fx + fs, fy + fs);
-        p.setColor(x.accent);
-        round(canvas, rect, dp(session.intValue("components.fab.radiusDp", 26)));
-        p.setColor(x.onAccent);
-        p.setStrokeWidth(dp(2.5f));
-        canvas.drawLine(fx + fs / 2 - dp(9), fy + fs / 2, fx + fs / 2 + dp(9), fy + fs / 2, p);
-        canvas.drawLine(fx + fs / 2, fy + fs / 2 - dp(9), fx + fs / 2, fy + fs / 2 + dp(9), p);
-        rect.set(fx, fy, fx + fs, fy + fs);
-        add("fab", rect);
+        fab(canvas, x, true);
+        drawTabs(canvas, x, "chats");
     }
 
     private void drawSettings(Canvas canvas, Ctx x) {
@@ -854,6 +921,26 @@ public class BuilderPreviewView extends View {
         }
         boolean sgrid = "grid".equals(session.text("layout.settings.mode", "list"));
         String shead = session.text("layout.settings.header", null);
+        if (shead == null) {
+            // the app's own header: big avatar with a camera badge, name, phone and username
+            float cx = x.w / 2f, cy = top + dp(60);
+            rect.set(dp(0), top, x.w, top + dp(150));
+            add("settingsHeader", rect);
+            avatar(canvas, cx, cy, dp(40), AV[0]);
+            p.setColor(x.accent);
+            canvas.drawCircle(cx + dp(30), cy + dp(30), dp(13), p);
+            icon(canvas, "camera", cx + dp(30), cy + dp(30), dp(6), x.onAccent);
+            p.setColor(x.text);
+            p.setFakeBoldText(true);
+            p.setTextSize(dp(18));
+            canvas.drawText("Your Name", cx - p.measureText("Your Name") / 2f, top + dp(122), p);
+            p.setFakeBoldText(false);
+            p.setColor(x.text2);
+            p.setTextSize(dp(12));
+            String ph = "+95 9•• ••• ••• • @username";
+            canvas.drawText(ph, cx - p.measureText(ph) / 2f, top + dp(142), p);
+            top += dp(150);
+        }
         if (shead != null) {
             float hh = dp(88);
             rect.set(0, top, x.w, top + hh);
@@ -903,14 +990,38 @@ public class BuilderPreviewView extends View {
             }
             return;
         }
-        int rows = Math.max(1, Math.min(ids.size(), (x.h - y0 - gap) / rowH));
         float side = card ? dp(12) : 0;
+        String[] kuro = {"Kuro Theme", "Kuro Settings", "Number Finder", "Special Contacts", "Online Contacts", "Contact Changes"};
+        String[] main = {"Account", "Chat Settings", "Privacy & Security", "Notifications", "Data and Storage", "Chat Folders", "Devices", "Power Saving", "Language"};
+        String[] mainSub = {"Number, Username, Bio", "Wallpaper, Night Mode, Animations", "Last Seen, Devices, Passkeys", "Sounds, Calls, Badges", "Media download settings", "Sort chats into folders", "Manage connected devices", "Reduce power usage on low charge", "English"};
+        if (session.raw("layout.settings.items") instanceof List) {
+            main = new String[ids.size()];
+            for (int k = 0; k < main.length; k++) {
+                main[k] = item(ids.get(k));
+            }
+            mainSub = new String[main.length];
+            java.util.Arrays.fill(mainSub, "Description");
+        }
+        float yy = settingsCard(canvas, x, y0, side, rowH, gs, card, kuro, null, 0);
+        settingsCard(canvas, x, yy + gap, side, rowH, gs, card, main, desc ? mainSub : null, kuro.length);
+        drawTabs(canvas, x, "settings");
+    }
+
+    /** One rounded card of settings rows (coloured icon, title, optional second line). Returns where it ends. */
+    private float settingsCard(Canvas canvas, Ctx x, float y0, float side, int rowH0, String gs, boolean card, String[] titles, String[] subs, int colourOffset) {
+        int title = session.intValue("components.cell.titleSizeSp", 15), val = session.intValue("components.cell.valueSizeSp", 12);
+        boolean tb = bold("components.cell.titleWeight", false);
+        float ic = dp(session.intValue("components.cell.iconSizeDp", 20)) / 2f;
+        int padL = dp(session.intValue("components.cell.paddingStartDp", 16));
+        String iconStyle = session.text("screens.settings.iconStyle", "rounded");
+        int rowH = subs != null ? Math.max(rowH0, dp(session.intValue("components.cell.twoLineHeightDp", 62))) : rowH0;
+        int rows = titles.length;
         rect.set(side, y0, x.w - side, y0 + rows * rowH);
         int fillC = session.colorChain(x.surface, "components.card.background");
         if ("glass".equals(gs)) {
             fillC = (fillC & 0x00FFFFFF) | 0xB0000000;
         }
-        float rr = card ? dp(session.intValue("components.section.radiusDp", session.intValue("tokens.shapes.cardRadiusDp", 14))) : 0;
+        float rr = card ? dp(session.intValue("components.section.radiusDp", session.intValue("tokens.shapes.cardRadiusDp", 16))) : 0;
         shadow(canvas, rect, rr, session.intValue("tokens.elevation.cardDp", 0));
         p.setColor(fillC);
         canvas.drawRoundRect(rect, rr, rr, p);
@@ -918,38 +1029,35 @@ public class BuilderPreviewView extends View {
         for (int i = 0; i < rows; i++) {
             float y = y0 + i * rowH, cy = y + rowH / 2f;
             rect.set(side, y, x.w - side, y + rowH);
-            if (i == 1 && session.draft.get("components.cell.pressedColor") != null) {
-                p.setColor(session.color("components.cell.pressedColor", 0x22000000));
-                canvas.drawRect(rect, p);
-            }
             add("settingsRow", rect);
             add("cell", rect);
-            p.setColor(i % 2 == 0 ? x.accent : x.icon);
-            RectF ib = new RectF(side + padL, cy - ic, side + padL + 2 * ic, cy + ic);
+            p.setColor(AV[(i + colourOffset) % AV.length]);
+            RectF ib = new RectF(side + padL, cy - ic * 1.25f, side + padL + 2.5f * ic, cy + ic * 1.25f);
             if ("square".equals(iconStyle)) {
                 canvas.drawRect(ib, p);
-            } else if ("rounded".equals(iconStyle)) {
-                canvas.drawRoundRect(ib, ic * 0.5f, ic * 0.5f, p);
+            } else if ("circle".equals(iconStyle)) {
+                canvas.drawCircle(ib.centerX(), cy, ic * 1.2f, p);
             } else {
-                canvas.drawCircle(ib.centerX(), cy, ic * 0.7f, p);
+                canvas.drawRoundRect(ib, ic * 0.7f, ic * 0.7f, p);
             }
-            float tx = side + padL + 2 * ic + dp(14);
+            float tx = side + padL + 2.5f * ic + dp(14);
             p.setColor(x.text);
             p.setFakeBoldText(tb);
             p.setTextSize(dp(title));
-            canvas.drawText(item(ids.get(i)), tx, desc ? cy - dp(2) : cy + dp(5), p);
+            canvas.drawText(titles[i], tx, subs != null ? cy - dp(2) : cy + dp(5), p);
             p.setFakeBoldText(false);
-            if (desc) {
+            if (subs != null) {
                 p.setColor(x.text2);
                 p.setTextSize(dp(val));
-                canvas.drawText("Description", tx, cy + dp(val + 3), p);
+                canvas.drawText(subs[i], tx, cy + dp(val + 3), p);
             }
-            if (i < rows - 1 && session.bool("components.cell.dividerVisible", true)) {
+            if (i < rows - 1 && session.bool("components.cell.dividerVisible", false)) {
                 p.setColor(session.colorChain(x.divider, "components.cell.dividerColor"));
                 float inset = dp(session.intValue("components.cell.dividerInsetDp", 60));
                 canvas.drawRect(side + inset, y + rowH - 1, x.w - side, y + rowH, p);
             }
         }
+        return y0 + rows * rowH;
     }
 
     private void drawDrawer(Canvas canvas, Ctx x) {
@@ -1031,7 +1139,7 @@ public class BuilderPreviewView extends View {
             canvas.drawRect(rect, p);
         }
         int top = bar(canvas, x, "Contacts");
-        String[] names = {"Aye Aye", "Ko Min", "Daw Mya", "Mg Mg", "Su Su", "Thura", "Zaw Zaw"};
+        String[] names = {"Aye Aye", "Ko Min", "Daw Mya", "Mg Mg", "Su Su", "Thura", "Zaw Zaw", "Hla Hla", "Min Min", "Nandar", "Kyaw Kyaw", "Ei Ei", "Phyo", "Htet Htet"};
         String secStyle = session.text("screens.contacts.sectionStyle", "flat");
         boolean grid = "grid".equals(session.text("layout.contacts.mode", "list"));
         boolean time = "time".equals(session.text("layout.contacts.sort", "name"));
@@ -1052,36 +1160,60 @@ public class BuilderPreviewView extends View {
             }
             return;
         }
-        int rowH = dp(session.intValue("layout.contacts.row.heightDp", 60));
-        int ad = dp(session.intValue("layout.contacts.row.avatarSizeDp", session.intValue("screens.contacts.avatarSizeDp", 44)));
+        int rowH = dp(session.intValue("layout.contacts.row.heightDp", 64));
+        int ad = dp(session.intValue("layout.contacts.row.avatarSizeDp", session.intValue("screens.contacts.avatarSizeDp", 46)));
         boolean status = session.bool("layout.contacts.row.status", true);
-        float side = "flat".equals(secStyle) ? 0 : dp(10);
-        float y = top + dp(8);
-        p.setColor(x.text2);
-        p.setTextSize(dp(12));
-        canvas.drawText(time ? "RECENT" : "A", dp(16), y + dp(12), p);
-        y += dp(20);
-        for (int i = 0; i < names.length && y + rowH < x.h; i++) {
-            rect.set(side, y, x.w - side, y + rowH);
-            int fill = x.surface;
-            if ("glass".equals(secStyle)) {
-                fill = (fill & 0x00FFFFFF) | 0xB0000000;
-            }
-            p.setColor(fill);
-            canvas.drawRect(rect, p);
-            add("contactRow", rect);
-            float cy = y + rowH / 2f;
-            avatar(canvas, side + dp(12) + ad / 2f, cy, Math.min(ad, rowH - dp(8)) / 2f, AV[i]);
+        float side = dp(12);
+        float cr = dp(session.intValue("tokens.shapes.cardRadiusDp", 16));
+        float y = top + dp(10);
+        // card 1: Invite Friends / Recent calls
+        float r1 = dp(54);
+        rect.set(side, y, x.w - side, y + 2 * r1);
+        p.setColor(x.surface);
+        canvas.drawRoundRect(rect, cr, cr, p);
+        add("card", rect);
+        String[] act = {"Invite Friends", "Recent calls"};
+        int[] actColor = {0xFF3390EC, 0xFF4CAF50};
+        for (int i = 0; i < 2; i++) {
+            float ry = y + i * r1;
+            rect.set(side, ry, x.w - side, ry + r1);
+            add("cell", rect);
+            RectF ib = new RectF(side + dp(14), ry + r1 / 2f - dp(16), side + dp(46), ry + r1 / 2f + dp(16));
+            p.setColor(actColor[i]);
+            canvas.drawRoundRect(ib, dp(9), dp(9), p);
+            icon(canvas, i == 0 ? "adduser" : "calls", ib.centerX(), ib.centerY(), dp(8), 0xFFFFFFFF);
             p.setColor(x.text);
             p.setTextSize(dp(15));
-            canvas.drawText(names[i], side + dp(24) + ad, status ? cy - dp(2) : cy + dp(5), p);
+            canvas.drawText(act[i], side + dp(60), ry + r1 / 2f + dp(5), p);
+        }
+        y += 2 * r1 + dp(12);
+        // card 2: the contact list
+        float cardH = dp(40) + names.length * rowH;
+        rect.set(side, y, x.w - side, y + cardH);
+        p.setColor("glass".equals(secStyle) ? (x.surface & 0x00FFFFFF) | 0xB0000000 : x.surface);
+        canvas.drawRoundRect(rect, cr, cr, p);
+        add("section", rect);
+        p.setColor(x.accent);
+        p.setTextSize(dp(13));
+        canvas.drawText(time ? "Sorted by last seen time" : "Sorted by name", side + dp(16), y + dp(26), p);
+        y += dp(40);
+        for (int i = 0; i < names.length; i++) {
+            rect.set(side, y, x.w - side, y + rowH);
+            add("contactRow", rect);
+            float cy = y + rowH / 2f;
+            avatar(canvas, side + dp(14) + ad / 2f, cy, Math.min(ad, rowH - dp(8)) / 2f, AV[i % AV.length]);
+            p.setColor(x.text);
+            p.setTextSize(dp(15));
+            canvas.drawText(names[i], side + dp(28) + ad, status ? cy - dp(2) : cy + dp(5), p);
             if (status) {
                 p.setColor(x.text2);
                 p.setTextSize(dp(12));
-                canvas.drawText(time ? "last seen recently" : "online", side + dp(24) + ad, cy + dp(15), p);
+                canvas.drawText("last seen recently", side + dp(28) + ad, cy + dp(15), p);
             }
             y += rowH;
         }
+        fab(canvas, x, false);
+        drawTabs(canvas, x, "contacts");
     }
 
     private void drawPeople(Canvas canvas, Ctx x) {
@@ -1168,30 +1300,80 @@ public class BuilderPreviewView extends View {
         float tx = "left".equals(hs) ? dp(16) + ad + dp(14) : x.w / 2f - p.measureText("Aye Aye") / 2f;
         canvas.drawText("Aye Aye", tx, "left".equals(hs) ? cy : cy + ad / 2f + dp(24), p);
         p.setFakeBoldText(false);
+        p.setColor(x.text2);
+        p.setTextSize(dp(13));
+        canvas.drawText("online", x.w / 2f - p.measureText("online") / 2f, cy + ad / 2f + dp(42), p);
+        hh += dp(24);
         float y = top + hh + dp(12);
         boolean buttons = "buttons".equals(session.text("screens.profile.actionsStyle", "buttons"));
+        String[] bl = {"Set Photo", "Edit Info", "Settings"};
+        String[] bi = {"camera", "edit", "settings"};
+        float bh = buttons ? dp(58) : dp(36);
         for (int i = 0; i < 3; i++) {
             float bw = (x.w - dp(24) - dp(16)) / 3f;
-            rect.set(dp(12) + i * (bw + dp(8)), y, dp(12) + i * (bw + dp(8)) + bw, y + (buttons ? dp(44) : dp(32)));
+            rect.set(dp(12) + i * (bw + dp(8)), y, dp(12) + i * (bw + dp(8)) + bw, y + bh);
             p.setColor(buttons ? x.surface : (x.accent & 0x00FFFFFF) | 0x22000000);
-            canvas.drawRoundRect(rect, dp(12), dp(12), p);
+            canvas.drawRoundRect(rect, dp(16), dp(16), p);
             add("profileHeader", rect);
+            icon(canvas, bi[i], rect.centerX(), rect.top + dp(20), dp(9), x.text);
+            p.setColor(x.text);
+            p.setFakeBoldText(true);
+            p.setTextSize(dp(12));
+            canvas.drawText(bl[i], rect.centerX() - p.measureText(bl[i]) / 2f, rect.top + dp(46), p);
+            p.setFakeBoldText(false);
         }
-        y += (buttons ? dp(44) : dp(32)) + dp(12);
+        y += bh + dp(12);
         float cr = dp(session.intValue("screens.profile.cardRadiusDp", 14));
-        rect.set(dp(12), y, x.w - dp(12), Math.min(x.h - dp(8), y + dp(150)));
+        String[] labels = {"Mobile", "Bio", "Username", "Birthday"};
+        String[] values = {"+95 9•• ••• •••", "Everything is Temporary", "@username", "Jan 1, 2000"};
+        float rh = dp(52);
+        rect.set(dp(12), y, x.w - dp(12), y + rh * labels.length);
         p.setColor(x.surface);
         canvas.drawRoundRect(rect, cr, cr, p);
         add("infoCard", rect);
-        String[] lines = {"Phone", "Bio", "Username"};
-        for (int i = 0; i < lines.length && y + dp(44) * (i + 1) < x.h; i++) {
-            p.setColor(x.text2);
-            p.setTextSize(dp(12));
-            canvas.drawText(lines[i], dp(28), y + dp(18) + i * dp(44), p);
+        for (int i = 0; i < labels.length; i++) {
             p.setColor(x.text);
             p.setTextSize(dp(15));
-            canvas.drawText("•••••", dp(28), y + dp(36) + i * dp(44), p);
+            canvas.drawText(values[i], dp(28), y + dp(22) + i * rh, p);
+            p.setColor(x.text2);
+            p.setTextSize(dp(12));
+            canvas.drawText(labels[i], dp(28), y + dp(40) + i * rh, p);
         }
+        y += rh * labels.length + dp(16);
+        // Posts / Archived Posts switch
+        RectF seg = new RectF(x.w / 2f - dp(110), y, x.w / 2f + dp(110), y + dp(36));
+        p.setColor(x.surface);
+        canvas.drawRoundRect(seg, dp(18), dp(18), p);
+        RectF on = new RectF(seg.left + dp(4), seg.top + dp(4), seg.left + dp(70), seg.bottom - dp(4));
+        p.setColor((x.accent & 0x00FFFFFF) | 0x26000000);
+        canvas.drawRoundRect(on, dp(14), dp(14), p);
+        p.setTextSize(dp(13));
+        p.setColor(x.accent);
+        canvas.drawText("Posts", on.centerX() - p.measureText("Posts") / 2f, seg.centerY() + dp(5), p);
+        p.setColor(x.text2);
+        canvas.drawText("Archived Posts", seg.right - dp(70) - p.measureText("Archived Posts") / 2f, seg.centerY() + dp(5), p);
+        y += dp(80);
+        p.setColor(x.text);
+        p.setFakeBoldText(true);
+        p.setTextSize(dp(17));
+        canvas.drawText("No posts yet...", x.w / 2f - p.measureText("No posts yet...") / 2f, y, p);
+        p.setFakeBoldText(false);
+        p.setColor(x.text2);
+        p.setTextSize(dp(12));
+        String ph = "Publish photos and videos to display on your page";
+        canvas.drawText(ph, x.w / 2f - p.measureText(ph) / 2f, y + dp(22), p);
+        // Add a post button, just above the floating bar
+        RectF ab = new RectF(x.w / 2f - dp(80), x.h - dp(72) - dp(16) - dp(44), x.w / 2f + dp(80), x.h - dp(72) - dp(16));
+        p.setColor(x.accent);
+        canvas.drawRoundRect(ab, dp(22), dp(22), p);
+        add("button", ab);
+        icon(canvas, "camera", ab.left + dp(32), ab.centerY(), dp(8), x.onAccent);
+        p.setColor(x.onAccent);
+        p.setFakeBoldText(true);
+        p.setTextSize(dp(14));
+        canvas.drawText("Add a post", ab.left + dp(50), ab.centerY() + dp(5), p);
+        p.setFakeBoldText(false);
+        drawTabs(canvas, x, "profile");
     }
 
     private void drawThemeStore(Canvas canvas, Ctx x) {
@@ -1469,57 +1651,90 @@ public class BuilderPreviewView extends View {
         p.setStyle(Paint.Style.FILL);
     }
 
+    /** View y of a touch -> y in the drawn screen (the top bar and the tab bar stay put while the list scrolls). */
+    private float contentY(float ty) {
+        float vh = getHeight();
+        if (!scrollable()) {
+            return ty;
+        }
+        if (hasTabs() && ty > vh - dp(72)) {
+            return ty + (vh * CONTENT_FACTOR - vh);
+        }
+        if (ty < dp(session.intValue("components.appBar.heightDp", 52))) {
+            return ty;
+        }
+        return ty + scrollY;
+    }
+
+    private void pickAt(float tx, float ty) {
+        float cy = contentY(ty);
+        Hit best = null;
+        float bestArea = Float.MAX_VALUE;
+        for (Hit h : hits) {
+            if (h.r.contains(tx, cy)) {
+                float area = h.r.width() * h.r.height();
+                if (area <= bestArea) { // later (more specific) regions win ties
+                    bestArea = area;
+                    best = h;
+                }
+            }
+        }
+        String id = best == null ? "screenBackground" : best.id;
+        int occ = 0;
+        if (best != null) {
+            for (Hit h : hits) {
+                if (h == best) {
+                    break;
+                }
+                if (h.id.equals(id)) {
+                    occ++;
+                }
+            }
+        }
+        lastSelId = id;
+        selOcc = occ;
+        if (listener != null) {
+            listener.onComponentTapped(id);
+        }
+        invalidate();
+        performClick();
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent e) {
-        if (!editMode) {
-            // Preview mode: dragging scrolls the list screens; taps do nothing
-            if (!scrollable()) {
-                if (e.getAction() == MotionEvent.ACTION_UP) {
-                    previewTap(e.getX(), e.getY());
-                }
-                return e.getAction() == MotionEvent.ACTION_DOWN || e.getAction() == MotionEvent.ACTION_UP;
-            }
-            switch (e.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    lastY = downY = e.getY();
-                    moved = false;
+        boolean scroll = scrollable();
+        switch (e.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                lastY = downY = e.getY();
+                moved = false;
+                if (scroll) {
                     getParent().requestDisallowInterceptTouchEvent(true);
-                    return true;
-                case MotionEvent.ACTION_UP:
-                    if (!moved) {
-                        previewTap(e.getX(), e.getY());
-                    }
-                    return true;
-                case MotionEvent.ACTION_MOVE:
+                }
+                return true;
+            case MotionEvent.ACTION_MOVE:
+                if (scroll) {
                     if (Math.abs(e.getY() - downY) > dp(8)) {
                         moved = true;
                     }
-                    scrollY -= e.getY() - lastY;
-                    lastY = e.getY();
-                    invalidate();
-                    return true;
-                default:
-                    return true;
-            }
-        }
-        if (e.getAction() == MotionEvent.ACTION_UP) {
-            String best = "screenBackground";
-            float bestArea = Float.MAX_VALUE;
-            for (Hit h : hits) {
-                if (h.r.contains(e.getX(), e.getY())) {
-                    float area = h.r.width() * h.r.height();
-                    if (area <= bestArea) { // later (more specific) regions win ties
-                        bestArea = area;
-                        best = h.id;
+                    if (moved) {
+                        scrollY -= e.getY() - lastY;
+                        invalidate();
                     }
                 }
-            }
-            if (listener != null) {
-                listener.onComponentTapped(best);
-            }
-            performClick();
+                lastY = e.getY();
+                return true;
+            case MotionEvent.ACTION_UP:
+                if (!moved) {
+                    if (editMode) {
+                        pickAt(e.getX(), e.getY());
+                    } else {
+                        previewTap(e.getX(), e.getY());
+                    }
+                }
+                return true;
+            default:
+                return true;
         }
-        return e.getAction() == MotionEvent.ACTION_DOWN || e.getAction() == MotionEvent.ACTION_UP;
     }
 
     @Override
