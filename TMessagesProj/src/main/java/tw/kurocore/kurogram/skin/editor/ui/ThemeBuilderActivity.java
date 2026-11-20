@@ -76,6 +76,8 @@ public class ThemeBuilderActivity extends BaseFragment {
     private EditorSession session;
     private BuilderPreviewView preview;
     private FrameLayout screenClip;
+    private LinearLayout compBox;
+    private static final int COMP_DP = 104;
     private RealScreenHost realHost;
     private String realScene;
     private static final int PANEL_DP = 340;
@@ -312,7 +314,16 @@ public class ThemeBuilderActivity extends BaseFragment {
         screenClip.addView(preview, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT));
         phone.addView(screenClip, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT));
         phoneHolder.addView(phone, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL, 0, 52, 0, 0));
-        canvasArea.addView(phoneHolder, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP));
+        canvasArea.addView(phoneHolder, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP, COMP_DP + 4, 0, 0, 0));
+        // left panel, like Sketchware: the parts of the screen being edited
+        ScrollView compScroll = new ScrollView(context);
+        compScroll.setVerticalScrollBarEnabled(false);
+        compScroll.setBackground(shape(0xFFFFFFFF, 12, LINE));
+        compBox = new LinearLayout(context);
+        compBox.setOrientation(LinearLayout.VERTICAL);
+        compBox.setPadding(AndroidUtilities.dp(4), AndroidUtilities.dp(6), AndroidUtilities.dp(4), AndroidUtilities.dp(6));
+        compScroll.addView(compBox);
+        canvasArea.addView(compScroll, LayoutHelper.createFrame(COMP_DP, LayoutHelper.MATCH_PARENT, Gravity.LEFT | Gravity.TOP, 6, 52, 0, 8));
         canvasArea.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, or, ob) -> {
             if (b - t != ob - ot || r - l != or - ol) {
                 fitCanvas(false);
@@ -740,8 +751,9 @@ public class ThemeBuilderActivity extends BaseFragment {
             b = pad + sel.bottom + AndroidUtilities.dp(8);
         }
         float s = 1f, ty = 0f;
+        float widthFit = Math.min(1f, (canvasArea.getWidth() - AndroidUtilities.dp(COMP_DP + 12)) / (float) phone.getWidth());
         if (sel == null) {
-            s = Math.min(1f, avail / phoneH);
+            s = Math.min(widthFit, avail / phoneH);
         } else if (b > avail) {
             if (b - a <= avail) {
                 ty = avail - b;
@@ -749,6 +761,10 @@ public class ThemeBuilderActivity extends BaseFragment {
                 s = Math.max(0.5f, avail / (b - a));
                 ty = Math.min(0f, avail - b * s);
             }
+        }
+        if (sel != null) {
+            s = Math.min(s, widthFit);
+            ty *= s;
         }
         phone.setPivotX(phone.getWidth() / 2f);
         phone.setPivotY(0f);
@@ -768,6 +784,7 @@ public class ThemeBuilderActivity extends BaseFragment {
         refreshToolbar();
         refreshPanel();
         preview.invalidate();
+        preview.post(this::buildComponents);
         if (phone != null) {
             phone.post(() -> fitCanvas(false));
         }
@@ -844,6 +861,7 @@ public class ThemeBuilderActivity extends BaseFragment {
         refreshPanel();
         refreshToolbar();
         preview.invalidate();
+        buildComponents();
         if (phone != null) {
             phone.post(() -> fitCanvas(true));
         }
@@ -943,6 +961,37 @@ public class ThemeBuilderActivity extends BaseFragment {
         } else {
             inspScroll.post(() -> inspScroll.scrollTo(0, keepScroll));
         }
+    }
+
+    /** The left panel: every part drawn on this screen, tap one to select it (same as tapping it on the phone). */
+    private void buildComponents() {
+        if (compBox == null) {
+            return;
+        }
+        compBox.removeAllViews();
+        Context context = compBox.getContext();
+        String lang = session.lang();
+        TextView head = text(context, tr("scene." + session.scene()).toUpperCase(), 10, true);
+        head.setTextColor(SOFT);
+        compBox.addView(head, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 6, 2, 4, 4));
+        for (final String id : preview.visibleComponents()) {
+            if (!session.catalog.hasComponent(id)) {
+                continue;
+            }
+            int depth = id.length() - id.replace(".", "").length();
+            boolean on = id.equals(session.selected()) && inspecting && !globalPanel;
+            TextView row = text(context, session.catalog.componentLabel(id, lang), 12, on);
+            row.setTextColor(on ? 0xFFFFFFFF : INK);
+            row.setBackground(on ? shape(BLUE, 8, 0) : null);
+            row.setPadding(AndroidUtilities.dp(6 + depth * 8), AndroidUtilities.dp(7), AndroidUtilities.dp(4), AndroidUtilities.dp(7));
+            row.setOnClickListener(v -> onPicked(id));
+            compBox.addView(row, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+        }
+    }
+
+    @Override
+    public boolean isSwipeBackEnabled(android.view.MotionEvent event) {
+        return false; // a swipe from the edge must not close the Studio by accident; Back is the arrow
     }
 
     private LinearLayout rowBox(Context context) {

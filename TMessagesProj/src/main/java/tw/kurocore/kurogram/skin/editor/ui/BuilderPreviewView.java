@@ -557,7 +557,41 @@ public class BuilderPreviewView extends View {
             headerButtons(canvas, x, top, listOr("layout.chatList.header.left"), listOr("layout.chatList.header.right"));
             add("chatList.header", rect);
         }
-        String folders = session.text("layout.chatList.folders.style", "none");
+        // same order as the real Chats screen: stories, search, folder bar
+        if (session.bool("layout.chatList.storyRail.enabled", true)) {
+            int sr = dp(session.intValue("layout.chatList.storyRail.avatarSizeDp", 52));
+            rect.set(0, top, x.w, top + sr + dp(14));
+            p.setColor(x.surface);
+            canvas.drawRect(rect, p);
+            add("chatList.storyRail", rect);
+            float sx = dp(12) + sr / 2f;
+            if (session.bool("layout.chatList.storyRail.showCreate", true)) {
+                p.setColor((x.accent & 0x00FFFFFF) | 0x33000000);
+                canvas.drawCircle(sx, top + dp(7) + sr / 2f, sr / 2f, p);
+                p.setColor(x.accent);
+                p.setTextSize(dp(22));
+                canvas.drawText("+", sx - dp(6), top + dp(15) + sr / 2f, p);
+                sx += sr + dp(10);
+            }
+            for (int i = 0; i < 4 && sx + sr / 2f < x.w; i++) {
+                avatar(canvas, sx, top + dp(7) + sr / 2f, sr / 2f, AV[i]);
+                outlineCircle(canvas, sx, top + dp(7) + sr / 2f, sr / 2f + dp(2), x.accent);
+                sx += sr + dp(10);
+            }
+            top += sr + dp(14);
+        }
+        {
+            int sh = dp(40);
+            RectF sb = new RectF(dp(12), top + dp(4), x.w - dp(12), top + sh - dp(4));
+            p.setColor((x.divider & 0x00FFFFFF) | 0x40000000);
+            canvas.drawRoundRect(sb, dp(18), dp(18), p);
+            p.setColor(x.text2);
+            p.setTextSize(dp(14));
+            canvas.drawText("Search Chats", dp(44), top + sh / 2f + dp(5), p);
+            canvas.drawCircle(dp(28), top + sh / 2f - dp(1), dp(5), p);
+            top += sh;
+        }
+        String folders = session.text("layout.chatList.folders.style", "chips");
         if (!"none".equals(folders)) {
             int fh = dp(36);
             rect.set(0, top, x.w, top + fh);
@@ -579,28 +613,6 @@ public class BuilderPreviewView extends View {
                 fx += fw + dp(6);
             }
             top += fh;
-        }
-        if (session.bool("layout.chatList.storyRail.enabled", false)) {
-            int sr = dp(session.intValue("layout.chatList.storyRail.avatarSizeDp", 52));
-            rect.set(0, top, x.w, top + sr + dp(14));
-            p.setColor(x.surface);
-            canvas.drawRect(rect, p);
-            add("chatList.storyRail", rect);
-            float sx = dp(12) + sr / 2f;
-            if (session.bool("layout.chatList.storyRail.showCreate", true)) {
-                p.setColor((x.accent & 0x00FFFFFF) | 0x33000000);
-                canvas.drawCircle(sx, top + dp(7) + sr / 2f, sr / 2f, p);
-                p.setColor(x.accent);
-                p.setTextSize(dp(22));
-                canvas.drawText("+", sx - dp(6), top + dp(15) + sr / 2f, p);
-                sx += sr + dp(10);
-            }
-            for (int i = 0; i < 4 && sx + sr / 2f < x.w; i++) {
-                avatar(canvas, sx, top + dp(7) + sr / 2f, sr / 2f, AV[i]);
-                outlineCircle(canvas, sx, top + dp(7) + sr / 2f, sr / 2f + dp(2), x.accent);
-                sx += sr + dp(10);
-            }
-            top += sr + dp(14);
         }
         boolean grid = "grid".equals(session.text("layout.chatList.mode", "list"));
         int tabsH = dp(56);
