@@ -76,7 +76,8 @@ public class ThemeBuilderActivity extends BaseFragment {
     private EditorSession session;
     private BuilderPreviewView preview;
     private FrameLayout screenClip;
-    private LinearLayout compBox;
+    private LinearLayout compBox, tileRow, rowTarget;
+    private HorizontalScrollView tileScroll;
     private static final int COMP_DP = 104;
     private RealScreenHost realHost;
     private String realScene;
@@ -411,23 +412,36 @@ public class ThemeBuilderActivity extends BaseFragment {
         idleBar.setBackground(bg);
         idleBar.setElevation(AndroidUtilities.dp(10));
         idleBar.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(6), AndroidUtilities.dp(8), AndroidUtilities.dp(6));
-        for (int i = 0; i < CHIP_PATHS.length; i++) {
-            final int idx = i;
-            LinearLayout chip = new LinearLayout(context);
-            chip.setOrientation(LinearLayout.VERTICAL);
-            chip.setGravity(Gravity.CENTER);
-            View sw = new View(context);
-            chipSwatch[i] = sw;
-            chip.addView(sw, LayoutHelper.createLinear(34, 34));
-            TextView lab = text(context, tr("chip." + i), 11, false);
-            lab.setGravity(Gravity.CENTER);
-            lab.setMaxLines(1);
-            chip.addView(lab, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, 0, 4, 0, 0));
-            chip.setOnClickListener(v -> openChip(idx));
-            idleBar.addView(chip, LayoutHelper.createLinear(0, LayoutHelper.MATCH_PARENT, 1f));
-        }
-        screensTab = idleTab(context, "\u25A6", "", v -> screensDialog());
-        idleBar.addView(screensTab, LayoutHelper.createLinear(0, LayoutHelper.MATCH_PARENT, 1f));
+        idleBar.setGravity(Gravity.CENTER_VERTICAL);
+        // like Sketchware's bottom bar: the screen picker on the left, the colours and the run button on the right
+        screensTab = new TextView(context);
+        screensTab.setTextSize(15);
+        screensTab.setTextColor(INK);
+        screensTab.setGravity(Gravity.CENTER_VERTICAL);
+        screensTab.setSingleLine(true);
+        screensTab.setPadding(AndroidUtilities.dp(16), 0, AndroidUtilities.dp(12), 0);
+        screensTab.setBackground(shape(0xFFF3F4F6, 22, 0));
+        screensTab.setOnClickListener(v -> screensDialog());
+        idleBar.addView(screensTab, LayoutHelper.createLinear(0, 44, 1f, 4, 0, 8, 0));
+        TextView colours = new TextView(context);
+        colours.setText("\uD83C\uDFA8  " + tr("chip.colours"));
+        colours.setTextSize(14);
+        colours.setTextColor(INK);
+        colours.setGravity(Gravity.CENTER);
+        colours.setBackground(shape(0xFFF3F4F6, 22, 0));
+        colours.setPadding(AndroidUtilities.dp(14), 0, AndroidUtilities.dp(14), 0);
+        colours.setOnClickListener(v -> openGlobalColors());
+        idleBar.addView(colours, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 44, 0, 0, 8, 0));
+        TextView run = new TextView(context);
+        run.setText("\u25B6  " + tr("preview"));
+        run.setTextSize(14);
+        run.setTextColor(0xFFFFFFFF);
+        run.setTypeface(AndroidUtilities.bold());
+        run.setGravity(Gravity.CENTER);
+        run.setBackground(shape(BLUE, 22, 0));
+        run.setPadding(AndroidUtilities.dp(16), 0, AndroidUtilities.dp(16), 0);
+        run.setOnClickListener(v -> setEditMode(false));
+        idleBar.addView(run, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 44, 0, 0, 4, 0));
         root.addView(idleBar, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, IDLE_DP, Gravity.BOTTOM, 0, 0, wide ? PANEL_DP : 0, 0));
     }
 
@@ -443,25 +457,140 @@ public class ThemeBuilderActivity extends BaseFragment {
         return t;
     }
 
-    /** A colour chip was tapped: only that colour is offered, and the parts of the phone it changes light up. */
-    private void openChip(int idx) {
+    /** The Colours button: the five main colours as tiles. */
+    private void openGlobalColors() {
         session.select("global");
         inspecting = true;
         globalPanel = true;
-        quickPath = CHIP_PATHS[idx];
-        preview.setHighlight(CHIP_PARTS[idx]);
-        if (!wide) {
-            sheetState = 1;
-        }
+        quickPath = null;
+        preview.setHighlight(null);
         applySheet(true);
         refreshPanel();
         preview.invalidate();
     }
 
-    private int chipColor(int idx) {
-        boolean dark = session.night();
-        int[][] def = {{0xFF3390EC, 0xFF3390EC}, {0xFFF2F2F7, 0xFF0F0F10}, {0xFFFFFFFF, 0xFF1C1C1E}, {0xFF14213D, 0xFFFFFFFF}, {0xFFFFFFFF, 0xFF1C1C1E}};
-        return session.color(CHIP_PATHS[idx], def[idx][dark ? 1 : 0]) | 0xFF000000;
+    /** Sketchware-style property tiles for the selected part (or the main colours): tap a tile to change that one thing. */
+    private void buildTiles(boolean quick) {
+        tileRow.removeAllViews();
+        final Context context = tileRow.getContext();
+        String sel = session.selected();
+        List<Catalog.Entry> entries = new java.util.ArrayList<>();
+        if (quick) {
+            sheetTitle.setText(tr("globalColors"));
+            sheetPlace.setText(tr("chipHelp"));
+            for (String path : CHIP_PATHS) {
+                Catalog.Entry e = session.catalog.entry(path);
+                if (e != null && session.rules.find(path) != null) {
+                    entries.add(e);
+                }
+            }
+        } else {
+            List<Catalog.Entry> all = new java.util.ArrayList<>();
+            for (Catalog.Entry e : session.settings()) {
+                if (e.path.equals("appearance") || e.path.equals("meta") || e.path.equals("night") || e.path.equals("layout")) {
+                    continue;
+                }
+                if (session.rules.find(e.path) != null) {
+                    all.add(e);
+                }
+            }
+            for (StudioModel.Section sec : StudioModel.sectionsOf(session, all)) {
+                for (Catalog.Entry e : all) {
+                    if (StudioModel.sectionOf(e, session.rules.find(e.path).rule) == sec) {
+                        entries.add(e);
+                    }
+                }
+            }
+        }
+        if (entries.isEmpty()) {
+            tileRow.addView(text(context, tr("sheet.none"), 14, false), LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, 8, 16, 8, 0));
+            return;
+        }
+        for (final Catalog.Entry e : entries) {
+            final Rule rule = session.rules.find(e.path).rule;
+            int chip = quick ? java.util.Arrays.asList(CHIP_PATHS).indexOf(e.path) : -1;
+            tileRow.addView(tile(context, e, rule, chip), LayoutHelper.createLinear(88, LayoutHelper.MATCH_PARENT, 0, 0, 8, 0));
+        }
+    }
+
+    private View tile(final Context context, final Catalog.Entry e, final Rule rule, final int chip) {
+        final String label = chip >= 0 ? tr("chip." + chip) : e.label.get(session.lang(), e.path);
+        final boolean supported = session.isSupported(e);
+        final Object cur = session.ownValue(e.path);
+        final Object eff = session.raw(e.path);
+        Object shown = cur != null ? cur : eff;
+        LinearLayout t = new LinearLayout(context);
+        t.setOrientation(LinearLayout.VERTICAL);
+        t.setGravity(Gravity.CENTER);
+        t.setPadding(AndroidUtilities.dp(4), AndroidUtilities.dp(6), AndroidUtilities.dp(4), AndroidUtilities.dp(6));
+        t.setBackground(shape(cur != null ? BLUE_SOFT : 0xFFF3F4F6, 14, cur != null ? BLUE : 0));
+        View top;
+        if (rule.kind == Rule.Kind.COLOR || rule.kind == Rule.Kind.ARGB) {
+            View sw = new View(context);
+            GradientDrawable d = new GradientDrawable();
+            d.setShape(GradientDrawable.OVAL);
+            d.setColor(shown instanceof String ? ColorCodec.parse((String) shown, rule.kind) : 0);
+            d.setStroke(AndroidUtilities.dp(1.5f), 0xFFD5D8DD);
+            sw.setBackground(d);
+            top = sw;
+            t.addView(top, LayoutHelper.createLinear(34, 34));
+        } else {
+            String v;
+            if (!supported) {
+                v = "\u2014";
+            } else if (rule.kind == Rule.Kind.BOOL) {
+                v = Boolean.TRUE.equals(shown) ? "ON" : "OFF";
+            } else if (rule.kind == Rule.Kind.LIST) {
+                v = "\u2630";
+            } else {
+                v = shown == null ? "auto" : String.valueOf(shown);
+            }
+            TextView tv = text(context, v, 15, true);
+            tv.setGravity(Gravity.CENTER);
+            tv.setSingleLine(true);
+            tv.setEllipsize(android.text.TextUtils.TruncateAt.END);
+            if (rule.kind == Rule.Kind.BOOL && Boolean.TRUE.equals(shown)) {
+                tv.setTextColor(BLUE);
+            }
+            t.addView(tv, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 34));
+        }
+        TextView lab = text(context, label, 11, false);
+        lab.setGravity(Gravity.CENTER);
+        lab.setMaxLines(2);
+        lab.setEllipsize(android.text.TextUtils.TruncateAt.END);
+        t.addView(lab, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 6, 0, 0));
+        if (!supported) {
+            t.setAlpha(0.45f);
+            return t;
+        }
+        t.setOnClickListener(v -> {
+            if (chip >= 0) {
+                preview.setHighlight(CHIP_PARTS[chip]);
+            }
+            if (rule.kind == Rule.Kind.COLOR || rule.kind == Rule.Kind.ARGB) {
+                colorDialog(e, rule, label);
+            } else if (rule.kind == Rule.Kind.BOOL) {
+                report(session.setValue(e.path, !Boolean.TRUE.equals(eff)));
+                changed(true);
+            } else if (rule.kind == Rule.Kind.LIST) {
+                listDialog(e, rule, label);
+            } else if (rule.kind == Rule.Kind.ENUM && rule.options.size() > 4) {
+                final List<String> opts = rule.options;
+                new AlertDialog.Builder(getParentActivity()).setTitle(label)
+                        .setItems(opts.toArray(new String[0]), (d, i) -> {
+                            report(session.setValue(e.path, opts.get(i)));
+                            changed(true);
+                        }).show();
+            } else {
+                LinearLayout tmp = new LinearLayout(context);
+                tmp.setOrientation(LinearLayout.VERTICAL);
+                rowTarget = tmp;
+                addRuleRow(context, e, rule);
+                rowTarget = null;
+                panel(tmp).show();
+            }
+        });
+        return t;
     }
 
     /** Deselects: the inspector closes and the 3-tab bar comes back. */
@@ -578,48 +707,6 @@ public class ThemeBuilderActivity extends BaseFragment {
         titleRow.addView(closeBtn, LayoutHelper.createLinear(36, 36, 4, 0, 6, 0));
         header.addView(titleRow);
         sheet.addView(header, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-        if (!wide) {
-            header.setOnTouchListener(new View.OnTouchListener() {
-                float downY;
-                int startH;
-                boolean moved;
-
-                @Override
-                public boolean onTouch(View v, android.view.MotionEvent e) {
-                    switch (e.getAction()) {
-                        case android.view.MotionEvent.ACTION_DOWN:
-                            downY = e.getRawY();
-                            startH = sheet.getLayoutParams().height;
-                            moved = false;
-                            return true;
-                        case android.view.MotionEvent.ACTION_MOVE:
-                            if (Math.abs(e.getRawY() - downY) > AndroidUtilities.dp(8)) {
-                                moved = true;
-                            }
-                            if (moved) {
-                                setSheetHeight(Math.max(sheetHeightFor(0), Math.min(sheetHeightFor(2), startH + (int) (downY - e.getRawY()))));
-                            }
-                            return true;
-                        case android.view.MotionEvent.ACTION_UP:
-                            if (!moved) {
-                                setSheetState(sheetState == 0 ? 1 : sheetState == 1 ? 2 : 1, true);
-                            } else {
-                                int h = sheet.getLayoutParams().height, best = 0;
-                                for (int s = 1; s <= 2; s++) {
-                                    if (Math.abs(sheetHeightFor(s) - h) < Math.abs(sheetHeightFor(best) - h)) {
-                                        best = s;
-                                    }
-                                }
-                                setSheetState(best, true);
-                            }
-                            return true;
-                        default:
-                            return true;
-                    }
-                }
-            });
-        }
-
         sectionScroll = new HorizontalScrollView(context);
         sectionScroll.setHorizontalScrollBarEnabled(false);
         sectionRow = new LinearLayout(context);
@@ -634,6 +721,20 @@ public class ThemeBuilderActivity extends BaseFragment {
         list.setPadding(0, 0, 0, AndroidUtilities.dp(32));
         inspScroll.addView(list, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
         sheet.addView(inspScroll, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 0, 1f));
+        // phone layout: Sketchware-style row of property tiles instead of the long list
+        tileScroll = new HorizontalScrollView(context);
+        tileScroll.setHorizontalScrollBarEnabled(false);
+        tileRow = new LinearLayout(context);
+        tileRow.setOrientation(LinearLayout.HORIZONTAL);
+        tileRow.setPadding(AndroidUtilities.dp(12), AndroidUtilities.dp(4), AndroidUtilities.dp(12), AndroidUtilities.dp(8));
+        tileScroll.addView(tileRow);
+        sheet.addView(tileScroll, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 0, 1f));
+        if (!wide) {
+            sectionScroll.setVisibility(View.GONE);
+            inspScroll.setVisibility(View.GONE);
+        } else {
+            tileScroll.setVisibility(View.GONE);
+        }
 
         if (wide) {
             root.addView(sheet, LayoutHelper.createFrame(PANEL_DP, LayoutHelper.MATCH_PARENT, Gravity.END | Gravity.TOP));
@@ -642,7 +743,8 @@ public class ThemeBuilderActivity extends BaseFragment {
         }
     }
 
-    private static final int IDLE_DP = 92;
+    private static final int IDLE_DP = 72;
+    private static final int SHEET_DP = 190;
     /** The five colours a beginner changes, what each one touches in the app, and the parts of the phone to light up. */
     private static final String[] CHIP_PATHS = {"tokens.colors.accent", "tokens.colors.background", "tokens.colors.surface", "tokens.colors.textPrimary", "components.appBar.background"};
     private static final String[][] CHIP_PARTS = {
@@ -651,15 +753,10 @@ public class ThemeBuilderActivity extends BaseFragment {
             {"chatRow", "settingsRow", "card", "section", "infoCard", "themeCard", "contactRow"},
             {"chatRow.title"},
             {"appBar"}};
-    private final View[] chipSwatch = new View[5];
     private String quickPath;
 
     private int sheetHeightFor(int state) {
-        int rh = Math.max(root.getHeight(), AndroidUtilities.dp(480));
-        if (state == 0) {
-            return AndroidUtilities.dp(82);
-        }
-        return state == 1 ? Math.max(AndroidUtilities.dp(250), (int) (rh * 0.44f)) : (int) (rh * 0.86f);
+        return AndroidUtilities.dp(SHEET_DP); // fixed, like Sketchware: the phone never moves when a part is selected
     }
 
     private void setSheetHeight(int px) {
@@ -672,9 +769,6 @@ public class ThemeBuilderActivity extends BaseFragment {
         LinearLayout.LayoutParams cp = (LinearLayout.LayoutParams) canvasArea.getLayoutParams();
         cp.bottomMargin = editMode && inspecting ? px : editMode ? AndroidUtilities.dp(IDLE_DP) : 0;
         canvasArea.setLayoutParams(cp);
-        boolean open = px > sheetHeightFor(0) + AndroidUtilities.dp(20);
-        sectionScroll.setVisibility(open ? View.VISIBLE : View.GONE);
-        inspScroll.setVisibility(open ? View.VISIBLE : View.GONE);
     }
 
     private void setSheetState(int state, boolean animate) {
@@ -743,7 +837,7 @@ public class ThemeBuilderActivity extends BaseFragment {
         float avail = canvasArea.getHeight() - top - AndroidUtilities.dp(10);
         float phoneH = phone.getHeight();
         float a = 0, b = phoneH;
-        android.graphics.RectF sel = editMode && inspecting && !"global".equals(session.selected()) && !"screenBackground".equals(session.selected())
+        android.graphics.RectF sel = wide && editMode && inspecting && !"global".equals(session.selected()) && !"screenBackground".equals(session.selected())
                 ? preview.selectedBounds() : null;
         if (sel != null) {
             float pad = AndroidUtilities.dp(6);
@@ -814,14 +908,7 @@ public class ThemeBuilderActivity extends BaseFragment {
             liveItem.setText(tr("live") + (live ? "  \u2713" : ""));
             lookItem.setText(tr("look") + ": " + lookName());
         }
-        screensTab.setText("\u25A6\n" + tr("scene." + session.scene()) + " \u25BE");
-        for (int i = 0; i < chipSwatch.length; i++) {
-            android.graphics.drawable.GradientDrawable g = new android.graphics.drawable.GradientDrawable();
-            g.setShape(android.graphics.drawable.GradientDrawable.OVAL);
-            g.setColor(chipColor(i));
-            g.setStroke(AndroidUtilities.dp(1.5f), LINE);
-            chipSwatch[i].setBackground(g);
-        }
+        screensTab.setText("\u25A6   " + tr("scene." + session.scene()) + "  \u25BE");
         hint.setText(live ? tr("live.on") : tr("tapHint"));
         hint.setVisibility(editMode && !inspecting && !live ? View.VISIBLE : View.GONE);
         liveBtn.setVisibility(editMode ? View.GONE : View.VISIBLE);
@@ -888,6 +975,10 @@ public class ThemeBuilderActivity extends BaseFragment {
         final boolean quick = globalPanel || (wide && !inspecting);
         sheetTitle.setText(quick ? tr("globalColors") : session.catalog.componentLabel(sel, lang));
         sheetPlace.setText(quick ? tr("scene." + session.scene()) : placeOf(sel));
+        if (!wide) {
+            buildTiles(quick);
+            return;
+        }
         if (quick) {
             focusRow = null;
             sectionRow.removeAllViews();
@@ -999,10 +1090,11 @@ public class ThemeBuilderActivity extends BaseFragment {
         box.setOrientation(LinearLayout.VERTICAL);
         box.setPadding(AndroidUtilities.dp(18), AndroidUtilities.dp(12), AndroidUtilities.dp(12), AndroidUtilities.dp(12));
         box.setMinimumHeight(AndroidUtilities.dp(56));
-        list.addView(box, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+        LinearLayout into = rowTarget != null ? rowTarget : list;
+        into.addView(box, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
         View line = new View(context);
         line.setBackgroundColor(0xFFEEF0F3);
-        list.addView(line, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 1, 18, 0, 0, 0));
+        into.addView(line, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 1, 18, 0, 0, 0));
         return box;
     }
 

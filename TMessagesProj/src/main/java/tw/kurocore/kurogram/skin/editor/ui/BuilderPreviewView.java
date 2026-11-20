@@ -465,10 +465,8 @@ public class BuilderPreviewView extends View {
         canvas.drawText(title, dp(16), bh / 2f + dp(6), p);
         p.setFakeBoldText(false);
         p.setColor(fg);
-        p.setAlpha(150);
-        canvas.drawCircle(x.w - dp(28), bh / 2f, dp(8), p);
-        canvas.drawCircle(x.w - dp(60), bh / 2f, dp(8), p);
-        p.setAlpha(255);
+        icon(canvas, "more", x.w - dp(26), bh / 2f, dp(9), fg);
+        icon(canvas, "search", x.w - dp(60), bh / 2f, dp(9), fg);
         return bh;
     }
 
@@ -481,6 +479,76 @@ public class BuilderPreviewView extends View {
             return session.listOrDefault(path);
         }
         return Arrays.asList(def);
+    }
+
+    private final Paint ip = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+    /** Draws a line icon like the app's own (size s is the half width): chats, contacts, calls, settings, profile, search, more. */
+    private void icon(Canvas c, String id, float cx, float cy, float s, int color) {
+        ip.setStyle(Paint.Style.STROKE);
+        ip.setStrokeWidth(Math.max(dp(1.6f), s / 6.5f));
+        ip.setStrokeCap(Paint.Cap.ROUND);
+        ip.setStrokeJoin(Paint.Join.ROUND);
+        ip.setColor(color);
+        android.graphics.Path path = new android.graphics.Path();
+        switch (id) {
+            case "chats":
+                path.addOval(new RectF(cx - s, cy - s * 0.85f, cx + s, cy + s * 0.75f), android.graphics.Path.Direction.CW);
+                path.moveTo(cx - s * 0.55f, cy + s * 0.55f);
+                path.lineTo(cx - s * 0.9f, cy + s * 1.0f);
+                path.lineTo(cx - s * 0.1f, cy + s * 0.72f);
+                c.drawPath(path, ip);
+                c.drawLine(cx - s * 0.45f, cy - s * 0.2f, cx + s * 0.45f, cy - s * 0.2f, ip);
+                c.drawLine(cx - s * 0.45f, cy + s * 0.2f, cx + s * 0.15f, cy + s * 0.2f, ip);
+                break;
+            case "contacts":
+            case "people":
+                c.drawCircle(cx, cy, s, ip);
+                c.drawCircle(cx, cy - s * 0.22f, s * 0.32f, ip);
+                path.addArc(new RectF(cx - s * 0.62f, cy + s * 0.05f, cx + s * 0.62f, cy + s * 1.2f), 200, 140);
+                c.drawPath(path, ip);
+                break;
+            case "profile":
+                ip.setStyle(Paint.Style.FILL);
+                ip.setAlpha(60);
+                c.drawCircle(cx, cy, s, ip);
+                ip.setColor(color);
+                ip.setStyle(Paint.Style.STROKE);
+                c.drawCircle(cx, cy, s, ip);
+                c.drawCircle(cx, cy - s * 0.25f, s * 0.3f, ip);
+                path.addArc(new RectF(cx - s * 0.6f, cy + s * 0.05f, cx + s * 0.6f, cy + s * 1.15f), 210, 120);
+                c.drawPath(path, ip);
+                break;
+            case "calls":
+                path.addArc(new RectF(cx - s, cy - s, cx + s, cy + s), 120, 200);
+                path.moveTo(cx - s * 0.5f, cy + s * 0.87f);
+                path.lineTo(cx - s * 0.95f, cy + s * 0.35f);
+                c.drawPath(path, ip);
+                c.drawLine(cx + s * 0.1f, cy - s * 0.1f, cx + s * 0.6f, cy - s * 0.1f, ip);
+                break;
+            case "settings":
+                c.drawCircle(cx, cy, s * 0.36f, ip);
+                c.drawCircle(cx, cy, s * 0.8f, ip);
+                for (int i = 0; i < 8; i++) {
+                    double a = Math.PI / 4 * i;
+                    c.drawLine(cx + (float) Math.cos(a) * s * 0.8f, cy + (float) Math.sin(a) * s * 0.8f,
+                            cx + (float) Math.cos(a) * s * 1.05f, cy + (float) Math.sin(a) * s * 1.05f, ip);
+                }
+                break;
+            case "search":
+                c.drawCircle(cx - s * 0.15f, cy - s * 0.15f, s * 0.65f, ip);
+                c.drawLine(cx + s * 0.35f, cy + s * 0.35f, cx + s * 0.9f, cy + s * 0.9f, ip);
+                break;
+            case "more":
+                ip.setStyle(Paint.Style.FILL);
+                for (int i = -1; i <= 1; i++) {
+                    c.drawCircle(cx, cy + i * s * 0.6f, s * 0.13f + dp(0.8f), ip);
+                }
+                break;
+            default:
+                ip.setStyle(Paint.Style.FILL);
+                c.drawCircle(cx, cy, s * 0.8f, ip);
+        }
     }
 
     private void drawTabs(Canvas canvas, Ctx x, int tabsH) {
@@ -517,7 +585,7 @@ public class BuilderPreviewView extends View {
                 canvas.drawRoundRect(b, dp(14), dp(14), p);
             }
             p.setColor(i == 0 ? sel : unsel);
-            canvas.drawCircle(cx, ty + (labels ? dp(20) : tabsH / 2f), ic, p);
+            icon(canvas, tabs.get(i), cx, ty + (labels ? dp(20) : tabsH / 2f), ic * 1.1f, i == 0 ? sel : unsel);
             if (labels) {
                 p.setTextSize(dp(session.intValue("layout.bottomTabs.labelSizeSp", 10)));
                 String l = item(tabs.get(i));
@@ -530,10 +598,10 @@ public class BuilderPreviewView extends View {
     private void headerButtons(Canvas canvas, Ctx x, float barH, List<String> left, List<String> right) {
         p.setColor(x.icon);
         for (int i = 0; i < left.size(); i++) {
-            canvas.drawCircle(dp(20) + i * dp(34), barH / 2f, dp(7), p);
+            icon(canvas, left.get(i), dp(22) + i * dp(34), barH / 2f, dp(9), x.icon);
         }
         for (int i = 0; i < right.size(); i++) {
-            canvas.drawCircle(x.w - dp(20) - i * dp(34), barH / 2f, dp(7), p);
+            icon(canvas, right.get(i), x.w - dp(22) - i * dp(34), barH / 2f, dp(9), x.icon);
         }
     }
 

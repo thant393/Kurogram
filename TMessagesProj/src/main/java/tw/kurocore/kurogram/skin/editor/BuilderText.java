@@ -81,6 +81,9 @@ public final class BuilderText {
         t("screens.main", "Main screens");
         t("screens.fromSettings", "Opened from Settings");
         t("activities", "Activities");
+        t("preview", "Preview");
+        t("chip.colours", "Colours");
+        t("chipHelp", "Tap a colour to change it. The parts it changes light up.");
         t("chip.0", "Accent");
         t("chip.1", "Background");
         t("chip.2", "Cards");
@@ -126,7 +129,7 @@ public final class BuilderText {
         t("warn.suggest", "Use suggested colour");
         t("warn.line", "is hard to read on");
         t("structural", "Not editable");
-        t("tapHint", "Tap a colour below, or tap any part of the phone");
+        t("tapHint", "Tap a part of the phone, or pick it from the list on the left");
         t("previewHint", "Preview mode: nothing is selected");
         t("sheet.none", "Nothing to edit here in this mode.");
         t("beginner", "Beginner");
