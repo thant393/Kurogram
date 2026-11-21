@@ -63,7 +63,7 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
 
     /** Statuses expire silently (no update arrives when someone's "online" runs out), so re-check periodically. */
     private final Runnable refreshRunnable = () -> {
-        refreshList();
+        reloadOnline();
         scheduleRefresh();
     };
 
@@ -72,7 +72,7 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
         org.telegram.messenger.AndroidUtilities.runOnUIThread(refreshRunnable, 20000);
     }
 
-    private void refreshList() {
+    private void reloadOnline() {
         loadData();
         if (listAdapter != null) {
             listAdapter.notifyDataSetChanged();
@@ -83,7 +83,7 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
     @Override
     public void onResume() {
         super.onResume();
-        refreshList();
+        reloadOnline();
         scheduleRefresh();
     }
 
