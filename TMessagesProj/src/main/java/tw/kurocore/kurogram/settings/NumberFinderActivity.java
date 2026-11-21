@@ -247,7 +247,8 @@ public class NumberFinderActivity extends BaseFragment {
         resultContainer = new LinearLayout(context);
         resultContainer.setOrientation(LinearLayout.VERTICAL);
         resultContainer.setGravity(Gravity.CENTER_HORIZONTAL);
-        resultContainer.setPadding(AndroidUtilities.dp(24), AndroidUtilities.dp(32), AndroidUtilities.dp(24), AndroidUtilities.dp(24));
+        resultContainer.setPadding(AndroidUtilities.dp(24), AndroidUtilities.dp(24), AndroidUtilities.dp(24), AndroidUtilities.dp(24));
+        resultContainer.setBackground(GroupCardHelper.cardBackground(context, GroupCardHelper.POS_SINGLE));
         resultContainer.setVisibility(View.GONE);
 
         avatarImageView = new BackupImageView(context);
@@ -269,11 +270,12 @@ public class NumberFinderActivity extends BaseFragment {
         resultContainer.addView(usernameTextView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL));
 
         openChatButton = new FrameLayout(context);
-        openChatButton.setBackground(Theme.createSimpleSelectorRoundRectDrawable(AndroidUtilities.dp(4), Theme.getColor(Theme.key_featuredStickers_addButton), Theme.getColor(Theme.key_featuredStickers_addButtonPressed)));
+        openChatButton.setBackground(Theme.createSimpleSelectorRoundRectDrawable(AndroidUtilities.dp(8), Theme.getColor(Theme.key_featuredStickers_addButton), Theme.getColor(Theme.key_featuredStickers_addButtonPressed)));
         TextView openChatText = new TextView(context);
         openChatText.setText("Open Chat");
         openChatText.setTextColor(0xffffffff);
-        openChatText.setTextSize(14);
+        openChatText.setTextSize(15);
+        openChatText.setTypeface(AndroidUtilities.bold());
         openChatText.setGravity(Gravity.CENTER);
         openChatButton.addView(openChatText, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         openChatButton.setOnClickListener(v -> {
@@ -283,7 +285,7 @@ public class NumberFinderActivity extends BaseFragment {
                 presentFragment(new ChatActivity(args));
             }
         });
-        LinearLayout.LayoutParams btnParams = LayoutHelper.createLinear(160, 40, Gravity.CENTER_HORIZONTAL);
+        LinearLayout.LayoutParams btnParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 48);
         btnParams.topMargin = AndroidUtilities.dp(16);
         resultContainer.addView(openChatButton, btnParams);
 
@@ -295,7 +297,9 @@ public class NumberFinderActivity extends BaseFragment {
         statusTextView.setVisibility(View.GONE);
         rootLayout.addView(statusTextView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
 
-        rootLayout.addView(resultContainer, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+        LinearLayout.LayoutParams resultParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT);
+        resultParams.setMargins(AndroidUtilities.dp(16), AndroidUtilities.dp(24), AndroidUtilities.dp(16), 0);
+        rootLayout.addView(resultContainer, resultParams);
 
         return fragmentView;
     }
