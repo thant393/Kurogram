@@ -6012,6 +6012,28 @@
     "en"
    ],
    "note": "set automatically by the Builder; never shown as a control"
+  },
+  {
+   "path": "screens.settings.iconPack",
+   "group": "screen.settings",
+   "level": "advanced",
+   "phase": 3,
+   "built": true,
+   "screens": [
+    "settings"
+   ],
+   "targets": [
+    "settingsRow"
+   ],
+   "label": {
+    "en": "Icon pack"
+   },
+   "description": {
+    "en": ""
+   },
+   "reviewed": [
+    "en"
+   ]
   }
  ],
  "items": {

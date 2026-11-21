@@ -2,7 +2,7 @@
  "counts": {
   "EDITABLE_PREVIEWED": 197,
   "ENGINE_UNSUPPORTED": 11,
-  "EDITABLE_REAL_ONLY": 17
+  "EDITABLE_REAL_ONLY": 18
  },
  "rules": [
   {
@@ -883,6 +883,16 @@
    "group": "structure",
    "level": "advanced",
    "phase": 1,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.settings.iconPack",
+   "kind": "enum:default,outline,solid",
+   "section": "skinMinor1",
+   "status": "EDITABLE_REAL_ONLY",
+   "group": "screen.settings",
+   "level": "advanced",
+   "phase": 3,
    "wiring": "unverified"
   },
   {

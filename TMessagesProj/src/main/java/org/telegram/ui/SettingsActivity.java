@@ -1488,7 +1488,19 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
             subtitleView.setTranslationX(icon == 0 ? dp(2) : 0);
 
             iconBackground.setColor(iconColorTop, iconColorBottom);
-            iconView.setImageResource(icon);
+            android.graphics.drawable.Drawable packIcon = null;
+            String pack = tw.kurocore.kurogram.skin.KuroUi.t().settingsIconPack;
+            if (icon != 0 && tw.kurocore.kurogram.skin.KuroIcons.isPack(pack)) {
+                try {
+                    packIcon = tw.kurocore.kurogram.skin.KuroIcons.forResource(getContext().getResources().getResourceEntryName(icon), "solid".equals(pack));
+                } catch (Throwable ignore) {
+                }
+            }
+            if (packIcon != null) {
+                iconView.setImageDrawable(packIcon);
+            } else {
+                iconView.setImageResource(icon);
+            }
             titleView.setText(title);
             subtitleView.setVisibility((twoLines = !TextUtils.isEmpty(subtitle)) && !grid ? View.VISIBLE : View.GONE);
             subtitleView.setText(subtitle);

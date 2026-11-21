@@ -55,6 +55,7 @@ public final class SkinTokens {
     public final int chatWallpaperColor, chatWallpaperColor2, chatWallpaperAngle;
     public final int chatHeaderRadiusDp, chatInputRadiusDp, chatPanelRadiusDp, chatButtonRadiusDp, chatDateRadiusDp, chatMenuRadiusDp, chatReactionRadiusDp, chatsTabsRadiusDp, profileAvatarRadiusDp, profileAvatarSizeDp;
     public final boolean profilePhotoCard; // screens.profile.photoStyle == "card"
+    public final String settingsIconPack; // screens.settings.iconPack: default | outline | solid
     public final boolean profileActionsRow; // screens.profile.actionsStyle == "row"
     /** Theme Store: screens.themeStore.previewAspect (-1 not set, 0 square, 1 portrait, 2 tall), cardRadiusDp / cardGapDp / titleSizeSp (-1 = not set). */
     /** screens.profile.cardRadiusDp when the skin sets it, else -1 (ProfileActivity then keeps Telegram's own card radius). */
@@ -184,6 +185,7 @@ public final class SkinTokens {
         chatsTabsRadiusDp = s.intValue("screens.chats.tabsRadiusDp", -1);
         profileAvatarSizeDp = s.intValue("screens.profile.avatarSizeDp", -1);
         profilePhotoCard = "card".equals(s.stringValue("screens.profile.photoStyle", "avatar"));
+        settingsIconPack = s.stringValue("screens.settings.iconPack", "default");
         profileActionsRow = "row".equals(s.stringValue("screens.profile.actionsStyle", "buttons"));
         profileAvatarRadiusDp = s.intValue("screens.profile.avatarRadiusDp", -1);
         cellPaddingStartDp = s.intValue("components.cell.paddingStartDp", -1);

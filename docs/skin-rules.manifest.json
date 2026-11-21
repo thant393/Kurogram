@@ -91,6 +91,7 @@
  ],
  "skinMinor1": [
   "schemaMinor|int:0:99",
+  "screens.settings.iconPack|enum:default,outline,solid",
   "components.cell.heightDp|int:40:80",
   "components.cell.twoLineHeightDp|int:56:96",
   "components.cell.paddingStartDp|int:8:32",
@@ -241,6 +242,7 @@
   "chat.input.trailing"
  ],
  "implementedMinor1": [
+  "screens.settings.iconPack",
   "components.cell.heightDp",
   "components.cell.twoLineHeightDp",
   "components.cell.titleSizeSp",

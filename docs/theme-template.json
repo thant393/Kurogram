@@ -115,6 +115,7 @@
       "background": "#FFFFFF",
       "groupStyle": "flat",
       "iconStyle": "rounded",
+      "iconPack": "default",
       "showDescriptions": true
     },
     "themeStore": {

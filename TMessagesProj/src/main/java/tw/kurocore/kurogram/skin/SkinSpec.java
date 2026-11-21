@@ -300,7 +300,7 @@ public final class SkinSpec {
      * Phase 1 only recognises and validates them: no screen reads them yet, so they change nothing on screen.
      */
     private static final String[] RULES_V2_MINOR1 = {
-            "schemaMinor|int:0:99",
+            "schemaMinor|int:0:99", "screens.settings.iconPack|enum:default,outline,solid",
             "components.cell.heightDp|int:40:80", "components.cell.twoLineHeightDp|int:56:96", "components.cell.paddingStartDp|int:8:32",
             "components.cell.titleSizeSp|int:12:22", "components.cell.valueSizeSp|int:11:18",
             "components.cell.titleWeight|enum:regular,medium,bold", "components.cell.iconSizeDp|int:16:32",
@@ -349,6 +349,7 @@ public final class SkinSpec {
      * IMPLEMENTED_MINOR1 in the backend and to the manifest.
      */
     private static final String[] IMPLEMENTED_MINOR1 = {
+            "screens.settings.iconPack",
             "components.cell.heightDp", "components.cell.twoLineHeightDp", "components.cell.titleSizeSp", "components.cell.valueSizeSp", "components.cell.titleWeight",
             "components.cell.dividerVisible", "components.cell.dividerInsetDp", "components.cell.dividerColor",
             "components.section.headerSizeSp", "components.section.headerWeight", "components.section.headerColor", "components.section.infoSizeSp",
