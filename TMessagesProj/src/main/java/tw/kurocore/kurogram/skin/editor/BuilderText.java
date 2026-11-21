@@ -57,7 +57,7 @@ public final class BuilderText {
         t("reset", "Reset");
         t("done", "Done");
         t("cancel", "Cancel");
-        t("next", "Next");
+        t("next", "Publish");
         t("use", "Use on this phone");
         t("useConfirm", "Apply this theme to Kurogram on this phone now?");
         t("invalid", "The theme is not valid yet: ");

@@ -349,11 +349,15 @@ public class ThemeBuilderActivity extends BaseFragment {
         viewBtn = pillButton(context, "\u25B6", tr("mode.preview"), v -> setEditMode(false));
         View divider = new View(context);
         divider.setBackgroundColor(LINE);
-        pill.addView(dayBtn, LayoutHelper.createLinear(38, 36));
-        pill.addView(divider, LayoutHelper.createLinear(1, 20, 4, 0, 4, 0));
-        pill.addView(editBtn, LayoutHelper.createLinear(38, 36));
-        pill.addView(viewBtn, LayoutHelper.createLinear(38, 36));
-        root.addView(pill, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP | Gravity.END, 0, 8, 12 + (wide ? PANEL_DP : 0), 0));
+        // the Day/Night switch lives in the bottom bar; only the way back from Preview floats over the canvas
+        editBtn.setText("\u270E  " + tr("mode.edit"));
+        editBtn.setTextSize(14);
+        editBtn.setTypeface(AndroidUtilities.bold());
+        editBtn.setTextColor(0xFFFFFFFF);
+        editBtn.setBackground(shape(BLUE, 19, 0));
+        editBtn.setElevation(AndroidUtilities.dp(4));
+        editBtn.setPadding(AndroidUtilities.dp(16), 0, AndroidUtilities.dp(16), 0);
+        root.addView(editBtn, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, 38, Gravity.TOP | Gravity.END, 0, 8, 12 + (wide ? PANEL_DP : 0), 0));
 
         // a small badge instead of a banner: it opens the details only when tapped
         warnChip = new TextView(context);
@@ -419,10 +423,12 @@ public class ThemeBuilderActivity extends BaseFragment {
         screensTab.setTextColor(INK);
         screensTab.setGravity(Gravity.CENTER_VERTICAL);
         screensTab.setSingleLine(true);
-        screensTab.setPadding(AndroidUtilities.dp(16), 0, AndroidUtilities.dp(12), 0);
+        screensTab.setPadding(AndroidUtilities.dp(12), 0, AndroidUtilities.dp(8), 0);
         screensTab.setBackground(shape(0xFFF3F4F6, 22, 0));
         screensTab.setOnClickListener(v -> screensDialog());
         idleBar.addView(screensTab, LayoutHelper.createLinear(0, 44, 1f, 4, 0, 8, 0));
+        dayBtn.setTextSize(18);
+        idleBar.addView(dayBtn, LayoutHelper.createLinear(44, 44, 0, 0, 8, 0));
         TextView colours = new TextView(context);
         colours.setText("\uD83C\uDFA8  " + tr("chip.colours"));
         colours.setTextSize(14);
@@ -889,15 +895,11 @@ public class ThemeBuilderActivity extends BaseFragment {
         actionBar.setSubtitle(tr(editing != null ? "draft.published" : "draft.saved") + (session.onBase() ? "" : "  \u00B7  " + lookName()));
         dayBtn.setText(session.night() ? "\uD83C\uDF19" : "\u2600");
         dayBtn.setContentDescription(tr(session.night() ? "variant.night" : "variant.day"));
-        dayBtn.setBackground(shape(session.night() ? 0xFF1F2328 : 0xFFFFFFFF, 18, 0));
+        dayBtn.setBackground(shape(session.night() ? 0xFF1F2328 : 0xFFF3F4F6, 22, 0));
         dayBtn.setTextColor(session.night() ? 0xFFFFFFFF : INK);
         undoItem.setAlpha(session.active().canUndo() ? 1f : 0.35f);
         redoItem.setAlpha(session.active().canRedo() ? 1f : 0.35f);
-        for (TextView b : new TextView[]{editBtn, viewBtn}) {
-            boolean on = (b == editBtn) == editMode;
-            b.setTextColor(on ? 0xFFFFFFFF : SOFT);
-            b.setBackground(on ? shape(BLUE, 18, 0) : null);
-        }
+        editBtn.setVisibility(editMode ? View.GONE : View.VISIBLE);
         int issues = session.readability().size();
         warnChip.setVisibility(issues > 0 && editMode ? View.VISIBLE : View.GONE);
         warnChip.setText("\u26A0 " + issues);
