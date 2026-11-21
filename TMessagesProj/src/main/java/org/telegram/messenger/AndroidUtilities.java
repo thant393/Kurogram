@@ -6682,7 +6682,9 @@ public class AndroidUtilities {
             PackageInfo pInfo = ApplicationLoader.applicationContext.getPackageManager().getPackageInfo(ApplicationLoader.applicationContext.getPackageName(), 0);
             int code = pInfo.versionCode / 10;
             String abi = BuildConfig.BUILD_TYPE + " " + Build.SUPPORTED_ABIS[0];
-            return formatString(R.string.KurogramVersion, String.format(Locale.US, "v%s (%d) %s", pInfo.versionName, code, abi), String.format(Locale.US, "v%s (%d)", BuildVars.BUILD_VERSION_STRING, BuildConfig.BUILD_VERSION), "@Duang");
+            String full = formatString(R.string.KurogramVersion, String.format(Locale.US, "v%s (%d) %s", pInfo.versionName, code, abi), String.format(Locale.US, "v%s (%d)", BuildVars.BUILD_VERSION_STRING, BuildConfig.BUILD_VERSION), "");
+            int cut = full.lastIndexOf('\n'); // the last line is the "designed by" credit: not shown
+            return cut > 0 ? full.substring(0, cut).trim() : full;
         } catch (Exception e) {
             FileLog.e(e);
         }
