@@ -52,6 +52,7 @@ public class BuilderPreviewView extends View {
     private boolean moved;
     private Runnable navigated;
     private boolean drawingThumb;
+    private boolean skipPins; // while a scrolling list is drawn, the parts that stay put are left out and drawn once, on top
 
     public BuilderPreviewView(Context context, EditorSession session) {
         super(context);
@@ -269,6 +270,7 @@ public class BuilderPreviewView extends View {
         canvas.save();
         canvas.clipRect(0, 0, vw, vh);
         canvas.translate(0, -scrollY);
+        skipPins = true;
         drawScene(canvas, ch);
         canvas.restore();
         List<Hit> mainHits = new ArrayList<>(hits);
@@ -280,6 +282,8 @@ public class BuilderPreviewView extends View {
         }
         // the parts that never scroll in the real app (floating bar, buttons) are always drawn at the bottom of the view
         List<Pin> pins = pins(vw, ch);
+        skipPins = false;
+        List<Hit> pinHits = new ArrayList<>();
         if (!pins.isEmpty()) {
             canvas.save();
             canvas.translate(0, -(ch - vh));
@@ -290,9 +294,18 @@ public class BuilderPreviewView extends View {
             canvas.clipPath(clip);
             drawScene(canvas, ch);
             canvas.restore();
+            for (Hit h : hits) {
+                for (Pin pin : pins) {
+                    if (pin.r.contains(h.r.centerX(), h.r.centerY())) {
+                        pinHits.add(h);
+                        break;
+                    }
+                }
+            }
         }
         hits.clear();
         hits.addAll(mainHits);
+        hits.addAll(pinHits);
     }
 
     private static final class Pin {
@@ -655,6 +668,9 @@ public class BuilderPreviewView extends View {
     }
 
     private void drawTabs(Canvas canvas, Ctx x, String active) {
+        if (skipPins) {
+            return;
+        }
         RectF bar = tabBar(x.w, x.h);
         boolean glass = "glass".equals(session.text("layout.bottomTabs.style", "flat"));
         int fill = session.colorChain(x.surface, "components.navigationBar.background", "components.bottomNavigation.background");
@@ -708,6 +724,9 @@ public class BuilderPreviewView extends View {
     }
 
     private void fab(Canvas canvas, Ctx x, boolean camera) {
+        if (skipPins) {
+            return;
+        }
         float fs = dp(session.intValue("components.fab.sizeDp", 52));
         float fx = x.w - dp(16) - fs, fy = x.h - dp(72) - dp(16) - fs;
         if (camera) {
@@ -1446,6 +1465,7 @@ public class BuilderPreviewView extends View {
         String ph = "Publish photos and videos to display on your page";
         canvas.drawText(ph, x.w / 2f - p.measureText(ph) / 2f, y + dp(22), p);
         // Add a post button, just above the floating bar
+        if (!skipPins) {
         RectF ab = new RectF(x.w / 2f - dp(80), x.h - dp(72) - dp(16) - dp(44), x.w / 2f + dp(80), x.h - dp(72) - dp(16));
         p.setColor(x.accent);
         canvas.drawRoundRect(ab, dp(22), dp(22), p);
@@ -1456,6 +1476,7 @@ public class BuilderPreviewView extends View {
         p.setTextSize(dp(14));
         canvas.drawText("Add a post", ab.left + dp(50), ab.centerY() + dp(5), p);
         p.setFakeBoldText(false);
+        }
         drawTabs(canvas, x, "profile");
     }
 
