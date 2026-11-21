@@ -178,6 +178,24 @@ public class NumberFinderActivity extends BaseFragment {
                     ignoreChange = false;
                 }
                 detectCountry(digits);
+                // Once the code is complete (no longer code could start with it), stop
+                // here: keep the code, push any extra digits to the number box and move on.
+                String done = completeCodePrefix(digits);
+                if (done != null) {
+                    String rest = digits.substring(done.length());
+                    if (!done.equals(s.toString())) {
+                        ignoreChange = true;
+                        s.replace(0, s.length(), done);
+                        ignoreChange = false;
+                        detectCountry(done);
+                    }
+                    phoneInput.requestFocus();
+                    phoneInput.setSelection(phoneInput.length());
+                    if (!rest.isEmpty()) {
+                        phoneInput.setText(rest + phoneInput.getText());
+                        phoneInput.setSelection(phoneInput.length());
+                    }
+                }
             }
         });
         phoneRow.addView(codeInput, LayoutHelper.createLinear(44, LayoutHelper.WRAP_CONTENT));
@@ -334,6 +352,29 @@ public class NumberFinderActivity extends BaseFragment {
             match = list.contains(currentCountry) ? currentCountry : list.get(0);
         }
         setCountryLabel(match);
+    }
+
+    /** Shortest leading part of {@code digits} that is a real country code and that no
+     *  longer code extends (so "95" completes at once, but "1" waits for e.g. "1242"
+     *  until a 4th digit or a non-matching digit settles it). Null while still open. */
+    private String completeCodePrefix(String digits) {
+        for (int n = 1; n <= Math.min(4, digits.length()); n++) {
+            String p = digits.substring(0, n);
+            if (!codesMap.containsKey(p)) {
+                continue;
+            }
+            boolean extendable = false;
+            for (String k : codesMap.keySet()) {
+                if (k.length() > n && k.startsWith(p) && (digits.length() == n || k.startsWith(digits.substring(0, Math.min(k.length(), digits.length()))))) {
+                    extendable = true;
+                    break;
+                }
+            }
+            if (!extendable) {
+                return p;
+            }
+        }
+        return null;
     }
 
     private void selectCountry(CountrySelectActivity.Country country) {

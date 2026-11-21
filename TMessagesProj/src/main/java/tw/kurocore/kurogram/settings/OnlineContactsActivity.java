@@ -57,11 +57,39 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
         getNotificationCenter().addObserver(this, NotificationCenter.updateInterfaces);
         getNotificationCenter().addObserver(this, NotificationCenter.contactsDidLoad);
         loadData();
+        scheduleRefresh();
         return super.onFragmentCreate();
+    }
+
+    /** Statuses expire silently (no update arrives when someone's "online" runs out), so re-check periodically. */
+    private final Runnable refreshRunnable = () -> {
+        refreshList();
+        scheduleRefresh();
+    };
+
+    private void scheduleRefresh() {
+        org.telegram.messenger.AndroidUtilities.cancelRunOnUIThread(refreshRunnable);
+        org.telegram.messenger.AndroidUtilities.runOnUIThread(refreshRunnable, 20000);
+    }
+
+    private void refreshList() {
+        loadData();
+        if (listAdapter != null) {
+            listAdapter.notifyDataSetChanged();
+        }
+        updateEmptyView();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        refreshList();
+        scheduleRefresh();
     }
 
     @Override
     public void onFragmentDestroy() {
+        org.telegram.messenger.AndroidUtilities.cancelRunOnUIThread(refreshRunnable);
         getNotificationCenter().removeObserver(this, NotificationCenter.updateInterfaces);
         getNotificationCenter().removeObserver(this, NotificationCenter.contactsDidLoad);
         super.onFragmentDestroy();
@@ -141,7 +169,8 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
             return false;
         }
         if (user.status instanceof TLRPC.TL_userStatusOnline) {
-            return user.status.expires > ConnectionsManager.getInstance(currentAccount).getCurrentTime();
+            // expires == 0 can occur on freshly parsed/partial status objects; treat as online like Telegram's own lists do
+            return user.status.expires == 0 || user.status.expires > ConnectionsManager.getInstance(currentAccount).getCurrentTime();
         }
         return false;
     }
@@ -245,7 +274,7 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
             }
             updateEmptyView();
         } else if (id == NotificationCenter.updateInterfaces) {
-            int mask = (Integer) args[0];
+            int mask = args.length > 0 && args[0] instanceof Integer ? (Integer) args[0] : 0;
             if ((mask & MessagesController.UPDATE_MASK_STATUS) != 0) {
                 loadData();
                 if (listAdapter != null) {

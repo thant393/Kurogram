@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.telegram.messenger.ApplicationLoader;
+import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ContactsController;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MessagesController;
@@ -130,7 +131,7 @@ public class SpecialContactsActivity extends BaseFragment implements ManageChatU
         listView.setAdapter(listAdapter);
         frameLayout.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
-        listView.setOnItemClickListener((view, position) -> {
+        listView.setOnItemClickListener((view, position, x, y) -> {
             int type = items.get(position);
             if (type == TYPE_ENABLE) {
                 boolean newVal = !isFeatureEnabled();
@@ -149,7 +150,17 @@ public class SpecialContactsActivity extends BaseFragment implements ManageChatU
             } else if (type == TYPE_CONTACT) {
                 int contactIndex = getContactIndexForPosition(position);
                 if (contactIndex >= 0) {
-                    presentFragment(new SpecialContactActionsActivity(contactIds.get(contactIndex)));
+                    long uid = contactIds.get(contactIndex);
+                    // Avatar or name line (not the status line / options button) opens the DM;
+                    // the rest of the row still opens the actions list.
+                    boolean onProfile = x < AndroidUtilities.dp(62) || (y < AndroidUtilities.dp(33) && x < view.getWidth() - AndroidUtilities.dp(52));
+                    if (onProfile) {
+                        android.os.Bundle chatArgs = new android.os.Bundle();
+                        chatArgs.putLong("user_id", uid);
+                        presentFragment(new org.telegram.ui.ChatActivity(chatArgs));
+                    } else {
+                        presentFragment(new SpecialContactActionsActivity(uid));
+                    }
                 }
             }
         });
