@@ -2,15 +2,24 @@ package tw.kurocore.kurogram.skin.editor.ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.widget.FrameLayout;
 
+import org.telegram.messenger.UserConfig;
 import org.telegram.ui.ActionBar.ActionBarLayout;
 import org.telegram.ui.ActionBar.BaseFragment;
+import org.telegram.ui.ChatActivity;
 import org.telegram.ui.ContactsActivity;
+import org.telegram.ui.DataSettingsActivity;
 import org.telegram.ui.DialogsActivity;
+import org.telegram.ui.NotificationsSettingsActivity;
+import org.telegram.ui.PrivacySettingsActivity;
+import org.telegram.ui.ProfileActivity;
 import org.telegram.ui.SettingsActivity;
+import tw.kurocore.kurogram.settings.KuroThemeActivity;
+import tw.kurocore.kurogram.settings.OnlineContactsActivity;
 
 import java.util.ArrayList;
 
@@ -25,9 +34,57 @@ final class RealScreenHost extends FrameLayout {
     private float downX, downY;
     private boolean moved;
 
-    /** The scenes that have a real screen to show. */
+    /** The scenes that have a real screen to show (the rest, e.g. Components, stay drawn). */
     static boolean supports(String scene) {
-        return "chats".equals(scene) || "settings".equals(scene) || "contacts".equals(scene);
+        switch (scene) {
+            case "chats":
+            case "chat":
+            case "settings":
+            case "drawer":
+            case "people":
+            case "contacts":
+            case "profile":
+            case "themeStore":
+            case "rows.privacy":
+            case "rows.notifications":
+            case "rows.dataStorage":
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private static BaseFragment create(String scene) {
+        // The account's own "Saved Messages" / profile: nothing here sends or changes anything (taps are blocked).
+        long self = UserConfig.getInstance(UserConfig.selectedAccount).getClientUserId();
+        Bundle b = new Bundle();
+        switch (scene) {
+            case "settings":
+                return new SettingsActivity();
+            case "drawer":
+                b.putBoolean("kuroDrawer", true);
+                return new SettingsActivity(b);
+            case "contacts":
+                return new ContactsActivity(null);
+            case "people":
+                return new OnlineContactsActivity(b);
+            case "chat":
+                b.putLong("user_id", self);
+                return new ChatActivity(b);
+            case "profile":
+                b.putLong("user_id", self);
+                return new ProfileActivity(b);
+            case "themeStore":
+                return new KuroThemeActivity();
+            case "rows.privacy":
+                return new PrivacySettingsActivity();
+            case "rows.notifications":
+                return new NotificationsSettingsActivity();
+            case "rows.dataStorage":
+                return new DataSettingsActivity();
+            default:
+                return new DialogsActivity(null);
+        }
     }
 
     RealScreenHost(Context context, String scene) {
@@ -36,18 +93,7 @@ final class RealScreenHost extends FrameLayout {
         layout = new ActionBarLayout((Activity) context, false);
         layout.setFragmentStack(new ArrayList<>());
         addView(layout, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-        BaseFragment f;
-        switch (scene) {
-            case "settings":
-                f = new SettingsActivity();
-                break;
-            case "contacts":
-                f = new ContactsActivity(null);
-                break;
-            default:
-                f = new DialogsActivity(null);
-        }
-        layout.presentFragment(f);
+        layout.presentFragment(create(scene));
         layout.onResume();
     }
 

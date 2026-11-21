@@ -827,6 +827,8 @@ public class ThemeBuilderActivity extends BaseFragment {
         if (!edit) {
             sheetState = Math.min(sheetState, 1);
         }
+        // Preview = the real app wearing this theme (view-only); Edit goes back to the drawn editor.
+        setLive(!edit);
         applySheet(false);
         refreshToolbar();
     }

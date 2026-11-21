@@ -1095,6 +1095,32 @@ public class BuilderPreviewView extends View {
     }
 
     /** One rounded card of settings rows (coloured icon, title, optional second line). Returns where it ends. */
+    /** Settings row title -> the drawable name KuroIcons draws (null = no glyph in the preview). */
+    private static String settingsIconEntry(String title) {
+        switch (title) {
+            case "Kuro Theme": return "kuro_theme";
+            case "Kuro Settings": return "filled_profile_settings";
+            case "Number Finder": return "kuro_user_finder";
+            case "Special Contacts": return "kuro_special_contacts";
+            case "Online Contacts": return "kuro_online_contacts";
+            case "Contact Changes": return "kuro_contact_changes";
+            case "Account": return "settings_account";
+            case "Chat Settings": return "settings_chat";
+            case "Privacy & Security": return "settings_privacy";
+            case "Notifications": return "settings_sounds";
+            case "Data and Storage": return "settings_data";
+            case "Chat Folders": return "settings_folders";
+            case "Devices": return "settings_devices";
+            case "Power Saving": return "settings_power";
+            case "Language": return "settings_language";
+            case "Ask a Question": return "settings_ask";
+            case "Telegram FAQ": return "settings_faq";
+            case "Telegram Features": return "settings_features";
+            case "Privacy Policy": return "settings_policy";
+            default: return null;
+        }
+    }
+
     private float settingsCard(Canvas canvas, Ctx x, float y0, float side, int rowH0, String gs, boolean card, String[] titles, String[] subs, String[] values, String header, int colourOffset) {
         int title = session.intValue("components.cell.titleSizeSp", 15), val = session.intValue("components.cell.valueSizeSp", 12);
         boolean tb = bold("components.cell.titleWeight", false);
@@ -1136,6 +1162,17 @@ public class BuilderPreviewView extends View {
                 canvas.drawCircle(ib.centerX(), cy, ic * 1.2f, p);
             } else {
                 canvas.drawRoundRect(ib, ic * 0.7f, ic * 0.7f, p);
+            }
+            String entry = settingsIconEntry(titles[i]);
+            if (entry != null) {
+                String pack = session.text("screens.settings.iconPack", "default");
+                android.graphics.drawable.Drawable g = tw.kurocore.kurogram.skin.KuroIcons.forResource(entry, !"outline".equals(pack));
+                if (g != null) {
+                    int gi = (int) (ic * 0.95f);
+                    g.setBounds((int) ib.centerX() - gi, (int) cy - gi, (int) ib.centerX() + gi, (int) cy + gi);
+                    g.setColorFilter(new android.graphics.PorterDuffColorFilter(0xFFFFFFFF, android.graphics.PorterDuff.Mode.SRC_IN));
+                    g.draw(canvas);
+                }
             }
             float tx = side + padL + 2.5f * ic + dp(14);
             p.setColor(x.text);
