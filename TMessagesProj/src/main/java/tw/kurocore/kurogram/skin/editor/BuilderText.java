@@ -26,7 +26,17 @@ public final class BuilderText {
         t("scene.rows.privacy", "Privacy & Security");
         t("scene.rows.notifications", "Notifications");
         t("scene.rows.dataStorage", "Data and Storage");
-        t("scene.rows.profile", "Edit Profile");
+        t("scene.rows.profile", "Account");
+        t("scene.kuroSettings", "Kurogram Settings");
+        t("scene.numberFinder", "Number Finder");
+        t("scene.specialContacts", "Special Contacts");
+        t("scene.onlineContacts", "Online Contacts");
+        t("scene.contactChanges", "Contacts Changes");
+        t("scene.chatSettings", "Chat Settings");
+        t("scene.folders", "Chat Folders");
+        t("scene.devices", "Devices");
+        t("scene.powerSaving", "Power Saving");
+        t("scene.language", "Language");
         t("contrast.title", "Readability");
         t("contrast.ok", "Text and background colours are easy to read.");
         t("contrast.low", "Hard to read");
@@ -153,7 +163,8 @@ public final class BuilderText {
 
     /** Every screen the preview can show, in the order of the picker. */
     public static final String[] SCENES = {"chats", "chat", "settings", "controls", "drawer", "people", "contacts", "profile",
-            "themeStore", "rows.privacy", "rows.notifications", "rows.dataStorage", "rows.profile"};
+            "themeStore", "kuroSettings", "numberFinder", "specialContacts", "onlineContacts", "contactChanges", "rows.profile", "chatSettings",
+            "rows.privacy", "rows.notifications", "rows.dataStorage", "folders", "devices", "powerSaving", "language"};
 
     private BuilderText() {
     }

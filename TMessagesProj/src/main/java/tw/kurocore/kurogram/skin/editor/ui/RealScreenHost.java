@@ -18,7 +18,16 @@ import org.telegram.ui.NotificationsSettingsActivity;
 import org.telegram.ui.PrivacySettingsActivity;
 import org.telegram.ui.ProfileActivity;
 import org.telegram.ui.SettingsActivity;
+import org.telegram.ui.FiltersSetupActivity;
+import org.telegram.ui.LanguageSelectActivity;
+import org.telegram.ui.LiteModeSettingsActivity;
+import org.telegram.ui.SessionsActivity;
+import org.telegram.ui.ThemeActivity;
+import tw.kurocore.kurogram.settings.ContactChangesActivity;
+import tw.kurocore.kurogram.settings.KuroSettingsActivity;
 import tw.kurocore.kurogram.settings.KuroThemeActivity;
+import tw.kurocore.kurogram.settings.NumberFinderActivity;
+import tw.kurocore.kurogram.settings.SpecialContactsActivity;
 import tw.kurocore.kurogram.settings.OnlineContactsActivity;
 
 import java.util.ArrayList;
@@ -48,6 +57,16 @@ final class RealScreenHost extends FrameLayout {
             case "rows.privacy":
             case "rows.notifications":
             case "rows.dataStorage":
+            case "kuroSettings":
+            case "numberFinder":
+            case "specialContacts":
+            case "onlineContacts":
+            case "contactChanges":
+            case "chatSettings":
+            case "folders":
+            case "devices":
+            case "powerSaving":
+            case "language":
                 return true;
             default:
                 return false;
@@ -82,6 +101,26 @@ final class RealScreenHost extends FrameLayout {
                 return new NotificationsSettingsActivity();
             case "rows.dataStorage":
                 return new DataSettingsActivity();
+            case "kuroSettings":
+                return new KuroSettingsActivity();
+            case "numberFinder":
+                return new NumberFinderActivity();
+            case "specialContacts":
+                return new SpecialContactsActivity();
+            case "onlineContacts":
+                return new OnlineContactsActivity(b);
+            case "contactChanges":
+                return new ContactChangesActivity();
+            case "chatSettings":
+                return new ThemeActivity(ThemeActivity.THEME_TYPE_BASIC);
+            case "folders":
+                return new FiltersSetupActivity();
+            case "devices":
+                return new SessionsActivity(0);
+            case "powerSaving":
+                return new LiteModeSettingsActivity();
+            case "language":
+                return new LanguageSelectActivity();
             default:
                 return new DialogsActivity(null);
         }

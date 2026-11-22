@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import tw.kurocore.kurogram.skin.editor.EditorSession;
+import tw.kurocore.kurogram.skin.editor.PreviewScreens;
 
 /**
  * Preview A: a simulated phone screen drawn from the draft. Every part registers a hit region, so tapping a part selects the
@@ -454,20 +455,12 @@ public class BuilderPreviewView extends View {
             case "themeStore":
                 drawThemeStore(canvas, x);
                 break;
-            case "rows.privacy":
-                drawRows(canvas, x, "privacy", "Privacy");
-                break;
-            case "rows.notifications":
-                drawRows(canvas, x, "notifications", "Notifications");
-                break;
-            case "rows.dataStorage":
-                drawRows(canvas, x, "dataStorage", "Data and storage");
-                break;
-            case "rows.profile":
-                drawRows(canvas, x, "profile", "Profile");
-                break;
             default:
-                drawChats(canvas, x);
+                if (PreviewScreens.has(session.scene())) {
+                    drawNative(canvas, x, session.scene());
+                } else {
+                    drawChats(canvas, x);
+                }
         }
 
         if (editMode && highlight != null) {
@@ -654,6 +647,17 @@ public class BuilderPreviewView extends View {
                 c.drawPath(path, ip);
                 c.drawLine(cx + s * 0.55f, cy - s * 0.1f, cx + s * 1.0f, cy - s * 0.1f, ip);
                 c.drawLine(cx + s * 0.78f, cy - s * 0.33f, cx + s * 0.78f, cy + s * 0.13f, ip);
+                break;
+            case "trash":
+                c.drawLine(cx - s * 0.9f, cy - s * 0.55f, cx + s * 0.9f, cy - s * 0.55f, ip);
+                c.drawLine(cx - s * 0.35f, cy - s * 0.55f, cx - s * 0.35f, cy - s * 0.85f, ip);
+                c.drawLine(cx + s * 0.35f, cy - s * 0.55f, cx + s * 0.35f, cy - s * 0.85f, ip);
+                c.drawLine(cx - s * 0.35f, cy - s * 0.85f, cx + s * 0.35f, cy - s * 0.85f, ip);
+                path.moveTo(cx - s * 0.65f, cy - s * 0.55f);
+                path.lineTo(cx - s * 0.55f, cy + s * 0.9f);
+                path.lineTo(cx + s * 0.55f, cy + s * 0.9f);
+                path.lineTo(cx + s * 0.65f, cy - s * 0.55f);
+                c.drawPath(path, ip);
                 break;
             case "more":
                 ip.setStyle(Paint.Style.FILL);
@@ -1228,6 +1232,682 @@ public class BuilderPreviewView extends View {
             canvas.drawText(item(id), dp(52), y + dp(27), p);
             y += dp(44);
         }
+    }
+
+
+    // ------------------------------------------------------------------ list-style screens drawn from PreviewScreens
+
+    private static String nativeBgKey(String scene) {
+        switch (scene) {
+            case "rows.privacy": return "privacy";
+            case "rows.notifications": return "notifications";
+            case "rows.dataStorage": return "dataStorage";
+            case "rows.profile": return "profile";
+            case "devices": return "devices";
+            default: return null;
+        }
+    }
+
+    private static final class Grp {
+        final List<PreviewScreens.Item> items = new ArrayList<>();
+        boolean card;
+        float h;
+    }
+
+    private float itemH(PreviewScreens.Item it, int rowH) {
+        switch (it.kind) {
+            case HEADER: return dp(40);
+            case ROW:
+            case TOGGLE: return it.sub != null && !it.sub.isEmpty() ? Math.max(rowH, dp(62)) : rowH;
+            case RADIO: return dp(62);
+            case LINK: return rowH;
+            case PERSON: return dp(66);
+            case DEVICE: return dp(78);
+            case SLIDER: return dp(58);
+            case BUBBLES: return dp(150);
+            case SWATCHES: return dp(112);
+            case LIST_TILES: return dp(132);
+            case APP_ICONS: return dp(96);
+            case TEXT_ROW: return rowH;
+            case MODE_SLIDER: return dp(66);
+            case CARD_BUTTON: return dp(64);
+            default: return rowH;
+        }
+    }
+
+    private List<String> wrap(String text, float maxW) {
+        List<String> out = new ArrayList<>();
+        for (String para : text.split("\n")) {
+            StringBuilder line = new StringBuilder();
+            for (String word : para.split(" ")) {
+                String cand = line.length() == 0 ? word : line + " " + word;
+                if (line.length() > 0 && p.measureText(cand) > maxW) {
+                    out.add(line.toString());
+                    line = new StringBuilder(word);
+                } else {
+                    line = new StringBuilder(cand);
+                }
+            }
+            out.add(line.toString());
+        }
+        return out;
+    }
+
+    private void drawNative(Canvas canvas, Ctx x, String scene) {
+        String bgKey = nativeBgKey(scene);
+        int sbg = bgKey == null ? 0 : session.color("screens." + bgKey + ".background", 0);
+        if (sbg != 0) {
+            rect.set(0, 0, x.w, x.h);
+            p.setColor(sbg);
+            canvas.drawRect(rect, p);
+        }
+        String title = PreviewScreens.title(scene), acts = PreviewScreens.actions(scene);
+        int bh = dp(session.intValue("components.appBar.heightDp", 52));
+        int fillBar = session.colorChain(x.bg, "components.appBar.background");
+        int fg = session.colorChain(x.text, "components.appBar.foreground");
+        if (!title.isEmpty() || sbg == 0) {
+            rect.set(0, 0, x.w, bh);
+            p.setColor(title.isEmpty() ? x.bg : fillBar);
+            canvas.drawRect(rect, p);
+        }
+        add("appBar", new RectF(0, 0, x.w, bh));
+        icon(canvas, "back", dp(28), bh / 2f, dp(9), fg);
+        p.setColor(fg);
+        p.setTextSize(dp(session.intValue("tokens.typography.titleSizeSp", 19)));
+        p.setFakeBoldText(true);
+        canvas.drawText(title, dp(72), bh / 2f + dp(6), p);
+        p.setFakeBoldText(false);
+        float ax = x.w - dp(26);
+        if (acts.contains("more")) {
+            icon(canvas, "more", ax, bh / 2f, dp(9), fg);
+            ax -= dp(34);
+        }
+        if (acts.contains("trash")) {
+            icon(canvas, "trash", ax, bh / 2f, dp(9), fg);
+        }
+        if (acts.contains("search")) {
+            icon(canvas, "search", ax, bh / 2f, dp(9), fg);
+        }
+
+        List<PreviewScreens.Item> items = PreviewScreens.screen(scene);
+        String hiddenKey = scene.startsWith("rows.") ? scene.substring(5) : null;
+        List<String> hidden = hiddenKey == null ? new ArrayList<>() : listOr("layout." + hiddenKey + ".hiddenRows");
+        int rowH = dp(session.intValue("components.cell.heightDp", 54));
+        float side = dp(12), pad = dp(16);
+        String gs = session.text("screens.settings.groupStyle", session.text("components.section.style", "card"));
+        boolean card = !"flat".equals(gs);
+        float gap = dp(session.intValue("components.section.gapDp", 14));
+        float rr = card ? dp(session.intValue("components.section.radiusDp", session.intValue("tokens.shapes.cardRadiusDp", 16))) : 0;
+        int cardFill = session.colorChain(x.surface, "components.card.background");
+
+        // group the rows into cards and loose items
+        List<Grp> groups = new ArrayList<>();
+        Grp cur = null;
+        for (PreviewScreens.Item it : items) {
+            switch (it.kind) {
+                case GAP:
+                    cur = null;
+                    continue;
+                case INFO:
+                case HERO:
+                case LOGO:
+                case FIELD:
+                case BUTTON: {
+                    cur = null;
+                    Grp g = new Grp();
+                    g.items.add(it);
+                    groups.add(g);
+                    continue;
+                }
+                default:
+            }
+            if (it.kind == PreviewScreens.Kind.HEADER && cur != null && !cur.items.isEmpty()) {
+                cur = null;
+            }
+            if (it.hide != null && hidden.contains(it.hide) && !editMode) {
+                continue;
+            }
+            if (cur == null) {
+                cur = new Grp();
+                cur.card = true;
+                groups.add(cur);
+            }
+            cur.items.add(it);
+        }
+
+        float y = bh + dp(8);
+        for (Grp g : groups) {
+            if (y > x.h) {
+                break;
+            }
+            if (!g.card) {
+                y = drawLoose(canvas, x, g.items.get(0), y, side, pad) + dp(8);
+                continue;
+            }
+            float ch = 0;
+            for (PreviewScreens.Item it : g.items) {
+                ch += itemH(it, rowH);
+            }
+            rect.set(side, y, x.w - side, y + ch);
+            RectF cr = new RectF(rect);
+            shadow(canvas, cr, rr, session.intValue("tokens.elevation.cardDp", 0));
+            p.setColor(cardFill);
+            canvas.drawRoundRect(cr, rr, rr, p);
+            add("section", cr);
+            float cy0 = y;
+            for (int i = 0; i < g.items.size(); i++) {
+                PreviewScreens.Item it = g.items.get(i);
+                float ih = itemH(it, rowH);
+                boolean gone = it.hide != null && hidden.contains(it.hide);
+                boolean last = i == g.items.size() - 1;
+                boolean nextHeader = !last && g.items.get(i + 1).kind == PreviewScreens.Kind.HEADER;
+                drawNativeItem(canvas, x, it, cy0, ih, side, pad, gone, !last && !nextHeader && it.kind != PreviewScreens.Kind.HEADER);
+                cy0 += ih;
+            }
+            y += ch + gap;
+        }
+    }
+
+    /** Page-level items: hint text, hero pictures, the Kurogram logo, outlined fields and the big button. */
+    private float drawLoose(Canvas canvas, Ctx x, PreviewScreens.Item it, float y, float side, float pad) {
+        switch (it.kind) {
+            case INFO: {
+                p.setTextSize(dp(14));
+                p.setColor(x.text2);
+                float maxW = x.w - 2 * (side + pad);
+                List<String> lines = wrap(it.title, maxW);
+                float ty = y + dp(6);
+                for (String l : lines) {
+                    float tx = it.plain ? (x.w - p.measureText(l)) / 2f : side + pad;
+                    canvas.drawText(l, tx, ty + dp(13), p);
+                    ty += dp(19);
+                }
+                return ty + dp(6);
+            }
+            case HERO: {
+                float cx = x.w / 2f, top = y + dp(14);
+                if ("folder".equals(it.title)) {
+                    for (int i = 0; i < 3; i++) {
+                        p.setColor(i == 0 ? 0xFFE9B97C : i == 1 ? 0xFFEDC48F : 0xFFF2CF9F);
+                        rect.set(cx - dp(32) + i * dp(3), top + dp(12) - i * dp(6), cx + dp(32) - i * dp(3), top + dp(56) - i * dp(6));
+                        canvas.drawRoundRect(rect, dp(5), dp(5), p);
+                    }
+                } else {
+                    p.setColor(0xFFBFC4CC);
+                    rect.set(cx - dp(40), top + dp(4), cx + dp(40), top + dp(52));
+                    canvas.drawRoundRect(rect, dp(5), dp(5), p);
+                    p.setColor(x.accent);
+                    p.setAlpha(150);
+                    rect.set(cx - dp(34), top + dp(10), cx + dp(34), top + dp(46));
+                    canvas.drawRoundRect(rect, dp(3), dp(3), p);
+                    p.setAlpha(255);
+                    p.setColor(0xFF8D939C);
+                    rect.set(cx - dp(48), top + dp(52), cx + dp(48), top + dp(60));
+                    canvas.drawRoundRect(rect, dp(3), dp(3), p);
+                }
+                p.setTextSize(dp(14));
+                p.setColor(x.text2);
+                float ty = top + dp(78);
+                for (String l : wrap(it.sub, x.w - 2 * (side + pad + dp(10)))) {
+                    canvas.drawText(l, (x.w - p.measureText(l)) / 2f, ty, p);
+                    ty += dp(19);
+                }
+                return ty + dp(4);
+            }
+            case LOGO: {
+                float cx = x.w / 2f, top = y + dp(10);
+                p.setColor(x.accent);
+                p.setAlpha(90);
+                rect.set(cx - dp(46), top, cx + dp(46), top + dp(92));
+                canvas.drawRoundRect(rect, dp(34), dp(34), p);
+                p.setAlpha(255);
+                p.setColor(x.bg);
+                canvas.drawCircle(cx + dp(6), top + dp(62), dp(7), p);
+                p.setColor(x.text);
+                p.setTextSize(dp(24));
+                p.setFakeBoldText(true);
+                canvas.drawText(it.title, cx - p.measureText(it.title) / 2f, top + dp(130), p);
+                p.setFakeBoldText(false);
+                p.setTextSize(dp(14));
+                p.setColor(x.text2);
+                canvas.drawText(it.sub, cx - p.measureText(it.sub) / 2f, top + dp(152), p);
+                return top + dp(166);
+            }
+            case FIELD: {
+                float fh = dp(56), ir = rad("tokens.shapes.inputRadiusDp", 12);
+                rect.set(side + dp(4), y + dp(8), x.w - side - dp(4), y + dp(8) + fh);
+                RectF fr = new RectF(rect);
+                p.setColor(session.colorChain(x.bg, "components.input.background"));
+                canvas.drawRoundRect(fr, ir, ir, p);
+                outlineFill(canvas, fr, ir, x.divider, 1);
+                add("input", fr);
+                p.setTextSize(dp(12));
+                p.setColor(x.text2);
+                canvas.drawText(it.title, fr.left + dp(14), fr.top + dp(2), p);
+                boolean placeholder = "Phone number".equals(it.value);
+                float tx = fr.left + dp(16);
+                p.setTextSize(dp(17));
+                if (it.sub != null) {
+                    p.setColor(x.text);
+                    canvas.drawText(it.sub, tx, fr.centerY() + dp(7), p);
+                    p.setColor(x.divider);
+                    canvas.drawRect(tx + dp(34), fr.top + dp(10), tx + dp(35), fr.bottom - dp(10), p);
+                    tx += dp(52);
+                }
+                p.setColor(placeholder ? session.colorChain(x.text2, "components.input.hint") : x.text);
+                canvas.drawText(it.value, tx, fr.centerY() + dp(7), p);
+                if (it.chevron) {
+                    icon(canvas, "back", fr.right - dp(22), fr.centerY(), dp(6), x.text2);
+                }
+                return y + dp(8) + fh + dp(6);
+            }
+            case BUTTON: {
+                float bh = dp(session.intValue("components.button.heightDp", 52)), br = rad("tokens.shapes.buttonRadiusDp", 10);
+                rect.set(side + dp(4), y + dp(12), x.w - side - dp(4), y + dp(12) + bh);
+                RectF b = new RectF(rect);
+                p.setColor(session.colorChain(x.accent, "components.button.background"));
+                canvas.drawRoundRect(b, br, br, p);
+                add("button", b);
+                p.setColor(session.colorChain(x.onAccent, "components.button.foreground"));
+                p.setTextSize(dp(16));
+                p.setFakeBoldText(true);
+                canvas.drawText(it.title, b.centerX() - p.measureText(it.title) / 2f, b.centerY() + dp(6), p);
+                p.setFakeBoldText(false);
+                return b.bottom + dp(8);
+            }
+            default:
+                return y;
+        }
+    }
+
+    private void drawSwitchAt(Canvas canvas, Ctx x, float right, float cy, boolean on, boolean lock) {
+        float sx = right - dp(46);
+        rect.set(sx, cy - dp(13), sx + dp(46), cy + dp(13));
+        RectF sr = new RectF(rect);
+        p.setColor(session.colorChain(on ? x.accent : 0xFFBDC3CC, on ? "components.switch.trackOn" : "components.switch.trackOff"));
+        canvas.drawRoundRect(sr, dp(13), dp(13), p);
+        p.setColor(session.colorChain(0xFFFFFFFF, "components.switch.thumbOn"));
+        canvas.drawCircle(on ? sr.right - dp(13) : sr.left + dp(13), cy, dp(10), p);
+        add("switch", sr);
+    }
+
+    private void drawNativeItem(Canvas canvas, Ctx x, PreviewScreens.Item it, float y, float h, float side, float pad, boolean gone, boolean divider) {
+        float cy = y + h / 2f, left = side + pad, right = x.w - side - pad;
+        int titleSp = session.intValue("components.cell.titleSizeSp", 16), valSp = session.intValue("components.cell.valueSizeSp", 13);
+        boolean tb = bold("components.cell.titleWeight", false);
+        boolean hasSub = it.sub != null && !it.sub.isEmpty();
+        int titleC = it.error ? x.error : it.accent || it.kind == PreviewScreens.Kind.LINK ? x.accent : x.text;
+        if (it.kind != PreviewScreens.Kind.HEADER) {
+            rect.set(side, y, x.w - side, y + h);
+            RectF rr0 = new RectF(rect);
+            switch (it.kind) {
+                case PERSON:
+                    add("contactRow", rr0);
+                    add("cell", rr0);
+                    break;
+                case DEVICE:
+                    add("session", rr0);
+                    add("cell", rr0);
+                    break;
+                case SLIDER:
+                case BUBBLES:
+                case SWATCHES:
+                case LIST_TILES:
+                case APP_ICONS:
+                case MODE_SLIDER:
+                    break;
+                default:
+                    add("settingsRow", rr0);
+                    add("cell", rr0);
+            }
+        }
+        // icon column
+        float textX = left;
+        boolean hasIcon = it.icon != null;
+        if (hasIcon && it.kind != PreviewScreens.Kind.PERSON) {
+            float is = dp(session.intValue("components.cell.iconSizeDp", 24));
+            if (it.tile != 0) {
+                p.setColor(it.tile);
+                rect.set(left, cy - dp(16), left + dp(32), cy + dp(16));
+                canvas.drawRoundRect(rect, dp(8), dp(8), p);
+                glyph(canvas, it.icon, left + dp(16), cy, dp(19), 0xFFFFFFFF);
+                textX = left + dp(48);
+            } else {
+                glyph(canvas, it.icon, left + dp(12), cy, is, it.error ? x.error : it.accent || it.kind == PreviewScreens.Kind.LINK ? x.accent : session.colorChain(x.icon, "components.cell.iconColor"));
+                textX = left + dp(48);
+            }
+        }
+        switch (it.kind) {
+            case HEADER: {
+                p.setColor(x.accent);
+                p.setTextSize(dp(14));
+                p.setFakeBoldText(true);
+                canvas.drawText(it.title, left, y + dp(28), p);
+                p.setFakeBoldText(false);
+                if (it.chipText != null) {
+                    float cx0 = left + p.measureText(it.title) + dp(10);
+                    p.setTextSize(dp(12));
+                    float cw = p.measureText(it.chipText) + dp(14);
+                    p.setColor(x.accent);
+                    p.setAlpha(40);
+                    rect.set(cx0, y + dp(12), cx0 + cw, y + dp(32));
+                    canvas.drawRoundRect(rect, dp(6), dp(6), p);
+                    p.setAlpha(255);
+                    p.setColor(x.accent);
+                    canvas.drawText(it.chipText, cx0 + dp(7), y + dp(27), p);
+                }
+                return;
+            }
+            case ROW:
+            case TOGGLE:
+            case LINK:
+            case TEXT_ROW:
+            case RADIO:
+                break;
+            default:
+        }
+        switch (it.kind) {
+            case ROW:
+            case LINK:
+            case TEXT_ROW: {
+                if (it.handle) {
+                    p.setColor(x.text2);
+                    for (int i = 0; i < 2; i++) {
+                        canvas.drawRect(left + dp(2), cy - dp(5) + i * dp(7), left + dp(20), cy - dp(3.5f) + i * dp(7), p);
+                    }
+                    textX = left + dp(48);
+                }
+                p.setColor(titleC);
+                p.setAlpha(gone ? 110 : 255);
+                p.setFakeBoldText(tb);
+                p.setTextSize(dp(titleSp));
+                canvas.drawText(it.title, textX, hasSub ? cy - dp(3) : cy + dp(5), p);
+                if (gone) {
+                    p.setColor(titleC);
+                    canvas.drawRect(textX, cy + (hasSub ? -dp(8) : dp(0)), textX + p.measureText(it.title), cy + (hasSub ? -dp(7) : dp(1)), p);
+                }
+                p.setAlpha(255);
+                p.setFakeBoldText(false);
+                if (it.star) {
+                    p.setColor(0xFF8E7CF0);
+                    canvas.drawText("★", textX + p.measureText(it.title) + dp(8), cy + dp(6), p);
+                }
+                if (it.badge) {
+                    p.setTextSize(dp(11));
+                    float bw = p.measureText("NEW") + dp(12);
+                    float bx = textX + dp(titleSp) * 0 + 0;
+                    p.setTextSize(dp(titleSp));
+                    bx = textX + p.measureText(it.title) + dp(10);
+                    p.setColor(x.accent);
+                    rect.set(bx, cy - dp(9), bx + bw, cy + dp(9));
+                    canvas.drawRoundRect(rect, dp(5), dp(5), p);
+                    p.setColor(x.onAccent);
+                    p.setTextSize(dp(11));
+                    p.setFakeBoldText(true);
+                    canvas.drawText("NEW", bx + dp(6), cy + dp(4), p);
+                    p.setFakeBoldText(false);
+                }
+                if (hasSub) {
+                    p.setColor(session.colorChain(x.text2, "components.cell.subtitleColor"));
+                    p.setTextSize(dp(valSp));
+                    canvas.drawText(it.sub, textX, cy + dp(valSp + 4), p);
+                }
+                if (it.value != null) {
+                    p.setTextSize(dp(15));
+                    boolean muted = "47".equals(it.value);
+                    p.setColor(muted ? x.text2 : session.colorChain(x.accent, "components.cell.valueColor"));
+                    float vr = right - (it.chevron ? dp(14) : 0);
+                    canvas.drawText(it.value, vr - p.measureText(it.value), cy + dp(5), p);
+                    if (it.chevron) {
+                        icon(canvas, "back", right - dp(4), cy, dp(5), x.text2);
+                    }
+                }
+                if (it.menu) {
+                    icon(canvas, "more", right - dp(4), cy, dp(8), x.text2);
+                }
+                break;
+            }
+            case TOGGLE: {
+                if (hasIcon) {
+                    // icon was drawn above
+                }
+                if (it.lock) {
+                    // the switch carries a small padlock
+                }
+                p.setColor(x.text);
+                p.setFakeBoldText(tb);
+                p.setTextSize(dp(titleSp));
+                canvas.drawText(it.title, textX, hasSub ? cy - dp(3) : cy + dp(5), p);
+                p.setFakeBoldText(false);
+                if (hasSub) {
+                    p.setColor(session.colorChain(x.text2, "components.cell.subtitleColor"));
+                    p.setTextSize(dp(valSp));
+                    canvas.drawText(it.sub, textX, cy + dp(valSp + 4), p);
+                }
+                float sr = right;
+                if (it.split) {
+                    p.setColor(x.divider);
+                    canvas.drawRect(right - dp(60), cy - dp(11), right - dp(59), cy + dp(11), p);
+                }
+                if (it.value != null) {
+                    p.setColor(x.text);
+                    p.setTextSize(dp(15));
+                    float vx = right - dp(64) - p.measureText(it.value) - dp(18);
+                    canvas.drawText(it.value, vx, cy + dp(5), p);
+                    icon(canvas, "back", vx + p.measureText(it.value) + dp(10), cy, dp(4), x.text);
+                }
+                drawSwitchAt(canvas, x, sr, cy, it.on, it.lock);
+                break;
+            }
+            case RADIO: {
+                p.setColor(x.text);
+                p.setTextSize(dp(titleSp));
+                canvas.drawText(it.title, left + dp(52), cy - dp(2), p);
+                p.setColor(x.text2);
+                p.setTextSize(dp(valSp));
+                canvas.drawText(it.sub, left + dp(52), cy + dp(18), p);
+                p.setStyle(Paint.Style.STROKE);
+                p.setStrokeWidth(dp(2));
+                p.setColor(it.on ? x.accent : x.text2);
+                canvas.drawCircle(left + dp(16), cy, dp(10), p);
+                p.setStyle(Paint.Style.FILL);
+                if (it.on) {
+                    canvas.drawCircle(left + dp(16), cy, dp(5), p);
+                }
+                break;
+            }
+            case PERSON: {
+                avatar(canvas, left + dp(22), cy, dp(22), AV[Math.abs(it.title.hashCode()) % AV.length]);
+                p.setColor(0xFFFFFFFF);
+                p.setTextSize(dp(15));
+                String ini = it.title.substring(0, 1);
+                canvas.drawText(ini, left + dp(22) - p.measureText(ini) / 2f, cy + dp(5), p);
+                p.setColor(x.text);
+                p.setFakeBoldText(true);
+                p.setTextSize(dp(titleSp));
+                canvas.drawText(it.title, left + dp(58), cy - dp(3), p);
+                p.setFakeBoldText(false);
+                p.setColor(x.text2);
+                p.setTextSize(dp(valSp));
+                String sub = it.sub;
+                float mw = right - (left + dp(58)) - (it.value != null ? dp(40) : 0);
+                while (p.measureText(sub) > mw && sub.length() > 4) {
+                    sub = sub.substring(0, sub.length() - 2);
+                }
+                if (!sub.equals(it.sub)) {
+                    sub += "…";
+                }
+                if ("online".equals(it.sub)) {
+                    p.setColor(x.accent);
+                }
+                canvas.drawText(sub, left + dp(58), cy + dp(valSp + 4), p);
+                if (it.value != null) {
+                    p.setColor(x.text2);
+                    p.setTextSize(dp(12));
+                    canvas.drawText(it.value, right - p.measureText(it.value), cy - dp(6), p);
+                }
+                if (it.menu) {
+                    icon(canvas, "more", right - dp(4), cy, dp(8), x.text2);
+                }
+                break;
+            }
+            case DEVICE: {
+                p.setColor(0xFF5BBF4D);
+                canvas.drawCircle(left + dp(24), cy, dp(24), p);
+                p.setColor(0xFFFFFFFF);
+                rect.set(left + dp(14), cy - dp(5), left + dp(34), cy + dp(10));
+                canvas.drawRoundRect(rect, dp(5), dp(5), p);
+                p.setColor(x.text);
+                p.setTextSize(dp(titleSp));
+                p.setFakeBoldText(true);
+                canvas.drawText(it.title, left + dp(64), cy - dp(10), p);
+                p.setFakeBoldText(false);
+                p.setTextSize(dp(valSp + 1));
+                canvas.drawText(it.sub, left + dp(64), cy + dp(8), p);
+                p.setColor(x.text2);
+                p.setTextSize(dp(valSp));
+                canvas.drawText(it.value, left + dp(64), cy + dp(26), p);
+                break;
+            }
+            case SLIDER: {
+                float tw = right - left - dp(48), ty = cy;
+                p.setColor(x.divider);
+                rect.set(left, ty - dp(2), left + tw, ty + dp(2));
+                canvas.drawRoundRect(rect, dp(2), dp(2), p);
+                float frac = "17".equals(it.value) ? 0.97f : 0.25f;
+                p.setColor(x.accent);
+                rect.set(left, ty - dp(2), left + tw * frac, ty + dp(2));
+                canvas.drawRoundRect(rect, dp(2), dp(2), p);
+                canvas.drawCircle(left + tw * frac, ty, dp(8), p);
+                p.setTextSize(dp(18));
+                canvas.drawText(it.value, right - p.measureText(it.value), ty + dp(6), p);
+                break;
+            }
+            case MODE_SLIDER: {
+                p.setTextSize(dp(14));
+                p.setColor(x.text2);
+                canvas.drawText("Off", left, y + dp(20), p);
+                canvas.drawText("On", right - p.measureText("On"), y + dp(20), p);
+                p.setColor(x.accent);
+                canvas.drawText(it.title, (x.w - p.measureText(it.title)) / 2f, y + dp(20), p);
+                p.setColor(x.divider);
+                rect.set(left, y + dp(44), right, y + dp(48));
+                canvas.drawRoundRect(rect, dp(2), dp(2), p);
+                p.setColor(x.accent);
+                rect.set(left, y + dp(44), left + (right - left) * 0.1f, y + dp(48));
+                canvas.drawRoundRect(rect, dp(2), dp(2), p);
+                canvas.drawCircle(left + (right - left) * 0.1f, y + dp(46), dp(8), p);
+                break;
+            }
+            case BUBBLES: {
+                p.setColor(0xFF8DB87A);
+                rect.set(side, y + dp(4), x.w - side, y + h - dp(4));
+                canvas.drawRect(rect, p);
+                p.setColor(session.color("chat.bubbleIn", x.surface));
+                rect.set(left, y + dp(14), left + dp(210), y + dp(78));
+                canvas.drawRoundRect(rect, dp(16), dp(16), p);
+                p.setColor(x.text);
+                p.setTextSize(dp(14));
+                canvas.drawText("Good morning!", left + dp(14), y + dp(40), p);
+                canvas.drawText("Do you know what time it is?", left + dp(14), y + dp(64), p);
+                p.setColor(session.color("chat.bubbleOut", 0xFFE1FFC7));
+                rect.set(x.w - side - pad - dp(190), y + dp(90), x.w - side - pad, y + dp(130));
+                canvas.drawRoundRect(rect, dp(16), dp(16), p);
+                p.setColor(x.text);
+                canvas.drawText("It's morning in Tokyo", rect.left + dp(14), rect.centerY() + dp(5), p);
+                break;
+            }
+            case SWATCHES: {
+                int[] c1 = {0xFF6FA36B, 0xFFB9D96B, 0xFF7FB6E8, 0xFFB98BE5, 0xFF72C7C0, 0xFFE59A8E};
+                float sw = (right - left - dp(8) * 5) / 6f;
+                for (int i = 0; i < 6; i++) {
+                    float sx = left + i * (sw + dp(8));
+                    p.setColor(c1[i]);
+                    rect.set(sx, y + dp(10), sx + sw, y + h - dp(10));
+                    canvas.drawRoundRect(rect, dp(10), dp(10), p);
+                    if (i == 0) {
+                        outlineFill(canvas, rect, dp(10), x.accent, 2);
+                    }
+                    p.setColor(0xB0FFFFFF);
+                    rect.set(sx + dp(6), y + dp(20), sx + sw - dp(6), y + dp(36));
+                    canvas.drawRoundRect(rect, dp(8), dp(8), p);
+                    rect.set(sx + dp(6), y + dp(44), sx + sw - dp(6) - dp(8), y + dp(60));
+                    canvas.drawRoundRect(rect, dp(8), dp(8), p);
+                }
+                break;
+            }
+            case LIST_TILES: {
+                float tw = (right - left - dp(14)) / 2f;
+                for (int t = 0; t < 2; t++) {
+                    float tx = left + t * (tw + dp(14));
+                    p.setColor(x.bg);
+                    rect.set(tx, y + dp(8), tx + tw, y + dp(80));
+                    canvas.drawRoundRect(rect, dp(10), dp(10), p);
+                    if (t == 0) {
+                        outlineFill(canvas, rect, dp(10), x.accent, 2);
+                    }
+                    for (int r = 0; r < 2; r++) {
+                        p.setColor(0xFFC8CCD2);
+                        canvas.drawCircle(tx + dp(24), y + dp(26) + r * dp(32), dp(11), p);
+                        rect.set(tx + dp(44), y + dp(20) + r * dp(32), tx + tw - dp(40), y + dp(25) + r * dp(32));
+                        canvas.drawRoundRect(rect, dp(3), dp(3), p);
+                        rect.set(tx + dp(44), y + dp(32) + r * dp(32), tx + tw - dp(24), y + dp(36) + r * dp(32));
+                        canvas.drawRoundRect(rect, dp(3), dp(3), p);
+                    }
+                    p.setColor(x.text);
+                    p.setTextSize(dp(14));
+                    String lbl = t == 0 ? "Two lines" : "Three lines";
+                    canvas.drawText(lbl, tx + (tw - p.measureText(lbl)) / 2f, y + dp(106), p);
+                }
+                break;
+            }
+            case APP_ICONS: {
+                int[] c2 = {0xFFBBD7FA, 0xFF18B8A4, 0xFFB45CE0, 0xFF3F86F5, 0xFF1B2440, 0xFF4A74E8};
+                float gapx = dp(10), sw = (right - left - gapx * 4) / 5f;
+                for (int i = 0; i < 5; i++) {
+                    float sx = left + i * (sw + gapx);
+                    p.setColor(c2[i]);
+                    canvas.drawCircle(sx + sw / 2f, y + dp(40), sw / 2f - dp(4), p);
+                    if (i == 0) {
+                        outlineFill(canvas, new RectF(sx, y + dp(40) - sw / 2f, sx + sw, y + dp(40) + sw / 2f), sw / 2f, x.accent, 2);
+                    }
+                }
+                break;
+            }
+            case CARD_BUTTON: {
+                float bh = dp(48), br = rad("tokens.shapes.buttonRadiusDp", 24);
+                rect.set(left, y + dp(8), right, y + dp(8) + bh);
+                RectF b = new RectF(rect);
+                p.setColor(session.colorChain(x.accent, "components.button.background"));
+                canvas.drawRoundRect(b, Math.min(br, bh / 2f), Math.min(br, bh / 2f), p);
+                add("button", b);
+                p.setColor(session.colorChain(x.onAccent, "components.button.foreground"));
+                p.setTextSize(dp(16));
+                p.setFakeBoldText(true);
+                canvas.drawText(it.title, b.centerX() - p.measureText(it.title) / 2f + dp(12), b.centerY() + dp(6), p);
+                p.setFakeBoldText(false);
+                glyph(canvas, it.icon, b.centerX() - p.measureText(it.title) / 2f - dp(10), b.centerY(), dp(20), session.colorChain(x.onAccent, "components.button.foreground"));
+                break;
+            }
+            default:
+        }
+        if (divider) {
+            p.setColor(session.colorChain(x.divider, "components.cell.dividerColor"));
+            float inset = hasIcon || it.kind == PreviewScreens.Kind.PERSON || it.kind == PreviewScreens.Kind.RADIO || it.handle ? dp(session.intValue("components.cell.dividerInsetDp", 64)) : dp(16);
+            canvas.drawRect(side + inset, y + h - 1, x.w - side, y + h, p);
+        }
+    }
+
+    /** A glyph from KuroIcons, in the colour asked for. */
+    private void glyph(Canvas canvas, String name, float cx, float cy, float size, int color) {
+        android.graphics.drawable.Drawable g = tw.kurocore.kurogram.skin.KuroIcons.forResource(name, false);
+        if (g == null) {
+            return;
+        }
+        int r = (int) (size / 2f);
+        g.setBounds((int) cx - r, (int) cy - r, (int) cx + r, (int) cy + r);
+        g.setColorFilter(new android.graphics.PorterDuffColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN));
+        g.draw(canvas);
     }
 
     private void drawRows(Canvas canvas, Ctx x, String screen, String title) {

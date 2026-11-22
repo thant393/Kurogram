@@ -1353,7 +1353,8 @@ public class ThemeBuilderActivity extends BaseFragment {
     /** The app's own screens, in the order of the real app. */
     private static final String[] MAIN_SCREENS = {"chats", "chat", "contacts", "profile", "settings", "themeStore"};
     /** Screens that open from inside Settings (each is its own activity in the app). */
-    private static final String[] SETTINGS_SCREENS = {"rows.privacy", "rows.notifications", "rows.dataStorage", "rows.profile"};
+    private static final String[] SETTINGS_SCREENS = {"kuroSettings", "numberFinder", "specialContacts", "onlineContacts", "contactChanges", "rows.profile",
+            "chatSettings", "rows.privacy", "rows.notifications", "rows.dataStorage", "folders", "devices", "powerSaving", "language"};
     /** Screens made for Kuro themes only. */
     private static final String[] SUB_SCREENS = {"people", "drawer", "controls"};
 

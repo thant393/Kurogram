@@ -283,6 +283,255 @@ public final class KuroIcons {
                 break;
             }
             default:
+                return buildUi(name);
+        }
+        return s;
+    }
+
+    /** Glyphs for the Studio's list screens (and any theme that wants them). */
+    private static ArrayList<Shape> buildUi(String name) {
+        ArrayList<Shape> s = new ArrayList<>();
+        switch (name) {
+            case "ui_grid":
+                s.add(new Shape(roundRect(4, 4, 10.5f, 10.5f, 2), MAIN));
+                s.add(new Shape(roundRect(13.5f, 4, 20, 10.5f, 2), MAIN));
+                s.add(new Shape(roundRect(4, 13.5f, 10.5f, 20, 2), MAIN));
+                s.add(new Shape(roundRect(13.5f, 13.5f, 20, 20, 2), MAIN));
+                break;
+            case "ui_chat":
+                s.add(new Shape(circle(12, 11, 8.5f), MAIN));
+                s.add(new Shape(poly(6, 17, 4, 21, 9.5f, 18.6f), MAIN));
+                break;
+            case "ui_lock":
+                s.add(new Shape(roundRect(5, 10.5f, 19, 21, 3), MAIN));
+                Path sh = new Path();
+                sh.moveTo(8.5f, 10.5f);
+                sh.lineTo(8.5f, 8);
+                sh.arcTo(new RectF(8.5f, 3.5f, 15.5f, 12.5f), 180, 180);
+                sh.lineTo(15.5f, 10.5f);
+                s.add(new Shape(sh, LINE));
+                s.add(new Shape(dot(12, 15.7f), DETAIL));
+                break;
+            case "ui_star":
+                s.add(new Shape(star(12, 12.8f, 9.5f, 4.2f), MAIN));
+                break;
+            case "ui_megaphone":
+                s.add(new Shape(poly(4, 10, 9, 10, 17, 5, 17, 19, 9, 14, 4, 14), MAIN));
+                s.add(new Shape(line(8, 14.5f, 9.5f, 20), LINE));
+                s.add(new Shape(line(20, 9.5f, 20, 14.5f), LINE));
+                break;
+            case "ui_people":
+            case "ui_user": {
+                s.add(new Shape(circle(9.5f, 8, 3.6f), MAIN));
+                Path b = new Path();
+                b.moveTo(3, 20);
+                b.quadTo(3, 14, 9.5f, 14);
+                b.quadTo(16, 14, 16, 20);
+                b.close();
+                s.add(new Shape(b, MAIN));
+                if ("ui_people".equals(name)) {
+                    s.add(new Shape(circle(17, 8.5f, 2.8f), MAIN));
+                    Path b2 = new Path();
+                    b2.moveTo(17.5f, 14.2f);
+                    b2.quadTo(21.5f, 14.8f, 21.5f, 19);
+                    s.add(new Shape(b2, LINE));
+                }
+                break;
+            }
+            case "ui_link":
+                s.add(new Shape(roundRect(3, 8.5f, 12, 15.5f, 3.5f), MAIN));
+                s.add(new Shape(roundRect(12, 8.5f, 21, 15.5f, 3.5f), MAIN));
+                s.add(new Shape(line(9.5f, 12, 14.5f, 12), LINE));
+                break;
+            case "ui_heart": {
+                Path hp = new Path();
+                hp.moveTo(12, 20);
+                hp.cubicTo(2.5f, 13.5f, 3.5f, 5.5f, 8.5f, 5.5f);
+                hp.cubicTo(10.5f, 5.5f, 11.6f, 6.6f, 12, 7.8f);
+                hp.cubicTo(12.4f, 6.6f, 13.5f, 5.5f, 15.5f, 5.5f);
+                hp.cubicTo(20.5f, 5.5f, 21.5f, 13.5f, 12, 20);
+                hp.close();
+                s.add(new Shape(hp, MAIN));
+                break;
+            }
+            case "ui_phone": {
+                Path ph = new Path();
+                ph.moveTo(6.5f, 4);
+                ph.lineTo(9.5f, 4);
+                ph.lineTo(11, 8.5f);
+                ph.lineTo(9, 10);
+                ph.quadTo(10.5f, 13.5f, 14, 15);
+                ph.lineTo(15.5f, 13);
+                ph.lineTo(20, 14.5f);
+                ph.lineTo(20, 17.5f);
+                ph.quadTo(20, 20, 17.5f, 20);
+                ph.quadTo(4, 19, 4, 6.5f);
+                ph.quadTo(4, 4, 6.5f, 4);
+                ph.close();
+                s.add(new Shape(ph, MAIN));
+                break;
+            }
+            case "ui_calls": {
+                Path ph = new Path();
+                ph.moveTo(6.5f, 4);
+                ph.lineTo(9.5f, 4);
+                ph.lineTo(11, 8.5f);
+                ph.lineTo(9, 10);
+                ph.quadTo(10.5f, 13.5f, 14, 15);
+                ph.lineTo(15.5f, 13);
+                ph.lineTo(20, 14.5f);
+                ph.lineTo(20, 17.5f);
+                ph.quadTo(20, 20, 17.5f, 20);
+                ph.quadTo(4, 19, 4, 6.5f);
+                ph.quadTo(4, 4, 6.5f, 4);
+                ph.close();
+                s.add(new Shape(ph, MAIN));
+                break;
+            }
+            case "ui_at": {
+                s.add(new Shape(circle(12, 12, 3.2f), MAIN));
+                Path a = new Path();
+                a.addArc(new RectF(3.5f, 3.5f, 20.5f, 20.5f), 40, 290);
+                a.lineTo(16, 12);
+                a.quadTo(16, 15.6f, 18.4f, 15.6f);
+                s.add(new Shape(a, LINE));
+                break;
+            }
+            case "ui_cake":
+                s.add(new Shape(roundRect(4.5f, 11, 19.5f, 20, 2.5f), MAIN));
+                s.add(new Shape(line(4.5f, 15, 19.5f, 15), DETAIL));
+                s.add(new Shape(line(12, 7, 12, 11), LINE));
+                s.add(new Shape(dot(12, 5), LINE));
+                break;
+            case "ui_ai":
+                s.add(new Shape(star(8, 8, 4.4f, 1.8f), MAIN));
+                s.add(new Shape(line(12, 20, 15, 11), LINE));
+                s.add(new Shape(line(15, 11, 18, 20), LINE));
+                s.add(new Shape(line(13, 17, 17, 17), LINE));
+                break;
+            case "ui_userplus":
+                s.add(new Shape(circle(10, 8, 4), MAIN));
+                Path up = new Path();
+                up.moveTo(3, 20);
+                up.quadTo(3, 14, 10, 14);
+                up.quadTo(13, 14, 14.5f, 15);
+                s.add(new Shape(up, LINE));
+                s.add(new Shape(line(18, 14, 18, 20), LINE));
+                s.add(new Shape(line(15, 17, 21, 17), LINE));
+                break;
+            case "ui_logout":
+                s.add(new Shape(poly(10, 4, 5, 4, 5, 20, 10, 20), LINE));
+                s.add(new Shape(line(9, 12, 20, 12), LINE));
+                s.add(new Shape(poly(16, 8, 20, 12, 16, 16), LINE));
+                break;
+            case "ui_wallpaper":
+                s.add(new Shape(roundRect(4, 4, 20, 20, 3), MAIN));
+                s.add(new Shape(poly(4.5f, 17, 9, 12, 13, 16, 16, 13, 19.5f, 17), DETAIL));
+                s.add(new Shape(dot(15.5f, 8.5f), DETAIL));
+                break;
+            case "ui_namecolor":
+            case "ui_brush":
+                s.add(new Shape(circle(12, 12, 9), MAIN));
+                s.add(new Shape(dot(8.5f, 10), DETAIL));
+                s.add(new Shape(dot(12, 7.5f), DETAIL));
+                s.add(new Shape(dot(15.5f, 10), DETAIL));
+                s.add(new Shape(dot(9.5f, 15), DETAIL));
+                break;
+            case "ui_night": {
+                Path m = new Path();
+                m.moveTo(15, 4);
+                m.quadTo(8, 5, 8, 12);
+                m.quadTo(8, 19, 15.5f, 20);
+                m.quadTo(5, 22, 4.5f, 12);
+                m.quadTo(5, 2.5f, 15, 4);
+                s.add(new Shape(m, MAIN));
+                s.add(new Shape(star(18, 7, 2.4f, 1), MAIN));
+                break;
+            }
+            case "ui_timer":
+                s.add(new Shape(circle(12, 12, 8.5f), MAIN));
+                s.add(new Shape(poly(12, 7.5f, 12, 12, 15, 14), DETAIL));
+                break;
+            case "ui_key":
+                s.add(new Shape(circle(8.5f, 14.5f, 4.5f), MAIN));
+                s.add(new Shape(line(12, 11.5f, 20, 4.5f), LINE));
+                s.add(new Shape(line(17, 7.5f, 19.5f, 10), LINE));
+                break;
+            case "ui_mail":
+                s.add(new Shape(roundRect(3, 5.5f, 21, 18.5f, 3), MAIN));
+                s.add(new Shape(poly(4, 7.5f, 12, 13.5f, 20, 7.5f), DETAIL));
+                break;
+            case "ui_hand":
+                s.add(new Shape(roundRect(7, 9, 17, 20, 4), MAIN));
+                s.add(new Shape(line(8.5f, 9, 8.5f, 5), LINE));
+                s.add(new Shape(line(11, 9, 11, 3.5f), LINE));
+                s.add(new Shape(line(13.5f, 9, 13.5f, 4), LINE));
+                s.add(new Shape(line(16, 9, 16, 6), LINE));
+                break;
+            case "ui_stories":
+                s.add(new Shape(circle(12, 12, 8.5f), MAIN));
+                s.add(new Shape(poly(10.5f, 8.5f, 15.5f, 12, 10.5f, 15.5f), DETAIL));
+                break;
+            case "ui_storage":
+                s.add(new Shape(circle(12, 12, 8), MAIN));
+                s.add(new Shape(circle(12, 12, 3.5f), DETAIL));
+                break;
+            case "ui_bars":
+                s.add(new Shape(roundRect(5, 12, 8.5f, 20, 1), MAIN));
+                s.add(new Shape(roundRect(10.3f, 6, 13.7f, 20, 1), MAIN));
+                s.add(new Shape(roundRect(15.5f, 9, 19, 20, 1), MAIN));
+                break;
+            case "ui_plus":
+                s.add(new Shape(circle(12, 12, 9), MAIN));
+                s.add(new Shape(line(12, 7.5f, 12, 16.5f), DETAIL));
+                s.add(new Shape(line(7.5f, 12, 16.5f, 12), DETAIL));
+                break;
+            case "ui_qr":
+                s.add(new Shape(roundRect(4, 4, 10, 10, 1.5f), MAIN));
+                s.add(new Shape(roundRect(14, 4, 20, 10, 1.5f), MAIN));
+                s.add(new Shape(roundRect(4, 14, 10, 20, 1.5f), MAIN));
+                s.add(new Shape(dot(15, 15), LINE));
+                s.add(new Shape(dot(19, 15), LINE));
+                s.add(new Shape(dot(15, 19), LINE));
+                s.add(new Shape(dot(19, 19), LINE));
+                break;
+            case "ui_sticker":
+                s.add(new Shape(roundRect(4, 4, 20, 20, 5), MAIN));
+                s.add(new Shape(dot(9.5f, 10), DETAIL));
+                s.add(new Shape(dot(14.5f, 10), DETAIL));
+                Path sm = new Path();
+                sm.moveTo(8.5f, 14);
+                sm.quadTo(12, 18, 15.5f, 14);
+                s.add(new Shape(sm, DETAIL));
+                break;
+            case "ui_smile": {
+                s.add(new Shape(circle(12, 12, 9), MAIN));
+                s.add(new Shape(dot(9, 10), DETAIL));
+                s.add(new Shape(dot(15, 10), DETAIL));
+                Path sm2 = new Path();
+                sm2.moveTo(8, 14);
+                sm2.quadTo(12, 18, 16, 14);
+                s.add(new Shape(sm2, DETAIL));
+                break;
+            }
+            case "ui_chatdots":
+                s.add(new Shape(circle(12, 11, 8.5f), MAIN));
+                s.add(new Shape(poly(6, 17, 4, 21, 9.5f, 18.6f), MAIN));
+                s.add(new Shape(dot(8.5f, 11), DETAIL));
+                s.add(new Shape(dot(12, 11), DETAIL));
+                s.add(new Shape(dot(15.5f, 11), DETAIL));
+                break;
+            case "ui_video":
+                s.add(new Shape(roundRect(3, 6.5f, 16, 17.5f, 3), MAIN));
+                s.add(new Shape(poly(16.5f, 10.5f, 21, 8, 21, 16, 16.5f, 13.5f), MAIN));
+                break;
+            case "ui_gif":
+                s.add(new Shape(roundRect(3, 6, 21, 18, 3.5f), MAIN));
+                s.add(new Shape(line(8, 10.5f, 8, 13.5f), DETAIL));
+                s.add(new Shape(line(12, 10.5f, 12, 13.5f), DETAIL));
+                s.add(new Shape(line(15.5f, 10.5f, 15.5f, 13.5f), DETAIL));
+                break;
+            default:
                 return null;
         }
         return s;
