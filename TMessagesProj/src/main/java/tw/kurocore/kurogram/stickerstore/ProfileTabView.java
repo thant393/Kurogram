@@ -372,36 +372,28 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
         }
     }
 
-    /** iOS-style segmented control: rounded track, white capsule thumb sliding between labels. */
+    /** iOS-style segmented control: a grey capsule track and a white capsule with a soft shadow that glides under the chosen label. */
     private static class SegmentedControl extends FrameLayout {
 
         interface OnSelect {
             void onSelect(int index);
         }
 
-        private final View thumb;
         private final TextView[] labels;
+        private final android.graphics.Paint trackPaint = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
+        private final android.graphics.Paint thumbPaint = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
+        private final android.graphics.RectF box = new android.graphics.RectF();
+        private float pos; // 0..labels-1, animated
         private int selected = -1;
+        private android.animation.ValueAnimator anim;
 
         SegmentedControl(Context context, String[] titles, OnSelect listener) {
             super(context);
+            setWillNotDraw(false);
+            setLayerType(LAYER_TYPE_SOFTWARE, null); // soft shadow under the thumb
             labels = new TextView[titles.length];
-            GradientDrawable track = new GradientDrawable();
-            track.setCornerRadius(AndroidUtilities.dp(tw.kurocore.kurogram.skin.KuroUi.floatingRadiusDp(18)));
-            track.setColor(androidx.core.graphics.ColorUtils.setAlphaComponent(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText), 0x14));
-            setBackground(track);
-            int pad = AndroidUtilities.dp(2);
+            int pad = AndroidUtilities.dp(3);
             setPadding(pad, pad, pad, pad);
-
-            thumb = new View(context);
-            GradientDrawable thumbBg = new GradientDrawable();
-            thumbBg.setCornerRadius(AndroidUtilities.dp(tw.kurocore.kurogram.skin.KuroUi.floatingRadiusDp(16)));
-            thumbBg.setColor(androidx.core.graphics.ColorUtils.setAlphaComponent(tw.kurocore.kurogram.skin.KuroUi.accent(), 0x2E));
-            thumb.setBackground(thumbBg);
-            thumbBg.setStroke(Math.max(1, AndroidUtilities.dp(1)), androidx.core.graphics.ColorUtils.setAlphaComponent(tw.kurocore.kurogram.skin.KuroUi.accent(), 0x66));
-            thumb.setElevation(AndroidUtilities.dp(1));
-            addView(thumb, LayoutHelper.createFrame(0, LayoutHelper.MATCH_PARENT));
-
             LinearLayout row = new LinearLayout(context);
             row.setOrientation(LinearLayout.HORIZONTAL);
             addView(row, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
@@ -419,26 +411,44 @@ public class ProfileTabView extends FrameLayout implements org.telegram.messenge
         }
 
         @Override
-        protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-            super.onSizeChanged(w, h, oldw, oldh);
-            int each = (w - getPaddingLeft() - getPaddingRight()) / labels.length;
-            FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) thumb.getLayoutParams();
-            lp.width = each;
-            thumb.setLayoutParams(lp);
-            thumb.setTranslationX(Math.max(selected, 0) * each);
+        protected void onDraw(android.graphics.Canvas canvas) {
+            float w = getWidth(), h = getHeight();
+            if (w <= 0) {
+                return;
+            }
+            int text = Theme.getColor(Theme.key_windowBackgroundWhiteBlackText);
+            trackPaint.setColor(androidx.core.graphics.ColorUtils.setAlphaComponent(text, 0x16));
+            box.set(0, 0, w, h);
+            canvas.drawRoundRect(box, h / 2f, h / 2f, trackPaint);
+            float pad = getPaddingLeft();
+            float each = (w - 2 * pad) / labels.length;
+            float left = pad + pos * each;
+            box.set(left, pad, left + each, h - pad);
+            thumbPaint.setColor(Theme.getColor(Theme.key_windowBackgroundWhite));
+            thumbPaint.setShadowLayer(AndroidUtilities.dp(3), 0, AndroidUtilities.dp(1), 0x33000000);
+            canvas.drawRoundRect(box, (h - 2 * pad) / 2f, (h - 2 * pad) / 2f, thumbPaint);
         }
 
         void select(int index, boolean animate) {
             selected = index;
-            int w = (getWidth() - getPaddingLeft() - getPaddingRight()) / labels.length;
-            if (animate && w > 0) {
-                thumb.animate().translationX(index * w).setDuration(tw.kurocore.kurogram.skin.KuroUi.anim(220))
-                        .setInterpolator(new android.view.animation.DecelerateInterpolator()).start();
+            if (anim != null) {
+                anim.cancel();
+            }
+            if (animate && getWidth() > 0) {
+                anim = android.animation.ValueAnimator.ofFloat(pos, index);
+                anim.setDuration(tw.kurocore.kurogram.skin.KuroUi.anim(240));
+                anim.setInterpolator(new android.view.animation.DecelerateInterpolator(1.6f));
+                anim.addUpdateListener(a -> {
+                    pos = (float) a.getAnimatedValue();
+                    invalidate();
+                });
+                anim.start();
             } else {
-                thumb.setTranslationX(index * w);
+                pos = index;
+                invalidate();
             }
             for (int i = 0; i < labels.length; i++) {
-                labels[i].setTextColor(i == index ? tw.kurocore.kurogram.skin.KuroUi.accent()
+                labels[i].setTextColor(i == index ? Theme.getColor(Theme.key_windowBackgroundWhiteBlackText)
                         : Theme.getColor(Theme.key_windowBackgroundWhiteGrayText));
             }
         }

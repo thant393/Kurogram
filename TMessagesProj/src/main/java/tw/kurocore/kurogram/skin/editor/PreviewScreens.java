@@ -144,6 +144,29 @@ public final class PreviewScreens {
 
     private static final int GREEN = 0xFF34C759, ORANGE = 0xFFFF9500, BLUE = 0xFF3390EC, PURPLE = 0xFFAF52DE, TEAL = 0xFF30B0C7;
 
+    private static final String[] SETTINGS_KIDS = {"kuroSettings", "numberFinder", "specialContacts", "onlineContacts", "contactChanges",
+            "rows.profile", "chatSettings", "rows.privacy", "rows.notifications", "rows.dataStorage", "folders", "devices", "powerSaving", "language"};
+    private static final String[] STORE_KIDS = {"themeStore", "themeStore.stickers", "themeStore.profile"};
+
+    /** The screens that open from inside {@code scene}, in the order of the app (empty = none). Shown as a small strip over the phone. */
+    public static String[] children(String scene) {
+        if ("settings".equals(scene) || java.util.Arrays.asList(SETTINGS_KIDS).contains(scene)) {
+            return SETTINGS_KIDS;
+        }
+        if ("themeStore".equals(scene) || scene.startsWith("themeStore.")) {
+            return STORE_KIDS;
+        }
+        return new String[0];
+    }
+
+    /** The screen a strip belongs to ("settings", "themeStore"), or null. */
+    public static String parentOf(String scene) {
+        if (children(scene).length == 0) {
+            return null;
+        }
+        return scene.startsWith("themeStore") ? "themeStore" : "settings";
+    }
+
     /** The screens that have a detailed drawing. */
     public static boolean has(String scene) {
         return screen(scene) != null;
@@ -165,6 +188,8 @@ public final class PreviewScreens {
             case "devices": return "Devices";
             case "powerSaving": return "Power Saving";
             case "language": return "Language";
+            case "themeStore.stickers": return "Kuro Theme";
+            case "themeStore.profile": return "Kuro Theme";
             default: return null;
         }
     }

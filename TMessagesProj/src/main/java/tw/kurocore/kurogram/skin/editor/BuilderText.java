@@ -27,6 +27,12 @@ public final class BuilderText {
         t("scene.rows.notifications", "Notifications");
         t("scene.rows.dataStorage", "Data and Storage");
         t("scene.rows.profile", "Account");
+        t("scene.themeStore.stickers", "Kuro Stickers");
+        t("scene.themeStore.profile", "Kuro Profile");
+        t("strip.settings", "Settings");
+        t("strip.themeStore", "Themes");
+        t("strip.themeStore.stickers", "Stickers");
+        t("strip.themeStore.profile", "Profile");
         t("scene.kuroSettings", "Kurogram Settings");
         t("scene.numberFinder", "Number Finder");
         t("scene.specialContacts", "Special Contacts");

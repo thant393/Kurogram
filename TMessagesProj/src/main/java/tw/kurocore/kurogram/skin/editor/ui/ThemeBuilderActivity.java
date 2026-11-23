@@ -101,6 +101,9 @@ public class ThemeBuilderActivity extends BaseFragment {
     private LinearLayout idleBar, pill;
     private FrameLayout canvasFrame;
     private LinearLayout phoneHolder;
+    private android.widget.HorizontalScrollView kidsScroll;
+    private LinearLayout kidsRow;
+    private String kidsFor = "";
     private FrameLayout phone;
     private boolean inspecting;   // a part (or the global colours) is open in the inspector; otherwise the 3-tab bar shows
     private boolean globalPanel;  // the inspector shows only the quick global colours
@@ -316,6 +319,14 @@ public class ThemeBuilderActivity extends BaseFragment {
         phone.addView(screenClip, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT));
         phoneHolder.addView(phone, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL, 0, 52, 0, 0));
         canvasArea.addView(phoneHolder, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP, COMP_DP + 4, 0, 0, 0));
+        // small strip over the phone: the screens that open from inside the screen being edited (only when there are any)
+        kidsScroll = new android.widget.HorizontalScrollView(context);
+        kidsScroll.setHorizontalScrollBarEnabled(false);
+        kidsScroll.setVisibility(View.GONE);
+        kidsRow = new LinearLayout(context);
+        kidsRow.setOrientation(LinearLayout.HORIZONTAL);
+        kidsScroll.addView(kidsRow);
+        canvasArea.addView(kidsScroll, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 44, Gravity.TOP, COMP_DP + 10, 4, 6, 0));
         // left panel, like Sketchware: the parts of the screen being edited
         ScrollView compScroll = new ScrollView(context);
         compScroll.setVerticalScrollBarEnabled(false);
@@ -883,12 +894,79 @@ public class ThemeBuilderActivity extends BaseFragment {
     // ------------------------------------------------------------------ refresh
 
     private void refreshAll() {
+        refreshKids();
         refreshToolbar();
         refreshPanel();
         preview.invalidate();
         preview.post(this::buildComponents);
         if (phone != null) {
             phone.post(() -> fitCanvas(false));
+        }
+    }
+
+    /** The strip of screens that open from the current one: shown only for screens that have some, one chip per screen with a tiny picture. */
+    private void refreshKids() {
+        if (kidsScroll == null) {
+            return;
+        }
+        String scene = session.scene();
+        String parent = tw.kurocore.kurogram.skin.editor.PreviewScreens.parentOf(scene);
+        if (parent == null) {
+            kidsScroll.setVisibility(View.GONE);
+            kidsFor = "";
+            return;
+        }
+        kidsScroll.setVisibility(View.VISIBLE);
+        if (parent.equals(kidsFor)) {
+            for (int i = 0; i < kidsRow.getChildCount(); i++) {
+                View chip = kidsRow.getChildAt(i);
+                boolean cur = scene.equals(chip.getTag());
+                chip.setBackground(shape(cur ? BLUE_SOFT : 0xFFFFFFFF, 12, cur ? BLUE : LINE));
+            }
+            return;
+        }
+        kidsFor = parent;
+        kidsRow.removeAllViews();
+        Context context = kidsRow.getContext();
+        String[] kids = tw.kurocore.kurogram.skin.editor.PreviewScreens.children(scene);
+        java.util.List<String> ids = new java.util.ArrayList<>();
+        if ("settings".equals(parent)) {
+            ids.add("settings");
+        }
+        ids.addAll(java.util.Arrays.asList(kids));
+        for (final String id : ids) {
+            LinearLayout chip = new LinearLayout(context);
+            chip.setOrientation(LinearLayout.HORIZONTAL);
+            chip.setGravity(Gravity.CENTER_VERTICAL);
+            chip.setTag(id);
+            boolean cur = id.equals(scene);
+            chip.setBackground(shape(cur ? BLUE_SOFT : 0xFFFFFFFF, 12, cur ? BLUE : LINE));
+            chip.setPadding(AndroidUtilities.dp(5), AndroidUtilities.dp(3), AndroidUtilities.dp(10), AndroidUtilities.dp(3));
+            android.graphics.Bitmap bmp = preview.thumbnail(id, AndroidUtilities.dp(40));
+            if (bmp != null) {
+                android.widget.ImageView iv = new android.widget.ImageView(context);
+                iv.setImageBitmap(bmp);
+                iv.setAdjustViewBounds(true);
+                iv.setBackground(shape(0xFFFFFFFF, 4, LINE));
+                iv.setClipToOutline(true);
+                chip.addView(iv, LayoutHelper.createLinear(22, 36));
+                iv.setScaleType(android.widget.ImageView.ScaleType.FIT_START);
+            }
+            String lbl = tr("strip." + id);
+            if (lbl.equals("strip." + id)) {
+                lbl = tr("scene." + id);
+            }
+            TextView name = text(context, lbl, 12, cur);
+            name.setSingleLine(true);
+            chip.addView(name, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, 6, 0, 0, 0));
+            chip.setOnClickListener(v -> {
+                session.setScene(id);
+                inspecting = false;
+                globalPanel = false;
+                applySheet(false);
+                refreshAll();
+            });
+            kidsRow.addView(chip, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 40, 0, 0, 6, 0));
         }
     }
 
@@ -1350,11 +1428,8 @@ public class ThemeBuilderActivity extends BaseFragment {
         return dlg;
     }
 
-    /** The app's own screens, in the order of the real app. */
+    /** The app's own screens, in the order of the real app. Screens opened from inside one of these are the strip over the phone. */
     private static final String[] MAIN_SCREENS = {"chats", "chat", "contacts", "profile", "settings", "themeStore"};
-    /** Screens that open from inside Settings (each is its own activity in the app). */
-    private static final String[] SETTINGS_SCREENS = {"kuroSettings", "numberFinder", "specialContacts", "onlineContacts", "contactChanges", "rows.profile",
-            "chatSettings", "rows.privacy", "rows.notifications", "rows.dataStorage", "folders", "devices", "powerSaving", "language"};
     /** Screens made for Kuro themes only. */
     private static final String[] SUB_SCREENS = {"people", "drawer", "controls"};
 
@@ -1379,8 +1454,6 @@ public class ThemeBuilderActivity extends BaseFragment {
         }), LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 4, 0, 12));
         if (tab == 0) {
             sceneGrid(context, box, MAIN_SCREENS, dlg);
-            box.addView(text(context, tr("screens.fromSettings"), 13, true), LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 4, 8, 0, 8));
-            sceneGrid(context, box, SETTINGS_SCREENS, dlg);
         } else {
             sceneGrid(context, box, SUB_SCREENS, dlg);
         }

@@ -332,6 +332,10 @@ public class BuilderPreviewView extends View {
     /** Parts that stay on screen while a list scrolls, in the coordinates of a screen laid out h tall. */
     private List<Pin> pins(float w, float h) {
         List<Pin> out = new ArrayList<>();
+        if (session.scene().startsWith("themeStore")) {
+            out.add(new Pin(tabBar(w, h), dp(31)));
+            return out;
+        }
         if (!hasTabs()) {
             return out;
         }
@@ -454,6 +458,12 @@ public class BuilderPreviewView extends View {
                 break;
             case "themeStore":
                 drawThemeStore(canvas, x);
+                break;
+            case "themeStore.stickers":
+                drawStoreStickers(canvas, x);
+                break;
+            case "themeStore.profile":
+                drawStoreProfile(canvas, x);
                 break;
             default:
                 if (PreviewScreens.has(session.scene())) {
@@ -2274,6 +2284,199 @@ public class BuilderPreviewView extends View {
                 canvas.drawText(meta, tx, ty + dp(16), p);
             }
         }
+        drawStoreBar(canvas, x, 0);
+    }
+
+    /** The Kuro store's floating bottom bar: Themes | Stickers | Profile. */
+    private void drawStoreBar(Canvas canvas, Ctx x, int active) {
+        if (skipPins) {
+            return;
+        }
+        RectF r = tabBar(x.w, x.h);
+        shadow(canvas, r, dp(31), 3);
+        p.setColor(session.colorChain(x.surface, "components.bottomNavigation.background"));
+        canvas.drawRoundRect(r, dp(31), dp(31), p);
+        outlineFill(canvas, r, dp(31), x.divider, 1);
+        add("bottomTabs", new RectF(r));
+        String[] names = {"Themes", "Stickers", "Profile"};
+        String[] glyphs = {"kuro_theme", "ui_sticker", "settings_account"};
+        float cw = r.width() / 3f;
+        for (int i = 0; i < 3; i++) {
+            int col = i == active ? x.accent : x.text2;
+            float cx = r.left + cw * i + cw / 2f;
+            glyph(canvas, glyphs[i], cx, r.top + dp(22), dp(22), col);
+            p.setColor(col);
+            p.setTextSize(dp(11));
+            canvas.drawText(names[i], cx - p.measureText(names[i]) / 2f, r.top + dp(47), p);
+        }
+    }
+
+    private void drawStoreStickers(Canvas canvas, Ctx x) {
+        int sbg = session.color("screens.themeStore.background", 0);
+        if (sbg != 0) {
+            rect.set(0, 0, x.w, x.h);
+            p.setColor(sbg);
+            canvas.drawRect(rect, p);
+        }
+        int top = bar(canvas, x, "Kuro Theme");
+        String[] chips = {"Popular", "Newest"};
+        p.setTextSize(dp(14));
+        float tw = 0;
+        for (String c : chips) {
+            tw += p.measureText(c) + dp(32) + dp(8);
+        }
+        float cx = (x.w - tw + dp(8)) / 2f;
+        for (int i = 0; i < chips.length; i++) {
+            float cw = p.measureText(chips[i]) + dp(32);
+            rect.set(cx, top + dp(8), cx + cw, top + dp(40));
+            p.setColor(i == 1 ? x.accent : session.colorChain(x.surface, "components.card.background"));
+            canvas.drawRoundRect(rect, dp(16), dp(16), p);
+            add("themeCard", rect);
+            p.setColor(i == 1 ? x.onAccent : x.text2);
+            canvas.drawText(chips[i], cx + dp(16), top + dp(29), p);
+            cx += cw + dp(8);
+        }
+        top += dp(52);
+        String[] names = {"Cat", "Owl", "Bunny", "Chick", "Doge", "Bee", "Fox", "Panda", "Frog", "Duck", "Koala", "Seal"};
+        int[] tint = {0xFFFFD6A5, 0xFFC9B6F2, 0xFFFFC4D6, 0xFFFFE680, 0xFFFFC27A, 0xFFFFE08A, 0xFFFFB38A, 0xFFD9D9D9, 0xFFB5E3A8, 0xFFFFEB8A, 0xFFC4CCD6, 0xFFB8D8F0};
+        float gap = dp(8), cw = (x.w - dp(24) - gap * 2) / 3f, ch = dp(96), cr = dp(session.intValue("screens.themeStore.cardRadiusDp", 16));
+        for (int i = 0; i < names.length; i++) {
+            float px = dp(12) + (i % 3) * (cw + gap), py = top + (i / 3) * (ch + gap);
+            if (py > x.h) {
+                break;
+            }
+            rect.set(px, py, px + cw, py + ch);
+            RectF cr0 = new RectF(rect);
+            p.setColor(session.colorChain(x.surface, "components.card.background"));
+            canvas.drawRoundRect(cr0, cr, cr, p);
+            outlineFill(canvas, cr0, cr, x.divider, 1);
+            add("themeCard", cr0);
+            p.setColor(tint[i]);
+            rect.set(cr0.centerX() - dp(26), py + dp(10), cr0.centerX() + dp(26), py + dp(62));
+            canvas.drawRoundRect(rect, dp(12), dp(12), p);
+            p.setColor(0x33000000);
+            canvas.drawCircle(cr0.centerX() - dp(9), py + dp(32), dp(3), p);
+            canvas.drawCircle(cr0.centerX() + dp(9), py + dp(32), dp(3), p);
+            p.setColor(x.text);
+            p.setTextSize(dp(13));
+            p.setFakeBoldText(true);
+            canvas.drawText(names[i], cr0.centerX() - p.measureText(names[i]) / 2f, py + dp(82), p);
+            p.setFakeBoldText(false);
+        }
+        drawStoreBar(canvas, x, 1);
+    }
+
+    private void drawStoreProfile(Canvas canvas, Ctx x) {
+        int sbg = session.color("screens.themeStore.background", 0);
+        if (sbg != 0) {
+            rect.set(0, 0, x.w, x.h);
+            p.setColor(sbg);
+            canvas.drawRect(rect, p);
+        }
+        int top = bar(canvas, x, "Kuro Theme");
+        float cr = dp(session.intValue("screens.themeStore.cardRadiusDp", 20));
+        int cardFill = session.colorChain(x.surface, "components.card.background");
+        // header card
+        float hy = top + dp(8), hh = dp(190);
+        rect.set(dp(12), hy, x.w - dp(12), hy + hh);
+        RectF hc = new RectF(rect);
+        p.setColor(cardFill);
+        canvas.drawRoundRect(hc, cr, cr, p);
+        add("section", hc);
+        float cx = x.w / 2f;
+        p.setColor(0xFFC8CCD2);
+        canvas.drawCircle(cx, hy + dp(46), dp(34), p);
+        p.setStyle(Paint.Style.STROKE);
+        p.setStrokeWidth(dp(3));
+        p.setColor(x.accent);
+        canvas.drawCircle(cx, hy + dp(46), dp(38), p);
+        p.setStyle(Paint.Style.FILL);
+        p.setColor(x.text);
+        p.setTextSize(dp(18));
+        p.setFakeBoldText(true);
+        canvas.drawText("Alex Morgan", cx - p.measureText("Alex Morgan") / 2f, hy + dp(106), p);
+        p.setFakeBoldText(false);
+        p.setColor(x.accent);
+        p.setTextSize(dp(14));
+        canvas.drawText("@username", cx - p.measureText("@username") / 2f, hy + dp(126), p);
+        p.setColor(x.text2);
+        canvas.drawText("+00 000 000 000", cx - p.measureText("+00 000 000 000") / 2f, hy + dp(144), p);
+        String[] nums = {"2", "23", "0"}, labs = {"Themes", "Downloads", "Likes"};
+        for (int i = 0; i < 3; i++) {
+            float sx = hc.left + hc.width() * (i * 2 + 1) / 6f;
+            p.setColor(x.text);
+            p.setTextSize(dp(16));
+            canvas.drawText(nums[i], sx - p.measureText(nums[i]) / 2f, hy + dp(168), p);
+            p.setColor(x.text2);
+            p.setTextSize(dp(11));
+            canvas.drawText(labs[i], sx - p.measureText(labs[i]) / 2f, hy + dp(182), p);
+        }
+        // content card with the iOS-style switch
+        float cy = hy + hh + dp(10);
+        rect.set(dp(12), cy, x.w - dp(12), x.h);
+        RectF cc = new RectF(rect);
+        p.setColor(cardFill);
+        canvas.drawRoundRect(cc, cr, cr, p);
+        add("section", cc);
+        drawSegmented(canvas, x, new RectF(cc.left + dp(12), cy + dp(12), cc.right - dp(12), cy + dp(46)), new String[]{"Themes", "Stickers"}, 0);
+        float gy = cy + dp(60), gw = (cc.width() - dp(36)) / 2f;
+        rect.set(cc.left + dp(12), gy, cc.left + dp(12) + gw, gy + dp(190));
+        RectF nb = new RectF(rect);
+        p.setColor(x.accent);
+        p.setAlpha(24);
+        canvas.drawRoundRect(nb, dp(18), dp(18), p);
+        p.setAlpha(255);
+        p.setStyle(Paint.Style.STROKE);
+        p.setStrokeWidth(dp(2));
+        p.setColor(x.accent);
+        p.setPathEffect(new android.graphics.DashPathEffect(new float[]{dp(8), dp(6)}, 0));
+        canvas.drawRoundRect(nb, dp(18), dp(18), p);
+        p.setPathEffect(null);
+        p.setStyle(Paint.Style.FILL);
+        add("button", nb);
+        p.setTextSize(dp(26));
+        canvas.drawText("+", nb.centerX() - p.measureText("+") / 2f, nb.centerY(), p);
+        p.setTextSize(dp(14));
+        p.setFakeBoldText(true);
+        canvas.drawText("Create New Theme", nb.centerX() - p.measureText("Create New Theme") / 2f, nb.centerY() + dp(26), p);
+        p.setFakeBoldText(false);
+        float bx = nb.right + dp(12);
+        rect.set(bx, gy, bx + gw, gy + dp(190));
+        RectF tc = new RectF(rect);
+        p.setColor(x.bg);
+        canvas.drawRoundRect(tc, dp(18), dp(18), p);
+        add("themeCard", tc);
+        p.setShader(new LinearGradient(tc.left, tc.top, tc.left, tc.bottom, 0xFFFBE3DC, 0xFFC9E0F7, Shader.TileMode.CLAMP));
+        rect.set(tc.left + dp(8), tc.top + dp(8), tc.right - dp(8), tc.bottom - dp(48));
+        canvas.drawRoundRect(rect, dp(12), dp(12), p);
+        p.setShader(null);
+        p.setColor(x.text);
+        p.setTextSize(dp(13));
+        p.setFakeBoldText(true);
+        canvas.drawText("My Theme", tc.centerX() - p.measureText("My Theme") / 2f, tc.bottom - dp(24), p);
+        p.setFakeBoldText(false);
+        drawStoreBar(canvas, x, 2);
+    }
+
+    /** An iOS-style switch: a grey capsule track with a white capsule under the chosen label. */
+    private void drawSegmented(Canvas canvas, Ctx x, RectF r, String[] labels, int active) {
+        float rad = r.height() / 2f;
+        p.setColor((x.text & 0x00FFFFFF) | 0x14000000);
+        canvas.drawRoundRect(r, rad, rad, p);
+        float w = (r.width() - dp(4)) / labels.length;
+        RectF th = new RectF(r.left + dp(2) + w * active, r.top + dp(2), r.left + dp(2) + w * (active + 1), r.bottom - dp(2));
+        p.setColor(session.colorChain(x.surface, "components.card.background"));
+        p.setShadowLayer(dp(3), 0, dp(1), 0x33000000);
+        canvas.drawRoundRect(th, rad - dp(2), rad - dp(2), p);
+        p.clearShadowLayer();
+        for (int i = 0; i < labels.length; i++) {
+            p.setTextSize(dp(14));
+            p.setFakeBoldText(i == active);
+            p.setColor(i == active ? x.text : x.text2);
+            float cx = r.left + dp(2) + w * i + w / 2f;
+            canvas.drawText(labels[i], cx - p.measureText(labels[i]) / 2f, r.centerY() + dp(5), p);
+        }
+        p.setFakeBoldText(false);
     }
 
     private void drawChat(Canvas canvas, Ctx x) {

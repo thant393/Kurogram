@@ -54,6 +54,8 @@ final class RealScreenHost extends FrameLayout {
             case "contacts":
             case "profile":
             case "themeStore":
+            case "themeStore.stickers":
+            case "themeStore.profile":
             case "rows.privacy":
             case "rows.notifications":
             case "rows.dataStorage":
@@ -94,6 +96,8 @@ final class RealScreenHost extends FrameLayout {
                 b.putLong("user_id", self);
                 return new ProfileActivity(b);
             case "themeStore":
+            case "themeStore.stickers":
+            case "themeStore.profile":
                 return new KuroThemeActivity();
             case "rows.privacy":
                 return new PrivacySettingsActivity();
