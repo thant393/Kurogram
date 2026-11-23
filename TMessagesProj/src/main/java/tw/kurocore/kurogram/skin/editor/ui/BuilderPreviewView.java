@@ -2214,74 +2214,125 @@ public class BuilderPreviewView extends View {
             p.setColor(sbg);
             canvas.drawRect(rect, p);
         }
-        int top = bar(canvas, x, "Themes");
+        int bh = dp(session.intValue("components.appBar.heightDp", 52));
+        int fillBar = session.colorChain(x.surface, "components.appBar.background");
+        int fg = session.colorChain(x.text, "components.appBar.foreground");
+        rect.set(0, 0, x.w, bh);
+        p.setColor(fillBar);
+        canvas.drawRect(rect, p);
+        add("appBar", new RectF(0, 0, x.w, bh));
+        icon(canvas, "back", dp(28), bh / 2f, dp(9), fg);
+        p.setColor(fg);
+        p.setTextSize(dp(session.intValue("tokens.typography.titleSizeSp", 19)));
+        p.setFakeBoldText(true);
+        canvas.drawText("Kuro Theme", dp(72), bh / 2f + dp(6), p);
+        p.setFakeBoldText(false);
+        int top = bh;
         if ("on".equals(session.text("layout.themeStore.search", "on"))) {
-            rect.set(dp(12), top + dp(8), x.w - dp(12), top + dp(44));
-            p.setColor(session.colorChain(x.surface, "components.search.background"));
-            canvas.drawRoundRect(rect, dp(18), dp(18), p);
-            add("search", rect);
-            p.setColor(x.text2);
-            p.setTextSize(dp(14));
-            canvas.drawText("Search themes", dp(30), top + dp(31), p);
-            top += dp(52);
+            icon(canvas, "search", x.w - dp(26), bh / 2f, dp(9), fg);
+            add("search", new RectF(x.w - dp(46), 0, x.w, bh));
         }
+        top += dp(8);
         if ("on".equals(session.text("layout.themeStore.chips", "on"))) {
-            String[] chips = {"All", "Dark", "Light"};
+            String[] chips = {"Popular", "Newest", "All", "Messenger"};
+            boolean[] on = {true, false, true, false};
             float cx = dp(12);
             for (int i = 0; i < chips.length; i++) {
                 p.setTextSize(dp(13));
-                float cw = p.measureText(chips[i]) + dp(22);
-                rect.set(cx, top, cx + cw, top + dp(28));
-                p.setColor(i == 0 ? x.accent : (x.divider & 0x00FFFFFF) | 0x33000000);
-                canvas.drawRoundRect(rect, dp(14), dp(14), p);
-                add("themeCard", rect);
-                p.setColor(i == 0 ? x.onAccent : x.text2);
-                canvas.drawText(chips[i], cx + dp(11), top + dp(19), p);
+                float cw = p.measureText(chips[i]) + dp(26);
+                rect.set(cx, top, cx + cw, top + dp(32));
+                RectF cr = new RectF(rect);
+                p.setColor(on[i] ? x.accent : session.colorChain(x.surface, "components.card.background"));
+                canvas.drawRoundRect(cr, dp(16), dp(16), p);
+                add("themeCard", cr);
+                p.setColor(on[i] ? x.onAccent : x.text2);
+                canvas.drawText(chips[i], cx + dp(13), top + dp(21), p);
                 cx += cw + dp(8);
             }
-            top += dp(36);
+            top += dp(44);
         }
         boolean list = "list".equals(session.text("layout.themeStore.mode", "grid"));
         int cols = list ? 1 : session.intValue("screens.themeStore.gridColumns", 2);
-        int gap = dp(session.intValue("screens.themeStore.cardGapDp", 10));
-        float cr = dp(session.intValue("screens.themeStore.cardRadiusDp", 14)), pr = dp(session.intValue("screens.themeStore.previewRadiusDp", 12));
+        float gap = dp(session.intValue("screens.themeStore.cardGapDp", 12));
+        float cr = dp(session.intValue("screens.themeStore.cardRadiusDp", 20)), pr = dp(session.intValue("screens.themeStore.previewRadiusDp", 16));
         String aspect = session.text("screens.themeStore.previewAspect", "portrait");
-        float ratio = "square".equals(aspect) ? 1f : "tall".equals(aspect) ? 1.9f : 1.45f;
+        float ratio = "square".equals(aspect) ? 1f : "tall".equals(aspect) ? 1.9f : 1.6f;
         float cw = (x.w - dp(24) - gap * (cols - 1)) / cols;
-        float pw = list ? dp(70) : cw - dp(16), ph = list ? dp(70) : Math.min(pw * ratio, x.h * 0.28f);
-        float ch = list ? ph + dp(16) : ph + dp(60);
+        float pw = list ? dp(70) : cw - dp(16), ph = list ? dp(70) : Math.min(pw * ratio, x.h * 0.5f);
+        float ch = list ? ph + dp(16) : ph + dp(62);
         boolean below = "below".equals(session.text("layout.themeStore.meta.position", "below"));
-        String[] titles = {"Aurora", "Midnight", "Sakura", "Forest", "Ocean", "Sand"};
-        int[] tint = {0xFF4F7CFF, 0xFF1C1C2E, 0xFFFFB7C5, 0xFF2E7D32, 0xFF0288D1, 0xFFE0C097};
+        String[] titles = {"Messenger Inspired", "TG Profile Card", "Aurora", "Midnight", "Sakura", "Forest"};
+        String[] cats = {"Messenger", "Custom", "Light", "Dark", "Light", "Dark"};
+        int[][] tint = {{0xFFFDF6F4, 0xFFE9F2FD}, {0xFFFBE8DA, 0xFFD8F6FA}, {0xFFEAF0FF, 0xFFD3DEFF}, {0xFF2A2A40, 0xFF161626}, {0xFFFFE3EA, 0xFFFFC9D6}, {0xFFDFF0E0, 0xFFA8D5A9}};
         for (int i = 0; i < titles.length; i++) {
             int col = i % cols;
             float px = dp(12) + col * (cw + gap), py = top + (i / cols) * (ch + gap);
-            if (py + ch > x.h) {
+            if (py > x.h) {
                 break;
             }
             rect.set(px, py, px + cw, py + ch);
-            p.setColor(x.surface);
-            canvas.drawRoundRect(rect, cr, cr, p);
-            add("themeCard", rect);
-            rect.set(px + dp(8), py + dp(8), px + dp(8) + pw, py + dp(8) + ph);
-            p.setColor(tint[i]);
-            canvas.drawRoundRect(rect, pr, pr, p);
+            RectF card = new RectF(rect);
+            p.setColor(session.colorChain(x.surface, "components.card.background"));
+            canvas.drawRoundRect(card, cr, cr, p);
+            outlineFill(canvas, card, cr, x.divider, 1);
+            add("themeCard", card);
+            // a miniature of the theme: a phone with a header, a story row and a few chats
+            RectF mini = new RectF(px + dp(8), py + dp(8), px + dp(8) + pw, py + dp(8) + ph);
+            p.setShader(new LinearGradient(mini.left, mini.top, mini.left, mini.bottom, tint[i][0], tint[i][1], Shader.TileMode.CLAMP));
+            canvas.drawRoundRect(mini, pr, pr, p);
+            p.setShader(null);
+            outlineFill(canvas, mini, pr, x.divider, 1);
+            if (!list) {
+                boolean dark = i == 3 || i == 5;
+                int line1 = dark ? 0xFFE8E8F0 : 0xFF3A3A44, line2 = dark ? 0xFF8A8A9A : 0xFFA9A9B0;
+                float ix = mini.left + dp(10), iy = mini.top + dp(14);
+                p.setColor(x.accent);
+                rect.set(ix, iy, ix + mini.width() * 0.4f, iy + dp(5));
+                canvas.drawRoundRect(rect, dp(3), dp(3), p);
+                int[] dots = {0xFF3B82F6, 0xFF8B3FF0, 0xFFF63FD4, 0xFFF63F3F};
+                float dx = ix;
+                for (int d = 0; d < dots.length && dx + dp(16) < mini.right - dp(8); d++) {
+                    p.setColor(dots[d]);
+                    canvas.drawCircle(dx + dp(8), iy + dp(28), dp(8), p);
+                    dx += dp(22);
+                }
+                float ry = iy + dp(52);
+                for (int r = 0; ry + dp(26) < mini.bottom - dp(8) && r < 8; r++) {
+                    p.setColor(dots[r % 4]);
+                    canvas.drawCircle(ix + dp(8), ry + dp(8), dp(8), p);
+                    p.setColor(line1);
+                    rect.set(ix + dp(22), ry + dp(1), ix + dp(22) + mini.width() * 0.34f, ry + dp(5));
+                    canvas.drawRoundRect(rect, dp(2), dp(2), p);
+                    p.setColor(line2);
+                    rect.set(ix + dp(22), ry + dp(9), ix + dp(22) + mini.width() * 0.5f, ry + dp(12));
+                    canvas.drawRoundRect(rect, dp(2), dp(2), p);
+                    ry += dp(24);
+                }
+            }
             p.setColor(x.text);
             p.setFakeBoldText(true);
             p.setTextSize(dp(session.intValue("screens.themeStore.titleSizeSp", 14)));
-            float tx = list ? px + dp(16) + pw : px + dp(10);
-            float ty = list ? py + dp(28) : below ? py + ph + dp(26) : py + ph - dp(6);
+            String title = titles[i];
+            float tx, ty;
+            if (list) {
+                tx = px + dp(16) + pw;
+                ty = py + dp(28);
+            } else {
+                tx = card.centerX() - p.measureText(title) / 2f;
+                ty = below ? mini.bottom + dp(24) : mini.bottom - dp(8);
+            }
             if (!below && !list) {
                 p.setColor(0xFFFFFFFF);
             }
-            canvas.drawText(titles[i], tx, ty, p);
+            canvas.drawText(title, tx, ty, p);
             p.setFakeBoldText(false);
             p.setColor(x.text2);
             p.setTextSize(dp(11));
-            String meta = (session.bool("layout.themeStore.meta.creator", true) ? "by Aye " : "")
-                    + (session.bool("layout.themeStore.meta.downloads", true) ? "· 1.2k" : "");
+            String meta = cats[i] + (session.bool("layout.themeStore.meta.creator", true) ? " \u00B7 by Aye" : "")
+                    + (session.bool("layout.themeStore.meta.downloads", true) ? " \u00B7 \u2193 17" : "") + "  \u2665 0";
             if (below || list) {
-                canvas.drawText(meta, tx, ty + dp(16), p);
+                float mx = list ? tx : card.centerX() - p.measureText(meta) / 2f;
+                canvas.drawText(meta, mx, ty + dp(16), p);
             }
         }
         drawStoreBar(canvas, x, 0);

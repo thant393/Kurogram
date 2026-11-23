@@ -1430,6 +1430,9 @@ public class ThemeBuilderActivity extends BaseFragment {
 
     /** The app's own screens, in the order of the real app. Screens opened from inside one of these are the strip over the phone. */
     private static final String[] MAIN_SCREENS = {"chats", "chat", "contacts", "profile", "settings", "themeStore"};
+    /** Screens that open from inside Settings (each is its own activity in the app); listed under the main ones without a heading. */
+    private static final String[] SETTINGS_SCREENS = {"kuroSettings", "numberFinder", "specialContacts", "onlineContacts", "contactChanges", "rows.profile",
+            "chatSettings", "rows.privacy", "rows.notifications", "rows.dataStorage", "folders", "devices", "powerSaving", "language"};
     /** Screens made for Kuro themes only. */
     private static final String[] SUB_SCREENS = {"people", "drawer", "controls"};
 
@@ -1454,6 +1457,8 @@ public class ThemeBuilderActivity extends BaseFragment {
         }), LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 4, 0, 12));
         if (tab == 0) {
             sceneGrid(context, box, MAIN_SCREENS, dlg);
+            box.addView(new View(context), LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 14));
+            sceneGrid(context, box, SETTINGS_SCREENS, dlg);
         } else {
             sceneGrid(context, box, SUB_SCREENS, dlg);
         }
