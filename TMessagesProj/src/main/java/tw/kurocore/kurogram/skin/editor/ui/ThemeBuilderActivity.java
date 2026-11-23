@@ -930,9 +930,6 @@ public class ThemeBuilderActivity extends BaseFragment {
         Context context = kidsRow.getContext();
         String[] kids = tw.kurocore.kurogram.skin.editor.PreviewScreens.children(scene);
         java.util.List<String> ids = new java.util.ArrayList<>();
-        if ("settings".equals(parent)) {
-            ids.add("settings");
-        }
         ids.addAll(java.util.Arrays.asList(kids));
         for (final String id : ids) {
             LinearLayout chip = new LinearLayout(context);
@@ -1457,7 +1454,6 @@ public class ThemeBuilderActivity extends BaseFragment {
         }), LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 4, 0, 12));
         if (tab == 0) {
             sceneGrid(context, box, MAIN_SCREENS, dlg);
-            box.addView(new View(context), LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 14));
             sceneGrid(context, box, SETTINGS_SCREENS, dlg);
         } else {
             sceneGrid(context, box, SUB_SCREENS, dlg);
