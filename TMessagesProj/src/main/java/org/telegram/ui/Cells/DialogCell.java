@@ -688,7 +688,9 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
     // ---- JSON layout config (chatList.*); inactive unless applyLayoutConfig() was called for the main list ----
     private boolean lcOn;
     private int lcAvatarDp, lcRowDp, lcDy;
-    private boolean lcHidePreview, lcHideTime;
+    private boolean lcHidePreview, lcHideTime, lcHideChecks, lcUnreadTint, lcFullDivider;
+    private int lcBadgeRadiusDp;
+    private final android.graphics.Paint lcTintPaint = new android.graphics.Paint();
     private boolean tile;
     private int tileAvatarDp = 64;
     private boolean tileShowName = true, tileShowBadge = true;
@@ -710,6 +712,11 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
         lcRowDp = spec.intValue("chatList.row.heightDp", 0);
         lcHidePreview = !spec.boolValue("chatList.row.preview.show", true);
         lcHideTime = "hidden".equals(spec.stringValue("chatList.row.meta.time", ""));
+        lcHideChecks = !spec.boolValue("chatList.row.meta.checks", true);
+        lcUnreadTint = spec.boolValue("chatList.row.unreadTint", false);
+        lcFullDivider = "full".equals(spec.stringValue("chatList.row.divider.inset", "text"));
+        String badgeShape = spec.stringValue("chatList.row.badge.shape", "pill");
+        lcBadgeRadiusDp = "square".equals(badgeShape) ? 3 : "rounded".equals(badgeShape) ? 7 : 0;
         if (lcAvatarDp > 0) {
             messagePaddingStart = avatarStart + lcAvatarDp + 5;
         }
@@ -718,6 +725,10 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
             heightThreeLines = lcRowDp - 1;
             lcDy = (lcRowDp - 71) / 2;
         }
+    }
+
+    private float lcBadgeR() {
+        return lcOn && lcBadgeRadiusDp > 0 ? dp(lcBadgeRadiusDp) : dp(11.5f);
     }
 
     public boolean isTile() {
@@ -2395,6 +2406,10 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
             }
         }
 
+        if (lcOn && lcHideChecks) {
+            drawCheck1 = false;
+            drawCheck2 = false;
+        }
         int timeWidth;
         if (drawTime && !lcHideTime) {
             final TextPaint tp = getTimeTextPaint();
@@ -4173,6 +4188,10 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
             Theme.dialogs_pinnedPaint.setColor(AndroidUtilities.getOffsetColor(0, Theme.getColor(Theme.key_chats_pinnedOverlay, resourcesProvider), archiveBackgroundProgress, 1.0f));
             Theme.dialogs_pinnedPaint.setAlpha((int) (Theme.dialogs_pinnedPaint.getAlpha() * (1f - rightFragmentOpenedProgress)));
             // canvas.drawRect(-xOffset, 0, getMeasuredWidth(), getMeasuredHeight() - translateY, Theme.dialogs_pinnedPaint);
+        } else if (lcOn && lcUnreadTint && (unreadCount != 0 || markUnread) && !dialogMuted && !(getIsPinned() || drawPinBackground)) {
+            lcTintPaint.setColor(Theme.getColor(Theme.key_chats_unreadCounter, resourcesProvider));
+            lcTintPaint.setAlpha((int) (26 * (1f - rightFragmentOpenedProgress)));
+            canvas.drawRect(0, 0, getMeasuredWidth(), getMeasuredHeight() - translateY, lcTintPaint);
         } else if (getIsPinned() || drawPinBackground) {
             Theme.dialogs_pinnedPaint.setColor(Theme.getColor(Theme.key_chats_pinnedOverlay, resourcesProvider));
             Theme.dialogs_pinnedPaint.setAlpha((int) (Theme.dialogs_pinnedPaint.getAlpha() * (1f - rightFragmentOpenedProgress)));
@@ -4944,7 +4963,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
         if (useSeparator && tw.kurocore.kurogram.skin.KuroSkinManager.get().spec().boolValue("screens.chats.showDividers", true)
                 && tw.kurocore.kurogram.layout.LayoutManager.get().spec().boolValue("chatList.row.dividers", true)) {
             int left;
-            if (fullSeparator || currentDialogFolderId != 0 && archiveHidden && !fullSeparator2 || fullSeparator2 && !archiveHidden) {
+            if (lcOn && lcFullDivider || fullSeparator || currentDialogFolderId != 0 && archiveHidden && !fullSeparator2 || fullSeparator2 && !archiveHidden) {
                 left = 0;
             } else {
                 left = dp(messagePaddingStart);
@@ -5467,9 +5486,9 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                         canvas.drawPath(counterPath, counterPaintOutline);
                     }
                 } else {
-                    canvas.drawRoundRect(rect, dp(11.5f), dp(11.5f), paint);
+                    canvas.drawRoundRect(rect, lcBadgeR(), lcBadgeR(), paint);
                     if (outline) {
-                        canvas.drawRoundRect(rect, dp(11.5f), dp(11.5f), counterPaintOutline);
+                        canvas.drawRoundRect(rect, lcBadgeR(), lcBadgeR(), counterPaintOutline);
                     }
                 }
                 if (drawLayout != null) {
@@ -5519,9 +5538,9 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                         canvas.drawPath(counterPath, counterPaintOutline);
                     }
                 } else {
-                    canvas.drawRoundRect(rect, dp(11.5f), dp(11.5f), paint);
+                    canvas.drawRoundRect(rect, lcBadgeR(), lcBadgeR(), paint);
                     if (outline) {
-                        canvas.drawRoundRect(rect, dp(11.5f), dp(11.5f), counterPaintOutline);
+                        canvas.drawRoundRect(rect, lcBadgeR(), lcBadgeR(), counterPaintOutline);
                     }
                 }
                 if (countAnimationStableLayout != null) {

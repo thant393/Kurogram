@@ -905,6 +905,10 @@ public class BuilderPreviewView extends View {
                 } else {
                     canvas.drawRect(rect, p);
                 }
+                if (i < 2 && session.bool("layout.chatList.row.unreadTint", false)) {
+                    p.setColor((x.accent & 0x00FFFFFF) | 0x1A000000);
+                    canvas.drawRect(rect, p);
+                }
                 add("chatRow", rect);
                 float cy = y + rowH / 2f;
                 p.setColor(avatars[i]);
@@ -953,6 +957,16 @@ public class BuilderPreviewView extends View {
                 if (!"hidden".equals(timePos)) {
                     p.setTextSize(dp(cap));
                     float tw = p.measureText(times[i]);
+                    if (i == 1 && session.bool("layout.chatList.row.meta.checks", true)) {
+                        p.setColor(x.accent);
+                        p.setStrokeWidth(dp(1.5f));
+                        float cx0 = x.w - side - dp(12) - tw - dp(16);
+                        float cy0 = cy - dp(10);
+                        canvas.drawLine(cx0, cy0, cx0 + dp(3), cy0 + dp(3), p);
+                        canvas.drawLine(cx0 + dp(3), cy0 + dp(3), cx0 + dp(8), cy0 - dp(3), p);
+                        p.setStrokeWidth(0);
+                        p.setColor(x.text2);
+                    }
                     float ty2 = "bottom-right".equals(timePos) ? cy + dp(16) : cy - dp(6);
                     canvas.drawText(times[i], x.w - side - dp(12) - tw, ty2, p);
                     rect.set(x.w - side - dp(12) - tw, ty2 - dp(cap + 2), x.w - side - dp(12), ty2 + dp(2));
@@ -971,7 +985,9 @@ public class BuilderPreviewView extends View {
                 } else if (i < 2) {
                     p.setColor(i == 0 ? x.accent : x.error);
                     rect.set(x.w - side - dp(36), cy + dp(4), x.w - side - dp(12), cy + dp(24));
-                    canvas.drawRoundRect(rect, dp(10), dp(10), p);
+                    String bs = session.text("layout.chatList.row.badge.shape", "pill");
+                    float br = "square".equals(bs) ? dp(3) : "rounded".equals(bs) ? dp(7) : dp(10);
+                    canvas.drawRoundRect(rect, br, br, p);
                     p.setColor(x.onAccent);
                     p.setTextSize(dp(12));
                     canvas.drawText(String.valueOf(i + 2), x.w - side - dp(27), cy + dp(19), p);
@@ -979,7 +995,7 @@ public class BuilderPreviewView extends View {
                 }
                 if (dividers && !card) {
                     p.setColor(session.colorChain(x.divider, "components.cell.dividerColor"));
-                    canvas.drawRect(tx, y + rowH - 1, x.w, y + rowH, p);
+                    canvas.drawRect("full".equals(session.text("layout.chatList.row.divider.inset", "text")) ? 0 : tx, y + rowH - 1, x.w, y + rowH, p);
                 }
             }
         }

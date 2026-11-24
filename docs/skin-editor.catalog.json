@@ -6034,6 +6034,94 @@
    "reviewed": [
     "en"
    ]
+  },
+  {
+   "path": "layout.chatList.row.divider.inset",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": true,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatRow"
+   ],
+   "label": {
+    "en": "Divider reaches screen edge"
+   },
+   "description": {
+    "en": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.row.meta.checks",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": true,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatRow.time"
+   ],
+   "label": {
+    "en": "Sent / read ticks"
+   },
+   "description": {
+    "en": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.row.unreadTint",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": true,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatRow"
+   ],
+   "label": {
+    "en": "Tint unread rows"
+   },
+   "description": {
+    "en": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.row.badge.shape",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": true,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatRow.badge"
+   ],
+   "label": {
+    "en": "Unread badge shape"
+   },
+   "description": {
+    "en": ""
+   },
+   "reviewed": [
+    "en"
+   ]
   }
  ],
  "items": {
