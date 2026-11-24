@@ -4875,6 +4875,13 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         floatingButton3 = new FragmentFloatingButton(context, resourceProvider);
         contentView.addView(floatingButton3, FragmentFloatingButton.createDefaultLayoutParams());
         floatingButton3.useSkinTokens();
+        if ("left".equals(tw.kurocore.kurogram.layout.LayoutManager.get().spec().stringValue("chatList.fab.position", "right"))) {
+            for (android.view.View fb : new android.view.View[]{floatingButtonStories, floatingButton3}) {
+                android.widget.FrameLayout.LayoutParams flp = (android.widget.FrameLayout.LayoutParams) fb.getLayoutParams();
+                flp.gravity = Gravity.LEFT | Gravity.BOTTOM;
+                fb.setLayoutParams(flp);
+            }
+        }
         floatingButton3.setOnClickListener(v -> {
             if (parentLayout != null && parentLayout.isInPreviewMode()) {
                 finishPreviewFragment();
@@ -9023,7 +9030,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             floatingButton3.setButtonVisible(isVisible, animated);
         }
         if (floatingButtonStories != null) {
-            floatingButtonStories.setButtonVisible(isVisible, animated);
+            floatingButtonStories.setButtonVisible(isVisible && tw.kurocore.kurogram.layout.LayoutManager.get().spec().boolValue("chatList.fab.camera", true), animated);
         }
     }
 

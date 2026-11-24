@@ -688,7 +688,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
     // ---- JSON layout config (chatList.*); inactive unless applyLayoutConfig() was called for the main list ----
     private boolean lcOn;
     private int lcAvatarDp, lcRowDp, lcDy;
-    private boolean lcHidePreview, lcHideTime, lcHideChecks, lcUnreadTint, lcFullDivider;
+    private boolean lcHidePreview, lcHideTime, lcHideChecks, lcUnreadTint, lcFullDivider, lcHideMute, lcUnreadRing;
     private int lcBadgeRadiusDp;
     private final android.graphics.Paint lcTintPaint = new android.graphics.Paint();
     private boolean tile;
@@ -712,6 +712,8 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
         lcRowDp = spec.intValue("chatList.row.heightDp", 0);
         lcHidePreview = !spec.boolValue("chatList.row.preview.show", true);
         lcHideTime = "hidden".equals(spec.stringValue("chatList.row.meta.time", ""));
+        lcHideMute = !spec.boolValue("chatList.row.badges.mute", true);
+        lcUnreadRing = spec.boolValue("chatList.row.avatar.unreadRing", false);
         lcHideChecks = !spec.boolValue("chatList.row.meta.checks", true);
         lcUnreadTint = spec.boolValue("chatList.row.unreadTint", false);
         lcFullDivider = "full".equals(spec.stringValue("chatList.row.divider.inset", "text"));
@@ -4596,7 +4598,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                 }
             }
             boolean drawMuted = drawUnmute || dialogMuted || isHiddenInCommunity;
-            if (dialogsType != 2 && (drawMuted || dialogMutedProgress > 0) && !drawVerified && drawScam == 0) {
+            if (!(lcOn && lcHideMute) && dialogsType != 2 && (drawMuted || dialogMutedProgress > 0) && !drawVerified && drawScam == 0) {
                 if (drawMuted && dialogMutedProgress != 1f) {
                     dialogMutedProgress += 16 / 150f;
                     if (dialogMutedProgress > 1f) {
@@ -4908,6 +4910,14 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                     checkTtl();
                 }
                 storyParams.forceState = s;
+                if (lcOn && lcUnreadRing && (unreadCount != 0 || markUnread) && !dialogMuted && currentDialogFolderId == 0) {
+                    lcTintPaint.setStyle(android.graphics.Paint.Style.STROKE);
+                    lcTintPaint.setStrokeWidth(dp(2));
+                    lcTintPaint.setAntiAlias(true);
+                    lcTintPaint.setColor(Theme.getColor(Theme.key_chats_unreadCounter, resourcesProvider));
+                    canvas.drawCircle(storyParams.originalAvatarRect.centerX(), storyParams.originalAvatarRect.centerY(), storyParams.originalAvatarRect.width() / 2f + dp(2.5f), lcTintPaint);
+                    lcTintPaint.setStyle(android.graphics.Paint.Style.FILL);
+                }
             }
 
             if (!insideCommunityList && (chat != null && chat.linked_community_id != 0 || user != null && user.linked_community_id != 0) && !drawCommunityAvatar && isDialogCell && !isDialogFolder()) {

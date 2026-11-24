@@ -742,7 +742,11 @@ public class BuilderPreviewView extends View {
             return;
         }
         float fs = dp(session.intValue("components.fab.sizeDp", 52));
-        float fx = x.w - dp(16) - fs, fy = x.h - dp(72) - dp(16) - fs;
+        boolean fabLeft = "left".equals(session.text("layout.chatList.fab.position", "right"));
+        if (camera && !session.bool("layout.chatList.fab.camera", true)) {
+            camera = false;
+        }
+        float fx = fabLeft ? dp(16) : x.w - dp(16) - fs, fy = x.h - dp(72) - dp(16) - fs;
         if (camera) {
             float cs = dp(40), cx = fx + (fs - cs) / 2f, cy = fy - dp(12) - cs;
             rect.set(cx, cy, cx + cs, cy + cs);
@@ -911,6 +915,14 @@ public class BuilderPreviewView extends View {
                 }
                 add("chatRow", rect);
                 float cy = y + rowH / 2f;
+                float ar0 = Math.min(dp(avDp) / 2f, rowH / 2f - dp(4));
+                if (i < 2 && session.bool("layout.chatList.row.avatar.unreadRing", false)) {
+                    p.setStyle(Paint.Style.STROKE);
+                    p.setStrokeWidth(dp(2));
+                    p.setColor(x.accent);
+                    canvas.drawCircle(side + dp(12) + ar0, cy, ar0 + dp(2.5f), p);
+                    p.setStyle(Paint.Style.FILL);
+                }
                 p.setColor(avatars[i]);
                 float ar = Math.min(dp(avDp) / 2f, rowH / 2f - dp(4));
                 rect.set(side + dp(12), cy - ar, side + dp(12) + 2 * ar, cy + ar);

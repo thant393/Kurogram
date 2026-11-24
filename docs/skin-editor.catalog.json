@@ -6122,6 +6122,94 @@
    "reviewed": [
     "en"
    ]
+  },
+  {
+   "path": "layout.chatList.row.badges.mute",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": true,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatRow.title"
+   ],
+   "label": {
+    "en": "Muted icon"
+   },
+   "description": {
+    "en": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.row.avatar.unreadRing",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": true,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "chatRow.avatar"
+   ],
+   "label": {
+    "en": "Ring on unread avatars"
+   },
+   "description": {
+    "en": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.fab.position",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": true,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "fab"
+   ],
+   "label": {
+    "en": "Compose button side"
+   },
+   "description": {
+    "en": ""
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  {
+   "path": "layout.chatList.fab.camera",
+   "group": "layout.chatList",
+   "level": "advanced",
+   "phase": 3,
+   "built": true,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "fab"
+   ],
+   "label": {
+    "en": "Story camera button"
+   },
+   "description": {
+    "en": ""
+   },
+   "reviewed": [
+    "en"
+   ]
   }
  ],
  "items": {
