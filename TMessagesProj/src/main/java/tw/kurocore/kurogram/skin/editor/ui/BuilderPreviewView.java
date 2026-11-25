@@ -46,7 +46,7 @@ public class BuilderPreviewView extends View {
     private Listener listener;
     private boolean editMode = true; // Edit: tapping selects and the selection is outlined. Preview: neither.
     private int deviceWidthDp = 360;
-    private static final float CONTENT_FACTOR = 1.8f; // list screens are laid out this many screens tall so they can be scrolled
+    private static final float CONTENT_FACTOR = 1.3f; // list screens are laid out this many screens tall so they can be scrolled
     private String[] highlight;
     private float scrollY;
     private float lastY, downY;
@@ -658,6 +658,15 @@ public class BuilderPreviewView extends View {
                 c.drawLine(cx + s * 0.55f, cy - s * 0.1f, cx + s * 1.0f, cy - s * 0.1f, ip);
                 c.drawLine(cx + s * 0.78f, cy - s * 0.33f, cx + s * 0.78f, cy + s * 0.13f, ip);
                 break;
+            case "pin":
+                c.save();
+                c.rotate(40, cx, cy);
+                path.addRoundRect(new RectF(cx - s * 0.38f, cy - s * 0.9f, cx + s * 0.38f, cy + s * 0.15f), s * 0.15f, s * 0.15f, android.graphics.Path.Direction.CW);
+                c.drawPath(path, ip);
+                c.drawLine(cx - s * 0.75f, cy + s * 0.15f, cx + s * 0.75f, cy + s * 0.15f, ip);
+                c.drawLine(cx, cy + s * 0.15f, cx, cy + s * 0.95f, ip);
+                c.restore();
+                break;
             case "trash":
                 c.drawLine(cx - s * 0.9f, cy - s * 0.55f, cx + s * 0.9f, cy - s * 0.55f, ip);
                 c.drawLine(cx - s * 0.35f, cy - s * 0.55f, cx - s * 0.35f, cy - s * 0.85f, ip);
@@ -985,8 +994,10 @@ public class BuilderPreviewView extends View {
                     add("chatRow.time", rect);
                 }
                 if (i == 0 && "icon-left-of-time".equals(session.text("layout.chatList.row.pinned", "none"))) {
-                    p.setColor(x.text2);
-                    canvas.drawRect(x.w - side - dp(52), cy - dp(16), x.w - side - dp(44), cy - dp(8), p);
+                    icon(canvas, "pin", x.w - side - dp(58), cy - dp(10), dp(5), x.text2);
+                }
+                if (i == 2 || i == 3) {
+                    icon(canvas, "pin", x.w - side - dp(22), cy + dp(14), dp(6), x.text2);
                 }
                 if (i == 3 && "bottom-right".equals(session.text("layout.chatList.row.meta.seenAvatar", "none"))) {
                     avatar(canvas, x.w - side - dp(20), cy + dp(14), dp(7), AV[1]);

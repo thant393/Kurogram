@@ -472,6 +472,11 @@ public class ThemeDetailActivity extends BaseFragment {
                 && variantKey().equals(appliedVariant());
     }
 
+    /** The offline copy is kept per look, so a style's copy is never replayed for another style. */
+    private String cacheId() {
+        return selStyle == null && selWay == null ? info.id : info.id + "#" + variantKey();
+    }
+
     private String variantKey() {
         return (selStyle == null ? "" : selStyle) + "|" + (selWay == null ? "" : selWay);
     }
@@ -673,7 +678,7 @@ public class ThemeDetailActivity extends BaseFragment {
             public void onError(String message) {
                 if (fragmentView == null) return;
                 // Offline? Use the copy saved the last time this version was downloaded.
-                JSONObject cached = KuroFeatures.themes().cachedDownload(info.id, info.version);
+                JSONObject cached = KuroFeatures.themes().cachedDownload(cacheId(), info.version);
                 if (cached != null) {
                     handle(cached, previewOnly, true);
                     return;
@@ -692,7 +697,7 @@ public class ThemeDetailActivity extends BaseFragment {
             String type = response.getString("type");
             verifyHash(content, response.optString("sha256", ""));
             if (!fromCache) {
-                KuroFeatures.themes().cacheContent(info.id, response.optInt("version", info.version), type, response.optString("sha256", ""), content);
+                KuroFeatures.themes().cacheContent(cacheId(), response.optInt("version", info.version), type, response.optString("sha256", ""), content);
             }
             if (previewOnly) {
                 if (!"skin".equals(type)) {
