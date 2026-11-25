@@ -667,6 +667,17 @@ public class BuilderPreviewView extends View {
                 c.drawLine(cx, cy + s * 0.15f, cx, cy + s * 0.95f, ip);
                 c.restore();
                 break;
+            case "mute":
+                path.moveTo(cx - s * 0.9f, cy - s * 0.35f);
+                path.lineTo(cx - s * 0.4f, cy - s * 0.35f);
+                path.lineTo(cx + s * 0.3f, cy - s * 0.95f);
+                path.lineTo(cx + s * 0.3f, cy + s * 0.95f);
+                path.lineTo(cx - s * 0.4f, cy + s * 0.35f);
+                path.lineTo(cx - s * 0.9f, cy + s * 0.35f);
+                path.close();
+                c.drawPath(path, ip);
+                c.drawLine(cx - s * 0.9f, cy + s * 1.0f, cx + s * 0.9f, cy - s * 1.0f, ip);
+                break;
             case "trash":
                 c.drawLine(cx - s * 0.9f, cy - s * 0.55f, cx + s * 0.9f, cy - s * 0.55f, ip);
                 c.drawLine(cx - s * 0.35f, cy - s * 0.55f, cx - s * 0.35f, cy - s * 0.85f, ip);
@@ -957,6 +968,22 @@ public class BuilderPreviewView extends View {
                     p.setColor(x.text);
                 }
                 canvas.drawText(names[i], tx, showPreview ? cy - dp(4) : cy + dp(5), p);
+                float nameEnd = tx + p.measureText(names[i]) + dp(8);
+                float nameY = (showPreview ? cy - dp(4) : cy + dp(5)) - dp(5);
+                if (i == 1) {
+                    p.setColor(x.accent);
+                    canvas.drawCircle(nameEnd + dp(6), nameY, dp(6), p);
+                    p.setColor(x.onAccent);
+                    p.setStyle(Paint.Style.STROKE);
+                    p.setStrokeWidth(dp(1.4f));
+                    canvas.drawLine(nameEnd + dp(3.2f), nameY, nameEnd + dp(5.2f), nameY + dp(2.2f), p);
+                    canvas.drawLine(nameEnd + dp(5.2f), nameY + dp(2.2f), nameEnd + dp(9), nameY - dp(2.4f), p);
+                    p.setStyle(Paint.Style.FILL);
+                    p.setStrokeWidth(0);
+                } else if ((i == 4 || i == 5) && session.bool("layout.chatList.row.badges.mute", true)) {
+                    icon(canvas, "mute", nameEnd + dp(5), nameY, dp(5), x.text2);
+                }
+                p.setColor(x.text);
                 rect.set(tx, cy - dp(body + 4), x.w * 0.62f, cy);
                 add("chatRow.title", rect);
                 p.setFakeBoldText(false);
