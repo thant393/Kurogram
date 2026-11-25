@@ -7025,7 +7025,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 if (filterTabsView.getVisibility() != View.VISIBLE) {
                     animatedUpdateItems = false;
                 }
-                canShowFilterTabsView = true;
+                canShowFilterTabsView = !FilterTabsView.hiddenStyle();
                 boolean updateCurrentTab = filterTabsView.isEmpty();
                 updateFilterTabsVisibility(animated);
                 int id = filterTabsView.getCurrentTabId();

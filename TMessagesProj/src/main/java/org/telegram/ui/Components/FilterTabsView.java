@@ -1272,6 +1272,11 @@ public class FilterTabsView extends FrameLayout {
         return "chips".equals(tw.kurocore.kurogram.layout.LayoutManager.get().spec().stringValue("chatList.folders.style", null));
     }
 
+    /** A layout pack can hide the folder strip altogether (chatList.folders.style = none). */
+    public static boolean hiddenStyle() {
+        return "none".equals(tw.kurocore.kurogram.layout.LayoutManager.get().spec().stringValue("chatList.folders.style", null));
+    }
+
     private static final Paint CHIP_PAINT = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     public CharSequence text(String t, ArrayList<TLRPC.MessageEntity> e, String emoticon)  {
