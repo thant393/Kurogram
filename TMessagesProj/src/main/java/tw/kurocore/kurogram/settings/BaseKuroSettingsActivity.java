@@ -66,6 +66,11 @@ public abstract class BaseKuroSettingsActivity extends BaseFragment {
     protected LinearLayoutManager layoutManager;
     protected Theme.ResourcesProvider resourcesProvider;
     protected View actionBarBackground;
+
+    /** The skin colour behind this screen; a screen with its own screens.<id>.background overrides it. */
+    protected int skinScreenBackground() {
+        return tw.kurocore.kurogram.skin.KuroUi.t().settingsBackground;
+    }
     protected FrameLayout actionBarContainer;
     protected ActionBarMenuItem searchItem;
 
@@ -122,7 +127,7 @@ public abstract class BaseKuroSettingsActivity extends BaseFragment {
                 super.dispatchDraw(canvas);
             }
         };
-        tw.kurocore.kurogram.skin.KuroUi.applyBackground(contentView, tw.kurocore.kurogram.skin.KuroUi.t().settingsBackground);
+        tw.kurocore.kurogram.skin.KuroUi.applyBackground(contentView, skinScreenBackground());
 
         listView = new UniversalRecyclerView(this, this::fillItems, this::onItemClick, (item, view, position, x, y) -> {
             if (onItemLongClick(item, view, position, x, y)) {

@@ -122,7 +122,7 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
 
         FrameLayout frameLayout = new FrameLayout(context);
         fragmentView = frameLayout;
-        fragmentView.setBackgroundColor(Theme.getColor(asTab ? Theme.key_windowBackgroundWhite : Theme.key_windowBackgroundGray));
+        fragmentView.setBackgroundColor(asTab ? Theme.getColor(Theme.key_windowBackgroundWhite) : tw.kurocore.kurogram.skin.KuroUi.screenBackground("onlineContacts", Theme.getColor(Theme.key_windowBackgroundGray)));
 
         listAdapter = new ListAdapter(context);
         listView = new RecyclerListView(context);

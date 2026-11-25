@@ -75,6 +75,9 @@ public final class SkinTokens {
     public final int sectionStyle, sectionRadiusDp, sectionGapDp;
     /** screens.<id>.background for the row-list settings screens; 0 = not set (the screen keeps the theme's own background). */
     public final int screenBgPrivacy, screenBgNotifications, screenBgDataStorage, screenBgDevices;
+    /** screens.<id>.background of the other settings screens (kuroSettings, numberFinder, ...), by id. */
+    public final java.util.Map<String, Integer> screenBgOther = new java.util.HashMap<>();
+    public static final String[] OTHER_SCREENS = {"kuroSettings","numberFinder","specialContacts","onlineContacts","contactChanges","chatSettings","folders","powerSaving","language"};
     /** components.session.*; -1 = not set. */
     public final int sessionAvatarRadiusDp, sessionNameSizeSp;
     /** components.switch.*; 0 = not set (the switch keeps the theme's own colours). */
@@ -199,6 +202,12 @@ public final class SkinTokens {
         screenBgNotifications = s.colorValue("screens.notifications.background");
         screenBgDataStorage = s.colorValue("screens.dataStorage.background");
         screenBgDevices = s.colorValue("screens.devices.background");
+        for (String sid : OTHER_SCREENS) {
+            int bg = s.colorValue("screens." + sid + ".background");
+            if (bg != 0) {
+                screenBgOther.put(sid, bg);
+            }
+        }
         sessionAvatarRadiusDp = s.intValue("components.session.avatarRadiusDp", -1);
         sessionNameSizeSp = s.intValue("components.session.nameSizeSp", -1);
         switchTrackOn = s.colorValue("components.switch.trackOn");

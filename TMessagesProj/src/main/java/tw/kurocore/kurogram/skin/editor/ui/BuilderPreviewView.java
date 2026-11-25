@@ -1320,6 +1320,15 @@ public class BuilderPreviewView extends View {
             case "rows.dataStorage": return "dataStorage";
             case "rows.profile": return "profile";
             case "devices": return "devices";
+            case "numberFinder": return "numberFinder";
+            case "specialContacts": return "specialContacts";
+            case "onlineContacts": return "onlineContacts";
+            case "contactChanges": return "contactChanges";
+            case "chatSettings": return "chatSettings";
+            case "folders": return "folders";
+            case "powerSaving": return "powerSaving";
+            case "language": return "language";
+            case "kuroSettings": return "kuroSettings";
             default: return null;
         }
     }

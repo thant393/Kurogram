@@ -101,7 +101,7 @@ public class LiteModeSettingsActivity extends BaseFragment {
         }
 
         contentView = new FrameLayout(context);
-        contentView.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
+        contentView.setBackgroundColor(tw.kurocore.kurogram.skin.KuroUi.screenBackground("powerSaving", Theme.getColor(Theme.key_windowBackgroundGray)));
 
         listView = new RecyclerListView(context);
         listView.setSections();

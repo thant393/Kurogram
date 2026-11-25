@@ -107,6 +107,70 @@
    "reviewed": [
     "en"
    ]
+  },
+  "numberFinder": {
+   "label": {
+    "en": "Number Finder"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "specialContacts": {
+   "label": {
+    "en": "Special contacts"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "onlineContacts": {
+   "label": {
+    "en": "Online contacts"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "contactChanges": {
+   "label": {
+    "en": "Contact changes"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "chatSettings": {
+   "label": {
+    "en": "Chat settings"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "folders": {
+   "label": {
+    "en": "Folders"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "powerSaving": {
+   "label": {
+    "en": "Power saving"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "language": {
+   "label": {
+    "en": "Language"
+   },
+   "reviewed": [
+    "en"
+   ]
   }
  },
  "components": {
@@ -795,6 +859,78 @@
   "layout.dataStorage": {
    "label": {
     "en": "Data and storage rows"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "screen.numberFinder": {
+   "label": {
+    "en": "Number Finder screen"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "screen.specialContacts": {
+   "label": {
+    "en": "Special contacts screen"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "screen.onlineContacts": {
+   "label": {
+    "en": "Online contacts screen"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "screen.contactChanges": {
+   "label": {
+    "en": "Contact changes screen"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "screen.chatSettings": {
+   "label": {
+    "en": "Chat settings screen"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "screen.folders": {
+   "label": {
+    "en": "Folders screen"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "screen.powerSaving": {
+   "label": {
+    "en": "Power saving screen"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "screen.language": {
+   "label": {
+    "en": "Language screen"
+   },
+   "reviewed": [
+    "en"
+   ]
+  },
+  "screen.kuroSettings": {
+   "label": {
+    "en": "Kuro settings screen"
    },
    "reviewed": [
     "en"
@@ -6210,6 +6346,213 @@
    "reviewed": [
     "en"
    ]
+  },
+  {
+   "path": "screens.kuroSettings.background",
+   "group": "screen.kuroSettings",
+   "level": "advanced",
+   "phase": 3,
+   "built": true,
+   "screens": [
+    "kuroSettings"
+   ],
+   "targets": [
+    "screenBackground"
+   ],
+   "label": {
+    "en": "Background"
+   },
+   "description": {
+    "en": ""
+   },
+   "reviewed": [
+    "en"
+   ],
+   "previewed": true
+  },
+  {
+   "path": "screens.numberFinder.background",
+   "group": "screen.numberFinder",
+   "level": "advanced",
+   "phase": 3,
+   "built": true,
+   "screens": [
+    "numberFinder"
+   ],
+   "targets": [
+    "screenBackground"
+   ],
+   "label": {
+    "en": "Background"
+   },
+   "description": {
+    "en": ""
+   },
+   "reviewed": [
+    "en"
+   ],
+   "previewed": true
+  },
+  {
+   "path": "screens.specialContacts.background",
+   "group": "screen.specialContacts",
+   "level": "advanced",
+   "phase": 3,
+   "built": true,
+   "screens": [
+    "specialContacts"
+   ],
+   "targets": [
+    "screenBackground"
+   ],
+   "label": {
+    "en": "Background"
+   },
+   "description": {
+    "en": ""
+   },
+   "reviewed": [
+    "en"
+   ],
+   "previewed": true
+  },
+  {
+   "path": "screens.onlineContacts.background",
+   "group": "screen.onlineContacts",
+   "level": "advanced",
+   "phase": 3,
+   "built": true,
+   "screens": [
+    "onlineContacts"
+   ],
+   "targets": [
+    "screenBackground"
+   ],
+   "label": {
+    "en": "Background"
+   },
+   "description": {
+    "en": ""
+   },
+   "reviewed": [
+    "en"
+   ],
+   "previewed": true
+  },
+  {
+   "path": "screens.contactChanges.background",
+   "group": "screen.contactChanges",
+   "level": "advanced",
+   "phase": 3,
+   "built": true,
+   "screens": [
+    "contactChanges"
+   ],
+   "targets": [
+    "screenBackground"
+   ],
+   "label": {
+    "en": "Background"
+   },
+   "description": {
+    "en": ""
+   },
+   "reviewed": [
+    "en"
+   ],
+   "previewed": true
+  },
+  {
+   "path": "screens.chatSettings.background",
+   "group": "screen.chatSettings",
+   "level": "advanced",
+   "phase": 3,
+   "built": true,
+   "screens": [
+    "chatSettings"
+   ],
+   "targets": [
+    "screenBackground"
+   ],
+   "label": {
+    "en": "Background"
+   },
+   "description": {
+    "en": ""
+   },
+   "reviewed": [
+    "en"
+   ],
+   "previewed": true
+  },
+  {
+   "path": "screens.folders.background",
+   "group": "screen.folders",
+   "level": "advanced",
+   "phase": 3,
+   "built": true,
+   "screens": [
+    "folders"
+   ],
+   "targets": [
+    "screenBackground"
+   ],
+   "label": {
+    "en": "Background"
+   },
+   "description": {
+    "en": ""
+   },
+   "reviewed": [
+    "en"
+   ],
+   "previewed": true
+  },
+  {
+   "path": "screens.powerSaving.background",
+   "group": "screen.powerSaving",
+   "level": "advanced",
+   "phase": 3,
+   "built": true,
+   "screens": [
+    "powerSaving"
+   ],
+   "targets": [
+    "screenBackground"
+   ],
+   "label": {
+    "en": "Background"
+   },
+   "description": {
+    "en": ""
+   },
+   "reviewed": [
+    "en"
+   ],
+   "previewed": true
+  },
+  {
+   "path": "screens.language.background",
+   "group": "screen.language",
+   "level": "advanced",
+   "phase": 3,
+   "built": true,
+   "screens": [
+    "language"
+   ],
+   "targets": [
+    "screenBackground"
+   ],
+   "label": {
+    "en": "Background"
+   },
+   "description": {
+    "en": ""
+   },
+   "reviewed": [
+    "en"
+   ],
+   "previewed": true
   }
  ],
  "items": {

@@ -49,6 +49,11 @@ import tw.kurocore.kurogram.helpers.remote.ConfigHelper;
 
 public class KuroSettingsActivity extends BaseKuroSettingsActivity implements FactorAnimator.Target {
 
+    @Override
+    protected int skinScreenBackground() {
+        return tw.kurocore.kurogram.skin.KuroUi.screenBackground("kuroSettings", tw.kurocore.kurogram.skin.KuroUi.t().settingsBackground);
+    }
+
     private static final int ANIMATOR_ID_SEARCH_PAGE_VISIBLE = 0;
 
     private final BoolAnimator animatorSearchPageVisible = new BoolAnimator(ANIMATOR_ID_SEARCH_PAGE_VISIBLE,

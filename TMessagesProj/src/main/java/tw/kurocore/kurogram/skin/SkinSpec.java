@@ -301,6 +301,7 @@ public final class SkinSpec {
      */
     private static final String[] RULES_V2_MINOR1 = {
             "schemaMinor|int:0:99", "screens.settings.iconPack|enum:default,outline,solid",
+            "screens.kuroSettings.background|col", "screens.numberFinder.background|col", "screens.specialContacts.background|col", "screens.onlineContacts.background|col", "screens.contactChanges.background|col", "screens.chatSettings.background|col", "screens.folders.background|col", "screens.powerSaving.background|col", "screens.language.background|col",
             "components.cell.heightDp|int:40:80", "components.cell.twoLineHeightDp|int:56:96", "components.cell.paddingStartDp|int:8:32",
             "components.cell.titleSizeSp|int:12:22", "components.cell.valueSizeSp|int:11:18",
             "components.cell.titleWeight|enum:regular,medium,bold", "components.cell.iconSizeDp|int:16:32",
@@ -350,6 +351,7 @@ public final class SkinSpec {
      */
     private static final String[] IMPLEMENTED_MINOR1 = {
             "screens.settings.iconPack",
+            "screens.kuroSettings.background", "screens.numberFinder.background", "screens.specialContacts.background", "screens.onlineContacts.background", "screens.contactChanges.background", "screens.chatSettings.background", "screens.folders.background", "screens.powerSaving.background", "screens.language.background",
             "components.cell.heightDp", "components.cell.twoLineHeightDp", "components.cell.titleSizeSp", "components.cell.valueSizeSp", "components.cell.titleWeight",
             "components.cell.dividerVisible", "components.cell.dividerInsetDp", "components.cell.dividerColor",
             "components.section.headerSizeSp", "components.section.headerWeight", "components.section.headerColor", "components.section.infoSizeSp",

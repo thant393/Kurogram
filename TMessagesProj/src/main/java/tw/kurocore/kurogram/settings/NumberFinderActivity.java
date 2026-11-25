@@ -88,7 +88,7 @@ public class NumberFinderActivity extends BaseFragment {
 
         LinearLayout rootLayout = new LinearLayout(context);
         rootLayout.setOrientation(LinearLayout.VERTICAL);
-        rootLayout.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
+        rootLayout.setBackgroundColor(tw.kurocore.kurogram.skin.KuroUi.screenBackground("numberFinder", Theme.getColor(Theme.key_windowBackgroundGray)));
         fragmentView = rootLayout;
 
         TextView headerText = new TextView(context);

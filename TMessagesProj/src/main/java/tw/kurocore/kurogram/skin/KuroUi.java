@@ -335,7 +335,8 @@ public final class KuroUi {
         int c = "privacy".equals(screenId) ? t.screenBgPrivacy
                 : "notifications".equals(screenId) ? t.screenBgNotifications
                 : "dataStorage".equals(screenId) ? t.screenBgDataStorage
-                : "devices".equals(screenId) ? t.screenBgDevices : 0;
+                : "devices".equals(screenId) ? t.screenBgDevices
+                : t.screenBgOther.containsKey(screenId) ? t.screenBgOther.get(screenId) : 0;
         return c != 0 ? c : def;
     }
 }

@@ -1,6 +1,6 @@
 {
  "counts": {
-  "EDITABLE_PREVIEWED": 197,
+  "EDITABLE_PREVIEWED": 206,
   "ENGINE_UNSUPPORTED": 11,
   "EDITABLE_REAL_ONLY": 26
  },
@@ -891,6 +891,96 @@
    "section": "skinMinor1",
    "status": "EDITABLE_REAL_ONLY",
    "group": "screen.settings",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.kuroSettings.background",
+   "kind": "col",
+   "section": "skinMinor1",
+   "status": "EDITABLE_PREVIEWED",
+   "group": "screen.kuroSettings",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.numberFinder.background",
+   "kind": "col",
+   "section": "skinMinor1",
+   "status": "EDITABLE_PREVIEWED",
+   "group": "screen.numberFinder",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.specialContacts.background",
+   "kind": "col",
+   "section": "skinMinor1",
+   "status": "EDITABLE_PREVIEWED",
+   "group": "screen.specialContacts",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.onlineContacts.background",
+   "kind": "col",
+   "section": "skinMinor1",
+   "status": "EDITABLE_PREVIEWED",
+   "group": "screen.onlineContacts",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.contactChanges.background",
+   "kind": "col",
+   "section": "skinMinor1",
+   "status": "EDITABLE_PREVIEWED",
+   "group": "screen.contactChanges",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.chatSettings.background",
+   "kind": "col",
+   "section": "skinMinor1",
+   "status": "EDITABLE_PREVIEWED",
+   "group": "screen.chatSettings",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.folders.background",
+   "kind": "col",
+   "section": "skinMinor1",
+   "status": "EDITABLE_PREVIEWED",
+   "group": "screen.folders",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.powerSaving.background",
+   "kind": "col",
+   "section": "skinMinor1",
+   "status": "EDITABLE_PREVIEWED",
+   "group": "screen.powerSaving",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "screens.language.background",
+   "kind": "col",
+   "section": "skinMinor1",
+   "status": "EDITABLE_PREVIEWED",
+   "group": "screen.language",
    "level": "advanced",
    "phase": 3,
    "wiring": "unverified"

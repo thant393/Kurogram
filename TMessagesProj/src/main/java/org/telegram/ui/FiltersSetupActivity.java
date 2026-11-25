@@ -653,7 +653,7 @@ public class FiltersSetupActivity extends BaseFragment implements NotificationCe
 
         fragmentView = new FrameLayout(context);
         FrameLayout frameLayout = (FrameLayout) fragmentView;
-        frameLayout.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
+        frameLayout.setBackgroundColor(tw.kurocore.kurogram.skin.KuroUi.screenBackground("folders", Theme.getColor(Theme.key_windowBackgroundGray)));
 
         listView = new RecyclerListView(context) {
             @Override

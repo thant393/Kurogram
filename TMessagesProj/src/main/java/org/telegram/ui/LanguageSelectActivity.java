@@ -182,7 +182,7 @@ public class LanguageSelectActivity extends BaseFragment implements Notification
         searchListViewAdapter = new ListAdapter(context, true);
 
         fragmentView = new FrameLayout(context);
-        fragmentView.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
+        fragmentView.setBackgroundColor(tw.kurocore.kurogram.skin.KuroUi.screenBackground("language", Theme.getColor(Theme.key_windowBackgroundGray)));
         FrameLayout frameLayout = (FrameLayout) fragmentView;
 
         emptyView = new EmptyTextProgressView(context);

@@ -93,7 +93,7 @@ public class ContactChangesActivity extends BaseFragment implements Notification
 
         FrameLayout frameLayout = new FrameLayout(context);
         fragmentView = frameLayout;
-        fragmentView.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
+        fragmentView.setBackgroundColor(tw.kurocore.kurogram.skin.KuroUi.screenBackground("contactChanges", Theme.getColor(Theme.key_windowBackgroundGray)));
 
         listAdapter = new ListAdapter(context);
         listView = new RecyclerListView(context);

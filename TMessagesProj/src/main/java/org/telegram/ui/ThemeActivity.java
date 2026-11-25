@@ -1104,7 +1104,7 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
         listAdapter = new ListAdapter(context);
 
         FrameLayout frameLayout = new FrameLayout(context);
-        frameLayout.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
+        frameLayout.setBackgroundColor(tw.kurocore.kurogram.skin.KuroUi.screenBackground("chatSettings", Theme.getColor(Theme.key_windowBackgroundGray)));
         fragmentView = frameLayout;
 
         listView = new RecyclerListView(context);

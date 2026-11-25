@@ -123,7 +123,7 @@ public class SpecialContactsActivity extends BaseFragment implements ManageChatU
 
         FrameLayout frameLayout = new FrameLayout(context);
         fragmentView = frameLayout;
-        fragmentView.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
+        fragmentView.setBackgroundColor(tw.kurocore.kurogram.skin.KuroUi.screenBackground("specialContacts", Theme.getColor(Theme.key_windowBackgroundGray)));
 
         listAdapter = new ListAdapter(context);
         listView = new RecyclerListView(context);
