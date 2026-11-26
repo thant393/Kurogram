@@ -44,7 +44,7 @@ public class BlockScreenActivity extends BaseFragment implements NotificationCen
     private final String screenId;
     private BlockSpec.Screen screen;
     private LinearLayout content;
-    private String chipFilter = "all";
+    private String chipFilter = null;
 
     public BlockScreenActivity(Bundle args) {
         super(args);
@@ -150,7 +150,7 @@ public class BlockScreenActivity extends BaseFragment implements NotificationCen
         LinearLayout row = new LinearLayout(context);
         row.setPadding(AndroidUtilities.dp(12), AndroidUtilities.dp(6), AndroidUtilities.dp(12), AndroidUtilities.dp(6));
         List<String> items = b.list("items", java.util.Arrays.asList("all"));
-        if (!items.contains(chipFilter)) {
+        if (chipFilter == null || !items.contains(chipFilter)) {
             chipFilter = items.get(0);
         }
         for (final String id : items) {
@@ -204,8 +204,22 @@ public class BlockScreenActivity extends BaseFragment implements NotificationCen
         hs.setHorizontalScrollBarEnabled(false);
         LinearLayout row = new LinearLayout(context);
         row.setPadding(AndroidUtilities.dp(10), AndroidUtilities.dp(8), AndroidUtilities.dp(10), AndroidUtilities.dp(8));
+        boolean cards = !"circles".equals(b.str("style", "cards"));
         for (int i = 0; i < users.size() && i < 20; i++) {
-            row.addView(person(context, users.get(i), true), new LinearLayout.LayoutParams(AndroidUtilities.dp(68), ViewGroup.LayoutParams.WRAP_CONTENT));
+            View cell = person(context, users.get(i), true);
+            if (cards) {
+                // a rounded card holding the avatar and the name, like the story cards of the real People screen
+                GradientDrawable bg = new GradientDrawable();
+                bg.setCornerRadius(AndroidUtilities.dp(12));
+                bg.setColor(Theme.getColor(Theme.key_windowBackgroundGray));
+                cell.setBackground(bg);
+                cell.setPadding(AndroidUtilities.dp(4), AndroidUtilities.dp(10), AndroidUtilities.dp(4), AndroidUtilities.dp(8));
+                LinearLayout.LayoutParams cp = new LinearLayout.LayoutParams(AndroidUtilities.dp(76), AndroidUtilities.dp(100));
+                cp.rightMargin = AndroidUtilities.dp(6);
+                row.addView(cell, cp);
+            } else {
+                row.addView(cell, new LinearLayout.LayoutParams(AndroidUtilities.dp(68), ViewGroup.LayoutParams.WRAP_CONTENT));
+            }
         }
         hs.addView(row);
         content.addView(hs, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
