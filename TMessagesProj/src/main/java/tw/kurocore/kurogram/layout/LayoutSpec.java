@@ -23,20 +23,31 @@ public final class LayoutSpec {
     public final String id;
     public final String name;
     private final Map<String, Object> values;
+    private final Map<String, BlockSpec.Screen> screens;
 
-    private LayoutSpec(String id, String name, Map<String, Object> values) {
+    private LayoutSpec(String id, String name, Map<String, Object> values, Map<String, BlockSpec.Screen> screens) {
         this.id = id;
         this.name = name;
         this.values = values;
+        this.screens = screens;
+    }
+
+    /** Screens this layout builds from blocks (id -> screen); empty when it has none. */
+    public Map<String, BlockSpec.Screen> screens() {
+        return screens;
+    }
+
+    public BlockSpec.Screen screen(String screenId) {
+        return screens.get(screenId);
     }
 
     /** Telegram's own layout: no values set, so every screen uses its built-in design. */
     public static LayoutSpec classic() {
-        return new LayoutSpec("classic", "Classic", new HashMap<>());
+        return new LayoutSpec("classic", "Classic", new HashMap<>(), new HashMap<>());
     }
 
     public boolean isClassic() {
-        return values.isEmpty();
+        return values.isEmpty() && screens.isEmpty();
     }
 
     public boolean has(String path) {
@@ -183,13 +194,37 @@ public final class LayoutSpec {
             if (trailing != null && !trailing.contains("mic") && (leading == null || !leading.contains("mic"))) {
                 throw new IllegalArgumentException("chat.input must keep the mic");
             }
-            if (values.isEmpty()) {
+            Map<String, BlockSpec.Screen> screens = BlockSpec.parse(plain(root.opt("screens")));
+            if (values.isEmpty() && screens.isEmpty()) {
                 throw new IllegalArgumentException("Layout sets nothing");
             }
-            return new LayoutSpec(id, name, values);
+            return new LayoutSpec(id, name, values, screens);
         } catch (JSONException e) {
             throw new IllegalArgumentException("Layout file is not valid JSON");
         }
+    }
+
+    /** org.json value -> plain Map/List/String/Number/Boolean, so BlockSpec stays free of Android classes. */
+    private static Object plain(Object v) {
+        if (v instanceof JSONObject) {
+            JSONObject o = (JSONObject) v;
+            Map<String, Object> m = new java.util.LinkedHashMap<>();
+            java.util.Iterator<String> it = o.keys();
+            while (it.hasNext()) {
+                String k = it.next();
+                m.put(k, plain(o.opt(k)));
+            }
+            return m;
+        }
+        if (v instanceof org.json.JSONArray) {
+            org.json.JSONArray a = (org.json.JSONArray) v;
+            List<Object> l = new ArrayList<>();
+            for (int i = 0; i < a.length(); i++) {
+                l.add(plain(a.opt(i)));
+            }
+            return l;
+        }
+        return JSONObject.NULL.equals(v) ? null : v;
     }
 
     @SuppressWarnings("unchecked")

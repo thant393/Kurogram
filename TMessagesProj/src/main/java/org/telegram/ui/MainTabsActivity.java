@@ -830,7 +830,9 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
             if (state == null) continue;
             final boolean isOnline = state.fragment instanceof tw.kurocore.kurogram.settings.OnlineContactsActivity;
             final boolean isUnread = state.fragment instanceof tw.kurocore.kurogram.layout.UnreadChatsActivity;
-            final boolean stale = position == POSITION_CONTACTS ? isOnline != wantsOnline : isUnread != wantsUnread;
+            final boolean isBlock = state.fragment instanceof tw.kurocore.kurogram.layout.BlockScreenActivity;
+            final boolean wantsBlock = tw.kurocore.kurogram.layout.LayoutManager.get().spec().screen("people") != null;
+            final boolean stale = position == POSITION_CONTACTS ? (isBlock != wantsBlock || (!wantsBlock && isOnline != wantsOnline)) : isUnread != wantsUnread;
             if (!stale) continue;
             try {
                 state.fragment.onPause();
@@ -844,6 +846,13 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
 
     @Override
     protected BaseFragment createBaseFragmentAt(int position) {
+        if (position == POSITION_CONTACTS && tw.kurocore.kurogram.layout.LayoutManager.get().spec().screen("people") != null) {
+            // A layout pack builds People from blocks (layout.screens.people) instead of the built-in lists.
+            Bundle blocks = new Bundle();
+            blocks.putBoolean("hasMainTabs", true);
+            blocks.putString("screen_id", "people");
+            return new tw.kurocore.kurogram.layout.BlockScreenActivity(blocks);
+        }
         if (position == POSITION_CONTACTS && "online".equals(tw.kurocore.kurogram.layout.LayoutManager.get().spec().stringValue("bottomTabs.peopleSource", "contacts"))) {
             // A layout pack may make People the "online now" list of the existing Online Contacts feature.
             Bundle online = new Bundle();

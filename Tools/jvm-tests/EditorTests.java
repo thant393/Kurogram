@@ -414,6 +414,23 @@ public class EditorTests {
             check(Presets.cloneOf("not json") == null, "clone of garbage is null");
         }
 
+        {
+            java.util.Map<String, tw.kurocore.kurogram.layout.BlockSpec.Screen> sc = tw.kurocore.kurogram.layout.BlockSpec.parse(Json.parse("{\"people\":{\"title\":\"People\",\"blocks\":[{\"type\":\"storyRail\",\"style\":\"cards\"},{\"type\":\"chips\",\"items\":[\"online\",\"all\"]},{\"type\":\"note\",\"text\":\"Hi\"},{\"type\":\"future\"},{\"type\":\"list\",\"source\":\"contacts\",\"row\":\"compact\",\"limit\":50}]}}"));
+            check(sc.size() == 1 && sc.get("people").blocks.size() == 4, "blocks: unknown type skipped");
+            check("cards".equals(sc.get("people").blocks.get(0).str("style", "")) && sc.get("people").blocks.get(3).intValue("limit", 0) == 50, "blocks: props read");
+            String[] bad = {"{\"p\":{\"blocks\":[{\"type\":\"list\",\"source\":\"secret\"}]}}", "{\"P\":{\"blocks\":[]}}", "{\"p1\":{\"blocks\":[{\"type\":\"chips\",\"items\":[\"nope\"]}]}}", "{\"pp\":{\"blocks\":[{\"type\":\"spacer\",\"heightDp\":999}]}}", "{\"pp\":{}}", "{\"pp\":{\"blocks\":[{\"type\":\"note\",\"text\":\"" + "x".repeat(121) + "\"}]}}"};
+            for (String b : bad) {
+                boolean threw = false;
+                try {
+                    tw.kurocore.kurogram.layout.BlockSpec.parse(Json.parse(b));
+                } catch (IllegalArgumentException e) {
+                    threw = true;
+                }
+                check(threw, "blocks: rejects " + b.substring(0, Math.min(40, b.length())));
+            }
+            check(tw.kurocore.kurogram.layout.BlockSpec.parse(null).isEmpty(), "blocks: none is fine");
+        }
+
         System.out.println("editor tests: " + passed + " passed, " + failed + " failed");
         System.exit(failed == 0 ? 0 : 1);
     }
