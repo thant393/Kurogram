@@ -227,6 +227,7 @@ public class ThemeBuilderActivity extends BaseFragment {
             more.addSubItem(20, tr("removeStore"));
         }
         lookItem = more.addSubItem(21, tr("look"));
+        more.addSubItem(22, tr("blocks"));
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
@@ -275,6 +276,9 @@ public class ThemeBuilderActivity extends BaseFragment {
                         break;
                     case 21:
                         lookDialog();
+                        break;
+                    case 22:
+                        blocksDialog();
                         break;
                     default:
                         break;
@@ -1879,6 +1883,200 @@ public class ThemeBuilderActivity extends BaseFragment {
      * Styles and colourways: the theme's own file is the base look; a style changes parts of it (shapes, layout…), a colourway
      * changes a style's colours. Choosing one makes every edit go to that look only; everything else is inherited.
      */
+    private static final String BLOCK_SCREEN = "people";
+
+    @SuppressWarnings("unchecked")
+    private java.util.List<java.util.Map<String, Object>> blockList() {
+        Object node = session.draft.get("layout.screens." + BLOCK_SCREEN);
+        if (node instanceof java.util.Map && ((java.util.Map<String, Object>) node).get("blocks") instanceof java.util.List) {
+            // a deep copy: edits are checked and recorded only when they are saved back
+            return (java.util.List<java.util.Map<String, Object>>) tw.kurocore.kurogram.skin.editor.Json.deepCopy(((java.util.Map<String, Object>) node).get("blocks"));
+        }
+        return null;
+    }
+
+    private void saveBlocks(java.util.List<java.util.Map<String, Object>> blocks) {
+        java.util.Map<String, Object> screen = new java.util.LinkedHashMap<>();
+        screen.put("title", "People");
+        screen.put("blocks", blocks == null ? new java.util.ArrayList<>() : blocks);
+        String problem = blocks == null ? session.draft.setScreen(BLOCK_SCREEN, null) : session.draft.setScreen(BLOCK_SCREEN, screen);
+        if (problem != null) {
+            report(problem);
+        }
+        changed(true);
+    }
+
+    private static java.util.Map<String, Object> newBlock(String type) {
+        java.util.Map<String, Object> b = new java.util.LinkedHashMap<>();
+        b.put("type", type);
+        switch (type) {
+            case "storyRail":
+                b.put("style", "cards");
+                break;
+            case "chips":
+                b.put("items", new java.util.ArrayList<>(java.util.Arrays.asList("online", "all")));
+                break;
+            case "note":
+                b.put("text", "Showing your contacts.");
+                break;
+            case "section":
+                b.put("title", "Contacts");
+                break;
+            case "list":
+                b.put("source", "contacts");
+                b.put("row", "compact");
+                b.put("limit", 60);
+                break;
+            case "spacer":
+                b.put("heightDp", 12);
+                break;
+            default:
+                break;
+        }
+        return b;
+    }
+
+    /** Screen blocks: build the People screen out of ready-made blocks (add, remove, reorder, change a choice). */
+    private void blocksDialog() {
+        Context context = getParentActivity();
+        LinearLayout box = new LinearLayout(context);
+        box.setOrientation(LinearLayout.VERTICAL);
+        box.setPadding(AndroidUtilities.dp(16), AndroidUtilities.dp(8), AndroidUtilities.dp(16), 0);
+        ScrollView sv = new ScrollView(context);
+        sv.addView(box);
+        final AlertDialog dialog = new AlertDialog.Builder(context).setTitle(tr("blocks") + " · People").setView(sv)
+                .setPositiveButton(tr("done"), null).create();
+        final Runnable[] fill = new Runnable[1];
+        fill[0] = () -> {
+            box.removeAllViews();
+            java.util.List<java.util.Map<String, Object>> blocks = blockList();
+            if (blocks == null) {
+                TextView use = text(context, "＋ " + tr("blocks.use"), 15, true);
+                use.setTextColor(KuroSkinManager.get().accent());
+                use.setPadding(0, AndroidUtilities.dp(10), 0, AndroidUtilities.dp(10));
+                use.setOnClickListener(v -> {
+                    java.util.List<java.util.Map<String, Object>> start = new java.util.ArrayList<>();
+                    for (String t : new String[]{"storyRail", "chips", "note", "section", "list"}) {
+                        start.add(newBlock(t));
+                    }
+                    saveBlocks(start);
+                    fill[0].run();
+                });
+                box.addView(use);
+                return;
+            }
+            for (int i = 0; i < blocks.size(); i++) {
+                final int at = i;
+                final java.util.Map<String, Object> b = blocks.get(i);
+                LinearLayout row = new LinearLayout(context);
+                row.setOrientation(LinearLayout.HORIZONTAL);
+                row.setGravity(Gravity.CENTER_VERTICAL);
+                TextView name = text(context, describeBlock(b), 14, false);
+                name.setPadding(0, AndroidUtilities.dp(8), 0, AndroidUtilities.dp(8));
+                name.setOnClickListener(v -> editBlock(b, () -> {
+                    saveBlocks(blocks);
+                    fill[0].run();
+                }));
+                row.addView(name, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 1f));
+                String[] marks = {"↑", "↓", "✕"};
+                for (int m = 0; m < 3; m++) {
+                    final int which = m;
+                    TextView btn = text(context, marks[m], 18, true);
+                    btn.setGravity(Gravity.CENTER);
+                    btn.setOnClickListener(v -> {
+                        if (which == 0 && at > 0) {
+                            java.util.Collections.swap(blocks, at, at - 1);
+                        } else if (which == 1 && at < blocks.size() - 1) {
+                            java.util.Collections.swap(blocks, at, at + 1);
+                        } else if (which == 2) {
+                            blocks.remove(at);
+                        } else {
+                            return;
+                        }
+                        saveBlocks(blocks);
+                        fill[0].run();
+                    });
+                    row.addView(btn, LayoutHelper.createLinear(40, 40));
+                }
+                box.addView(row);
+            }
+            TextView add = text(context, "＋ " + tr("blocks.add"), 14, true);
+            add.setTextColor(KuroSkinManager.get().accent());
+            add.setPadding(0, AndroidUtilities.dp(12), 0, AndroidUtilities.dp(6));
+            add.setOnClickListener(v -> {
+                String[] types = {"storyRail", "chips", "note", "section", "list", "spacer"};
+                new AlertDialog.Builder(context).setTitle(tr("blocks.add")).setItems(types, (d, which) -> {
+                    if (blocks.size() >= tw.kurocore.kurogram.layout.BlockSpec.MAX_BLOCKS) {
+                        report("Too many blocks.");
+                        return;
+                    }
+                    blocks.add(newBlock(types[which]));
+                    saveBlocks(blocks);
+                    fill[0].run();
+                }).show();
+            });
+            box.addView(add);
+            TextView reset = text(context, tr("blocks.reset"), 14, false);
+            reset.setTextColor(0xFFD93025);
+            reset.setPadding(0, AndroidUtilities.dp(10), 0, AndroidUtilities.dp(10));
+            reset.setOnClickListener(v -> {
+                saveBlocks(null);
+                fill[0].run();
+            });
+            box.addView(reset);
+        };
+        fill[0].run();
+        showDialog(dialog);
+    }
+
+    private static String describeBlock(java.util.Map<String, Object> b) {
+        String type = String.valueOf(b.get("type"));
+        StringBuilder sb = new StringBuilder(type);
+        for (java.util.Map.Entry<String, Object> e : b.entrySet()) {
+            if (!"type".equals(e.getKey())) {
+                sb.append("  ").append(e.getKey()).append("=").append(e.getValue());
+            }
+        }
+        return sb.toString();
+    }
+
+    /** Tapping a block steps its choice to the next allowed value (text blocks ask for the words). */
+    @SuppressWarnings("unchecked")
+    private void editBlock(java.util.Map<String, Object> b, Runnable done) {
+        String type = String.valueOf(b.get("type"));
+        switch (type) {
+            case "storyRail":
+                b.put("style", "cards".equals(b.get("style")) ? "circles" : "cards");
+                break;
+            case "list":
+                b.put("row", "compact".equals(b.get("row")) ? "card" : "compact");
+                break;
+            case "chips": {
+                java.util.List<String> items = new java.util.ArrayList<>((java.util.List<String>) b.get("items"));
+                java.util.List<String> next = items.size() == 2 ? java.util.Arrays.asList("online", "all", "contacts") : java.util.Arrays.asList("online", "all");
+                b.put("items", new java.util.ArrayList<>(next));
+                break;
+            }
+            case "spacer": {
+                int h = b.get("heightDp") instanceof Number ? ((Number) b.get("heightDp")).intValue() : 12;
+                b.put("heightDp", h >= 48 ? 8 : h + 8);
+                break;
+            }
+            case "note":
+            case "section": {
+                final String key = "note".equals(type) ? "text" : "title";
+                askName(tr("blocks"), String.valueOf(b.get(key)), n -> {
+                    b.put(key, n);
+                    done.run();
+                });
+                return;
+            }
+            default:
+                break;
+        }
+        done.run();
+    }
+
     private void lookDialog() {
         Context context = getParentActivity();
         LinearLayout box = new LinearLayout(context);

@@ -89,6 +89,14 @@ public class EditorTests {
         check(Json.semanticEquals(((Map<String, Object>) out.get("meta")).get("extra"), Json.parse("{\"k\":[1,2]}")), "meta extra kept");
         check("#123456".equals(d.get("tokens.colors.futureColor")), "unknown sibling colour kept");
         check(Json.semanticEquals(d.get("tokens.futureGroup"), Json.parse("{\"a\":1}")), "unknown group kept");
+        {
+            Object ok = Json.parse("{\"title\":\"People\",\"blocks\":[{\"type\":\"note\",\"text\":\"Hi\"}]}");
+            check(d.setScreen("people", ok) == null && d.get("layout.screens.people") != null, "setScreen writes a valid block screen");
+            check(d.undo() && d.get("layout.screens.people") == null, "setScreen is one undo step");
+            check(d.setScreen("people", Json.parse("{\"blocks\":[{\"type\":\"list\",\"source\":\"secret\"}]}")) != null && d.get("layout.screens.people") == null, "setScreen refuses a bad block and changes nothing");
+            check(d.setScreen("Bad Id", ok) != null, "setScreen refuses a bad id");
+            check(d.setScreen("people", ok) == null && d.setScreen("people", null) == null && d.get("layout.screens.people") == null, "setScreen(null) removes the screen");
+        }
         check(d.isDirty() && d.changedPaths().contains("tokens.colors.accent"), "changedPaths lists edit");
 
         // ---- refusals

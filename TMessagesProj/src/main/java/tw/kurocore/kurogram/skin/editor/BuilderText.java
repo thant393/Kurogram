@@ -58,6 +58,10 @@ public final class BuilderText {
         t("variant.night", "Night");
         t("inherited", "from Day");
         t("look", "Look");
+        t("blocks", "Screen blocks");
+        t("blocks.use", "Build this screen from blocks");
+        t("blocks.reset", "Back to the built-in screen");
+        t("blocks.add", "Add a block");
         t("look.base", "Base theme");
         t("look.newStyle", "New style");
         t("look.newWay", "New colourway");
