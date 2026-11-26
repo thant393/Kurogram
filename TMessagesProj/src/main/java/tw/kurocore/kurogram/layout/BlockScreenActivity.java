@@ -55,6 +55,7 @@ public class BlockScreenActivity extends BaseFragment implements NotificationCen
     public boolean onFragmentCreate() {
         getNotificationCenter().addObserver(this, NotificationCenter.contactsDidLoad);
         getNotificationCenter().addObserver(this, NotificationCenter.updateInterfaces);
+        getNotificationCenter().addObserver(this, NotificationCenter.dialogsNeedReload);
         return super.onFragmentCreate();
     }
 
@@ -62,6 +63,7 @@ public class BlockScreenActivity extends BaseFragment implements NotificationCen
     public void onFragmentDestroy() {
         getNotificationCenter().removeObserver(this, NotificationCenter.contactsDidLoad);
         getNotificationCenter().removeObserver(this, NotificationCenter.updateInterfaces);
+        getNotificationCenter().removeObserver(this, NotificationCenter.dialogsNeedReload);
         super.onFragmentDestroy();
     }
 
@@ -125,6 +127,15 @@ public class BlockScreenActivity extends BaseFragment implements NotificationCen
                     break;
                 case "list":
                     addList(context, b);
+                    break;
+                case "chatList":
+                    addChatList(context, b);
+                    break;
+                case "menu":
+                    addMenu(context, b);
+                    break;
+                case "profileCard":
+                    addProfileCard(context);
                     break;
                 default:
                     break; // header sets the title only
@@ -319,12 +330,144 @@ public class BlockScreenActivity extends BaseFragment implements NotificationCen
         }
     }
 
+    private LinearLayout textRow(Context context, CharSequence title, CharSequence sub, Runnable click) {
+        LinearLayout row = new LinearLayout(context);
+        row.setOrientation(LinearLayout.VERTICAL);
+        row.setPadding(AndroidUtilities.dp(16), AndroidUtilities.dp(10), AndroidUtilities.dp(16), AndroidUtilities.dp(10));
+        TextView t = new TextView(context);
+        t.setText(title);
+        t.setTextSize(16);
+        t.setSingleLine();
+        t.setEllipsize(android.text.TextUtils.TruncateAt.END);
+        t.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
+        row.addView(t);
+        if (sub != null && sub.length() > 0) {
+            TextView s = new TextView(context);
+            s.setText(sub);
+            s.setTextSize(13);
+            s.setSingleLine();
+            s.setEllipsize(android.text.TextUtils.TruncateAt.END);
+            s.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGrayText));
+            row.addView(s);
+        }
+        if (click != null) {
+            row.setOnClickListener(v -> click.run());
+        }
+        content.addView(row, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        return row;
+    }
+
+    /** A list of your real chats (people, groups, channels), newest first, each opening its chat. */
+    private void addChatList(Context context, BlockSpec.Block b) {
+        String filter = b.str("filter", "all");
+        int limit = b.intValue("limit", 30);
+        boolean card = "card".equals(b.str("row", "compact"));
+        MessagesController mc = MessagesController.getInstance(currentAccount);
+        int shown = 0;
+        for (TLRPC.Dialog dlg : new ArrayList<>(mc.getAllDialogs())) {
+            if (shown >= limit) {
+                break;
+            }
+            long id = dlg.id;
+            if (id == 0 || org.telegram.messenger.DialogObject.isEncryptedDialog(id)) {
+                continue;
+            }
+            boolean user = id > 0;
+            TLRPC.Chat chat = user ? null : mc.getChat(-id);
+            boolean channel = chat != null && org.telegram.messenger.ChatObject.isChannelAndNotMegaGroup(chat);
+            boolean unread = dlg.unread_count > 0 || dlg.unread_mark;
+            if (("unread".equals(filter) && !unread) || ("people".equals(filter) && !user)
+                    || ("groups".equals(filter) && (user || channel)) || ("channels".equals(filter) && !channel)) {
+                continue;
+            }
+            CharSequence title = org.telegram.messenger.DialogObject.getName(currentAccount, id);
+            java.util.ArrayList<org.telegram.messenger.MessageObject> msgs = mc.dialogMessage.get(id);
+            CharSequence last = msgs != null && !msgs.isEmpty() && msgs.get(0) != null && msgs.get(0).messageText != null ? msgs.get(0).messageText : "";
+            if (unread && dlg.unread_count > 0) {
+                last = "(" + dlg.unread_count + ") " + last;
+            }
+            final long did = id;
+            LinearLayout row = textRow(context, title, last, () -> {
+                Bundle args = new Bundle();
+                if (did > 0) {
+                    args.putLong("user_id", did);
+                } else {
+                    args.putLong("chat_id", -did);
+                }
+                presentFragment(new ChatActivity(args));
+            });
+            if (card) {
+                row.setPadding(AndroidUtilities.dp(16), AndroidUtilities.dp(14), AndroidUtilities.dp(16), AndroidUtilities.dp(14));
+            }
+            if (unread) {
+                ((TextView) row.getChildAt(0)).setTypeface(AndroidUtilities.bold());
+            }
+            shown++;
+        }
+        if (shown == 0) {
+            addText(context, "No chats to show.", 14, Theme.key_windowBackgroundWhiteGrayText, false);
+        }
+    }
+
+    /** Shortcuts to a few built-in screens, in the order the layout lists them. */
+    private void addMenu(Context context, BlockSpec.Block b) {
+        for (String item : b.list("items", new ArrayList<String>())) {
+            switch (item) {
+                case "settings":
+                    textRow(context, LocaleController.getString(org.telegram.messenger.R.string.Settings), null, () -> presentFragment(new org.telegram.ui.SettingsActivity()));
+                    break;
+                case "profile":
+                    textRow(context, "My profile", null, this::openProfile);
+                    break;
+                case "contacts":
+                    textRow(context, LocaleController.getString(org.telegram.messenger.R.string.Contacts), null, () -> {
+                        Bundle args = new Bundle();
+                        args.putBoolean("needFinishFragment", false);
+                        presentFragment(new org.telegram.ui.ContactsActivity(args));
+                    });
+                    break;
+                case "calls":
+                    textRow(context, LocaleController.getString(org.telegram.messenger.R.string.Calls), null, () -> presentFragment(new org.telegram.ui.CallLogActivity()));
+                    break;
+                case "savedMessages":
+                    textRow(context, LocaleController.getString(org.telegram.messenger.R.string.SavedMessages), null, () -> {
+                        Bundle args = new Bundle();
+                        args.putLong("user_id", org.telegram.messenger.UserConfig.getInstance(currentAccount).getClientUserId());
+                        presentFragment(new ChatActivity(args));
+                    });
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    private void openProfile() {
+        Bundle args = new Bundle();
+        args.putLong("user_id", org.telegram.messenger.UserConfig.getInstance(currentAccount).getClientUserId());
+        presentFragment(new org.telegram.ui.ProfileActivity(args));
+    }
+
+    /** Your own avatar, name and username; tapping it opens your profile. */
+    private void addProfileCard(Context context) {
+        TLRPC.User me = org.telegram.messenger.UserConfig.getInstance(currentAccount).getCurrentUser();
+        if (me == null) {
+            return;
+        }
+        View card = person(context, me, false);
+        card.setPadding(AndroidUtilities.dp(16), AndroidUtilities.dp(16), AndroidUtilities.dp(16), AndroidUtilities.dp(16));
+        card.setOnClickListener(v -> openProfile());
+        content.addView(card, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+    }
+
     @Override
     public void didReceivedNotification(int id, int account, Object... args) {
         if (fragmentView == null) {
             return;
         }
         if (id == NotificationCenter.contactsDidLoad) {
+            rebuild(fragmentView.getContext());
+        } else if (id == NotificationCenter.dialogsNeedReload) {
             rebuild(fragmentView.getContext());
         } else if (id == NotificationCenter.updateInterfaces && args.length > 0 && args[0] instanceof Integer
                 && ((Integer) args[0] & MessagesController.UPDATE_MASK_STATUS) != 0) {

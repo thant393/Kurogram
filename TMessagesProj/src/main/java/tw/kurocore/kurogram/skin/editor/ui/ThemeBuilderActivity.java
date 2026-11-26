@@ -1930,6 +1930,14 @@ public class ThemeBuilderActivity extends BaseFragment {
             case "spacer":
                 b.put("heightDp", 12);
                 break;
+            case "chatList":
+                b.put("filter", "all");
+                b.put("row", "compact");
+                b.put("limit", 30);
+                break;
+            case "menu":
+                b.put("items", new java.util.ArrayList<>(java.util.Arrays.asList("settings", "contacts", "calls", "savedMessages")));
+                break;
             default:
                 break;
         }
@@ -2004,7 +2012,7 @@ public class ThemeBuilderActivity extends BaseFragment {
             add.setTextColor(KuroSkinManager.get().accent());
             add.setPadding(0, AndroidUtilities.dp(12), 0, AndroidUtilities.dp(6));
             add.setOnClickListener(v -> {
-                String[] types = {"storyRail", "chips", "note", "section", "list", "spacer"};
+                String[] types = {"storyRail", "chips", "note", "section", "list", "chatList", "menu", "profileCard", "spacer"};
                 new AlertDialog.Builder(context).setTitle(tr("blocks.add")).setItems(types, (d, which) -> {
                     if (blocks.size() >= tw.kurocore.kurogram.layout.BlockSpec.MAX_BLOCKS) {
                         report("Too many blocks.");
@@ -2049,6 +2057,7 @@ public class ThemeBuilderActivity extends BaseFragment {
                 b.put("style", "cards".equals(b.get("style")) ? "circles" : "cards");
                 break;
             case "list":
+            case "chatList":
                 b.put("row", "compact".equals(b.get("row")) ? "card" : "compact");
                 break;
             case "chips": {

@@ -29,6 +29,9 @@ public final class BlockSpec {
         TYPES.put("note", new String[]{"text|str:120"});
         TYPES.put("section", new String[]{"title|str:32"});
         TYPES.put("list", new String[]{"source|enum:contacts,online,unread,chats", "row|enum:compact,card", "limit|int:1:200"});
+        TYPES.put("chatList", new String[]{"filter|enum:all,unread,people,groups,channels", "row|enum:compact,card", "limit|int:1:100"});
+        TYPES.put("menu", new String[]{"items|list:settings,profile,contacts,calls,savedMessages:1:5"});
+        TYPES.put("profileCard", new String[]{});
         TYPES.put("spacer", new String[]{"heightDp|int:0:64"});
     }
 

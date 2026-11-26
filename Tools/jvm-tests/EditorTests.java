@@ -437,6 +437,18 @@ public class EditorTests {
                 check(threw, "blocks: rejects " + b.substring(0, Math.min(40, b.length())));
             }
             check(tw.kurocore.kurogram.layout.BlockSpec.parse(null).isEmpty(), "blocks: none is fine");
+            java.util.Map<String, tw.kurocore.kurogram.layout.BlockSpec.Screen> nb = tw.kurocore.kurogram.layout.BlockSpec.parse(Json.parse("{\"drawer\":{\"title\":\"Menu\",\"blocks\":[{\"type\":\"profileCard\"},{\"type\":\"menu\",\"items\":[\"settings\",\"calls\"]},{\"type\":\"chatList\",\"filter\":\"unread\",\"row\":\"card\",\"limit\":10}]}}"));
+            check(nb.get("drawer").blocks.size() == 3 && nb.get("drawer").blocks.get(2).str("filter", "").equals("unread"), "blocks: chatList, menu, profileCard parse");
+            String[] bad2 = {"{\"dd\":{\"blocks\":[{\"type\":\"menu\",\"items\":[\"shell\"]}]}}", "{\"dd\":{\"blocks\":[{\"type\":\"chatList\",\"filter\":\"all\",\"limit\":0}]}}"};
+            for (String b2 : bad2) {
+                boolean threw2 = false;
+                try {
+                    tw.kurocore.kurogram.layout.BlockSpec.parse(Json.parse(b2));
+                } catch (IllegalArgumentException e) {
+                    threw2 = true;
+                }
+                check(threw2, "blocks: rejects " + b2);
+            }
         }
 
         System.out.println("editor tests: " + passed + " passed, " + failed + " failed");

@@ -2226,6 +2226,46 @@ public class BuilderPreviewView extends View {
                     }
                     break;
                 }
+                case "chatList": {
+                    String[] names = {"Saved Messages", "Ko Ko", "Kurogram Group", "Aung", "News Channel", "Aye Than"};
+                    int n = Math.min(names.length, b.intValue("limit", 30));
+                    int rh = dp("card".equals(b.str("row", "compact")) ? 72 : 60);
+                    for (int i = 0; i < n && top < x.h * 1.3f; i++) {
+                        rect.set(0, top, x.w, top + rh);
+                        add("chatRow", rect);
+                        avatar(canvas, dp(36), top + rh / 2f, dp(22), AV[i % AV.length]);
+                        p.setColor(x.text);
+                        p.setTextSize(dp(15));
+                        canvas.drawText(names[i], dp(70), top + rh / 2f - dp(2), p);
+                        p.setColor(x.text2);
+                        p.setTextSize(dp(13));
+                        canvas.drawText("Last message preview", dp(70), top + rh / 2f + dp(16), p);
+                        top += rh;
+                    }
+                    break;
+                }
+                case "menu": {
+                    String[] labels = {"Settings", "Contacts", "Calls", "Saved Messages", "My profile"};
+                    java.util.List<String> ids = b.list("items", java.util.Arrays.asList("settings"));
+                    for (String id : ids) {
+                        int k = "settings".equals(id) ? 0 : "contacts".equals(id) ? 1 : "calls".equals(id) ? 2 : "savedMessages".equals(id) ? 3 : 4;
+                        p.setColor(x.text);
+                        p.setTextSize(dp(15));
+                        canvas.drawText(labels[k], dp(16), top + dp(30), p);
+                        top += dp(46);
+                    }
+                    break;
+                }
+                case "profileCard":
+                    avatar(canvas, dp(40), top + dp(36), dp(24), AV[0]);
+                    p.setColor(x.text);
+                    p.setTextSize(dp(16));
+                    canvas.drawText("Your name", dp(76), top + dp(34), p);
+                    p.setColor(x.text2);
+                    p.setTextSize(dp(13));
+                    canvas.drawText("@username", dp(76), top + dp(54), p);
+                    top += dp(76);
+                    break;
                 default:
                     break;
             }
