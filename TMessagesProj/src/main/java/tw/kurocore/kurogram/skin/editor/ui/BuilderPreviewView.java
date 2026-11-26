@@ -2120,7 +2120,124 @@ public class BuilderPreviewView extends View {
         drawTabs(canvas, x, "contacts");
     }
 
+    /** The People screen when the layout builds it from blocks (layout.screens.people); null when it does not. */
+    private tw.kurocore.kurogram.layout.BlockSpec.Screen blockScreen(String id) {
+        Object node = session.raw("layout.screens." + id);
+        if (!(node instanceof java.util.Map)) {
+            return null;
+        }
+        try {
+            java.util.Map<String, Object> wrap = new java.util.LinkedHashMap<>();
+            wrap.put(id, node);
+            return tw.kurocore.kurogram.layout.BlockSpec.parse(wrap).get(id);
+        } catch (IllegalArgumentException e) {
+            return null; // the app would refuse this layout too: show the built-in screen
+        }
+    }
+
+    private void drawBlocks(Canvas canvas, Ctx x, tw.kurocore.kurogram.layout.BlockSpec.Screen screen) {
+        int top = bar(canvas, x, screen.title);
+        String chipPick = null;
+        for (tw.kurocore.kurogram.layout.BlockSpec.Block b : screen.blocks) {
+            if (top > x.h * 1.3f) {
+                break;
+            }
+            switch (b.type) {
+                case "storyRail": {
+                    boolean cards = !"circles".equals(b.str("style", "cards"));
+                    String[] labels = {"Add to story", "May", "Thiha", "Referrer", "Thi Ha", "Cristine"};
+                    int cw = dp(cards ? 74 : 60), ch = dp(cards ? 104 : 84);
+                    rect.set(0, top, x.w, top + ch);
+                    add("peopleRail", rect);
+                    for (int i = 0; i < labels.length; i++) {
+                        float l = dp(10) + i * (cw + dp(6));
+                        if (l > x.w) {
+                            break;
+                        }
+                        if (cards) {
+                            rect.set(l, top, l + cw, top + ch);
+                            int c = AV[i % AV.length];
+                            p.setColor(i == 0 ? (x.divider & 0x00FFFFFF) | 0x66000000 : android.graphics.Color.rgb((int) (android.graphics.Color.red(c) * 0.55f), (int) (android.graphics.Color.green(c) * 0.55f), (int) (android.graphics.Color.blue(c) * 0.55f)));
+                            canvas.drawRoundRect(rect, dp(12), dp(12), p);
+                            avatar(canvas, l + dp(20), top + dp(20), dp(13), c);
+                            outlineCircle(canvas, l + dp(20), top + dp(20), dp(15), x.accent);
+                            p.setColor(0xFFFFFFFF);
+                            p.setTextSize(dp(11));
+                            canvas.drawText(labels[i], l + dp(6), top + ch - dp(8), p);
+                        } else {
+                            avatar(canvas, l + cw / 2f, top + dp(30), dp(24), AV[i % AV.length]);
+                            outlineCircle(canvas, l + cw / 2f, top + dp(30), dp(27), x.accent);
+                            p.setColor(x.text);
+                            p.setTextSize(dp(11));
+                            canvas.drawText(labels[i], l + dp(6), top + ch - dp(6), p);
+                        }
+                    }
+                    top += ch + dp(8);
+                    break;
+                }
+                case "chips": {
+                    float cx = dp(12);
+                    java.util.List<String> items = b.list("items", java.util.Arrays.asList("all"));
+                    for (int i = 0; i < items.size(); i++) {
+                        String label = "online".equals(items.get(i)) ? "Online" : "contacts".equals(items.get(i)) ? "Contacts" : "All";
+                        p.setTextSize(dp(13));
+                        float cw = p.measureText(label) + dp(26);
+                        rect.set(cx, top, cx + cw, top + dp(30));
+                        p.setColor(i == 0 ? (x.accent & 0x00FFFFFF) | 0x26000000 : (x.divider & 0x00FFFFFF) | 0x66000000);
+                        canvas.drawRoundRect(rect, dp(15), dp(15), p);
+                        add("peopleRail", rect);
+                        p.setColor(i == 0 ? x.accent : x.text);
+                        canvas.drawText(label, cx + dp(13), top + dp(20), p);
+                        cx += cw + dp(8);
+                    }
+                    top += dp(42);
+                    break;
+                }
+                case "note":
+                    p.setColor(x.text2);
+                    p.setTextSize(dp(12));
+                    canvas.drawText(b.str("text", ""), dp(14), top + dp(14), p);
+                    top += dp(24);
+                    break;
+                case "section":
+                    p.setColor(x.accent);
+                    p.setTextSize(dp(13));
+                    canvas.drawText(b.str("title", ""), dp(14), top + dp(18), p);
+                    top += dp(30);
+                    break;
+                case "spacer":
+                    top += dp(b.intValue("heightDp", 8));
+                    break;
+                case "list": {
+                    String[] names = {"Ko Ko", "09976433453", "6Lottery", "any", "Aung", "Aung That Htwe", "Aunty Lay", "Aye Than"};
+                    int n = Math.min(names.length, b.intValue("limit", 50));
+                    int rh = dp("card".equals(b.str("row", "compact")) ? 72 : 60);
+                    for (int i = 0; i < n && top < x.h * 1.3f; i++) {
+                        rect.set(0, top, x.w, top + rh);
+                        add("contactRow", rect);
+                        avatar(canvas, dp(36), top + rh / 2f, dp(22), AV[i % AV.length]);
+                        p.setColor(x.text);
+                        p.setTextSize(dp(15));
+                        canvas.drawText(names[i], dp(70), top + rh / 2f - dp(2), p);
+                        p.setColor(x.text2);
+                        p.setTextSize(dp(13));
+                        canvas.drawText("last seen recently", dp(70), top + rh / 2f + dp(16), p);
+                        top += rh;
+                    }
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+    }
+
     private void drawPeople(Canvas canvas, Ctx x) {
+        tw.kurocore.kurogram.layout.BlockSpec.Screen built = blockScreen("people");
+        if (built != null) {
+            drawBlocks(canvas, x, built);
+            return;
+        }
         int sbg = session.color("screens.contacts.background", 0);
         if (sbg != 0) {
             rect.set(0, 0, x.w, x.h);
