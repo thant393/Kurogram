@@ -182,6 +182,21 @@ public class BlockScreenActivity extends BaseFragment implements NotificationCen
                 && (user.status.expires == 0 || user.status.expires > ConnectionsManager.getInstance(currentAccount).getCurrentTime());
     }
 
+    /** A sortable "how recently" for a user: online now is the newest, then the exact last-seen time, then the vague buckets. */
+    private int lastSeen(TLRPC.User u) {
+        if (u == null || u.status == null) {
+            return 0;
+        }
+        if (u.status instanceof TLRPC.TL_userStatusOnline) {
+            return Integer.MAX_VALUE;
+        }
+        if (u.status instanceof TLRPC.TL_userStatusOffline) {
+            return u.status.expires;
+        }
+        int now = ConnectionsManager.getInstance(currentAccount).getCurrentTime();
+        return u.status instanceof TLRPC.TL_userStatusRecently ? now - 60 : u.status instanceof TLRPC.TL_userStatusLastWeek ? now - 5 * 86400 : u.status instanceof TLRPC.TL_userStatusLastMonth ? now - 20 * 86400 : 0;
+    }
+
     private List<TLRPC.User> contacts(boolean onlyOnline) {
         List<TLRPC.User> out = new ArrayList<>();
         for (TLRPC.TL_contact c : ContactsController.getInstance(currentAccount).contacts) {
@@ -273,7 +288,14 @@ public class BlockScreenActivity extends BaseFragment implements NotificationCen
         int limit = b.intValue("limit", 50);
         List<TLRPC.User> users = new ArrayList<>();
         if ("contacts".equals(source) || "online".equals(source)) {
-            users = contacts("online".equals(source) || "online".equals(chipFilter));
+            boolean wantsOnline = "online".equals(source) || "online".equals(chipFilter);
+            users = contacts(wantsOnline);
+            if (users.isEmpty() && wantsOnline) {
+                // like the built-in People screen: nobody is online, so show who was active most recently
+                users = contacts(false);
+                Collections.sort(users, (a, c) -> Integer.compare(lastSeen(c), lastSeen(a)));
+                addText(context, "Nobody is online right now. Showing recently active contacts.", 13, Theme.key_windowBackgroundWhiteGrayText, false);
+            }
         } else {
             // chats / unread: the people you talk to, newest first
             for (org.telegram.tgnet.TLRPC.Dialog dlg : MessagesController.getInstance(currentAccount).getAllDialogs()) {
