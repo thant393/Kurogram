@@ -345,7 +345,7 @@ public final class EditorSession {
         if ("schemaVersion".equals(e.path) || "schemaMinor".equals(e.path)) {
             return false; // set automatically
         }
-        return advanced || e.isBasic();
+        return true; // every setting of a component is shown; there is no basic/advanced switch
     }
 
     /** Component ids that have at least one visible setting in the current mode: what the Component Browser lists. */

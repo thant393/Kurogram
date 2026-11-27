@@ -255,7 +255,7 @@ public class StickerStoreApi {
                 try (Response r = response) {
                     String text = r.body() != null ? r.body().string() : "";
                     if (!r.isSuccessful()) {
-                        String snippet = text.length() > 160 ? text.substring(0, 160) : text;
+                        String snippet = readableError(text);
                         postResultError(callback, "Server said " + r.code() + (snippet.isEmpty() ? "" : ": " + snippet));
                         return;
                     }
@@ -307,7 +307,7 @@ public class StickerStoreApi {
                 try (Response r = response) {
                     String text = r.body() != null ? r.body().string() : "";
                     if (!r.isSuccessful()) {
-                        String snippet = text.length() > 160 ? text.substring(0, 160) : text;
+                        String snippet = readableError(text);
                         org.telegram.messenger.AndroidUtilities.runOnUIThread(() -> callback.onError("Server said " + r.code() + (snippet.isEmpty() ? "" : ": " + snippet)));
                         return;
                     }
@@ -319,6 +319,37 @@ public class StickerStoreApi {
                 }
             }
         });
+    }
+
+    /** The server's reason in plain words: a 422 carries a list of messages, which we join instead of cutting the JSON short. */
+    static String readableError(String text) {
+        if (text == null) {
+            return "";
+        }
+        try {
+            Object detail = new JSONObject(text).opt("detail");
+            if (detail instanceof org.json.JSONArray) {
+                org.json.JSONArray list = (org.json.JSONArray) detail;
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < list.length() && i < 4; i++) {
+                    JSONObject item = list.optJSONObject(i);
+                    String msg = item != null ? item.optString("msg", "") : String.valueOf(list.opt(i));
+                    if (msg.startsWith("Value error, ")) {
+                        msg = msg.substring("Value error, ".length());
+                    }
+                    if (!msg.isEmpty()) {
+                        sb.append(sb.length() > 0 ? "; " : "").append(msg);
+                    }
+                }
+                if (sb.length() > 0) {
+                    return sb.length() > 400 ? sb.substring(0, 400) : sb.toString();
+                }
+            } else if (detail instanceof String) {
+                return ((String) detail).length() > 400 ? ((String) detail).substring(0, 400) : (String) detail;
+            }
+        } catch (Exception ignore) {
+        }
+        return text.length() > 400 ? text.substring(0, 400) : text;
     }
 
     private static void postResultError(ResultCallback callback, String message) {

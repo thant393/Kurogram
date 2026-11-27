@@ -716,7 +716,7 @@ public class BuilderPreviewView extends View {
             return;
         }
         RectF bar = tabBar(x.w, x.h);
-        boolean glass = "glass".equals(session.text("layout.bottomTabs.style", "flat"));
+        boolean glass = "glass".equals(session.text("layout.bottomTabs.style", "glass"));
         int fill = session.colorChain(x.surface, "components.navigationBar.background", "components.bottomNavigation.background");
         if (glass) {
             fill = (fill & 0x00FFFFFF) | 0xCC000000;

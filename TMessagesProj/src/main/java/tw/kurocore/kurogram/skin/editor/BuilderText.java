@@ -156,7 +156,7 @@ public final class BuilderText {
         t("level", "Level");
         t("more", "More");
         t("rename", "Theme name");
-        t("menu.advanced", "Show advanced settings");
+        t("sidemenu", "Preview the side menu");
         t("menu.basic", "Show basic settings only");
         t("publish", "Publish");
         t("update", "Update");

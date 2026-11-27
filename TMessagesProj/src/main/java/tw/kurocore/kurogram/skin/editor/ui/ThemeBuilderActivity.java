@@ -108,7 +108,7 @@ public class ThemeBuilderActivity extends BaseFragment {
     private boolean inspecting;   // a part (or the global colours) is open in the inspector; otherwise the 3-tab bar shows
     private boolean globalPanel;  // the inspector shows only the quick global colours
     private static final String[] GLOBAL_COLORS = {"tokens.colors.accent", "tokens.colors.background", "tokens.colors.surface", "tokens.colors.textPrimary"};
-    private TextView levelItem, readItem, liveItem, lookItem; // entries of the three-dots menu whose words change
+    private TextView readItem, liveItem, lookItem; // entries of the three-dots menu whose words change
     private int sheetState; // 0 collapsed, 1 half, 2 full
     private android.animation.ValueAnimator sheetAnim;
     private StudioModel.Section section = StudioModel.Section.APPEARANCE;
@@ -218,7 +218,6 @@ public class ThemeBuilderActivity extends BaseFragment {
         menu.addItem(1, tr("next"));
         org.telegram.ui.ActionBar.ActionBarMenuItem more = menu.addItem(2, R.drawable.ic_ab_other);
         more.addSubItem(12, tr("rename"));
-        levelItem = more.addSubItem(14, tr("menu.advanced"));
         readItem = more.addSubItem(16, tr("contrast.title"));
         liveItem = more.addSubItem(17, tr("live"));
         more.addSubItem(18, tr("use"));
@@ -228,6 +227,7 @@ public class ThemeBuilderActivity extends BaseFragment {
         }
         lookItem = more.addSubItem(21, tr("look"));
         more.addSubItem(22, tr("blocks"));
+        more.addSubItem(23, tr("sidemenu"));
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
@@ -255,10 +255,6 @@ public class ThemeBuilderActivity extends BaseFragment {
                     case 13:
                         deviceDialog();
                         break;
-                    case 14:
-                        session.setAdvanced(!session.advanced());
-                        refreshAll();
-                        break;
                     case 16:
                         warningsDialog();
                         break;
@@ -279,6 +275,14 @@ public class ThemeBuilderActivity extends BaseFragment {
                         break;
                     case 22:
                         blocksDialog();
+                        break;
+                    case 23:
+                        // the side menu belongs to Chats: look at it from there and come back
+                        session.setScene("drawer".equals(session.scene()) ? "chats" : "drawer");
+                        inspecting = false;
+                        globalPanel = false;
+                        applySheet(false);
+                        refreshAll();
                         break;
                     default:
                         break;
@@ -985,8 +989,7 @@ public class ThemeBuilderActivity extends BaseFragment {
         warnChip.setVisibility(issues > 0 && editMode ? View.VISIBLE : View.GONE);
         warnChip.setText("\u26A0 " + issues);
         warnChip.setContentDescription(tr("contrast.low"));
-        if (levelItem != null) {
-            levelItem.setText(tr(session.advanced() ? "menu.basic" : "menu.advanced"));
+        if (readItem != null) {
             readItem.setText(tr("contrast.title") + (issues > 0 ? "  \u26A0 " + issues : "  \u2713"));
             liveItem.setText(tr("live") + (live ? "  \u2713" : ""));
             lookItem.setText(tr("look") + ": " + lookName());
@@ -1265,14 +1268,14 @@ public class ThemeBuilderActivity extends BaseFragment {
             final List<String> opts = rule.options;
             if (opts.size() <= 4) {
                 int at = opts.indexOf(cur != null ? cur : eff);
-                box.addView(segmented(context, opts.toArray(new String[0]), at, i -> {
+                box.addView(segmented(context, optionLabels(e.path, opts), at, i -> {
                     report(session.setValue(e.path, opts.get(i)));
                     changed(true);
                 }), LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 8, 6, 0));
             } else {
-                head.addView(text(context, String.valueOf(cur != null ? cur : eff == null ? "" : eff) + "  ›", 13, false));
+                head.addView(text(context, optionLabel(e.path, String.valueOf(cur != null ? cur : eff == null ? "" : eff)) + "  ›", 13, false));
                 box.setOnClickListener(v -> new AlertDialog.Builder(getParentActivity())
-                        .setItems(opts.toArray(new String[0]), (d, i) -> {
+                        .setItems(optionLabels(e.path, opts), (d, i) -> {
                             report(session.setValue(e.path, opts.get(i)));
                             changed(true);
                         }).show());
@@ -1887,6 +1890,22 @@ public class ThemeBuilderActivity extends BaseFragment {
     private String blockScreenId() {
         String scene = session.scene();
         return "drawer".equals(scene) || "settings".equals(scene) || "profile".equals(scene) ? scene : "people"; // Contacts is the slot a built People page replaces
+    }
+
+    /** Plain words for a few values whose stored name says little (the stored value does not change). */
+    private static String optionLabel(String path, String value) {
+        if ("layout.bottomTabs.style".equals(path)) {
+            return "glass".equals(value) ? "Floating" : "flat".equals(value) ? "Attached to the bottom" : value;
+        }
+        return value;
+    }
+
+    private static String[] optionLabels(String path, List<String> opts) {
+        String[] out = new String[opts.size()];
+        for (int i = 0; i < out.length; i++) {
+            out[i] = optionLabel(path, opts.get(i));
+        }
+        return out;
     }
 
     private static String defaultTitle(String id) {
