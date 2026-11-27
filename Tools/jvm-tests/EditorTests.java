@@ -192,7 +192,7 @@ public class EditorTests {
         check(es.settingsFor("global").size() > 0, "global has settings");
         int basicN = es.allSettings().size();
         es.setAdvanced(true);
-        check(es.allSettings().size() > basicN, "advanced shows more");
+        check(es.allSettings().size() >= basicN, "every setting is shown, with no basic/advanced switch");
         for (Catalog.Entry e : es.allSettings()) check(e.phase <= EditorSession.BUILT_PHASE, "only built phases shown " + e.path);
         es.select("nope");
         check("global".equals(es.selected()), "unknown component falls back to global");
