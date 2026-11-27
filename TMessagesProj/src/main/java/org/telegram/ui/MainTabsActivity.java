@@ -338,6 +338,17 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         } else {
             tabs[INDEX_PROFILE] = GlassTabView.createAvatar(context, resourceProvider, currentAccount, R.string.MainTabsProfile);
         }
+        {
+            // Any of these tabs can be a screen the theme builds itself, named by the theme.
+            String[] ids = {"settings", "calls", "profile"};
+            int[] idx = {INDEX_SETTINGS, INDEX_CALLS, INDEX_PROFILE};
+            for (int i = 0; i < ids.length; i++) {
+                tw.kurocore.kurogram.layout.BlockSpec.Screen custom = tw.kurocore.kurogram.layout.LayoutManager.get().spec().screen(ids[i]);
+                if (custom != null && !(i == 2 && layoutWantsUnreadTab())) {
+                    tabs[idx[i]].setLabel(custom.title);
+                }
+            }
+        }
         tabs[INDEX_CHATS].setOnLongClickListener(this::openFoldersSelector);
         tabs[INDEX_CONTACTS].setOnLongClickListener(this::openContactsSelector);
         tabs[INDEX_CALLS].setOnLongClickListener(this::openCallsSelector);
@@ -827,14 +838,16 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
     /** A layout change (apply or reset) can swap what People / the last tab show; cached pages of the old layout must go. */
     private void dropStaleLayoutTabs() {
         final boolean wantsUnread = layoutWantsUnreadTab();
-        final int[] positions = {POSITION_CONTACTS, POSITION_PROFILE};
+        final int[] positions = {POSITION_CONTACTS, POSITION_CALLS_OR_SETTINGS, POSITION_PROFILE};
         for (int position : positions) {
             final FragmentState state = fragmentsArr.get(position);
             if (state == null) continue;
             final boolean isUnread = state.fragment instanceof tw.kurocore.kurogram.layout.UnreadChatsActivity;
             final boolean isBlock = state.fragment instanceof tw.kurocore.kurogram.layout.BlockScreenActivity;
             final boolean wantsBlock = tw.kurocore.kurogram.layout.LayoutManager.get().spec().screen("people") != null;
-            final boolean stale = position == POSITION_CONTACTS ? isBlock != wantsBlock : isUnread != wantsUnread;
+            final String id = blockScreenIdAt(position);
+            final boolean wantsHere = id != null && !(position == POSITION_PROFILE && wantsUnread) && tw.kurocore.kurogram.layout.LayoutManager.get().spec().screen(id) != null;
+            final boolean stale = isBlock != wantsHere || (position == POSITION_PROFILE && isUnread != wantsUnread);
             if (!stale) continue;
             try {
                 state.fragment.onPause();
@@ -846,8 +859,31 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         }
     }
 
+    /** The layout screen id that may replace the page at this position, or null for the Chats page. */
+    private String blockScreenIdAt(int position) {
+        switch (position) {
+            case POSITION_CONTACTS:
+                return "people";
+            case POSITION_CALLS_OR_SETTINGS:
+                return getUserConfig().showCallsTab ? "calls" : "settings";
+            case POSITION_PROFILE:
+                return "profile";
+            default:
+                return null;
+        }
+    }
+
     @Override
     protected BaseFragment createBaseFragmentAt(int position) {
+        final String blockId = blockScreenIdAt(position);
+        if (blockId != null && !(position == POSITION_PROFILE && layoutWantsUnreadTab())
+                && tw.kurocore.kurogram.layout.LayoutManager.get().spec().screen(blockId) != null) {
+            // A theme builds this page from blocks (layout.screens.<id>) instead of the built-in screen.
+            Bundle blocks = new Bundle();
+            blocks.putBoolean("hasMainTabs", true);
+            blocks.putString("screen_id", blockId);
+            return new tw.kurocore.kurogram.layout.BlockScreenActivity(blocks);
+        }
         if (position == POSITION_CONTACTS && tw.kurocore.kurogram.layout.LayoutManager.get().spec().screen("people") != null) {
             // A layout pack builds People from blocks (layout.screens.people) instead of the built-in lists.
             Bundle blocks = new Bundle();

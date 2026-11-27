@@ -1883,11 +1883,19 @@ public class ThemeBuilderActivity extends BaseFragment {
      * Styles and colourways: the theme's own file is the base look; a style changes parts of it (shapes, layout…), a colourway
      * changes a style's colours. Choosing one makes every edit go to that look only; everything else is inherited.
      */
-    private static final String BLOCK_SCREEN = "people";
+    /** The screen the Screen blocks dialog edits: the one on show when it can be built from blocks, else People. */
+    private String blockScreenId() {
+        String scene = session.scene();
+        return "drawer".equals(scene) || "settings".equals(scene) || "profile".equals(scene) ? scene : "people";
+    }
+
+    private static String defaultTitle(String id) {
+        return "drawer".equals(id) ? "Menu" : "settings".equals(id) ? "Settings" : "profile".equals(id) ? "Profile" : "People";
+    }
 
     @SuppressWarnings("unchecked")
     private java.util.List<java.util.Map<String, Object>> blockList() {
-        Object node = session.draft.get("layout.screens." + BLOCK_SCREEN);
+        Object node = session.draft.get("layout.screens." + blockScreenId());
         if (node instanceof java.util.Map && ((java.util.Map<String, Object>) node).get("blocks") instanceof java.util.List) {
             // a deep copy: edits are checked and recorded only when they are saved back
             return (java.util.List<java.util.Map<String, Object>>) tw.kurocore.kurogram.skin.editor.Json.deepCopy(((java.util.Map<String, Object>) node).get("blocks"));
@@ -1897,9 +1905,11 @@ public class ThemeBuilderActivity extends BaseFragment {
 
     private void saveBlocks(java.util.List<java.util.Map<String, Object>> blocks) {
         java.util.Map<String, Object> screen = new java.util.LinkedHashMap<>();
-        screen.put("title", "People");
+        Object existing = session.draft.get("layout.screens." + blockScreenId());
+        Object oldTitle = existing instanceof java.util.Map ? ((java.util.Map<?, ?>) existing).get("title") : null;
+        screen.put("title", oldTitle instanceof String ? oldTitle : defaultTitle(blockScreenId()));
         screen.put("blocks", blocks == null ? new java.util.ArrayList<>() : blocks);
-        String problem = blocks == null ? session.draft.setScreen(BLOCK_SCREEN, null) : session.draft.setScreen(BLOCK_SCREEN, screen);
+        String problem = blocks == null ? session.draft.setScreen(blockScreenId(), null) : session.draft.setScreen(blockScreenId(), screen);
         if (problem != null) {
             report(problem);
         }
@@ -1952,7 +1962,7 @@ public class ThemeBuilderActivity extends BaseFragment {
         box.setPadding(AndroidUtilities.dp(16), AndroidUtilities.dp(8), AndroidUtilities.dp(16), 0);
         ScrollView sv = new ScrollView(context);
         sv.addView(box);
-        final AlertDialog dialog = new AlertDialog.Builder(context).setTitle(tr("blocks") + " · People").setView(sv)
+        final AlertDialog dialog = new AlertDialog.Builder(context).setTitle(tr("blocks") + " · " + defaultTitle(blockScreenId())).setView(sv)
                 .setPositiveButton(tr("done"), null).create();
         final Runnable[] fill = new Runnable[1];
         fill[0] = () -> {

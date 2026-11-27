@@ -26,6 +26,7 @@ import org.telegram.messenger.UserObject;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.Theme;
+import tw.kurocore.kurogram.skin.KuroUi;
 import org.telegram.ui.CallLogActivity;
 import org.telegram.ui.ChatActivity;
 import org.telegram.ui.Components.AvatarDrawable;
@@ -65,7 +66,7 @@ public final class KuroDrawer {
 
     public static boolean wantsMenuButton() {
         List<String> left = LayoutManager.get().spec().listValue("chatList.header.left", null);
-        return left != null && left.contains("menu") && (items() != null || showsSettings());
+        return left != null && left.contains("menu") && (items() != null || showsSettings() || LayoutManager.get().spec().screen("drawer") != null);
     }
 
     /** drawer.content = "settings": the drawer is Telegram's own Settings page. */
@@ -200,8 +201,45 @@ public final class KuroDrawer {
                 }).start();
     }
 
+    /** The drawer a theme builds itself out of blocks (layout.screens.drawer). */
+    private static void showBlocks(final BaseFragment from) {
+        final Context context = from.getParentActivity();
+        final int account = from.getCurrentAccount();
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        FrameLayout root = new FrameLayout(context);
+        root.setOnClickListener(v -> dialog.dismiss());
+        final int width = Math.min(AndroidUtilities.dp(320), (int) (AndroidUtilities.displaySize.x * 0.86f));
+        LinearLayout panel = new LinearLayout(context);
+        panel.setOrientation(LinearLayout.VERTICAL);
+        panel.setBackgroundColor(KuroUi.screenBackground("drawer", Theme.getColor(Theme.key_windowBackgroundWhite)));
+        panel.setClickable(true);
+        panel.setFitsSystemWindows(false);
+        root.addView(panel, new FrameLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT, Gravity.START));
+        ScrollView scroll = new ScrollView(context);
+        scroll.setVerticalScrollBarEnabled(false);
+        LinearLayout list = new LinearLayout(context);
+        list.setOrientation(LinearLayout.VERTICAL);
+        list.setPadding(0, AndroidUtilities.statusBarHeight + AndroidUtilities.dp(8), 0, AndroidUtilities.dp(16));
+        scroll.addView(list, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        panel.addView(scroll, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 0, 1f));
+        new BlockRenderer(from, account, list, dialog::dismiss).render(context, LayoutManager.get().spec().screen("drawer"));
+        dialog.setContentView(root);
+        Window w = dialog.getWindow();
+        if (w != null) {
+            edgeToEdge(w);
+        }
+        panel.setTranslationX(-width);
+        dialog.show();
+        panel.animate().translationX(0).setDuration(200).start();
+    }
+
     public static void show(final BaseFragment from) {
         if (from == null || from.getParentActivity() == null) return;
+        if (LayoutManager.get().spec().screen("drawer") != null) {
+            showBlocks(from);
+            return;
+        }
         if (showsSettings()) {
             showSettingsPage(from);
             return;

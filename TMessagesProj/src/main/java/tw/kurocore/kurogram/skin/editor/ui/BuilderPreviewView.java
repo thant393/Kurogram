@@ -433,7 +433,9 @@ public class BuilderPreviewView extends View {
 
         switch (session.scene()) {
             case "settings":
-                drawSettings(canvas, x);
+                if (!tryBlocks(canvas, x, "settings")) {
+                    drawSettings(canvas, x);
+                }
                 break;
             case "chat":
                 drawChat(canvas, x);
@@ -445,7 +447,11 @@ public class BuilderPreviewView extends View {
                 drawChats(canvas, x);
                 hits.clear(); // the scrim covers the list: only the menu and the page behind it can be tapped
                 add("screenBackground", new RectF(0, 0, x.w, x.h));
-                drawDrawer(canvas, x);
+                if (blockScreen("drawer") != null) {
+                    drawBlockDrawer(canvas, x);
+                } else {
+                    drawDrawer(canvas, x);
+                }
                 break;
             case "contacts":
                 drawContacts(canvas, x);
@@ -454,7 +460,9 @@ public class BuilderPreviewView extends View {
                 drawPeople(canvas, x);
                 break;
             case "profile":
-                drawProfile(canvas, x);
+                if (!tryBlocks(canvas, x, "profile")) {
+                    drawProfile(canvas, x);
+                }
                 break;
             case "themeStore":
                 drawThemeStore(canvas, x);
@@ -2135,8 +2143,43 @@ public class BuilderPreviewView extends View {
         }
     }
 
+    private boolean tryBlocks(Canvas canvas, Ctx x, String id) {
+        tw.kurocore.kurogram.layout.BlockSpec.Screen built = blockScreen(id);
+        if (built == null) {
+            return false;
+        }
+        drawBlocks(canvas, x, built);
+        return true;
+    }
+
+    private boolean panelMode;
+
+    /** The side drawer a theme builds from blocks: a panel over the dimmed Chats page, without a top bar. */
+    private void drawBlockDrawer(Canvas canvas, Ctx x) {
+        rect.set(0, 0, x.w, x.h);
+        p.setColor(session.color("tokens.colors.overlay", 0x66000000));
+        canvas.drawRect(rect, p);
+        float dw = x.w * 0.72f;
+        rect.set(0, 0, dw, x.h);
+        p.setColor(x.surface);
+        canvas.drawRect(rect, p);
+        add("drawer", rect);
+        int saveW = x.w;
+        canvas.save();
+        canvas.clipRect(0, 0, dw, x.h);
+        x.w = (int) dw;
+        panelMode = true;
+        try {
+            drawBlocks(canvas, x, blockScreen("drawer"));
+        } finally {
+            panelMode = false;
+            x.w = saveW;
+            canvas.restore();
+        }
+    }
+
     private void drawBlocks(Canvas canvas, Ctx x, tw.kurocore.kurogram.layout.BlockSpec.Screen screen) {
-        int top = bar(canvas, x, screen.title);
+        int top = panelMode ? dp(28) : bar(canvas, x, screen.title);
         String chipPick = null;
         for (tw.kurocore.kurogram.layout.BlockSpec.Block b : screen.blocks) {
             if (top > x.h * 1.3f) {
