@@ -454,7 +454,9 @@ public class BuilderPreviewView extends View {
                 }
                 break;
             case "contacts":
-                drawContacts(canvas, x);
+                if (!tryBlocks(canvas, x, "people")) {
+                    drawContacts(canvas, x);
+                }
                 break;
             case "people":
                 drawPeople(canvas, x);
@@ -2179,7 +2181,32 @@ public class BuilderPreviewView extends View {
     }
 
     private void drawBlocks(Canvas canvas, Ctx x, tw.kurocore.kurogram.layout.BlockSpec.Screen screen) {
-        int top = panelMode ? dp(28) : bar(canvas, x, screen.title);
+        boolean ownHeader = false;
+        String headerPin = "scroll";
+        String headerTitle = screen.title;
+        for (tw.kurocore.kurogram.layout.BlockSpec.Block hb : screen.blocks) {
+            if ("header".equals(hb.type)) {
+                ownHeader = true;
+                headerPin = hb.str("pin", "scroll");
+                headerTitle = hb.str("title", screen.title);
+                break;
+            }
+        }
+        int top = panelMode ? dp(28) : ownHeader ? 0 : bar(canvas, x, screen.title);
+        if (ownHeader && "top".equals(headerPin)) {
+            top = bar(canvas, x, headerTitle);
+        } else if (ownHeader && "bottom".equals(headerPin)) {
+            int hh = dp(56);
+            rect.set(0, x.h - hh - dp(64), x.w, x.h - dp(64));
+            p.setColor(x.surface);
+            canvas.drawRect(rect, p);
+            add("appBar", rect);
+            p.setColor(x.text);
+            p.setFakeBoldText(true);
+            p.setTextSize(dp(18));
+            canvas.drawText(headerTitle, dp(16), rect.centerY() + dp(6), p);
+            p.setFakeBoldText(false);
+        }
         String chipPick = null;
         for (tw.kurocore.kurogram.layout.BlockSpec.Block b : screen.blocks) {
             if (top > x.h * 1.3f) {
@@ -2269,6 +2296,20 @@ public class BuilderPreviewView extends View {
                     }
                     break;
                 }
+                case "header":
+                    if ("scroll".equals(b.str("pin", "scroll"))) {
+                        rect.set(0, top, x.w, top + dp(56));
+                        p.setColor(x.surface);
+                        canvas.drawRect(rect, p);
+                        add("appBar", rect);
+                        p.setColor(x.text);
+                        p.setFakeBoldText(true);
+                        p.setTextSize(dp(18));
+                        canvas.drawText(b.str("title", screen.title), dp(16), top + dp(34), p);
+                        p.setFakeBoldText(false);
+                        top += dp(56);
+                    }
+                    break;
                 case "chatList": {
                     String[] names = {"Saved Messages", "Ko Ko", "Kurogram Group", "Aung", "News Channel", "Aye Than"};
                     int n = Math.min(names.length, b.intValue("limit", 30));

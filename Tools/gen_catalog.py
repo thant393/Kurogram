@@ -117,7 +117,7 @@ GLOSS = {
     "collapse": "ခေါက်ရန်", "left": "ဘယ်", "right": "ညာ", "special": "အထူး", "archive": "သိမ်းဆည်းထား", "online": "အွန်လိုင်း",
     "dot": "အစက်", "last": "နောက်ဆုံး", "active": "အသုံးပြုချိန်", "seen": "ဖတ်ပြီး", "meta": "အချက်အလက်", "lines": "စာကြောင်းများ",
     "shape": "ပုံသဏ္ဍာန်", "unreadweight": "မဖတ်ရသေးသော စာလုံးအထူ", "sort": "စီရန်", "status": "အခြေအနေ", "accounts": "အကောင့်များ",
-    "content": "အကြောင်းအရာ", "labels": "အညွှန်းများ", "creator": "ဖန်တီးသူ", "downloads": "ဒေါင်းလုဒ်များ", "chips": "chip များ",
+    "enabled": "ဖွင့်ထားသည်", "content": "အကြောင်းအရာ", "labels": "အညွှန်းများ", "creator": "ဖန်တီးသူ", "downloads": "ဒေါင်းလုဒ်များ", "chips": "chip များ",
     "layout": "ဖွဲ့စည်းပုံ", "group": "အုပ်စု", "icons": "အိုင်ကွန်များ", "descriptions": "ဖော်ပြချက်များ", "aspect": "အချိုး", "gap": "ကွာဟချက်",
     "session": "စက်", "fab": "ရေးသားခလုတ်", "transition": "ကူးပြောင်းမှု", "wallpaperColor": "နောက်ခံပုံအရောင်", "visible": "မြင်ရမည်",
     "inset": "အတွင်းကွာ", "weight": "အထူ", "normal": "ပုံမှန်", "radiusdp": "ထောင့်ကွေးမှု",

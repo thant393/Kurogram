@@ -74,6 +74,20 @@ public class BlockScreenActivity extends BaseFragment implements NotificationCen
         if (!asTab) {
             actionBar.setBackButtonImage(org.telegram.messenger.R.drawable.ic_ab_back);
         }
+        BlockSpec.Block header = null;
+        if (screen != null) {
+            for (BlockSpec.Block b : screen.blocks) {
+                if ("header".equals(b.type)) {
+                    header = b;
+                    break;
+                }
+            }
+        }
+        // a header block replaces the fixed top bar: the theme decides where the header sits
+        final boolean ownHeader = header != null;
+        if (ownHeader) {
+            actionBar.setAddToContainer(false);
+        }
         actionBar.setTitle(screen != null ? screen.title : screenId);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
@@ -92,11 +106,27 @@ public class BlockScreenActivity extends BaseFragment implements NotificationCen
         content.setOrientation(LinearLayout.VERTICAL);
         scroll.addView(content, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        lp.topMargin = ActionBar.getCurrentActionBarHeight() + (actionBar.getOccupyStatusBar() ? AndroidUtilities.statusBarHeight : 0);
+        final boolean pinTop = ownHeader && "top".equals(header.str("pin", "scroll"));
+        final boolean pinBottom = ownHeader && "bottom".equals(header.str("pin", "scroll"));
+        final int headerH = AndroidUtilities.dp(56);
+        lp.topMargin = ownHeader ? AndroidUtilities.statusBarHeight + (pinTop ? headerH : 0) : ActionBar.getCurrentActionBarHeight() + (actionBar.getOccupyStatusBar() ? AndroidUtilities.statusBarHeight : 0);
+        if (pinBottom) {
+            lp.bottomMargin = headerH + (asTab ? AndroidUtilities.dp(org.telegram.ui.DialogsActivity.MAIN_TABS_HEIGHT_WITH_MARGINS + 8) : 0);
+        }
         scroll.setClipToPadding(false);
-        scroll.setPadding(0, 0, 0, asTab ? AndroidUtilities.dp(org.telegram.ui.DialogsActivity.MAIN_TABS_HEIGHT_WITH_MARGINS + 8) : 0);
+        scroll.setPadding(0, 0, 0, asTab && !pinBottom ? AndroidUtilities.dp(org.telegram.ui.DialogsActivity.MAIN_TABS_HEIGHT_WITH_MARGINS + 8) : 0);
         root.addView(scroll, lp);
-        renderer = new BlockRenderer(this, currentAccount, content, null);
+        renderer = new BlockRenderer(this, currentAccount, content, null).pinHeaders(true);
+        if (pinTop || pinBottom) {
+            View bar = renderer.headerView(context, header);
+            FrameLayout.LayoutParams bp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, headerH, pinTop ? Gravity.TOP : Gravity.BOTTOM);
+            if (pinTop) {
+                bp.topMargin = AndroidUtilities.statusBarHeight;
+            } else if (asTab) {
+                bp.bottomMargin = AndroidUtilities.dp(org.telegram.ui.DialogsActivity.MAIN_TABS_HEIGHT_WITH_MARGINS + 8);
+            }
+            root.addView(bar, bp);
+        }
         rebuild(context);
         return fragmentView;
     }

@@ -6553,6 +6553,28 @@
     "en"
    ],
    "previewed": true
+  },
+  {
+   "path": "layout.drawer.enabled",
+   "group": "layout.drawer",
+   "level": "advanced",
+   "phase": 3,
+   "built": false,
+   "screens": [
+    "chats"
+   ],
+   "targets": [
+    "drawer"
+   ],
+   "label": {
+    "en": "Enabled"
+   },
+   "description": {
+    "en": ""
+   },
+   "reviewed": [
+    "en"
+   ]
   }
  ],
  "items": {

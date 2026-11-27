@@ -23,7 +23,7 @@ public final class BlockSpec {
     /** type -> allowed props as "name|kind", the same kinds LayoutSpec uses. */
     private static final Map<String, String[]> TYPES = new LinkedHashMap<>();
     static {
-        TYPES.put("header", new String[]{"title|str:32"});
+        TYPES.put("header", new String[]{"title|str:32", "pin|enum:scroll,top,bottom"});
         TYPES.put("storyRail", new String[]{"style|enum:cards,circles", "source|enum:contacts,online"});
         TYPES.put("chips", new String[]{"items|list:all,online,contacts:1:3"});
         TYPES.put("note", new String[]{"text|str:120"});

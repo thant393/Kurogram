@@ -217,6 +217,7 @@
   "chatList.folders.collapsible|bool",
   "chatList.specialRows.archive|enum:row,hidden",
   "drawer.content|enum:settings,list",
+  "drawer.enabled|bool",
   "chatList.searchBar|bool",
   "drawer.items|list:profile,settings,contacts,calls,saved,archive,kuroTheme,kuroSettings,numberFinder,specialContacts,onlineContacts,contactChanges,account,chatSettings,privacy,notifications,data,folders,devices,power,language,premium,stars,ton,business,gift,askQuestion,faq,features,privacyPolicy:1:40",
   "bottomTabs.items|list:chats,people,settings,profile,unread:2:5",

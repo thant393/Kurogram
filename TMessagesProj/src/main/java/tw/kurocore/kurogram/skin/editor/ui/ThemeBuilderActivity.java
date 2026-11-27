@@ -1435,7 +1435,7 @@ public class ThemeBuilderActivity extends BaseFragment {
     private static final String[] SETTINGS_SCREENS = {"kuroSettings", "numberFinder", "specialContacts", "onlineContacts", "contactChanges", "rows.profile",
             "chatSettings", "rows.privacy", "rows.notifications", "rows.dataStorage", "folders", "devices", "powerSaving", "language"};
     /** Screens made for Kuro themes only. */
-    private static final String[] SUB_SCREENS = {"people", "drawer", "controls"};
+    private static final String[] SUB_SCREENS = {"controls"};
 
     private void screensDialog() {
         boolean sub = java.util.Arrays.asList(SUB_SCREENS).contains(session.scene());
@@ -1886,7 +1886,7 @@ public class ThemeBuilderActivity extends BaseFragment {
     /** The screen the Screen blocks dialog edits: the one on show when it can be built from blocks, else People. */
     private String blockScreenId() {
         String scene = session.scene();
-        return "drawer".equals(scene) || "settings".equals(scene) || "profile".equals(scene) ? scene : "people";
+        return "drawer".equals(scene) || "settings".equals(scene) || "profile".equals(scene) ? scene : "people"; // Contacts is the slot a built People page replaces
     }
 
     private static String defaultTitle(String id) {
@@ -1939,6 +1939,10 @@ public class ThemeBuilderActivity extends BaseFragment {
                 break;
             case "spacer":
                 b.put("heightDp", 12);
+                break;
+            case "header":
+                b.put("title", "Title");
+                b.put("pin", "top");
                 break;
             case "chatList":
                 b.put("filter", "all");
@@ -2022,7 +2026,7 @@ public class ThemeBuilderActivity extends BaseFragment {
             add.setTextColor(KuroSkinManager.get().accent());
             add.setPadding(0, AndroidUtilities.dp(12), 0, AndroidUtilities.dp(6));
             add.setOnClickListener(v -> {
-                String[] types = {"storyRail", "chips", "note", "section", "list", "chatList", "menu", "profileCard", "spacer"};
+                String[] types = {"header", "storyRail", "chips", "note", "section", "list", "chatList", "menu", "profileCard", "spacer"};
                 new AlertDialog.Builder(context).setTitle(tr("blocks.add")).setItems(types, (d, which) -> {
                     if (blocks.size() >= tw.kurocore.kurogram.layout.BlockSpec.MAX_BLOCKS) {
                         report("Too many blocks.");

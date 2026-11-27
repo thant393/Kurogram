@@ -2,7 +2,8 @@
  "counts": {
   "EDITABLE_PREVIEWED": 206,
   "ENGINE_UNSUPPORTED": 11,
-  "EDITABLE_REAL_ONLY": 26
+  "EDITABLE_REAL_ONLY": 26,
+  "PLANNED_P3": 1
  },
  "rules": [
   {
@@ -2120,6 +2121,16 @@
    "kind": "enum:settings,list",
    "section": "layout",
    "status": "EDITABLE_REAL_ONLY",
+   "group": "layout.drawer",
+   "level": "advanced",
+   "phase": 3,
+   "wiring": "unverified"
+  },
+  {
+   "path": "layout.drawer.enabled",
+   "kind": "bool",
+   "section": "layout",
+   "status": "PLANNED_P3",
    "group": "layout.drawer",
    "level": "advanced",
    "phase": 3,

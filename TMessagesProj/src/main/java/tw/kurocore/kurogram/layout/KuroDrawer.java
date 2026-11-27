@@ -66,10 +66,18 @@ public final class KuroDrawer {
 
     public static boolean wantsMenuButton() {
         List<String> left = LayoutManager.get().spec().listValue("chatList.header.left", null);
+        if (enabled()) {
+            return true;
+        }
         return left != null && left.contains("menu") && (items() != null || showsSettings() || LayoutManager.get().spec().screen("drawer") != null);
     }
 
     /** drawer.content = "settings": the drawer is Telegram's own Settings page. */
+    /** drawer.enabled: the theme switches the side menu on; it then lists drawer.items (or the usual shortcuts). */
+    private static boolean enabled() {
+        return LayoutManager.get().spec().boolValue("drawer.enabled", false);
+    }
+
     private static boolean showsSettings() {
         return "settings".equals(LayoutManager.get().spec().stringValue("drawer.content", null));
     }
@@ -245,6 +253,9 @@ public final class KuroDrawer {
             return;
         }
         List<String> items = items();
+        if ((items == null || items.isEmpty()) && enabled()) {
+            items = java.util.Arrays.asList(DEFAULT_ITEMS);
+        }
         if (items == null || items.isEmpty()) return;
         final Context context = from.getParentActivity();
         final int account = from.getCurrentAccount();

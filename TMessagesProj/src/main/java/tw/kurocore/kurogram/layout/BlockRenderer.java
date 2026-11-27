@@ -48,6 +48,27 @@ public final class BlockRenderer {
         this.beforeNavigate = beforeNavigate;
     }
 
+    private boolean pinnedHeaders;
+
+    /** When true, headers whose pin is top or bottom are left out of the list: the screen shows them fixed. */
+    public BlockRenderer pinHeaders(boolean pinned) {
+        this.pinnedHeaders = pinned;
+        return this;
+    }
+
+    /** A header bar drawn as a block, so it can sit at the top, the bottom or anywhere in between. */
+    public View headerView(Context context, BlockSpec.Block b) {
+        TextView t = new TextView(context);
+        t.setText(b.str("title", screen != null ? screen.title : ""));
+        t.setTextSize(20);
+        t.setTypeface(AndroidUtilities.bold());
+        t.setGravity(Gravity.CENTER_VERTICAL);
+        t.setPadding(AndroidUtilities.dp(16), 0, AndroidUtilities.dp(16), 0);
+        t.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
+        t.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite));
+        return t;
+    }
+
     private void go(BaseFragment fragment) {
         if (beforeNavigate != null) {
             beforeNavigate.run();
@@ -95,8 +116,14 @@ public final class BlockRenderer {
                 case "profileCard":
                     addProfileCard(context);
                     break;
+                case "header":
+                    if (!"scroll".equals(b.str("pin", "scroll")) && pinnedHeaders) {
+                        break; // the screen pins it outside the scrolling list
+                    }
+                    content.addView(headerView(context, b), new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, AndroidUtilities.dp(56)));
+                    break;
                 default:
-                    break; // header sets the title only
+                    break;
             }
         }
     }
