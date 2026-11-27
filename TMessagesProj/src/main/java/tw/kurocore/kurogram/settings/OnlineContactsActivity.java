@@ -205,9 +205,8 @@ public class OnlineContactsActivity extends BaseFragment implements Notification
 
     /** Rows + story rail for the People tab. Never empty while the account has contacts. */
     private void buildPeople() {
-        final tw.kurocore.kurogram.layout.LayoutSpec spec = tw.kurocore.kurogram.layout.LayoutManager.get().spec();
-        railOn = !"off".equals(spec.stringValue("people.storyRail", "on"));
-        chipsOn = !"off".equals(spec.stringValue("people.chips", "on"));
+        railOn = true;
+        chipsOn = true;
         ArrayList<TLRPC.User> all = new ArrayList<>();
         for (TLRPC.TL_contact contact : ContactsController.getInstance(currentAccount).contacts) {
             TLRPC.User user = MessagesController.getInstance(currentAccount).getUser(contact.user_id);

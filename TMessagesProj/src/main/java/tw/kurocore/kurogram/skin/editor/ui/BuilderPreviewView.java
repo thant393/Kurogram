@@ -2278,88 +2278,11 @@ public class BuilderPreviewView extends View {
             drawBlocks(canvas, x, built);
             return;
         }
-        int sbg = session.color("screens.contacts.background", 0);
-        if (sbg != 0) {
-            rect.set(0, 0, x.w, x.h);
-            p.setColor(sbg);
-            canvas.drawRect(rect, p);
-        }
-        int top = bar(canvas, x, "People");
-        top += dp(6);
-        if ("on".equals(session.text("layout.people.storyRail", "on"))) {
-            // story cards: the first one adds a story, the others show a friend's story with a ringed avatar
-            String[] labels = {"Add to story", "May", "Thiha", "Referrer", "Thi Ha", "Cristine"};
-            int cw = dp(74), ch = dp(104), gap = dp(6);
-            rect.set(0, top, x.w, top + ch);
-            add("peopleRail", rect);
-            for (int i = 0; i < labels.length; i++) {
-                float l = dp(10) + i * (cw + gap);
-                if (l > x.w) {
-                    break;
-                }
-                rect.set(l, top, l + cw, top + ch);
-                if (i == 0) {
-                    p.setColor((x.divider & 0x00FFFFFF) | 0x66000000);
-                } else {
-                    int c = AV[(i - 1) % AV.length];
-                    p.setColor(android.graphics.Color.rgb((int) (android.graphics.Color.red(c) * 0.55f), (int) (android.graphics.Color.green(c) * 0.55f), (int) (android.graphics.Color.blue(c) * 0.55f)));
-                }
-                canvas.drawRoundRect(rect, dp(12), dp(12), p);
-                if (i == 0) {
-                    p.setColor(x.accent);
-                    canvas.drawCircle(l + cw / 2f, top + dp(48), dp(12), p);
-                    p.setColor(x.onAccent);
-                    p.setStrokeWidth(dp(1.8f));
-                    canvas.drawLine(l + cw / 2f - dp(6), top + dp(48), l + cw / 2f + dp(6), top + dp(48), p);
-                    canvas.drawLine(l + cw / 2f, top + dp(42), l + cw / 2f, top + dp(54), p);
-                    p.setStrokeWidth(0);
-                } else {
-                    avatar(canvas, l + dp(20), top + dp(20), dp(13), AV[(i - 1) % AV.length]);
-                    outlineCircle(canvas, l + dp(20), top + dp(20), dp(15), x.accent);
-                }
-                p.setColor(i == 0 ? x.text : 0xFFFFFFFF);
-                p.setTextSize(dp(11));
-                canvas.drawText(labels[i], l + dp(6), top + ch - dp(8), p);
-            }
-            top += ch + dp(10);
-        }
-        if ("on".equals(session.text("layout.people.chips", "on"))) {
-            String[] chips = {"0 active", "All"};
-            float cx = dp(12);
-            for (int i = 0; i < chips.length; i++) {
-                p.setTextSize(dp(13));
-                float cw = p.measureText(chips[i]) + dp(i == 0 ? 38 : 26);
-                rect.set(cx, top, cx + cw, top + dp(30));
-                p.setColor(i == 0 ? (x.accent & 0x00FFFFFF) | 0x26000000 : (x.divider & 0x00FFFFFF) | 0x66000000);
-                canvas.drawRoundRect(rect, dp(15), dp(15), p);
-                add("peopleRail", rect);
-                if (i == 0) {
-                    p.setColor(x.accent);
-                    canvas.drawCircle(cx + dp(14), top + dp(15), dp(4), p);
-                }
-                p.setColor(i == 0 ? x.accent : x.text);
-                canvas.drawText(chips[i], cx + dp(i == 0 ? 26 : 13), top + dp(20), p);
-                cx += cw + dp(8);
-            }
-            top += dp(40);
-            p.setColor(x.text2);
-            p.setTextSize(dp(12));
-            canvas.drawText("Nobody is active right now.", dp(14), top + dp(4), p);
-            top += dp(18);
-        }
-        String[] names = {"Ko Ko", "09976433453", "6Lottery", "any", "Aung", "Aung That Htwe", "Aunty Lay"};
-        for (int i = 0; i < names.length && top + dp(60) < x.h * 1.3f; i++) {
-            rect.set(0, top, x.w, top + dp(64));
-            add("contactRow", rect);
-            avatar(canvas, dp(36), top + dp(32), dp(24), AV[i % AV.length]);
-            p.setColor(x.text);
-            p.setTextSize(dp(15));
-            canvas.drawText(names[i], dp(72), top + dp(29), p);
-            p.setColor(x.text2);
-            p.setTextSize(dp(13));
-            canvas.drawText("last seen recently", dp(72), top + dp(48), p);
-            top += dp(64);
-        }
+                // No built-in People any more: the screen only exists once the theme builds it from blocks.
+        int top = bar(canvas, x, "Screen");
+        p.setColor(x.text2);
+        p.setTextSize(dp(13));
+        canvas.drawText("Nothing built yet. Menu > Screen blocks > Use blocks.", dp(14), top + dp(40), p);
     }
 
     private void outlineCircle(Canvas canvas, float cx, float cy, float r, int color) {

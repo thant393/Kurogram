@@ -322,8 +322,12 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         tabs = new GlassTabView[5];
         tabs[INDEX_CHATS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.CHATS, R.string.MainTabsChats);
         tabs[INDEX_CONTACTS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.CONTACTS, R.string.MainTabsContacts);
-        if ("online".equals(tw.kurocore.kurogram.layout.LayoutManager.get().spec().stringValue("bottomTabs.peopleSource", "contacts"))) {
-            tabs[INDEX_CONTACTS].setLabel("People");
+        {
+            // A theme can replace this tab with a screen it builds itself, under the name it gives that screen.
+            tw.kurocore.kurogram.layout.BlockSpec.Screen custom = tw.kurocore.kurogram.layout.LayoutManager.get().spec().screen("people");
+            if (custom != null) {
+                tabs[INDEX_CONTACTS].setLabel(custom.title);
+            }
         }
         tabs[INDEX_SETTINGS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.SETTINGS, R.string.Settings);
         tabs[INDEX_CALLS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.CALLS, R.string.MainTabsCalls);
@@ -822,17 +826,15 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
 
     /** A layout change (apply or reset) can swap what People / the last tab show; cached pages of the old layout must go. */
     private void dropStaleLayoutTabs() {
-        final boolean wantsOnline = "online".equals(tw.kurocore.kurogram.layout.LayoutManager.get().spec().stringValue("bottomTabs.peopleSource", "contacts"));
         final boolean wantsUnread = layoutWantsUnreadTab();
         final int[] positions = {POSITION_CONTACTS, POSITION_PROFILE};
         for (int position : positions) {
             final FragmentState state = fragmentsArr.get(position);
             if (state == null) continue;
-            final boolean isOnline = state.fragment instanceof tw.kurocore.kurogram.settings.OnlineContactsActivity;
             final boolean isUnread = state.fragment instanceof tw.kurocore.kurogram.layout.UnreadChatsActivity;
             final boolean isBlock = state.fragment instanceof tw.kurocore.kurogram.layout.BlockScreenActivity;
             final boolean wantsBlock = tw.kurocore.kurogram.layout.LayoutManager.get().spec().screen("people") != null;
-            final boolean stale = position == POSITION_CONTACTS ? (isBlock != wantsBlock || (!wantsBlock && isOnline != wantsOnline)) : isUnread != wantsUnread;
+            final boolean stale = position == POSITION_CONTACTS ? isBlock != wantsBlock : isUnread != wantsUnread;
             if (!stale) continue;
             try {
                 state.fragment.onPause();
@@ -852,12 +854,6 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
             blocks.putBoolean("hasMainTabs", true);
             blocks.putString("screen_id", "people");
             return new tw.kurocore.kurogram.layout.BlockScreenActivity(blocks);
-        }
-        if (position == POSITION_CONTACTS && "online".equals(tw.kurocore.kurogram.layout.LayoutManager.get().spec().stringValue("bottomTabs.peopleSource", "contacts"))) {
-            // A layout pack may make People the "online now" list of the existing Online Contacts feature.
-            Bundle online = new Bundle();
-            online.putBoolean("hasMainTabs", true);
-            return new tw.kurocore.kurogram.settings.OnlineContactsActivity(online);
         }
         if (position == POSITION_CONTACTS) {
             Bundle args = new Bundle();
