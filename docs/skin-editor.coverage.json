@@ -2137,7 +2137,7 @@
   },
   {
    "path": "layout.bottomTabs.items",
-   "kind": "list:chats,people,settings,profile,unread:2:5",
+   "kind": "list:chats,contacts,settings,profile,unread:2:5",
    "section": "layout",
    "status": "EDITABLE_PREVIEWED",
    "group": "layout.bottomTabs",

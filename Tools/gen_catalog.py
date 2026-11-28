@@ -125,7 +125,7 @@ GLOSS = {
 
 
 ITEM_MY = {
-    "menu": "မီနူး", "compose": "ရေးသားရန်", "search": "ရှာဖွေရန်", "chats": "ချက်တ်များ", "people": "လူများ", "settings": "ဆက်တင်", "profile": "ပရိုဖိုင်",
+    "menu": "မီနူး", "compose": "ရေးသားရန်", "search": "ရှာဖွေရန်", "chats": "ချက်တ်များ", "contacts": "အဆက်အသွယ်များ", "settings": "ဆက်တင်", "profile": "ပရိုဖိုင်",
     "unread": "မဖတ်ရသေးသော", "call": "ခေါ်ဆိုရန်", "video": "ဗီဒီယို", "more": "နောက်ထပ်", "plus": "ထပ်ထည့်ရန်", "attach": "ဖိုင်ပူးတွဲရန်", "emoji": "အီမိုဂျီ",
     "mic": "မိုက်", "contacts": "ဆက်သွယ်ရန်စာရင်း", "calls": "ခေါ်ဆိုမှုများ", "saved": "သိမ်းထားသော မက်ဆေ့ချ်", "archive": "သိမ်းဆည်းထားသော", "kuroTheme": "Kuro theme",
     "kuroSettings": "Kuro ဆက်တင်", "numberFinder": "နံပါတ်ရှာဖွေခြင်း", "specialContacts": "အထူးဆက်သွယ်ရန်", "onlineContacts": "အွန်လိုင်းဆက်သွယ်ရန်",

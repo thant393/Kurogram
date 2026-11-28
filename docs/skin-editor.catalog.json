@@ -28,14 +28,6 @@
     "en"
    ]
   },
-  "people": {
-   "label": {
-    "en": "People"
-   },
-   "reviewed": [
-    "en"
-   ]
-  },
   "unread": {
    "label": {
     "en": "Unread"
@@ -422,14 +414,6 @@
     "en"
    ]
   },
-  "peopleRail": {
-   "label": {
-    "en": "People row"
-   },
-   "reviewed": [
-    "en"
-   ]
-  },
   "profileHeader": {
    "label": {
     "en": "Profile header"
@@ -803,14 +787,6 @@
   "layout.contacts": {
    "label": {
     "en": "Contacts layout"
-   },
-   "reviewed": [
-    "en"
-   ]
-  },
-  "layout.people": {
-   "label": {
-    "en": "People layout"
    },
    "reviewed": [
     "en"
@@ -6776,14 +6752,6 @@
   "chats": {
    "label": {
     "en": "Chats"
-   },
-   "reviewed": [
-    "en"
-   ]
-  },
-  "people": {
-   "label": {
-    "en": "People"
    },
    "reviewed": [
     "en"

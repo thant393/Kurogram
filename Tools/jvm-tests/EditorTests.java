@@ -247,13 +247,13 @@ public class EditorTests {
 
         // ---- list editing and unsupported settings
         EditorSession ls = new EditorSession(rules, cat, ThemeDraft.fromJson(themed, rules));
-        check(ls.listOrDefault("layout.bottomTabs.items").equals(Arrays.asList("chats", "people", "settings")), "tabs default list");
+        check(ls.listOrDefault("layout.bottomTabs.items").equals(Arrays.asList("chats", "contacts", "settings")), "tabs default list");
         check(ls.listOrDefault("layout.privacy.hiddenRows").isEmpty(), "hidden rows default empty");
         check(ls.draft.set("layout.bottomTabs.items", new ArrayList<Object>(ls.listOrDefault("layout.bottomTabs.items"))) == null, "customize tabs");
-        check(ls.draft.listMove("layout.bottomTabs.items", 0, 2) == null && ls.draft.get("layout.bottomTabs.items").equals(Arrays.asList("people", "settings", "chats")), "move tab");
+        check(ls.draft.listMove("layout.bottomTabs.items", 0, 2) == null && ls.draft.get("layout.bottomTabs.items").equals(Arrays.asList("contacts", "settings", "chats")), "move tab");
         check(ls.draft.listRemove("layout.bottomTabs.items", "chats") == null, "remove to minimum");
-        check(ls.draft.listRemove("layout.bottomTabs.items", "people") != null, "below minimum count refused");
-        check(ls.listAvailable("layout.bottomTabs.items").contains("chats") && !ls.listAvailable("layout.bottomTabs.items").contains("people"), "available items");
+        check(ls.draft.listRemove("layout.bottomTabs.items", "contacts") != null, "below minimum count refused");
+        check(ls.listAvailable("layout.bottomTabs.items").contains("chats") && !ls.listAvailable("layout.bottomTabs.items").contains("contacts"), "available items");
         check(ls.draft.listAdd("layout.bottomTabs.items", "bogus", 0) != null, "unknown item refused");
         check(ls.draft.listAdd("layout.bottomTabs.items", "chats", 0) == null && ls.draft.listAdd("layout.bottomTabs.items", "chats", 0) != null, "duplicate refused");
         check(cat.itemLabel("kuroTheme", "en").length() > 0 && cat.itemLabel("zzz", "en").equals("zzz"), "item labels");

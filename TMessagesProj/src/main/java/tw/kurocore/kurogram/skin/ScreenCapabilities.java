@@ -38,7 +38,6 @@ public final class ScreenCapabilities {
     static {
         TABLE.put("chats",         "SPSSSSNPSN"); // DialogsActivity, DialogCell
         TABLE.put("contacts",      "SNSPSSNNSN"); // ContactsActivity, UserCell
-        TABLE.put("people",        "SNNNSPNNSN"); // OnlineContactsActivity
         TABLE.put("unread",        "SNNNNNNNSN"); // UnreadChatsActivity
         TABLE.put("settings",      "SNNPSPPNSS"); // SettingsActivity (UniversalRecyclerView)
         TABLE.put("kuroSettings",  "SNNPNNNNNN"); // BaseKuroSettingsActivity screens

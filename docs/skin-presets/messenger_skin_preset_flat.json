@@ -224,7 +224,7 @@
       "bottomTabs": {
         "items": [
           "chats",
-          "people",
+          "contacts",
           "unread"
         ],
         "peopleSource": "online",

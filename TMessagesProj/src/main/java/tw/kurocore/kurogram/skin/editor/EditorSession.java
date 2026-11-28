@@ -310,7 +310,7 @@ public final class EditorSession {
         RuleSet.Ref ref = rules.find(path);
         if ("layout.bottomTabs.items".equals(path)) {
             out.add("chats");
-            out.add("people");
+            out.add("contacts");
             out.add("settings");
         } else if (ref != null && ref.rule.min > 0 && ref.rule.sample() instanceof List) {
             for (Object o : (List<?>) ref.rule.sample()) {

@@ -1147,7 +1147,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         java.util.List<String> items = tw.kurocore.kurogram.layout.LayoutManager.get().spec().listValue("bottomTabs.items", null);
         if (items == null || items.isEmpty()) return true;
         switch (index) {
-            case INDEX_CONTACTS: return items.contains("people");
+            case INDEX_CONTACTS: return items.contains("contacts");
             case INDEX_SETTINGS: case INDEX_CALLS: return items.contains("settings");
             case INDEX_PROFILE: return items.contains("profile") || items.contains("unread");
             default: return true;

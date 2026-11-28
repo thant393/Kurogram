@@ -364,7 +364,7 @@
   },
   {
    "checker": "layout",
-   "rule": "bottomTabs.items|list:chats,people,settings,profile,unread:2:5",
+   "rule": "bottomTabs.items|list:chats,contacts,settings,profile,unread:2:5",
    "value": [
     "chats",
     "settings"
@@ -373,7 +373,7 @@
   },
   {
    "checker": "layout",
-   "rule": "bottomTabs.items|list:chats,people,settings,profile,unread:2:5",
+   "rule": "bottomTabs.items|list:chats,contacts,settings,profile,unread:2:5",
    "value": [
     "chats"
    ],
@@ -381,7 +381,7 @@
   },
   {
    "checker": "layout",
-   "rule": "bottomTabs.items|list:chats,people,settings,profile,unread:2:5",
+   "rule": "bottomTabs.items|list:chats,contacts,settings,profile,unread:2:5",
    "value": [
     "chats",
     "chats"
@@ -390,7 +390,7 @@
   },
   {
    "checker": "layout",
-   "rule": "bottomTabs.items|list:chats,people,settings,profile,unread:2:5",
+   "rule": "bottomTabs.items|list:chats,contacts,settings,profile,unread:2:5",
    "value": [
     "chats",
     "bogus"
@@ -399,16 +399,16 @@
   },
   {
    "checker": "layout",
-   "rule": "bottomTabs.items|list:chats,people,settings,profile,unread:2:5",
+   "rule": "bottomTabs.items|list:chats,contacts,settings,profile,unread:2:5",
    "value": "chats",
    "valid": false
   },
   {
    "checker": "layout",
-   "rule": "bottomTabs.items|list:chats,people,settings,profile,unread:2:5",
+   "rule": "bottomTabs.items|list:chats,contacts,settings,profile,unread:2:5",
    "value": [
     "chats",
-    "people",
+    "contacts",
     "settings",
     "profile",
     "unread",
