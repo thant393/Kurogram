@@ -1435,7 +1435,7 @@ public class ThemeBuilderActivity extends BaseFragment {
     }
 
     /** The app's own screens, in the order of the real app. Screens opened from inside one of these are the strip over the phone. */
-    private static final String[] MAIN_SCREENS = {"chats", "chat", "contacts", "people", "profile", "settings", "themeStore"};
+    private static final String[] MAIN_SCREENS = {"chats", "chat", "contacts", "profile", "settings", "themeStore"};
     /** Screens that open from inside Settings (each is its own activity in the app); listed under the main ones without a heading. */
     private static final String[] SETTINGS_SCREENS = {"kuroSettings", "numberFinder", "specialContacts", "onlineContacts", "contactChanges", "rows.profile",
             "chatSettings", "rows.privacy", "rows.notifications", "rows.dataStorage", "folders", "devices", "powerSaving", "language"};
@@ -1888,10 +1888,10 @@ public class ThemeBuilderActivity extends BaseFragment {
      * Styles and colourways: the theme's own file is the base look; a style changes parts of it (shapes, layout…), a colourway
      * changes a style's colours. Choosing one makes every edit go to that look only; everything else is inherited.
      */
-    /** The screen the Screen blocks dialog edits: the one on show when it can be built from blocks, else People. */
+    /** The screen the Screen blocks dialog edits: the one on show when it can be built from blocks, else Contacts. */
     private String blockScreenId() {
         String scene = session.scene();
-        return "drawer".equals(scene) || "settings".equals(scene) || "profile".equals(scene) ? scene : "people"; // the page is named by its own title
+        return "drawer".equals(scene) || "settings".equals(scene) || "profile".equals(scene) ? scene : "contacts"; // the page is named by its own title
     }
 
     /** Plain words for a few values whose stored name says little (the stored value does not change). */
@@ -1911,7 +1911,7 @@ public class ThemeBuilderActivity extends BaseFragment {
     }
 
     private static String defaultTitle(String id) {
-        return "drawer".equals(id) ? "Menu" : "settings".equals(id) ? "Settings" : "profile".equals(id) ? "Profile" : "People";
+        return "drawer".equals(id) ? "Menu" : "settings".equals(id) ? "Settings" : "profile".equals(id) ? "Profile" : "Contacts";
     }
 
     @SuppressWarnings("unchecked")
@@ -1979,7 +1979,7 @@ public class ThemeBuilderActivity extends BaseFragment {
         return b;
     }
 
-    /** Screen blocks: build the People screen out of ready-made blocks (add, remove, reorder, change a choice). */
+    /** Screen blocks: build the screen on show out of ready-made blocks (add, remove, reorder, change a choice). */
     private void blocksDialog() {
         Context context = getParentActivity();
         LinearLayout box = new LinearLayout(context);

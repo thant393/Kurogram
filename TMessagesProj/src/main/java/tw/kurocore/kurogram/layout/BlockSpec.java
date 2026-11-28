@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Screens a layout file builds out of ready-made blocks ("screens": {"people": {"title": "People", "blocks": [...]}}).
+ * Screens a layout file builds out of ready-made blocks ("screens": {"contacts": {"title": "Friends", "blocks": [...]}}).
  * Pure data and checks, no Android: the app draws these with one generic screen, the Theme Studio previews them
  * with the same list. Only the block types, props and data sources below exist; anything else is rejected, so a
  * downloaded layout can never run code or reach something the app did not offer.

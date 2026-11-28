@@ -102,7 +102,7 @@ public class BuilderPreviewView extends View {
             List<String> tabs = listOr("layout.bottomTabs.items", "chats", "contacts", "calls", "settings");
             String t = tabs.get(tabIndex);
             to = "chats".equals(t) ? "chats" : "contacts".equals(t) ? "contacts" : "settings".equals(t) ? "settings"
-                    : "calls".equals(t) || "people".equals(t) ? "people" : "profile".equals(t) ? "profile" : null;
+                    : "profile".equals(t) ? "profile" : null;
         } else if (hitId != null && hitId.startsWith("chatRow")) {
             to = "chat";
         }
@@ -454,10 +454,9 @@ public class BuilderPreviewView extends View {
                 }
                 break;
             case "contacts":
-                drawContacts(canvas, x);
-                break;
-            case "people":
-                drawPeople(canvas, x);
+                if (!tryBlocks(canvas, x, "contacts")) {
+                    drawContacts(canvas, x);
+                }
                 break;
             case "profile":
                 if (!tryBlocks(canvas, x, "profile")) {
@@ -603,7 +602,6 @@ public class BuilderPreviewView extends View {
                 c.drawLine(cx - s * 0.45f, cy + s * 0.2f, cx + s * 0.15f, cy + s * 0.2f, ip);
                 break;
             case "contacts":
-            case "people":
                 c.drawCircle(cx, cy, s, ip);
                 c.drawCircle(cx, cy - s * 0.22f, s * 0.32f, ip);
                 path.addArc(new RectF(cx - s * 0.62f, cy + s * 0.05f, cx + s * 0.62f, cy + s * 1.2f), 200, 140);
@@ -2128,7 +2126,7 @@ public class BuilderPreviewView extends View {
         drawTabs(canvas, x, "contacts");
     }
 
-    /** The People screen when the layout builds it from blocks (layout.screens.people); null when it does not. */
+    /** A screen the layout builds from blocks (layout.screens.<id>); null when it does not. */
     private tw.kurocore.kurogram.layout.BlockSpec.Screen blockScreen(String id) {
         Object node = session.raw("layout.screens." + id);
         if (!(node instanceof java.util.Map)) {
@@ -2352,19 +2350,6 @@ public class BuilderPreviewView extends View {
                     break;
             }
         }
-    }
-
-    private void drawPeople(Canvas canvas, Ctx x) {
-        tw.kurocore.kurogram.layout.BlockSpec.Screen built = blockScreen("people");
-        if (built != null) {
-            drawBlocks(canvas, x, built);
-            return;
-        }
-                // No built-in People any more: the screen only exists once the theme builds it from blocks.
-        int top = bar(canvas, x, "Screen");
-        p.setColor(x.text2);
-        p.setTextSize(dp(13));
-        canvas.drawText("Nothing built yet. Menu > Screen blocks > Use blocks.", dp(14), top + dp(40), p);
     }
 
     private void outlineCircle(Canvas canvas, float cx, float cy, float r, int color) {

@@ -19,7 +19,6 @@ public final class BuilderText {
         t("advanced", "Advanced");
         t("scene", "Screen");
         t("scene.chats", "Chats");
-        t("scene.people", "People");
         t("scene.contacts", "Contacts");
         t("scene.profile", "Profile");
         t("scene.themeStore", "Kuro Themes");
@@ -172,7 +171,7 @@ public final class BuilderText {
     }
 
     /** Every screen the preview can show, in the order of the picker. */
-    public static final String[] SCENES = {"chats", "chat", "settings", "controls", "drawer", "people", "contacts", "profile",
+    public static final String[] SCENES = {"chats", "chat", "settings", "controls", "drawer", "contacts", "profile",
             "themeStore", "kuroSettings", "numberFinder", "specialContacts", "onlineContacts", "contactChanges", "rows.profile", "chatSettings",
             "rows.privacy", "rows.notifications", "rows.dataStorage", "folders", "devices", "powerSaving", "language"};
 

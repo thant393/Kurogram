@@ -99,7 +99,7 @@ public class BlockScreenActivity extends BaseFragment implements NotificationCen
         });
         FrameLayout root = new FrameLayout(context);
         fragmentView = root;
-        root.setBackgroundColor(KuroUi.screenBackground("people".equals(screenId) ? "onlineContacts" : screenId, Theme.getColor(Theme.key_windowBackgroundWhite)));
+        root.setBackgroundColor(KuroUi.screenBackground(screenId, Theme.getColor(Theme.key_windowBackgroundWhite)));
         ScrollView scroll = new ScrollView(context);
         scroll.setVerticalScrollBarEnabled(false);
         content = new LinearLayout(context);

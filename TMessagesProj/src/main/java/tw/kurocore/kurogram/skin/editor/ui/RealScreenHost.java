@@ -50,7 +50,6 @@ final class RealScreenHost extends FrameLayout {
             case "chat":
             case "settings":
             case "drawer":
-            case "people":
             case "contacts":
             case "profile":
             case "themeStore":
@@ -87,8 +86,6 @@ final class RealScreenHost extends FrameLayout {
                 return new SettingsActivity(b);
             case "contacts":
                 return new ContactsActivity(null);
-            case "people":
-                return new OnlineContactsActivity(b);
             case "chat":
                 b.putLong("user_id", self);
                 return new ChatActivity(b);

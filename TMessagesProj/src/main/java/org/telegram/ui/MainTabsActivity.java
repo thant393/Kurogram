@@ -324,7 +324,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         tabs[INDEX_CONTACTS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.CONTACTS, R.string.MainTabsContacts);
         {
             // A theme can replace this tab with a screen it builds itself, under the name it gives that screen.
-            tw.kurocore.kurogram.layout.BlockSpec.Screen custom = tw.kurocore.kurogram.layout.LayoutManager.get().spec().screen("people");
+            tw.kurocore.kurogram.layout.BlockSpec.Screen custom = tw.kurocore.kurogram.layout.LayoutManager.get().spec().screen("contacts");
             if (custom != null) {
                 tabs[INDEX_CONTACTS].setLabel(custom.title);
             }
@@ -844,7 +844,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
             if (state == null) continue;
             final boolean isUnread = state.fragment instanceof tw.kurocore.kurogram.layout.UnreadChatsActivity;
             final boolean isBlock = state.fragment instanceof tw.kurocore.kurogram.layout.BlockScreenActivity;
-            final boolean wantsBlock = tw.kurocore.kurogram.layout.LayoutManager.get().spec().screen("people") != null;
+            final boolean wantsBlock = tw.kurocore.kurogram.layout.LayoutManager.get().spec().screen("contacts") != null;
             final String id = blockScreenIdAt(position);
             final boolean wantsHere = id != null && !(position == POSITION_PROFILE && wantsUnread) && tw.kurocore.kurogram.layout.LayoutManager.get().spec().screen(id) != null;
             final boolean stale = isBlock != wantsHere || (position == POSITION_PROFILE && isUnread != wantsUnread);
@@ -863,7 +863,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
     private String blockScreenIdAt(int position) {
         switch (position) {
             case POSITION_CONTACTS:
-                return "people";
+                return "contacts";
             case POSITION_CALLS_OR_SETTINGS:
                 return getUserConfig().showCallsTab ? "calls" : "settings";
             case POSITION_PROFILE:
@@ -882,13 +882,6 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
             Bundle blocks = new Bundle();
             blocks.putBoolean("hasMainTabs", true);
             blocks.putString("screen_id", blockId);
-            return new tw.kurocore.kurogram.layout.BlockScreenActivity(blocks);
-        }
-        if (position == POSITION_CONTACTS && tw.kurocore.kurogram.layout.LayoutManager.get().spec().screen("people") != null) {
-            // A layout pack builds People from blocks (layout.screens.people) instead of the built-in lists.
-            Bundle blocks = new Bundle();
-            blocks.putBoolean("hasMainTabs", true);
-            blocks.putString("screen_id", "people");
             return new tw.kurocore.kurogram.layout.BlockScreenActivity(blocks);
         }
         if (position == POSITION_CONTACTS) {
