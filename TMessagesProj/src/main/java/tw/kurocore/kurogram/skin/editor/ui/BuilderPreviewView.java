@@ -454,9 +454,7 @@ public class BuilderPreviewView extends View {
                 }
                 break;
             case "contacts":
-                if (!tryBlocks(canvas, x, "people")) {
-                    drawContacts(canvas, x);
-                }
+                drawContacts(canvas, x);
                 break;
             case "people":
                 drawPeople(canvas, x);

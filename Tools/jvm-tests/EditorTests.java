@@ -33,6 +33,26 @@ public class EditorTests {
         for (String k : new String[]{"skin", "skinMinor1", "layout"}) expected += ((List<Object>) man.get(k)).size();
         check(rules.all().size() == expected, "RuleSet size " + rules.all().size() + " vs " + expected);
 
+        // ---- a bare draft is completed into a document the store accepts (every standard value present and valid)
+        for (String doc : new String[]{"{\"schemaVersion\":2,\"meta\":{\"id\":\"t\",\"name\":\"T\"},\"tokens\":{\"colors\":{\"accent\":\"#3390EC\"}}}",
+                "{\"schemaVersion\":2,\"meta\":{\"id\":\"d\",\"name\":\"D\"},\"tokens\":{\"colors\":{\"background\":\"#101010\"}}}"}) {
+            Map<String, Object> done = SkinCompleter.complete(Json.parseObject(doc));
+            check(done.get("layout") != null, "completed theme has a layout");
+            for (Object r : (List<Object>) man.get("skin")) {
+                String rule = (String) r;
+                if (rule.startsWith("assets.")) {
+                    continue;
+                }
+                String path = rule.substring(0, rule.indexOf('|'));
+                Object cur = done;
+                for (String k : path.split("\\.")) {
+                    cur = cur instanceof Map ? ((Map<String, Object>) cur).get(k) : null;
+                }
+                check(cur != null && Rule.parse(rule).check(cur) == null, "completed value is valid: " + path);
+            }
+        }
+        check(Json.semanticEquals(SkinCompleter.complete(Json.parseObject("{\"tokens\":{\"colors\":{\"accent\":\"#112233\"}}}")).get("tokens") instanceof Map ? ((Map<String, Object>) ((Map<String, Object>) SkinCompleter.complete(Json.parseObject("{\"tokens\":{\"colors\":{\"accent\":\"#112233\"}}}")).get("tokens")).get("colors")).get("accent") : null, "#112233"), "completing never changes a value already set");
+
         // ---- every shared vector
         List<Object> vectors = (List<Object>) Json.parseObject(read("docs/skin-rules.vectors.json")).get("vectors");
         int vn = 0;

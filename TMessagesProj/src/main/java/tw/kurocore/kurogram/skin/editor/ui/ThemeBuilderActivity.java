@@ -36,7 +36,9 @@ import tw.kurocore.kurogram.skin.editor.BuilderText;
 import tw.kurocore.kurogram.skin.editor.Catalog;
 import tw.kurocore.kurogram.skin.editor.ColorCodec;
 import tw.kurocore.kurogram.skin.editor.EditorSession;
+import tw.kurocore.kurogram.skin.editor.Json;
 import tw.kurocore.kurogram.skin.editor.Rule;
+import tw.kurocore.kurogram.skin.editor.SkinCompleter;
 import tw.kurocore.kurogram.skin.editor.RuleSet;
 import tw.kurocore.kurogram.skin.editor.StudioModel;
 import tw.kurocore.kurogram.skin.editor.StyleSet;
@@ -1433,7 +1435,7 @@ public class ThemeBuilderActivity extends BaseFragment {
     }
 
     /** The app's own screens, in the order of the real app. Screens opened from inside one of these are the strip over the phone. */
-    private static final String[] MAIN_SCREENS = {"chats", "chat", "contacts", "profile", "settings", "themeStore"};
+    private static final String[] MAIN_SCREENS = {"chats", "chat", "contacts", "people", "profile", "settings", "themeStore"};
     /** Screens that open from inside Settings (each is its own activity in the app); listed under the main ones without a heading. */
     private static final String[] SETTINGS_SCREENS = {"kuroSettings", "numberFinder", "specialContacts", "onlineContacts", "contactChanges", "rows.profile",
             "chatSettings", "rows.privacy", "rows.notifications", "rows.dataStorage", "folders", "devices", "powerSaving", "language"};
@@ -1889,7 +1891,7 @@ public class ThemeBuilderActivity extends BaseFragment {
     /** The screen the Screen blocks dialog edits: the one on show when it can be built from blocks, else People. */
     private String blockScreenId() {
         String scene = session.scene();
-        return "drawer".equals(scene) || "settings".equals(scene) || "profile".equals(scene) ? scene : "people"; // Contacts is the slot a built People page replaces
+        return "drawer".equals(scene) || "settings".equals(scene) || "profile".equals(scene) ? scene : "people"; // the page is named by its own title
     }
 
     /** Plain words for a few values whose stored name says little (the stored value does not change). */
@@ -2486,7 +2488,8 @@ public class ThemeBuilderActivity extends BaseFragment {
     }
 
     private void next() {
-        final String json = validated(session.draft.toJson(), null);
+        // the store wants one complete document: anything the draft leaves unset is filled in from its own colours
+        final String json = validated(Json.writePretty(SkinCompleter.complete(Json.parseObject(session.draft.toJson()))), null);
         if (json == null) {
             return;
         }
