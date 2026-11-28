@@ -1,9 +1,8 @@
 {
  "counts": {
-  "EDITABLE_PREVIEWED": 206,
+  "EDITABLE_PREVIEWED": 204,
   "ENGINE_UNSUPPORTED": 11,
-  "EDITABLE_REAL_ONLY": 26,
-  "PLANNED_P3": 1
+  "EDITABLE_REAL_ONLY": 26
  },
  "rules": [
   {
@@ -1597,26 +1596,6 @@
    "wiring": "unverified"
   },
   {
-   "path": "layout.people.storyRail",
-   "kind": "enum:on,off",
-   "section": "layout",
-   "status": "EDITABLE_PREVIEWED",
-   "group": "layout.people",
-   "level": "advanced",
-   "phase": 3,
-   "wiring": "unverified"
-  },
-  {
-   "path": "layout.people.chips",
-   "kind": "enum:on,off",
-   "section": "layout",
-   "status": "EDITABLE_PREVIEWED",
-   "group": "layout.people",
-   "level": "advanced",
-   "phase": 3,
-   "wiring": "unverified"
-  },
-  {
    "path": "layout.settings.items",
    "kind": "list:profile,settings,contacts,calls,saved,archive,kuroTheme,kuroSettings,numberFinder,specialContacts,onlineContacts,contactChanges,account,chatSettings,privacy,notifications,data,folders,devices,power,language,premium,stars,ton,business,gift,askQuestion,faq,features,privacyPolicy:1:40",
    "section": "layout",
@@ -2130,7 +2109,7 @@
    "path": "layout.drawer.enabled",
    "kind": "bool",
    "section": "layout",
-   "status": "PLANNED_P3",
+   "status": "EDITABLE_REAL_ONLY",
    "group": "layout.drawer",
    "level": "advanced",
    "phase": 3,
@@ -2163,16 +2142,6 @@
    "status": "EDITABLE_PREVIEWED",
    "group": "layout.bottomTabs",
    "level": "basic",
-   "phase": 3,
-   "wiring": "unverified"
-  },
-  {
-   "path": "layout.bottomTabs.peopleSource",
-   "kind": "enum:contacts,online",
-   "section": "layout",
-   "status": "EDITABLE_REAL_ONLY",
-   "group": "layout.bottomTabs",
-   "level": "advanced",
    "phase": 3,
    "wiring": "unverified"
   },

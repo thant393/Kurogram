@@ -322,13 +322,6 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         tabs = new GlassTabView[5];
         tabs[INDEX_CHATS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.CHATS, R.string.MainTabsChats);
         tabs[INDEX_CONTACTS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.CONTACTS, R.string.MainTabsContacts);
-        {
-            // A theme can replace this tab with a screen it builds itself, under the name it gives that screen.
-            tw.kurocore.kurogram.layout.BlockSpec.Screen custom = tw.kurocore.kurogram.layout.LayoutManager.get().spec().screen("contacts");
-            if (custom != null) {
-                tabs[INDEX_CONTACTS].setLabel(custom.title);
-            }
-        }
         tabs[INDEX_SETTINGS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.SETTINGS, R.string.Settings);
         tabs[INDEX_CALLS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.CALLS, R.string.MainTabsCalls);
         if (layoutWantsUnreadTab()) {
@@ -337,17 +330,6 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
             tabs[INDEX_PROFILE].setLabel("Unread");
         } else {
             tabs[INDEX_PROFILE] = GlassTabView.createAvatar(context, resourceProvider, currentAccount, R.string.MainTabsProfile);
-        }
-        {
-            // Any of these tabs can be a screen the theme builds itself, named by the theme.
-            String[] ids = {"settings", "calls", "profile"};
-            int[] idx = {INDEX_SETTINGS, INDEX_CALLS, INDEX_PROFILE};
-            for (int i = 0; i < ids.length; i++) {
-                tw.kurocore.kurogram.layout.BlockSpec.Screen custom = tw.kurocore.kurogram.layout.LayoutManager.get().spec().screen(ids[i]);
-                if (custom != null && !(i == 2 && layoutWantsUnreadTab())) {
-                    tabs[idx[i]].setLabel(custom.title);
-                }
-            }
         }
         tabs[INDEX_CHATS].setOnLongClickListener(this::openFoldersSelector);
         tabs[INDEX_CONTACTS].setOnLongClickListener(this::openContactsSelector);
@@ -835,19 +817,15 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         return dialogsActivity;
     }
 
-    /** A layout change (apply or reset) can swap what People / the last tab show; cached pages of the old layout must go. */
+    /** A layout change (apply or reset) can swap what the last tab shows; cached pages of the old layout must go. */
     private void dropStaleLayoutTabs() {
         final boolean wantsUnread = layoutWantsUnreadTab();
-        final int[] positions = {POSITION_CONTACTS, POSITION_CALLS_OR_SETTINGS, POSITION_PROFILE};
+        final int[] positions = {POSITION_PROFILE};
         for (int position : positions) {
             final FragmentState state = fragmentsArr.get(position);
             if (state == null) continue;
             final boolean isUnread = state.fragment instanceof tw.kurocore.kurogram.layout.UnreadChatsActivity;
-            final boolean isBlock = state.fragment instanceof tw.kurocore.kurogram.layout.BlockScreenActivity;
-            final boolean wantsBlock = tw.kurocore.kurogram.layout.LayoutManager.get().spec().screen("contacts") != null;
-            final String id = blockScreenIdAt(position);
-            final boolean wantsHere = id != null && !(position == POSITION_PROFILE && wantsUnread) && tw.kurocore.kurogram.layout.LayoutManager.get().spec().screen(id) != null;
-            final boolean stale = isBlock != wantsHere || (position == POSITION_PROFILE && isUnread != wantsUnread);
+            final boolean stale = isUnread != wantsUnread;
             if (!stale) continue;
             try {
                 state.fragment.onPause();
@@ -859,31 +837,8 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         }
     }
 
-    /** The layout screen id that may replace the page at this position, or null for the Chats page. */
-    private String blockScreenIdAt(int position) {
-        switch (position) {
-            case POSITION_CONTACTS:
-                return "contacts";
-            case POSITION_CALLS_OR_SETTINGS:
-                return getUserConfig().showCallsTab ? "calls" : "settings";
-            case POSITION_PROFILE:
-                return "profile";
-            default:
-                return null;
-        }
-    }
-
     @Override
     protected BaseFragment createBaseFragmentAt(int position) {
-        final String blockId = blockScreenIdAt(position);
-        if (blockId != null && !(position == POSITION_PROFILE && layoutWantsUnreadTab())
-                && tw.kurocore.kurogram.layout.LayoutManager.get().spec().screen(blockId) != null) {
-            // A theme builds this page from blocks (layout.screens.<id>) instead of the built-in screen.
-            Bundle blocks = new Bundle();
-            blocks.putBoolean("hasMainTabs", true);
-            blocks.putString("screen_id", blockId);
-            return new tw.kurocore.kurogram.layout.BlockScreenActivity(blocks);
-        }
         if (position == POSITION_CONTACTS) {
             Bundle args = new Bundle();
             args.putBoolean("needPhonebook", true);

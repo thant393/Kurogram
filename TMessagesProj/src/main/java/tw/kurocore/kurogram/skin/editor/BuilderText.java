@@ -57,10 +57,6 @@ public final class BuilderText {
         t("variant.night", "Night");
         t("inherited", "from Day");
         t("look", "Look");
-        t("blocks", "Screen blocks");
-        t("blocks.use", "Build this screen from blocks");
-        t("blocks.reset", "Back to the built-in screen");
-        t("blocks.add", "Add a block");
         t("look.base", "Base theme");
         t("look.newStyle", "New style");
         t("look.newWay", "New colourway");
@@ -115,10 +111,10 @@ public final class BuilderText {
         t("chipAbout.4", "Changes: the bar at the top of each screen");
         t("screens.sub", "Sub-screens");
         t("search.other", "On another screen");
-        t("section.appearance", "Appearance");
-        t("section.layout", "Layout");
+        t("section.appearance", "Colours and look");
+        t("section.layout", "Size and spacing");
         t("section.typography", "Text");
-        t("section.advanced", "Advanced");
+        t("section.advanced", "Behaviour and options");
         t("mode.edit", "Edit");
         t("mode.preview", "Preview");
         t("draft.saved", "Draft saved on this phone");

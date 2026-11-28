@@ -164,8 +164,6 @@
  "layout": [
   "settings.header|enum:centered,cover",
   "settings.accounts|enum:list,collapsible",
-  "people.storyRail|enum:on,off",
-  "people.chips|enum:on,off",
   "settings.items|list:profile,settings,contacts,calls,saved,archive,kuroTheme,kuroSettings,numberFinder,specialContacts,onlineContacts,contactChanges,account,chatSettings,privacy,notifications,data,folders,devices,power,language,premium,stars,ton,business,gift,askQuestion,faq,features,privacyPolicy:1:40",
   "contacts.mode|enum:list,grid",
   "contacts.grid.columns|int:2:5",
@@ -221,7 +219,6 @@
   "chatList.searchBar|bool",
   "drawer.items|list:profile,settings,contacts,calls,saved,archive,kuroTheme,kuroSettings,numberFinder,specialContacts,onlineContacts,contactChanges,account,chatSettings,privacy,notifications,data,folders,devices,power,language,premium,stars,ton,business,gift,askQuestion,faq,features,privacyPolicy:1:40",
   "bottomTabs.items|list:chats,people,settings,profile,unread:2:5",
-  "bottomTabs.peopleSource|enum:contacts,online",
   "bottomTabs.labels|bool",
   "bottomTabs.labelSizeSp|int:9:14",
   "bottomTabs.indicator|enum:none,pill",

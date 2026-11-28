@@ -112,27 +112,6 @@ public final class ThemeDraft {
         return write(path, Json.deepCopy(value), false);
     }
 
-    /**
-     * A screen built from blocks (layout.screens.<id>). The whole screen is checked with the same BlockSpec the app
-     * uses, so a refused value changes nothing; passing null removes the screen (the built-in one returns).
-     */
-    public String setScreen(String id, Object screen) {
-        if (!id.matches("[a-z][A-Za-z0-9]{1,23}")) {
-            return "screen id is invalid";
-        }
-        if (screen == null) {
-            return write("layout.screens." + id, ABSENT, false);
-        }
-        try {
-            Map<String, Object> wrap = new LinkedHashMap<>();
-            wrap.put(id, screen);
-            tw.kurocore.kurogram.layout.BlockSpec.parse(wrap);
-        } catch (IllegalArgumentException e) {
-            return e.getMessage();
-        }
-        return write("layout.screens." + id, Json.deepCopy(screen), false);
-    }
-
     /** Back to "not set": the app's own default applies again. Nothing else in the document is touched. */
     public String unset(String path) {
         if (rules.find(path) == null) {

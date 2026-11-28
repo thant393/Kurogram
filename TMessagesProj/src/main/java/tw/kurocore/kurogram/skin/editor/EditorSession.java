@@ -256,6 +256,10 @@ public final class EditorSession {
     public List<Catalog.Entry> settingsFor(String component) {
         List<Catalog.Entry> out = new ArrayList<>();
         for (Catalog.Entry e : catalog.forComponent(component)) {
+            // the background of the screen on show is its own; one setting per screen must not pile up here
+            if ("screenBackground".equals(component) && !e.screens.contains("*") && !e.screens.contains(scene())) {
+                continue;
+            }
             if (isShown(e)) {
                 out.add(e);
             }

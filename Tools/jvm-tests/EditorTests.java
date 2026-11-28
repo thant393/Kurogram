@@ -109,14 +109,6 @@ public class EditorTests {
         check(Json.semanticEquals(((Map<String, Object>) out.get("meta")).get("extra"), Json.parse("{\"k\":[1,2]}")), "meta extra kept");
         check("#123456".equals(d.get("tokens.colors.futureColor")), "unknown sibling colour kept");
         check(Json.semanticEquals(d.get("tokens.futureGroup"), Json.parse("{\"a\":1}")), "unknown group kept");
-        {
-            Object ok = Json.parse("{\"title\":\"People\",\"blocks\":[{\"type\":\"note\",\"text\":\"Hi\"}]}");
-            check(d.setScreen("people", ok) == null && d.get("layout.screens.people") != null, "setScreen writes a valid block screen");
-            check(d.undo() && d.get("layout.screens.people") == null, "setScreen is one undo step");
-            check(d.setScreen("people", Json.parse("{\"blocks\":[{\"type\":\"list\",\"source\":\"secret\"}]}")) != null && d.get("layout.screens.people") == null, "setScreen refuses a bad block and changes nothing");
-            check(d.setScreen("Bad Id", ok) != null, "setScreen refuses a bad id");
-            check(d.setScreen("people", ok) == null && d.setScreen("people", null) == null && d.get("layout.screens.people") == null, "setScreen(null) removes the screen");
-        }
         check(d.isDirty() && d.changedPaths().contains("tokens.colors.accent"), "changedPaths lists edit");
 
         // ---- refusals
@@ -440,35 +432,6 @@ public class EditorTests {
             check(cl != null && cl.contains("Mine (copy)") && cl.contains("\"a-copy\"") && cl.contains("zzUnknown") && cl.contains("extra"), "clone keeps everything, renames");
             check(Presets.cloneOf(Presets.cloneOf(cl)).contains("Mine (copy)") && !Presets.cloneOf(cl).contains("(copy) (copy)"), "clone of a clone is not stacked");
             check(Presets.cloneOf("not json") == null, "clone of garbage is null");
-        }
-
-        {
-            java.util.Map<String, tw.kurocore.kurogram.layout.BlockSpec.Screen> sc = tw.kurocore.kurogram.layout.BlockSpec.parse(Json.parse("{\"people\":{\"title\":\"People\",\"blocks\":[{\"type\":\"storyRail\",\"style\":\"cards\"},{\"type\":\"chips\",\"items\":[\"online\",\"all\"]},{\"type\":\"note\",\"text\":\"Hi\"},{\"type\":\"future\"},{\"type\":\"list\",\"source\":\"contacts\",\"row\":\"compact\",\"limit\":50}]}}"));
-            check(sc.size() == 1 && sc.get("people").blocks.size() == 4, "blocks: unknown type skipped");
-            check("cards".equals(sc.get("people").blocks.get(0).str("style", "")) && sc.get("people").blocks.get(3).intValue("limit", 0) == 50, "blocks: props read");
-            String[] bad = {"{\"p\":{\"blocks\":[{\"type\":\"list\",\"source\":\"secret\"}]}}", "{\"P\":{\"blocks\":[]}}", "{\"p1\":{\"blocks\":[{\"type\":\"chips\",\"items\":[\"nope\"]}]}}", "{\"pp\":{\"blocks\":[{\"type\":\"spacer\",\"heightDp\":999}]}}", "{\"pp\":{}}", "{\"pp\":{\"blocks\":[{\"type\":\"note\",\"text\":\"" + "x".repeat(121) + "\"}]}}"};
-            for (String b : bad) {
-                boolean threw = false;
-                try {
-                    tw.kurocore.kurogram.layout.BlockSpec.parse(Json.parse(b));
-                } catch (IllegalArgumentException e) {
-                    threw = true;
-                }
-                check(threw, "blocks: rejects " + b.substring(0, Math.min(40, b.length())));
-            }
-            check(tw.kurocore.kurogram.layout.BlockSpec.parse(null).isEmpty(), "blocks: none is fine");
-            java.util.Map<String, tw.kurocore.kurogram.layout.BlockSpec.Screen> nb = tw.kurocore.kurogram.layout.BlockSpec.parse(Json.parse("{\"drawer\":{\"title\":\"Menu\",\"blocks\":[{\"type\":\"profileCard\"},{\"type\":\"menu\",\"items\":[\"settings\",\"calls\"]},{\"type\":\"chatList\",\"filter\":\"unread\",\"row\":\"card\",\"limit\":10}]}}"));
-            check(nb.get("drawer").blocks.size() == 3 && nb.get("drawer").blocks.get(2).str("filter", "").equals("unread"), "blocks: chatList, menu, profileCard parse");
-            String[] bad2 = {"{\"dd\":{\"blocks\":[{\"type\":\"menu\",\"items\":[\"shell\"]}]}}", "{\"dd\":{\"blocks\":[{\"type\":\"chatList\",\"filter\":\"all\",\"limit\":0}]}}"};
-            for (String b2 : bad2) {
-                boolean threw2 = false;
-                try {
-                    tw.kurocore.kurogram.layout.BlockSpec.parse(Json.parse(b2));
-                } catch (IllegalArgumentException e) {
-                    threw2 = true;
-                }
-                check(threw2, "blocks: rejects " + b2);
-            }
         }
 
         System.out.println("editor tests: " + passed + " passed, " + failed + " failed");

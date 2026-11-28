@@ -24,7 +24,7 @@ LANGS = ["en"]
 
 SCREENS = {
     "chats": ("Chats", "ချက်တ်စာရင်း"), "chat": ("Chat", "ချက်တ်ဖန်သားပြင်"), "contacts": ("Contacts", "ဆက်သွယ်ရန်စာရင်း"),
-    "people": ("People", "လူများ"), "unread": ("Unread", "မဖတ်ရသေးသော"), "settings": ("Settings", "ဆက်တင်များ"),
+    "unread": ("Unread", "မဖတ်ရသေးသော"), "settings": ("Settings", "ဆက်တင်များ"),
     "kuroSettings": ("Kuro settings", "Kuro ဆက်တင်များ"), "profile": ("Profile", "ပရိုဖိုင်"),
     "themeStore": ("Theme store", "Theme စတိုး"), "privacy": ("Privacy", "ကိုယ်ရေးလုံခြုံမှု"),
     "notifications": ("Notifications", "အကြောင်းကြားချက်များ"), "dataStorage": ("Data and storage", "ဒေတာနှင့် သိုလှောင်မှု"),
@@ -55,7 +55,7 @@ COMPONENTS = {
     "chatList.grid": ("Chat grid", "ချက်တ်ဇယားကွက်"),
     "settingsRow": ("Settings row", "ဆက်တင်အတန်း"), "settingsHeader": ("Settings header", "ဆက်တင် ခေါင်းပိုင်း"),
     "contactRow": ("Contact row", "ဆက်သွယ်ရန်အတန်း"), "contactsGrid": ("Contacts grid", "ဆက်သွယ်ရန် ဇယားကွက်"),
-    "peopleRail": ("People row", "လူများတန်း"), "profileHeader": ("Profile header", "ပရိုဖိုင် ခေါင်းပိုင်း"),
+    "profileHeader": ("Profile header", "ပရိုဖိုင် ခေါင်းပိုင်း"),
     "infoCard": ("Profile info card", "ပရိုဖိုင်အချက်အလက်ကတ်"), "themeCard": ("Theme card", "Theme ကတ်"),
     "bubble.in": ("Incoming bubble", "ဝင်လာသော မက်ဆေ့ချ်ဘူး"), "bubble.out": ("Outgoing bubble", "ပို့သော မက်ဆေ့ချ်ဘူး"),
     "chatHeader": ("Chat header", "ချက်တ် ခေါင်းပိုင်း"), "chatInput": ("Message input", "မက်ဆေ့ချ်ရိုက်ကွက်"),
@@ -90,7 +90,7 @@ GROUPS = {
     "screen.kuroSettings": ("Kuro settings screen", "Kuro ဆက်တင်များ screen"),
     "layout.chatList": ("Chat list layout", "ချက်တ်စာရင်း ဖွဲ့စည်းပုံ"), "layout.bottomTabs": ("Bottom tabs layout", "အောက်ခြေ tab ဖွဲ့စည်းပုံ"),
     "layout.drawer": ("Side menu layout", "ဘေးမီနူး ဖွဲ့စည်းပုံ"), "layout.settings": ("Settings layout", "ဆက်တင် ဖွဲ့စည်းပုံ"),
-    "layout.contacts": ("Contacts layout", "ဆက်သွယ်ရန် ဖွဲ့စည်းပုံ"), "layout.people": ("People layout", "လူများ ဖွဲ့စည်းပုံ"),
+    "layout.contacts": ("Contacts layout", "ဆက်သွယ်ရန် ဖွဲ့စည်းပုံ"),
     "layout.themeStore": ("Theme store layout", "Theme စတိုး ဖွဲ့စည်းပုံ"), "layout.chat": ("Chat layout", "ချက်တ် ဖွဲ့စည်းပုံ"),
     "layout.profile": ("Profile rows", "ပရိုဖိုင်အတန်းများ"), "layout.privacy": ("Privacy rows", "ကိုယ်ရေးလုံခြုံမှုအတန်းများ"),
     "layout.notifications": ("Notification rows", "အကြောင်းကြားချက်အတန်းများ"),
@@ -246,7 +246,7 @@ def classify(doc, kind):
         phase = 3
         rest = ".".join(p[2:])
         screens = {"chatList": ["chats"], "bottomTabs": ["*"], "drawer": ["chats"], "settings": ["settings"], "contacts": ["contacts"],
-                   "people": ["people"], "themeStore": ["themeStore"], "chat": ["chat"], "profile": ["profile"], "privacy": ["privacy"],
+                   "themeStore": ["themeStore"], "chat": ["chat"], "profile": ["profile"], "privacy": ["privacy"],
                    "notifications": ["notifications"], "dataStorage": ["dataStorage"]}[sec]
         basic = doc in ("layout.chatList.row.heightDp", "layout.chatList.mode", "layout.bottomTabs.items", "layout.bottomTabs.labels", "layout.bottomTabs.style")
         if sec == "chatList":
@@ -266,8 +266,6 @@ def classify(doc, kind):
             targets = ["settingsHeader"] if rest in ("header", "accounts") else ["settingsRow"]
         elif sec == "contacts":
             targets = ["contactsGrid"] if rest.startswith("grid") or rest == "mode" else ["contactRow"]
-        elif sec == "people":
-            targets = ["peopleRail"]
         elif sec == "themeStore":
             targets = ["themeCard"]
         elif sec == "chat":

@@ -23,31 +23,20 @@ public final class LayoutSpec {
     public final String id;
     public final String name;
     private final Map<String, Object> values;
-    private final Map<String, BlockSpec.Screen> screens;
 
-    private LayoutSpec(String id, String name, Map<String, Object> values, Map<String, BlockSpec.Screen> screens) {
+    private LayoutSpec(String id, String name, Map<String, Object> values) {
         this.id = id;
         this.name = name;
         this.values = values;
-        this.screens = screens;
-    }
-
-    /** Screens this layout builds from blocks (id -> screen); empty when it has none. */
-    public Map<String, BlockSpec.Screen> screens() {
-        return screens;
-    }
-
-    public BlockSpec.Screen screen(String screenId) {
-        return screens.get(screenId);
     }
 
     /** Telegram's own layout: no values set, so every screen uses its built-in design. */
     public static LayoutSpec classic() {
-        return new LayoutSpec("classic", "Classic", new HashMap<>(), new HashMap<>());
+        return new LayoutSpec("classic", "Classic", new HashMap<>());
     }
 
     public boolean isClassic() {
-        return values.isEmpty() && screens.isEmpty();
+        return values.isEmpty();
     }
 
     public boolean has(String path) {
@@ -77,7 +66,7 @@ public final class LayoutSpec {
 
     // path | kind: bool, int:lo:hi, enum:a,b,c, list:a,b,c:min:max
     private static final String[] RULES = {
-            "settings.header|enum:centered,cover", "settings.accounts|enum:list,collapsible", "people.storyRail|enum:on,off", "people.chips|enum:on,off", "settings.items|list:profile,settings,contacts,calls,saved,archive,kuroTheme,kuroSettings,numberFinder,specialContacts,onlineContacts,contactChanges,account,chatSettings,privacy,notifications,data,folders,devices,power,language,premium,stars,ton,business,gift,askQuestion,faq,features,privacyPolicy:1:40",
+            "settings.header|enum:centered,cover", "settings.accounts|enum:list,collapsible", "settings.items|list:profile,settings,contacts,calls,saved,archive,kuroTheme,kuroSettings,numberFinder,specialContacts,onlineContacts,contactChanges,account,chatSettings,privacy,notifications,data,folders,devices,power,language,premium,stars,ton,business,gift,askQuestion,faq,features,privacyPolicy:1:40",
             "contacts.mode|enum:list,grid", "contacts.grid.columns|int:2:5", "contacts.grid.avatarDp|int:48:96", "contacts.row.avatarSizeDp|int:32:64",
             "contacts.row.heightDp|int:48:80", "contacts.row.status|bool", "contacts.sort|enum:name,time",
             "chatList.mode|enum:list,grid", "chatList.grid.columns|int:2:5", "chatList.grid.avatarDp|int:40:96", "chatList.grid.showName|bool", "chatList.grid.showBadge|bool",
@@ -100,7 +89,7 @@ public final class LayoutSpec {
             "chatList.folders.collapsible|bool",
             "chatList.specialRows.archive|enum:row,hidden",
             "drawer.content|enum:settings,list", "drawer.enabled|bool", "chatList.searchBar|bool", "drawer.items|list:profile,settings,contacts,calls,saved,archive,kuroTheme,kuroSettings,numberFinder,specialContacts,onlineContacts,contactChanges,account,chatSettings,privacy,notifications,data,folders,devices,power,language,premium,stars,ton,business,gift,askQuestion,faq,features,privacyPolicy:1:40",
-            "bottomTabs.items|list:chats,people,settings,profile,unread:2:5", "bottomTabs.peopleSource|enum:contacts,online", "bottomTabs.labels|bool", "bottomTabs.labelSizeSp|int:9:14", "bottomTabs.indicator|enum:none,pill", "bottomTabs.border|bool", "bottomTabs.style|enum:flat,glass",
+            "bottomTabs.items|list:chats,people,settings,profile,unread:2:5", "bottomTabs.labels|bool", "bottomTabs.labelSizeSp|int:9:14", "bottomTabs.indicator|enum:none,pill", "bottomTabs.border|bool", "bottomTabs.style|enum:flat,glass",
             "chat.header.avatarLeft|bool", "chat.header.actions|list:call,video,more,search:0:4",
             "chat.input.style|enum:classic,pill", "chat.input.leading|list:plus,attach,emoji:0:2",
             "chat.input.trailing|list:emoji,mic,attach:0:3",
@@ -194,37 +183,13 @@ public final class LayoutSpec {
             if (trailing != null && !trailing.contains("mic") && (leading == null || !leading.contains("mic"))) {
                 throw new IllegalArgumentException("chat.input must keep the mic");
             }
-            Map<String, BlockSpec.Screen> screens = BlockSpec.parse(plain(root.opt("screens")));
-            if (values.isEmpty() && screens.isEmpty()) {
+            if (values.isEmpty()) {
                 throw new IllegalArgumentException("Layout sets nothing");
             }
-            return new LayoutSpec(id, name, values, screens);
+            return new LayoutSpec(id, name, values);
         } catch (JSONException e) {
             throw new IllegalArgumentException("Layout file is not valid JSON");
         }
-    }
-
-    /** org.json value -> plain Map/List/String/Number/Boolean, so BlockSpec stays free of Android classes. */
-    private static Object plain(Object v) {
-        if (v instanceof JSONObject) {
-            JSONObject o = (JSONObject) v;
-            Map<String, Object> m = new java.util.LinkedHashMap<>();
-            java.util.Iterator<String> it = o.keys();
-            while (it.hasNext()) {
-                String k = it.next();
-                m.put(k, plain(o.opt(k)));
-            }
-            return m;
-        }
-        if (v instanceof org.json.JSONArray) {
-            org.json.JSONArray a = (org.json.JSONArray) v;
-            List<Object> l = new ArrayList<>();
-            for (int i = 0; i < a.length(); i++) {
-                l.add(plain(a.opt(i)));
-            }
-            return l;
-        }
-        return JSONObject.NULL.equals(v) ? null : v;
     }
 
     @SuppressWarnings("unchecked")
